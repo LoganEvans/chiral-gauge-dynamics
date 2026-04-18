@@ -72,19 +72,20 @@ theorem macroscopicVacuumGR
 🟢 GRAVITY TARGET CLEARED: Unimodular Vacuum (CDJ Constraint fixes the volume form globally)
 By mapping the continuous Spin(4,C) connections into the rigorous 3x3 Adjoint su(2) representation, 
 we invoke the Unimodular CDJ theorem to extract the strict global volume invariant `c`.
+Note: h_anti defines the physical domain (antisymmetric field tensors) of the target F_adj test variable.
 -/
 theorem kinematicUnimodularVacuum 
   [ucdj_vol : UnimodularCDJ SpacetimePoint cgdUnimodularMetricAdapter] 
   (F_adj : Fin 4 → Fin 4 → SpacetimePoint → Matrix (Fin 3) (Fin 3) ℂ)
   (Λ : ℂ)
   (h_anti : ∀ μ ν x, F_adj μ ν x = - F_adj ν μ x)
-  (hEpsilonAlt : ∀ α β γ δ, epsilon4 α β γ δ = -epsilon4 β α γ δ ∧ epsilon4 α β γ δ = -epsilon4 α γ β δ ∧ epsilon4 α β γ δ = -epsilon4 α β δ γ)
-  (hEpsilonNondeg : epsilon4 0 1 2 3 ≠ 0)
   (hLambdaNz : Λ ≠ 0)
   (h_cdj : ∀ x, (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * Matrix.trace (F_adj μ ν x * F_adj ρ σ x)) = Λ) :
   ∀ x y, (cgdUnimodularMetricAdapter (fun m n => F_adj m n x)).det = (cgdUnimodularMetricAdapter (fun m n => F_adj m n y)).det ∧ 
          (cgdUnimodularMetricAdapter (fun m n => F_adj m n x)).det ≠ 0 := by
   intro x y
+  have hEpsilonAlt : ∀ α β γ δ, epsilon4 α β γ δ = -epsilon4 β α γ δ ∧ epsilon4 α β γ δ = -epsilon4 α γ β δ ∧ epsilon4 α β γ δ = -epsilon4 α β δ γ := CGD.Gravity.epsilon4_alt
+  have hEpsilonNondeg : epsilon4 0 1 2 3 ≠ 0 := by rw [CGD.Gravity.epsilon4_0123]; norm_num
   have h_vol := ucdj_vol.cdjImpliesConstantVolume F_adj epsilon4 Λ hEpsilonAlt hEpsilonNondeg hLambdaNz h_cdj
   rcases h_vol with ⟨c, hc_neq, hc_eq⟩
   constructor

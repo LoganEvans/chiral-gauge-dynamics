@@ -30,12 +30,18 @@ variable (asymptoticBoundaryMap : (Fin 4 → SpacetimePoint → SL2C) → (Bound
 variable (windingNumber : (BoundaryManifold → SL2C) → ℤ)
 variable (cartanMaurerIntegral : (BoundaryManifold → SL2C) → ℝ)
 
+-- The integral of the Cartan-Maurer form of a strict 0-connection is strictly 0.
+variable (cartanMaurerZero : cartanMaurerIntegral (fun _ => 0) = 0)
+-- The boundary mapping of the vacuum connection maps cleanly to the 0 boundary condition.
+variable (boundaryZero : asymptoticBoundaryMap (fun _ _ => 0) = fun _ => 0)
+
 /-- 🔵 KINEMATIC: Topological Stability (The Proton cannot decay into the vacuum). -/
 theorem kinematicTopologicalStability 
   [tc : CartanMaurerTopology (BoundaryManifold → SL2C) windingNumber cartanMaurerIntegral] 
   (h_boundary_cont : ∀ (H : ℝ → Fin 4 → SpacetimePoint → SL2C), Continuous H → Continuous (fun t => asymptoticBoundaryMap (H t)))
-  (h_vacuum_wind : windingNumber (asymptoticBoundaryMap (fun _ _ => 0)) = 0)
-  (h_bpst_integral : cartanMaurerIntegral (asymptoticBoundaryMap hedgehogBps) = 1) :
+  (h_bpst_integral : cartanMaurerIntegral (asymptoticBoundaryMap hedgehogBps) = 1)
+  (h_boundaryZero : asymptoticBoundaryMap (fun _ _ => 0) = fun _ => 0)
+  (h_cartanMaurerZero : cartanMaurerIntegral (fun _ => 0) = 0) :
   ¬ isHomotopicConnection hedgehogBps (fun _ _ => 0) := by
   intro h_homotopy
   rcases h_homotopy with ⟨H, hH0, hH1, hHCont⟩
@@ -47,24 +53,28 @@ theorem kinematicTopologicalStability
   have h0 : H 0 = hedgehogBps := by funext mu x; exact hH0 mu x
   have h1 : H 1 = (fun _ _ => 0) := by funext mu x; exact hH1 mu x
   
-  -- The core contradiction: The literature guarantees that Degree = Integral.
-  -- For the hedgehog boundary, the integral is 1. For the vacuum boundary, the degree is 0.
+  -- The literature guarantees that Degree = Integral.
   have hd0 : (windingNumber (asymptoticBoundaryMap (H 0)) : ℝ) = cartanMaurerIntegral (asymptoticBoundaryMap (H 0)) := by 
     symm
     exact tc.degreeTheorem (asymptoticBoundaryMap (H 0))
     
-  have hw1 : windingNumber (asymptoticBoundaryMap (H 1)) = 0 := by rw [h1]; exact h_vacuum_wind
+  -- Derive vacuum winding = 0 from the integral of 0 instead of assuming it directly.
+  have hw1_real : (windingNumber (fun _ => 0) : ℝ) = cartanMaurerIntegral (fun _ => 0) := by
+    symm
+    exact tc.degreeTheorem (fun _ => 0)
   
-  have hd_hedgehog : cartanMaurerIntegral (asymptoticBoundaryMap (H 0)) = 1 := by rw [h0]; exact h_bpst_integral
-  rw [hd_hedgehog] at hd0
+  rw [h_cartanMaurerZero] at hw1_real
+  have hw1 : windingNumber (fun _ => 0) = 0 := by exact_mod_cast hw1_real
   
   have h_wind_eq : windingNumber (asymptoticBoundaryMap (H 0)) = windingNumber (asymptoticBoundaryMap (H 1)) := h_eq
-  rw [hw1] at h_wind_eq
+  rw [h1, h_boundaryZero, hw1] at h_wind_eq
   
   -- This forces (0 : ℝ) = 1, which is mathematically false.
   have h_false : (0 : ℝ) = 1 := by
     calc (0 : ℝ) = (windingNumber (asymptoticBoundaryMap (H 0)) : ℝ) := by rw [h_wind_eq]; norm_num
-      _ = 1 := hd0
+      _ = cartanMaurerIntegral (asymptoticBoundaryMap (H 0)) := hd0
+      _ = cartanMaurerIntegral (asymptoticBoundaryMap hedgehogBps) := by rw [h0]
+      _ = 1 := h_bpst_integral
   
   norm_num at h_false
 
