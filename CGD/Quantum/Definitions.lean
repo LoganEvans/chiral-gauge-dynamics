@@ -40,8 +40,8 @@ def isFluxTube (A : Fin 4 → SpacetimePoint → SL2C) (x : SpacetimePoint) : Pr
   (∀ mu nu, partialDerivSl2c nu (A mu) x = partialDerivSl2c nu (fluxTubeFrame mu) x)
 
 def isHeisenbergLimit (u : Universe) (x : SpacetimePoint) : Prop :=
-  (∀ i, i ≠ 0 → curvatureSl2c u.light 0 i x = 0) ∧
-  (∀ i, i ≠ 0 → partialDerivSl2c i (fun p => u.light 0 p) x = 0)
+  (∀ i, i ≠ 0 → curvatureSl2c u.self_dual 0 i x = 0) ∧
+  (∀ i, i ≠ 0 → partialDerivSl2c i (fun p => u.self_dual 0 p) x = 0)
 
 variable (integral1d : (ℝ → ℝ) → ℝ → ℝ → ℝ)
 
@@ -55,13 +55,13 @@ noncomputable def macroscopicObservable
 
 def isCoherentSuperpositionState (u : Universe) (x : SpacetimePoint) 
   (E0 phi_avg delta_phi : ℂ) (sig : Matrix (Fin 2) (Fin 2) ℂ) : Prop :=
-  (curvatureSl2c u.light 1 2 x).val = (E0 * Complex.cos (phi_avg + delta_phi / 2)) • sig + (E0 * Complex.cos (phi_avg - delta_phi / 2)) • sig
+  (curvatureSl2c u.self_dual 1 2 x).val = (E0 * Complex.cos (phi_avg + delta_phi / 2)) • sig + (E0 * Complex.cos (phi_avg - delta_phi / 2)) • sig
 
 def isOrthogonalDecoherenceLimit (u : Universe) (x : SpacetimePoint) 
   (theta M : ℂ) (sigX sigZ : Matrix (Fin 2) (Fin 2) ℂ) : Prop :=
   M ≠ 0 ∧
-  (curvatureSl2c u.light 1 2 x).val = (Complex.cos theta) • sigZ + (Complex.sin theta) • sigX ∧
-  (curvatureSl2c u.dark 1 2 x).val = M • sigX
+  (curvatureSl2c u.self_dual 1 2 x).val = (Complex.cos theta) • sigZ + (Complex.sin theta) • sigX ∧
+  (curvatureSl2c u.anti_self_dual 1 2 x).val = M • sigX
 
 def mkMat (m00 m01 m10 m11 : ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
   fun i j =>

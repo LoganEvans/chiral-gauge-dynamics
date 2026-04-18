@@ -273,11 +273,11 @@ lemma eval_macroscopic_observable
   exact h_final
 
 noncomputable def gen_A_path (u : Universe) (alpha : ℝ) (s : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
-  ((fun mu p => rotateZ (fun m p => u.light m p) alpha mu p) 1 (fun i => if i = 1 then s else 0)).val
+  ((fun mu p => rotateZ (fun m p => u.self_dual m p) alpha mu p) 1 (fun i => if i = 1 then s else 0)).val
 
 lemma gen_A_path_eq (u : Universe) (alpha : ℝ) (γ : ℝ → SpacetimePoint) 
   (h_path : ∀ t, γ t 1 = t ∧ γ t 0 = 0 ∧ γ t 2 = 0 ∧ γ t 3 = 0)
-  (h_field : ∀ t, u.light 1 (γ t) = fluxTubeFrame 1 (γ t)) 
+  (h_field : ∀ t, u.self_dual 1 (γ t) = fluxTubeFrame 1 (γ t)) 
   (s : ℝ) : 
   gen_A_path u alpha s = (Complex.I * (s:ℂ)) • obs_M alpha := by
   have h_gamma_s : (fun i : Fin 4 => if i = 1 then s else 0) = γ s := by
@@ -293,8 +293,8 @@ lemma gen_A_path_eq (u : Universe) (alpha : ℝ) (γ : ℝ → SpacetimePoint)
     · simp [h3]
   
   unfold gen_A_path
-  have eq_eval : ((fun mu p => rotateZ (fun m p => u.light m p) alpha mu p) 1 (fun i => if i = 1 then s else 0)).val = 
-                 ((fun mu p => rotateZ (fun m p => u.light m p) alpha mu p) 1 (γ s)).val := by
+  have eq_eval : ((fun mu p => rotateZ (fun m p => u.self_dual m p) alpha mu p) 1 (fun i => if i = 1 then s else 0)).val = 
+                 ((fun mu p => rotateZ (fun m p => u.self_dual m p) alpha mu p) 1 (γ s)).val := by
     rw [h_gamma_s]
   rw [eq_eval]
   
@@ -321,7 +321,7 @@ lemma gen_A_path_eq (u : Universe) (alpha : ℝ) (γ : ℝ → SpacetimePoint)
 
 lemma gen_A_path_comm (u : Universe) (alpha : ℝ) (γ : ℝ → SpacetimePoint) 
   (h_path : ∀ t, γ t 1 = t ∧ γ t 0 = 0 ∧ γ t 2 = 0 ∧ γ t 3 = 0)
-  (h_field : ∀ t, u.light 1 (γ t) = fluxTubeFrame 1 (γ t)) 
+  (h_field : ∀ t, u.self_dual 1 (γ t) = fluxTubeFrame 1 (γ t)) 
   (s1 s2 : ℝ) :
   gen_A_path u alpha s1 * gen_A_path u alpha s2 = gen_A_path u alpha s2 * gen_A_path u alpha s1 := by
   rw [gen_A_path_eq u alpha γ h_path h_field s1, gen_A_path_eq u alpha γ h_path h_field s2]
@@ -329,7 +329,7 @@ lemma gen_A_path_comm (u : Universe) (alpha : ℝ) (γ : ℝ → SpacetimePoint)
 
 lemma gen_A_path_cont (u : Universe) (alpha : ℝ) (γ : ℝ → SpacetimePoint) 
   (h_path : ∀ t, γ t 1 = t ∧ γ t 0 = 0 ∧ γ t 2 = 0 ∧ γ t 3 = 0)
-  (h_field : ∀ t, u.light 1 (γ t) = fluxTubeFrame 1 (γ t)) : 
+  (h_field : ∀ t, u.self_dual 1 (γ t) = fluxTubeFrame 1 (γ t)) : 
   Continuous (gen_A_path u alpha) := by
   have h_eq : gen_A_path u alpha = (fun s : ℝ => (Complex.I * (s:ℂ)) • obs_M alpha) := by
     funext s
@@ -345,8 +345,8 @@ lemma eval_obs
   [mc : MatrixCalculus (Fin 2) matrixExp holonomy integral] 
   (u : Universe) (alpha : ℝ) (γ : ℝ → SpacetimePoint)
   (h_path : ∀ t, γ t 1 = t ∧ γ t 0 = 0 ∧ γ t 2 = 0 ∧ γ t 3 = 0)
-  (h_field : ∀ t, u.light 1 (γ t) = fluxTubeFrame 1 (γ t)) :
-  macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.light m p) alpha mu p) 1 (Real.sqrt Real.pi) =
+  (h_field : ∀ t, u.self_dual 1 (γ t) = fluxTubeFrame 1 (γ t)) :
+  macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.self_dual m p) alpha mu p) 1 (Real.sqrt Real.pi) =
   obs_M alpha := by
   
   let L := Real.sqrt Real.pi
@@ -404,7 +404,7 @@ lemma eval_obs
   rw [h_euler_simp] at h_hol_eq
   
   unfold macroscopicObservable
-  have h_A_path : (fun s => ((fun mu p => rotateZ (fun m p => u.light m p) alpha mu p) 1 (fun i => if i = 1 then s else 0)).val) = gen_A_path u alpha := by rfl
+  have h_A_path : (fun s => ((fun mu p => rotateZ (fun m p => u.self_dual m p) alpha mu p) 1 (fun i => if i = 1 then s else 0)).val) = gen_A_path u alpha := by rfl
   rw [h_A_path]
   rw [h_hol_eq]
   have h_final : (-Complex.I) • Complex.I • obs_M alpha = obs_M alpha := by
@@ -585,23 +585,23 @@ theorem kinematicHolonomicDegeneracy
   ∀ (alpha beta : ℝ),
     (∃ (γ : ℝ → SpacetimePoint),
       (∀ t, γ t 1 = t ∧ γ t 0 = 0 ∧ γ t 2 = 0 ∧ γ t 3 = 0) ∧
-      (∀ t, u.light 1 (γ t) = fluxTubeFrame 1 (γ t))) →
+      (∀ t, u.self_dual 1 (γ t) = fluxTubeFrame 1 (γ t))) →
     let L := Real.sqrt Real.pi;
-    let obs_x := macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.light m p) alpha mu p) 1 L;
-    let obs_y := macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.light m p) beta mu p) 1 L;
+    let obs_x := macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.self_dual m p) alpha mu p) 1 L;
+    let obs_y := macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.self_dual m p) beta mu p) 1 L;
     bellCorrelationDeg obs_x (- obs_y)
       = - Complex.cos ((alpha : ℂ) - (beta : ℂ)) := by
   intros alpha beta h_path_field L obs_x obs_y
   rcases h_path_field with ⟨γ, h_path, h_field⟩
   
   have h_obs_x : obs_x = Complex.cos (alpha : ℂ) • sigma2.val + Complex.sin (alpha : ℂ) • sigma1.val := by
-    change macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.light m p) alpha mu p) 1 L = _
+    change macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.self_dual m p) alpha mu p) 1 L = _
     have h_eval := eval_obs matrixExp holonomy integral u alpha γ h_path h_field
     unfold obs_M at h_eval
     exact h_eval
     
   have h_obs_y : obs_y = Complex.cos (beta : ℂ) • sigma2.val + Complex.sin (beta : ℂ) • sigma1.val := by
-    change macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.light m p) beta mu p) 1 L = _
+    change macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.self_dual m p) beta mu p) 1 L = _
     have h_eval := eval_obs matrixExp holonomy integral u beta γ h_path h_field
     unfold obs_M at h_eval
     exact h_eval

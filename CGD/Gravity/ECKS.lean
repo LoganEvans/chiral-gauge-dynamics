@@ -35,9 +35,9 @@ theorem algebraicECKS (u : Universe)
   (e : TetradField) (ω_lc : SpinConnection)
   (_h_lc_torsion_free : isTorsionFree e ω_lc) :
   ∀ (I μ ν : SpacetimeIndex) (x : SpacetimePoint),
-    torsionTensor e (addSpinConnections ω_lc (cgdContortion (fun a b p => curvatureSl2c u.light a b p))) I μ ν x =
-    torsionTensor e ω_lc I μ ν x + ∑ J, (cgdContortion (fun a b p => curvatureSl2c u.light a b p) I J μ x * e J ν x - cgdContortion (fun a b p => curvatureSl2c u.light a b p) I J ν x * e J μ x) := by
+    torsionTensor e (addSpinConnections ω_lc (cgdContortion (fun a b p => curvatureSl2c u.self_dual a b p))) I μ ν x =
+    torsionTensor e ω_lc I μ ν x + ∑ J, (cgdContortion (fun a b p => curvatureSl2c u.self_dual a b p) I J μ x * e J ν x - cgdContortion (fun a b p => curvatureSl2c u.self_dual a b p) I J ν x * e J μ x) := by
   intro I μ ν x
-  exact torsion_of_sum e ω_lc (cgdContortion (fun a b p => curvatureSl2c u.light a b p)) I μ ν x
+  exact torsion_of_sum e ω_lc (cgdContortion (fun a b p => curvatureSl2c u.self_dual a b p)) I μ ν x
 
 end CGD.Gravity

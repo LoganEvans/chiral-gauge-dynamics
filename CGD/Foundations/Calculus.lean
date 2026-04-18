@@ -88,7 +88,7 @@ lemma math_partialDerivMat_comp_coord (f : ℝ → Matrix (Fin 2) (Fin 2) ℂ) (
 noncomputable def partialDerivChiral (μ : Fin 4) (f : SpacetimePoint → ChiralM) (x : SpacetimePoint) : ChiralM :=
   let L_A := fun p => toSl2c (fun i j => f p (chiralIso (Sum.inl i)) (chiralIso (Sum.inl j)))
   let R_A := fun p => toSl2c (fun i j => f p (chiralIso (Sum.inr i)) (chiralIso (Sum.inr j)))
-  embedLight (partialDerivSl2c μ L_A x) + embedDark (partialDerivSl2c μ R_A x)
+  embedSelfDual (partialDerivSl2c μ L_A x) + embedAntiSelfDual (partialDerivSl2c μ R_A x)
 
 noncomputable def bracket (A B : ChiralM) : ChiralM := A * B - B * A
 
@@ -96,12 +96,12 @@ noncomputable def curvature (A : Fin 4 → SpacetimePoint → ChiralM) (mu nu : 
   let dA_nu := partialDerivChiral mu (fun p => A nu p) x
   let dA_mu := partialDerivChiral nu (fun p => A mu p) x
   let raw_comm := bracket (A mu x) (A nu x)
-  let proj_comm := embedLight (chiralProject raw_comm).light + embedDark (chiralProject raw_comm).dark
+  let proj_comm := embedSelfDual (chiralProject raw_comm).self_dual + embedAntiSelfDual (chiralProject raw_comm).anti_self_dual
   dA_nu - dA_mu + proj_comm
 
 lemma curvature_def (A : Fin 4 → SpacetimePoint → ChiralM) (mu nu : Fin 4) (x : SpacetimePoint) :
   curvature A mu nu x = partialDerivChiral mu (fun p => A nu p) x - partialDerivChiral nu (fun p => A mu p) x + 
-  (embedLight (chiralProject (bracket (A mu x) (A nu x))).light + embedDark (chiralProject (bracket (A mu x) (A nu x))).dark) := rfl
+  (embedSelfDual (chiralProject (bracket (A mu x) (A nu x))).self_dual + embedAntiSelfDual (chiralProject (bracket (A mu x) (A nu x))).anti_self_dual) := rfl
 
 attribute [irreducible] curvature
 

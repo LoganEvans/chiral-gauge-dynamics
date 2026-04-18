@@ -30,20 +30,20 @@ theorem kinematicActionQuantization
   [tc : CartanMaurerTopology (BoundaryManifold → SL2C) windingNumber cartanMaurerIntegral]
   [belavin : Eq18 BoundaryManifold SL2C windingNumber cartanMaurerIntegral]
   (u : Universe)
-  (h_homeo : IsHomeomorphism (asymptoticBoundaryMap u.light.val)) :
-  cartanMaurerIntegral (asymptoticBoundaryMap u.light.val) = 1 ∨ 
-  cartanMaurerIntegral (asymptoticBoundaryMap u.light.val) = -1 := by
-  have h_deg := belavin.degree_of_homeomorph (asymptoticBoundaryMap u.light.val) h_homeo
-  have h_thm := tc.degreeTheorem (asymptoticBoundaryMap u.light.val)
+  (h_homeo : IsHomeomorphism (asymptoticBoundaryMap u.self_dual.val)) :
+  cartanMaurerIntegral (asymptoticBoundaryMap u.self_dual.val) = 1 ∨ 
+  cartanMaurerIntegral (asymptoticBoundaryMap u.self_dual.val) = -1 := by
+  have h_deg := belavin.degree_of_homeomorph (asymptoticBoundaryMap u.self_dual.val) h_homeo
+  have h_thm := tc.degreeTheorem (asymptoticBoundaryMap u.self_dual.val)
   cases h_deg with
   | inl h_pos => 
     left
-    have h_eval : (windingNumber (asymptoticBoundaryMap u.light.val) : ℝ) = 1 := by rw [h_pos]; norm_num
+    have h_eval : (windingNumber (asymptoticBoundaryMap u.self_dual.val) : ℝ) = 1 := by rw [h_pos]; norm_num
     rw [←h_thm] at h_eval
     exact h_eval
   | inr h_neg => 
     right
-    have h_eval : (windingNumber (asymptoticBoundaryMap u.light.val) : ℝ) = -1 := by rw [h_neg]; norm_num
+    have h_eval : (windingNumber (asymptoticBoundaryMap u.self_dual.val) : ℝ) = -1 := by rw [h_neg]; norm_num
     rw [←h_thm] at h_eval
     exact h_eval
 

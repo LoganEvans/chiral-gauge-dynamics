@@ -33,7 +33,7 @@ private lemma mul_2x2 (A B : Matrix (Fin 2) (Fin 2) ℂ) (i j : Fin 2) :
 theorem phenomenologicalMeasurementDecoherence (u : Universe) :
   ∀ (x : SpacetimePoint) (theta M : ℂ),
     isOrthogonalDecoherenceLimit u x theta M sigmaX sigmaZ →
-    Matrix.trace ((curvatureSl2c u.light 1 2 x).val * (curvatureSl2c u.dark 1 2 x).val) = 0 →
+    Matrix.trace ((curvatureSl2c u.self_dual 1 2 x).val * (curvatureSl2c u.anti_self_dual 1 2 x).val) = 0 →
     Complex.sin theta = 0 := by
   intros x theta M hLimit hTrace
   unfold isOrthogonalDecoherenceLimit at hLimit
@@ -71,7 +71,7 @@ lemma trace_wave (c1 c2 : ℂ) : (1/2 : ℂ) * Matrix.trace ((c1 • sigmaX + c2
 theorem phenomenologicalWaveInterference (u : Universe) :
   ∀ (x : SpacetimePoint) (E0 phi_avg delta_phi : ℂ),
     isCoherentSuperpositionState u x E0 phi_avg delta_phi sigmaX →
-    (1 / 2 : ℂ) * Matrix.trace ((curvatureSl2c u.light 1 2 x).val * (curvatureSl2c u.light 1 2 x).val) =
+    (1 / 2 : ℂ) * Matrix.trace ((curvatureSl2c u.self_dual 1 2 x).val * (curvatureSl2c u.self_dual 1 2 x).val) =
     4 * (E0 * E0) * (Complex.cos phi_avg * Complex.cos phi_avg) * (Complex.cos (delta_phi / 2) * Complex.cos (delta_phi / 2)) := by
   intros x E0 phi_avg delta_phi h
   unfold isCoherentSuperpositionState at h

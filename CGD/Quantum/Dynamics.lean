@@ -21,14 +21,14 @@ namespace CGD.Quantum
 noncomputable def gaugeCommutator (A B : Matrix (Fin 2) (Fin 2) ℂ) : Matrix (Fin 2) (Fin 2) ℂ := A * B - B * A
 
 noncomputable def classicalElectricField (u : Universe) (i : Fin 4) (x : SpacetimePoint) : Matrix (Fin 2) (Fin 2) ℂ :=
-  partialDerivMat 0 (fun p => (u.light i p).val) x -
-  partialDerivMat i (fun p => (u.light 0 p).val) x +
-  gaugeCommutator (u.light 0 x).val (u.light i x).val
+  partialDerivMat 0 (fun p => (u.self_dual i p).val) x -
+  partialDerivMat i (fun p => (u.self_dual 0 p).val) x +
+  gaugeCommutator (u.self_dual 0 x).val (u.self_dual i x).val
 
 /-- 🟡 KINEMATIC: Temporal Evolution (Vacuum Commutator) -/
 theorem kinematicTemporalEvolution (u : Universe) (x : SpacetimePoint) :
   isHeisenbergLimit u x →
-  partialDerivSl2c 0 (fun p => u.light 1 p) x = - ⁅u.light 0 x, u.light 1 x⁆ := by
+  partialDerivSl2c 0 (fun p => u.self_dual 1 p) x = - ⁅u.self_dual 0 x, u.self_dual 1 x⁆ := by
   intro h_lim
   have h_curv := h_lim.1 1 (by decide)
   have h_deriv := h_lim.2 1 (by decide)
@@ -110,25 +110,25 @@ noncomputable def diracOperatorCore (dPsi : Fin 4 → SpacetimePoint → Matrix 
 @[simp] lemma chiralIso_symm_eval_2 : CGD.Foundations.chiralIso.symm 2 = Sum.inr 0 := rfl
 @[simp] lemma chiralIso_symm_eval_3 : CGD.Foundations.chiralIso.symm 3 = Sum.inr 1 := rfl
 
-lemma isEven_embedLight_add_embedDark (A B : SL2C) : isEven (embedLight A + embedDark B) := by
+lemma isEven_embedSelfDual_add_embedAntiSelfDual (A B : SL2C) : isEven (embedSelfDual A + embedAntiSelfDual B) := by
   intro i j hij
   revert hij
-  change isLight i ≠ isLight j → (embedLight A + embedDark B) i j = 0
+  change isLight i ≠ isLight j → (embedSelfDual A + embedAntiSelfDual B) i j = 0
   refine match i, j with
   | 0, 0 => fun h => False.elim (h rfl)
   | 0, 1 => fun h => False.elim (h rfl)
-  | 0, 2 => fun _ => by simp [embedLight, embedDark]
-  | 0, 3 => fun _ => by simp [embedLight, embedDark]
+  | 0, 2 => fun _ => by simp [embedSelfDual, embedAntiSelfDual]
+  | 0, 3 => fun _ => by simp [embedSelfDual, embedAntiSelfDual]
   | 1, 0 => fun h => False.elim (h rfl)
   | 1, 1 => fun h => False.elim (h rfl)
-  | 1, 2 => fun _ => by simp [embedLight, embedDark]
-  | 1, 3 => fun _ => by simp [embedLight, embedDark]
-  | 2, 0 => fun _ => by simp [embedLight, embedDark]
-  | 2, 1 => fun _ => by simp [embedLight, embedDark]
+  | 1, 2 => fun _ => by simp [embedSelfDual, embedAntiSelfDual]
+  | 1, 3 => fun _ => by simp [embedSelfDual, embedAntiSelfDual]
+  | 2, 0 => fun _ => by simp [embedSelfDual, embedAntiSelfDual]
+  | 2, 1 => fun _ => by simp [embedSelfDual, embedAntiSelfDual]
   | 2, 2 => fun h => False.elim (h rfl)
   | 2, 3 => fun h => False.elim (h rfl)
-  | 3, 0 => fun _ => by simp [embedLight, embedDark]
-  | 3, 1 => fun _ => by simp [embedLight, embedDark]
+  | 3, 0 => fun _ => by simp [embedSelfDual, embedAntiSelfDual]
+  | 3, 1 => fun _ => by simp [embedSelfDual, embedAntiSelfDual]
   | 3, 2 => fun h => False.elim (h rfl)
   | 3, 3 => fun h => False.elim (h rfl)
 
@@ -139,9 +139,9 @@ theorem kinematicDiracEquation (u : Universe) :
     isOdd (m • (extractSpinorMode u x * gamma0)) := by
   intros m x
   have h_even_psi : ∀ p, isEven (extractSpinorMode u p) := by
-    intro p; unfold extractSpinorMode Universe.embed; exact isEven_embedLight_add_embedDark (u.light 0 p) (u.dark 0 p)
+    intro p; unfold extractSpinorMode Universe.embed; exact isEven_embedSelfDual_add_embedAntiSelfDual (u.self_dual 0 p) (u.anti_self_dual 0 p)
   have h_even_dpsi : ∀ mu p, isEven (extractSpinorDeriv u p mu) := by
-    intros mu p; unfold extractSpinorDeriv partialDerivChiral; exact isEven_embedLight_add_embedDark _ _
+    intros mu p; unfold extractSpinorDeriv partialDerivChiral; exact isEven_embedSelfDual_add_embedAntiSelfDual _ _
   constructor
   · intros i j hij
     unfold diracOperatorCore

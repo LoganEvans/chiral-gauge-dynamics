@@ -52,12 +52,12 @@ def chiralIso : Fin 2 ⊕ Fin 2 ≃ Fin 4 where
   left_inv := by intro x; cases x with | inl i => fin_cases i <;> rfl | inr i => fin_cases i <;> rfl
   right_inv := by intro k; fin_cases k <;> rfl
 
-noncomputable def embedLight (m : SL2C) : ChiralM := Matrix.of (fun i j => match (chiralIso.symm i), (chiralIso.symm j) with | Sum.inl i', Sum.inl j' => m.val i' j' | _, _ => 0)
-noncomputable def embedDark (m : SL2C) : ChiralM := Matrix.of (fun i j => match (chiralIso.symm i), (chiralIso.symm j) with | Sum.inr i', Sum.inr j' => m.val i' j' | _, _ => 0)
+noncomputable def embedSelfDual (m : SL2C) : ChiralM := Matrix.of (fun i j => match (chiralIso.symm i), (chiralIso.symm j) with | Sum.inl i', Sum.inl j' => m.val i' j' | _, _ => 0)
+noncomputable def embedAntiSelfDual (m : SL2C) : ChiralM := Matrix.of (fun i j => match (chiralIso.symm i), (chiralIso.symm j) with | Sum.inr i', Sum.inr j' => m.val i' j' | _, _ => 0)
 
 structure ChiralComponents where
-  light : SL2C
-  dark  : SL2C
+  self_dual : SL2C
+  anti_self_dual  : SL2C
 
 noncomputable def toSl2c (M : Matrix (Fin 2) (Fin 2) Complex) : SL2C :=
   let tr := M.trace
@@ -66,6 +66,6 @@ noncomputable def toSl2c (M : Matrix (Fin 2) (Fin 2) Complex) : SL2C :=
 
 noncomputable def chiralProject (M : ChiralM) : ChiralComponents :=
   let b := M.submatrix chiralIso chiralIso
-  { light := toSl2c (fun i j => b (Sum.inl i) (Sum.inl j)), dark := toSl2c (fun i j => b (Sum.inr i) (Sum.inr j)) }
+  { self_dual := toSl2c (fun i j => b (Sum.inl i) (Sum.inl j)), anti_self_dual := toSl2c (fun i j => b (Sum.inr i) (Sum.inr j)) }
 
 end CGD.Foundations

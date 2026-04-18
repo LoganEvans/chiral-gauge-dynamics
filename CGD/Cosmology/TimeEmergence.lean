@@ -584,12 +584,12 @@ ALGEBRAIC CONTEXT: A fully 4D symmetric tensor naturally yields a metric with a 
 PHYSICAL SIGNIFICANCE: "Time" is not a pre-existing, hardcoded dimension. It emerges geometrically only when the continuous gauge field spontaneously breaks 4D Euclidean (SO(4)) symmetry, natively tying the arrow of time to symmetry breaking.
 -/
 theorem kinematicTimeEmergence (u : Universe)
-  (h_tic : ∀ x, x 0 = 0 → isFully4DSymmetric (fun mu nu => curvatureSl2c u.light mu nu x)) :
+  (h_tic : ∀ x, x 0 = 0 → isFully4DSymmetric (fun mu nu => curvatureSl2c u.self_dual mu nu x)) :
   ∀ (x : SpacetimePoint),
     x 0 = 0 →
-    ¬ isLorentzian (urbantkeMetric (fun m n => curvatureSl2c u.light m n x)) := by
+    ¬ isLorentzian (urbantkeMetric (fun m n => curvatureSl2c u.self_dual m n x)) := by
   intro x hx
   have h_symm := h_tic x hx
-  exact math_TimeIsChiralPhase_det (fun mu nu => curvatureSl2c u.light mu nu x) h_symm
+  exact math_TimeIsChiralPhase_det (fun mu nu => curvatureSl2c u.self_dual mu nu x) h_symm
 
 end CGD.Cosmology

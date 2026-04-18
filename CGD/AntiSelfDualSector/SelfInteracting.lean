@@ -1,4 +1,4 @@
--- FILENAME: CGD/DarkSector/SelfInteracting.lean
+-- FILENAME: CGD/AntiSelfDualSector/SelfInteracting.lean
 
 import CGD.Axioms.Spacetime
 import CGD.Axioms.Ontology
@@ -13,7 +13,7 @@ set_option linter.unusedSimpArgs false
 
 open CGD.Axioms CGD.Foundations Matrix BigOperators
 
-namespace CGD.DarkSector
+namespace CGD.AntiSelfDualSector
 
 lemma trace_2x2 (A : Matrix (Fin 2) (Fin 2) ℂ) : Matrix.trace A = A 0 0 + A 1 1 := by
   dsimp[Matrix.trace, Matrix.diag]; rw[Fin.sum_univ_two]
@@ -138,13 +138,13 @@ lemma math_su2_commutator_squared_trace (A B : Matrix (Fin 2) (Fin 2) ℂ) (hA :
   have hC_eq_0 := c_eq_zero_of_trace_sq_zero _ hC_su2.1 hC_su2.2 hZ
   exact hNz hC_eq_0
 
-/-- 🟡 KINEMATIC: Dark Matter is SIDM Physical -/
+/-- 🟡 KINEMATIC: AntiSelfDual Matter is SIDM Physical -/
 theorem kinematicSIDMTrace (u : Universe)
   (x : SpacetimePoint) (μ ν : Fin 4)
-  (h_dark_su2 : ∀ m p, isSu2 (u.dark m p).val)
-  (h_comm : ((u.dark μ x).val * (u.dark ν x).val - (u.dark ν x).val * (u.dark μ x).val) ≠ 0) :
-  Matrix.trace (((u.dark μ x).val * (u.dark ν x).val - (u.dark ν x).val * (u.dark μ x).val) *
-                ((u.dark μ x).val * (u.dark ν x).val - (u.dark ν x).val * (u.dark μ x).val)) ≠ 0 := by
-  exact math_su2_commutator_squared_trace _ _ (h_dark_su2 μ x) (h_dark_su2 ν x) h_comm
+  (h_anti_self_dual_su2 : ∀ m p, isSu2 (u.anti_self_dual m p).val)
+  (h_comm : ((u.anti_self_dual μ x).val * (u.anti_self_dual ν x).val - (u.anti_self_dual ν x).val * (u.anti_self_dual μ x).val) ≠ 0) :
+  Matrix.trace (((u.anti_self_dual μ x).val * (u.anti_self_dual ν x).val - (u.anti_self_dual ν x).val * (u.anti_self_dual μ x).val) *
+                ((u.anti_self_dual μ x).val * (u.anti_self_dual ν x).val - (u.anti_self_dual ν x).val * (u.anti_self_dual μ x).val)) ≠ 0 := by
+  exact math_su2_commutator_squared_trace _ _ (h_anti_self_dual_su2 μ x) (h_anti_self_dual_su2 ν x) h_comm
 
-end CGD.DarkSector
+end CGD.AntiSelfDualSector

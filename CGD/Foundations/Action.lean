@@ -27,14 +27,14 @@ noncomputable def lagrangianDensity (F : Fin 4 -> Fin 4 -> ChiralM) : Complex :=
   )
 
 noncomputable def actionVacuum (F : Fin 4 -> Fin 4 -> ChiralM) : Complex :=
-  let F_L := fun mu nu => (chiralProject (F mu nu)).light
+  let F_L := fun mu nu => (chiralProject (F mu nu)).self_dual
   (-0.5 : Complex) * (
     ∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4,
       eta mu rho * eta nu sigma * Matrix.trace ((F_L mu nu).val * (F_L rho sigma).val)
   )
 
-noncomputable def actionDark (F : Fin 4 -> Fin 4 -> ChiralM) : Complex :=
-  let F_R := fun mu nu => (chiralProject (F mu nu)).dark
+noncomputable def actionAntiSelfDual (F : Fin 4 -> Fin 4 -> ChiralM) : Complex :=
+  let F_R := fun mu nu => (chiralProject (F mu nu)).anti_self_dual
   (-0.5 : Complex) * (
     ∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4,
       eta mu rho * eta nu sigma * Matrix.trace ((F_R mu nu).val * (F_R rho sigma).val)
@@ -79,11 +79,11 @@ A physically valid universe variation is mathematically constrained:
    preventing the Mathlib Bochner integral from collapsing divergent actions to a trivial 0.
 -/
 def isValidUniverseVariation (v : ℝ → Universe) : Prop :=
-  (∀ mu i j, ContDiff ℝ ⊤ (fun (tx : ℝ × CGD.Axioms.SpacetimePoint) => ((v tx.1).light mu tx.2).val i j)) ∧
-  (∀ mu i j, ContDiff ℝ ⊤ (fun (tx : ℝ × CGD.Axioms.SpacetimePoint) => ((v tx.1).dark mu tx.2).val i j)) ∧
+  (∀ mu i j, ContDiff ℝ ⊤ (fun (tx : ℝ × CGD.Axioms.SpacetimePoint) => ((v tx.1).self_dual mu tx.2).val i j)) ∧
+  (∀ mu i j, ContDiff ℝ ⊤ (fun (tx : ℝ × CGD.Axioms.SpacetimePoint) => ((v tx.1).anti_self_dual mu tx.2).val i j)) ∧
   (∀ t, ∃ R > 0, ∀ x, (x 0)^2 + (x 1)^2 + (x 2)^2 + (x 3)^2 > R^2 →
-    (∀ mu, (v t).light mu x = (v 0).light mu x) ∧
-    (∀ mu, (v t).dark mu x = (v 0).dark mu x)) ∧
+    (∀ mu, (v t).self_dual mu x = (v 0).self_dual mu x) ∧
+    (∀ mu, (v t).anti_self_dual mu x = (v 0).anti_self_dual mu x)) ∧
   (∀ t, MeasureTheory.Integrable (fun p => (lagrangianDensity (fun mu nu => curvature (fun m x => (v t).embed m x) mu nu p)).re))
 
 /-- A physically valid W=1 gauge variation (smooth and compactly supported). -/

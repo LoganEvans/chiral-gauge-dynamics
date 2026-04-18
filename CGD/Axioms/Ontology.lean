@@ -44,12 +44,12 @@ Because Spin(4, C) is mathematically isomorphic to SL(2,C)_L x SL(2,C)_R, the un
 natively and rigorously decomposes into two independent, structurally rigid chiral gauge fields.
 -/
 structure Universe where
-  light : GaugeField
-  dark  : GaugeField
+  self_dual : GaugeField
+  anti_self_dual  : GaugeField
 
 /-- The trivial vacuum (A = 0) everywhere. -/
 instance : Zero Universe where
-  zero := { light := 0, dark := 0 }
+  zero := { self_dual := 0, anti_self_dual := 0 }
 
 /-- 
 The unified 4x4 Dirac spin connection (ChiralM). 
@@ -57,6 +57,6 @@ Assembled natively from the independent Left and Right topological sectors witho
 allowing unphysical off-diagonal mixing.
 -/
 noncomputable def Universe.embed (u : Universe) (mu : Fin 4) (x : CGD.Axioms.SpacetimePoint) : ChiralM := 
-  embedLight (u.light mu x) + embedDark (u.dark mu x)
+  embedSelfDual (u.self_dual mu x) + embedAntiSelfDual (u.anti_self_dual mu x)
 
 end CGD.Axioms
