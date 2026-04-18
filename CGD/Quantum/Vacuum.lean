@@ -61,7 +61,7 @@ PHYSICAL SIGNIFICANCE: In pure connection emergent gravity, spacetime volume is 
 -/
 theorem kinematicVacuumCondensate (u : Universe) (x : SpacetimePoint) :
   (urbantkeMetric (fun mu nu => curvatureSl2c u.light mu nu x)).det ≠ 0 →
-  u.light ≠ (fun _ _ => 0) := by
+  u.light.val ≠ (fun _ _ => 0) := by
   intro h_det h_trivial
   apply h_det
   rw [h_trivial]

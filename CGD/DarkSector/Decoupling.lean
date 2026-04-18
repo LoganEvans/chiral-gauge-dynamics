@@ -45,8 +45,7 @@ lemma action_vacuum_congr (F1 F2 : Fin 4 -> Fin 4 -> ChiralM)
 
 /-- 🟡 KINEMATIC: Dark Matter Decoupling -/
 theorem algebraicDarkSectorDecoupling (u : Universe)
-  (A_R_alt : Fin 4 -> SpacetimePoint -> SL2C) (x : SpacetimePoint)
-  (h_su2 : ∀ mu p, isSu2 (A_R_alt mu p).val) :
+  (A_R_alt : GaugeField) (x : SpacetimePoint) :
   actionVacuum (fun mu nu => curvature (fun m p => u.embed m p) mu nu x) =
   actionVacuum (fun mu nu => curvature (fun m p => embedLight (u.light m p) + embedDark (A_R_alt m p)) mu nu x) := by
 

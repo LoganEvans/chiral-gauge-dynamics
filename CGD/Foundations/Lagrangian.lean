@@ -99,7 +99,7 @@ abbrev cgdConnectionSpace : Type := Universe
 abbrev cgdFormSpace : Type := Universe
 
 noncomputable instance : Zero cgdFormSpace where
-  zero := { light := fun _ _ => 0, dark := fun _ _ => 0 }
+  zero := 0
 
 noncomputable def u_to_form (u : cgdConnectionSpace) : cgdFormSpace := u
 noncomputable def u_dStar (f : cgdFormSpace) : cgdFormSpace := f
@@ -115,13 +115,13 @@ lemma dstar_to_pdes (u : Universe) :
   
   unfold u_dStar u_to_form at h_zero
   
-  have h_light : u.light = fun _ _ => 0 := by
-    have h1 : u.light = (0 : Universe).light := by rw [h_zero]
-    exact h1
+  have h_light : u.light.val = fun _ _ => 0 := by
+    rw [h_zero]
+    rfl
     
-  have h_dark : u.dark = fun _ _ => 0 := by
-    have h1 : u.dark = (0 : Universe).dark := by rw [h_zero]
-    exact h1
+  have h_dark : u.dark.val = fun _ _ => 0 := by
+    rw [h_zero]
+    rfl
 
   have hd : ∀ μ x, partialDerivMat μ (fun _ => (0 : Matrix (Fin 2) (Fin 2) ℂ)) x = 0 := by
     intro μ x; ext i j; unfold partialDerivMat partialDeriv; simp[fderiv_const]
@@ -242,8 +242,8 @@ theorem algebraicLagrangianExpansion
 
 /-- 🟢 DYNAMIC: The trivial vacuum (A = 0) everywhere is trivially a solution to the equations of motion. -/
 theorem dynamicVacuumIsSolution (u : Universe)
-  (h_light : u.light = fun _ _ => 0)
-  (h_dark : u.dark = fun _ _ => 0) :
+  (h_light : u.light.val = fun _ _ => 0)
+  (h_dark : u.dark.val = fun _ _ => 0) :
   eulerLagrangePDEs u := by
   have hd : ∀ μ x, partialDerivMat μ (fun _ => (0 : Matrix (Fin 2) (Fin 2) ℂ)) x = 0 := by
     intro μ x; ext i j; unfold partialDerivMat partialDeriv; simp[fderiv_const]

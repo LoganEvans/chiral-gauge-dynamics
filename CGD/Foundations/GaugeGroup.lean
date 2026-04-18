@@ -21,8 +21,7 @@ the **Lie Algebra** $\mathfrak{sl}(2,\mathbb{C})$ (the vector space of trace-fre
 2x2 complex matrices), NOT the curved Lie Group (matrices with det=1).
 Because it is a vector space natively built on a Mathlib submodule, it supports 
 addition, scalar multiplication, and naturally inherits the `NormedSpace` topology 
-required for `ContDiff` (smooth functional variations). If this were typed as a 
-Lie Group, functional variations like `A + δA` would mathematically fail.
+required for `ContDiff` (smooth functional variations).
 -/
 noncomputable abbrev sl2cAlgebra := LieAlgebra.SpecialLinear.sl (Fin 2) Complex
 abbrev SL2C := ↥sl2cAlgebra
@@ -34,7 +33,8 @@ lemma mem_sl_iff (A : Matrix (Fin 2) (Fin 2) Complex) : A ∈ sl2cAlgebra ↔ Ma
 def isSu2 (M : Matrix (Fin 2) (Fin 2) Complex) : Prop := 
   Matrix.trace M = 0 ∧ M.conjTranspose = -M
 
-abbrev su2 := { M : Matrix (Fin 2) (Fin 2) Complex // isSu2 M }
+/-- We explicitly bind SU(2) as a trace-free physical phase space. -/
+abbrev su2 := { M : SL2C // isSu2 M.val }
 
 noncomputable def sigma1 : SL2C := ⟨Matrix.of ![![0, 1], ![1, 0]], by rw[mem_sl_iff, Matrix.trace_fin_two]; dsimp; ring⟩
 noncomputable def sigma2 : SL2C := ⟨Matrix.of ![![0, -I], ![I, 0]], by rw[mem_sl_iff, Matrix.trace_fin_two]; dsimp; ring⟩
