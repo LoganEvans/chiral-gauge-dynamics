@@ -21,14 +21,14 @@ namespace CGD.Quantum
 noncomputable def gaugeCommutator (A B : Matrix (Fin 2) (Fin 2) ℂ) : Matrix (Fin 2) (Fin 2) ℂ := A * B - B * A
 
 noncomputable def classicalElectricField (u : Universe) (i : Fin 4) (x : SpacetimePoint) : Matrix (Fin 2) (Fin 2) ℂ :=
-  partialDerivMat 0 (fun p => (u.self_dual i p).val) x -
-  partialDerivMat i (fun p => (u.self_dual 0 p).val) x +
-  gaugeCommutator (u.self_dual 0 x).val (u.self_dual i x).val
+  partialDerivMat 0 (fun p => (u.sd_sector i p).val) x -
+  partialDerivMat i (fun p => (u.sd_sector 0 p).val) x +
+  gaugeCommutator (u.sd_sector 0 x).val (u.sd_sector i x).val
 
 /-- 🟡 KINEMATIC: Temporal Evolution (Vacuum Commutator) -/
 theorem kinematicTemporalEvolution (u : Universe) (x : SpacetimePoint) :
   isHeisenbergLimit u x →
-  partialDerivSl2c 0 (fun p => u.self_dual 1 p) x = - ⁅u.self_dual 0 x, u.self_dual 1 x⁆ := by
+  partialDerivSl2c 0 (fun p => u.sd_sector 1 p) x = - ⁅u.sd_sector 0 x, u.sd_sector 1 x⁆ := by
   intro h_lim
   have h_curv := h_lim.1 1 (by decide)
   have h_deriv := h_lim.2 1 (by decide)
@@ -97,10 +97,10 @@ theorem kinematicYangMillsChaos (u : Universe) :
   ring
 
 noncomputable def extractSpinorMode (u : Universe) (x : SpacetimePoint) : Matrix (Fin 4) (Fin 4) Complex :=
-  u.embed 0 x
+  u.spin4c_connection 0 x
 
 noncomputable def extractSpinorDeriv (u : Universe) (x : SpacetimePoint) (mu : Fin 4) : Matrix (Fin 4) (Fin 4) Complex :=
-  partialDerivChiral mu (fun p => u.embed 0 p) x
+  partialDerivChiral mu (fun p => u.spin4c_connection 0 p) x
 
 noncomputable def diracOperatorCore (dPsi : Fin 4 → SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) (x : SpacetimePoint) : Matrix (Fin 4) (Fin 4) Complex :=
   ∑ mu, gammaVec mu * dPsi mu x
@@ -139,7 +139,7 @@ theorem kinematicDiracEquation (u : Universe) :
     isOdd (m • (extractSpinorMode u x * gamma0)) := by
   intros m x
   have h_even_psi : ∀ p, isEven (extractSpinorMode u p) := by
-    intro p; unfold extractSpinorMode Universe.embed; exact isEven_embedSelfDual_add_embedAntiSelfDual (u.self_dual 0 p) (u.anti_self_dual 0 p)
+    intro p; unfold extractSpinorMode Universe.spin4c_connection; exact isEven_embedSelfDual_add_embedAntiSelfDual (u.sd_sector 0 p) (u.asd_sector 0 p)
   have h_even_dpsi : ∀ mu p, isEven (extractSpinorDeriv u p mu) := by
     intros mu p; unfold extractSpinorDeriv partialDerivChiral; exact isEven_embedSelfDual_add_embedAntiSelfDual _ _
   constructor

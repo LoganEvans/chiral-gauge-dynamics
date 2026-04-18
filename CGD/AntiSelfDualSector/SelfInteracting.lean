@@ -141,10 +141,10 @@ lemma math_su2_commutator_squared_trace (A B : Matrix (Fin 2) (Fin 2) ℂ) (hA :
 /-- 🟡 KINEMATIC: AntiSelfDual Matter is SIDM Physical -/
 theorem kinematicSIDMTrace (u : Universe)
   (x : SpacetimePoint) (μ ν : Fin 4)
-  (h_anti_self_dual_su2 : ∀ m p, isSu2 (u.anti_self_dual m p).val)
-  (h_comm : ((u.anti_self_dual μ x).val * (u.anti_self_dual ν x).val - (u.anti_self_dual ν x).val * (u.anti_self_dual μ x).val) ≠ 0) :
-  Matrix.trace (((u.anti_self_dual μ x).val * (u.anti_self_dual ν x).val - (u.anti_self_dual ν x).val * (u.anti_self_dual μ x).val) *
-                ((u.anti_self_dual μ x).val * (u.anti_self_dual ν x).val - (u.anti_self_dual ν x).val * (u.anti_self_dual μ x).val)) ≠ 0 := by
+  (h_anti_self_dual_su2 : ∀ m p, isSu2 (u.asd_sector m p).val)
+  (h_comm : ((u.asd_sector μ x).val * (u.asd_sector ν x).val - (u.asd_sector ν x).val * (u.asd_sector μ x).val) ≠ 0) :
+  Matrix.trace (((u.asd_sector μ x).val * (u.asd_sector ν x).val - (u.asd_sector ν x).val * (u.asd_sector μ x).val) *
+                ((u.asd_sector μ x).val * (u.asd_sector ν x).val - (u.asd_sector ν x).val * (u.asd_sector μ x).val)) ≠ 0 := by
   exact math_su2_commutator_squared_trace _ _ (h_anti_self_dual_su2 μ x) (h_anti_self_dual_su2 ν x) h_comm
 
 end CGD.AntiSelfDualSector

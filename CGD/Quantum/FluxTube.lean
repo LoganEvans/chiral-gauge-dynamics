@@ -157,12 +157,12 @@ theorem fluxTubeIsMinimal : ∀ x, satisfies1DMinimalEnergyBound fluxTubeFrame x
 /-- 🟡 KINEMATIC: Flux Tube Degeneracy -/
 theorem kinematicFluxTubeStability (u : Universe) :
   ∀ (x : SpacetimePoint),
-    isFluxTube u.self_dual x →
-    (urbantkeMetric (fun m n => curvatureSl2c u.self_dual m n x)).det = 0 := by
+    isFluxTube u.sd_sector x →
+    (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x)).det = 0 := by
   intros x h_flux; unfold isFluxTube at h_flux; rcases h_flux with ⟨h_val, h_deriv⟩
-  have h_curv : ∀ mu nu, curvatureSl2c u.self_dual mu nu x = curvatureSl2c fluxTubeFrame mu nu x :=
-    curvature_congruence u.self_dual fluxTubeFrame x h_val h_deriv
-  have h_F : (fun m n => curvatureSl2c u.self_dual m n x) = (fun m n => curvatureSl2c fluxTubeFrame m n x) := by funext m n; exact h_curv m n
+  have h_curv : ∀ mu nu, curvatureSl2c u.sd_sector mu nu x = curvatureSl2c fluxTubeFrame mu nu x :=
+    curvature_congruence u.sd_sector fluxTubeFrame x h_val h_deriv
+  have h_F : (fun m n => curvatureSl2c u.sd_sector m n x) = (fun m n => curvatureSl2c fluxTubeFrame m n x) := by funext m n; exact h_curv m n
   rw[h_F]; apply Matrix.det_eq_zero_of_row_eq_zero 0; intro j; exact metric_electric_zero_at j x
 
 end CGD.Quantum

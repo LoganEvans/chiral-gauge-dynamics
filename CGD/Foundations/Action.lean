@@ -59,7 +59,7 @@ def isLocalMinimum {α : Type*} (Action : α → ℝ) (state : α) (is_valid_var
 
 /-- Explicit geometric universe action map over the continuous geometry -/
 noncomputable def universeAction (u : Universe) : ℝ :=
-  volumeIntegral (fun p => (lagrangianDensity (fun mu nu => curvature (fun m x => u.embed m x) mu nu p)).re)
+  volumeIntegral (fun p => (lagrangianDensity (fun mu nu => curvature (fun m x => u.spin4c_connection m x) mu nu p)).re)
 
 /-- 
 Explicit geometric topological action map over the continuous geometry, 
@@ -79,12 +79,12 @@ A physically valid universe variation is mathematically constrained:
    preventing the Mathlib Bochner integral from collapsing divergent actions to a trivial 0.
 -/
 def isValidUniverseVariation (v : ℝ → Universe) : Prop :=
-  (∀ mu i j, ContDiff ℝ ⊤ (fun (tx : ℝ × CGD.Axioms.SpacetimePoint) => ((v tx.1).self_dual mu tx.2).val i j)) ∧
-  (∀ mu i j, ContDiff ℝ ⊤ (fun (tx : ℝ × CGD.Axioms.SpacetimePoint) => ((v tx.1).anti_self_dual mu tx.2).val i j)) ∧
+  (∀ mu i j, ContDiff ℝ ⊤ (fun (tx : ℝ × CGD.Axioms.SpacetimePoint) => ((v tx.1).sd_sector mu tx.2).val i j)) ∧
+  (∀ mu i j, ContDiff ℝ ⊤ (fun (tx : ℝ × CGD.Axioms.SpacetimePoint) => ((v tx.1).asd_sector mu tx.2).val i j)) ∧
   (∀ t, ∃ R > 0, ∀ x, (x 0)^2 + (x 1)^2 + (x 2)^2 + (x 3)^2 > R^2 →
-    (∀ mu, (v t).self_dual mu x = (v 0).self_dual mu x) ∧
-    (∀ mu, (v t).anti_self_dual mu x = (v 0).anti_self_dual mu x)) ∧
-  (∀ t, MeasureTheory.Integrable (fun p => (lagrangianDensity (fun mu nu => curvature (fun m x => (v t).embed m x) mu nu p)).re))
+    (∀ mu, (v t).sd_sector mu x = (v 0).sd_sector mu x) ∧
+    (∀ mu, (v t).asd_sector mu x = (v 0).asd_sector mu x)) ∧
+  (∀ t, MeasureTheory.Integrable (fun p => (lagrangianDensity (fun mu nu => curvature (fun m x => (v t).spin4c_connection m x) mu nu p)).re))
 
 /-- A physically valid W=1 gauge variation (smooth and compactly supported). -/
 def isValidW1Variation (v : ℝ → (Fin 4 → CGD.Axioms.SpacetimePoint → SL2C)) : Prop :=

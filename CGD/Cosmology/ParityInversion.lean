@@ -102,14 +102,14 @@ PHYSICAL SIGNIFICANCE: Parity inversion of the local geometry directly negates t
 -/
 theorem kinematicParityInversion (u : Universe) :
   ∀ (x : SpacetimePoint) (P_F : Fin 4 → Fin 4 → SL2C),
-    isParityInvertedTensor (fun m n => curvatureSl2c u.self_dual m n x) P_F x →
-    pontryaginDensity P_F = - pontryaginDensity (fun mu nu => curvatureSl2c u.self_dual mu nu x) := by
+    isParityInvertedTensor (fun m n => curvatureSl2c u.sd_sector m n x) P_F x →
+    pontryaginDensity P_F = - pontryaginDensity (fun mu nu => curvatureSl2c u.sd_sector mu nu x) := by
   intro x P_F ⟨h_parity_0i, h_parity_ij, h_parity_00⟩
   have h_PF : ∀ μ ν, (P_F μ ν).val =
-    if μ = 0 ∧ ν = 0 then (curvatureSl2c u.self_dual 0 0 x).val
-    else if μ = 0 then -(curvatureSl2c u.self_dual 0 ν x).val
-    else if ν = 0 then -(curvatureSl2c u.self_dual μ 0 x).val
-    else (curvatureSl2c u.self_dual μ ν x).val := by
+    if μ = 0 ∧ ν = 0 then (curvatureSl2c u.sd_sector 0 0 x).val
+    else if μ = 0 then -(curvatureSl2c u.sd_sector 0 ν x).val
+    else if ν = 0 then -(curvatureSl2c u.sd_sector μ 0 x).val
+    else (curvatureSl2c u.sd_sector μ ν x).val := by
       intro m n
       exact P_F_eq _ _ h_parity_0i h_parity_ij h_parity_00 m n
 

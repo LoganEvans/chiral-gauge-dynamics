@@ -56,17 +56,17 @@ theorem macroscopicVacuumGR
   [ucdj : UrbantkeCDJ SpacetimePoint cgdRealUrbantkeAdapter cgdRealRicciAdapter] 
   (u : Universe)
   (e : TetradField)
-  (h_urbantke : ∀ x μ ν, (metricFromTetrad e μ ν x).re = cgdRealUrbantkeAdapter (fun p m n => (curvatureSl2c u.self_dual m n p).val) x μ ν)
-  (h_cdj : satisfiesPureCdjConstraint (fun p m n => (curvatureSl2c u.self_dual m n p).val)) :
+  (h_urbantke : ∀ x μ ν, (metricFromTetrad e μ ν x).re = cgdRealUrbantkeAdapter (fun p m n => (curvatureSl2c u.sd_sector m n p).val) x μ ν)
+  (h_cdj : satisfiesPureCdjConstraint (fun p m n => (curvatureSl2c u.sd_sector m n p).val)) :
   ∀ x μ ν, cgdRealRicciAdapter (fun p a b => (metricFromTetrad e a b p).re) x μ ν = 0 := by
   intro x μ ν
-  have h_eq : (fun p a b => (metricFromTetrad e a b p).re) = cgdRealUrbantkeAdapter (fun p m n => (curvatureSl2c u.self_dual m n p).val) := by
+  have h_eq : (fun p a b => (metricFromTetrad e a b p).re) = cgdRealUrbantkeAdapter (fun p m n => (curvatureSl2c u.sd_sector m n p).val) := by
     funext p a b
     exact h_urbantke p a b
   rw [h_eq]
   have hEpsilonAlt : ∀ α β γ δ, epsilon4 α β γ δ = -epsilon4 β α γ δ ∧ epsilon4 α β γ δ = -epsilon4 α γ β δ ∧ epsilon4 α β γ δ = -epsilon4 α β δ γ := CGD.Gravity.epsilon4_alt
   have hEpsilonNondeg : epsilon4 0 1 2 3 ≠ 0 := by rw [CGD.Gravity.epsilon4_0123]; norm_num
-  exact ucdj.urbantkeIsRicciFlat (fun p m n => (curvatureSl2c u.self_dual m n p).val) epsilon4 hEpsilonAlt hEpsilonNondeg h_cdj x μ ν
+  exact ucdj.urbantkeIsRicciFlat (fun p m n => (curvatureSl2c u.sd_sector m n p).val) epsilon4 hEpsilonAlt hEpsilonNondeg h_cdj x μ ν
 
 /-- 
 🟢 GRAVITY TARGET CLEARED: Unimodular Vacuum (CDJ Constraint fixes the volume form globally)

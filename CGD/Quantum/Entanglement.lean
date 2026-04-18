@@ -186,23 +186,23 @@ private lemma fluxTubeIsMinimal_curvature_congruence (A B : Fin 4 → SpacetimeP
 /-- 🟡 KINEMATIC: Entanglement is a Wormhole (Metric Rank Deficiency) -/
 theorem kinematicEntanglementWormhole (u : Universe) :
   ∀ (x y : SpacetimePoint) (theta : ℝ),
-    areEntangled u.self_dual x y theta →
-    (urbantkeMetric (fun m n => curvatureSl2c u.self_dual m n x)).det = 0 ∧
-    (urbantkeMetric (fun m n => curvatureSl2c u.self_dual m n y)).det = 0 := by
+    areEntangled u.sd_sector x y theta →
+    (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x)).det = 0 ∧
+    (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n y)).det = 0 := by
   intros x y theta h_ent
   unfold areEntangled at h_ent
   rcases h_ent with ⟨γ, θ, h_γ0, h_γ1, h_θ0, h_θ1, h_path⟩
 
-  have h_x : (urbantkeMetric (fun m n => curvatureSl2c u.self_dual m n x)).det = 0 := by
+  have h_x : (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x)).det = 0 := by
     have h_t0 := h_path 0 (by norm_num) (by norm_num)
     rcases h_t0 with ⟨h_val', h_deriv'⟩
-    have h_val : ∀ mu, u.self_dual mu x = rotateZ fluxTubeFrame (θ 0) mu x := by
+    have h_val : ∀ mu, u.sd_sector mu x = rotateZ fluxTubeFrame (θ 0) mu x := by
       intro mu; have h := h_val' mu; rw [h_γ0] at h; exact h
-    have h_deriv : ∀ mu nu, partialDerivSl2c nu (u.self_dual mu) x = partialDerivSl2c nu (rotateZ fluxTubeFrame (θ 0) mu) x := by
+    have h_deriv : ∀ mu nu, partialDerivSl2c nu (u.sd_sector mu) x = partialDerivSl2c nu (rotateZ fluxTubeFrame (θ 0) mu) x := by
       intro mu nu; have h := h_deriv' mu nu; rw [h_γ0] at h; exact h
-    have h_curv : ∀ mu nu, curvatureSl2c u.self_dual mu nu x = curvatureSl2c (rotateZ fluxTubeFrame (θ 0)) mu nu x :=
-      fluxTubeIsMinimal_curvature_congruence u.self_dual (rotateZ fluxTubeFrame (θ 0)) x h_val h_deriv
-    have h_F : (fun m n => curvatureSl2c u.self_dual m n x) = (fun m n => curvatureSl2c (rotateZ fluxTubeFrame (θ 0)) m n x) := by
+    have h_curv : ∀ mu nu, curvatureSl2c u.sd_sector mu nu x = curvatureSl2c (rotateZ fluxTubeFrame (θ 0)) mu nu x :=
+      fluxTubeIsMinimal_curvature_congruence u.sd_sector (rotateZ fluxTubeFrame (θ 0)) x h_val h_deriv
+    have h_F : (fun m n => curvatureSl2c u.sd_sector m n x) = (fun m n => curvatureSl2c (rotateZ fluxTubeFrame (θ 0)) m n x) := by
       funext m n; exact h_curv m n
     rw [h_F]
     apply Matrix.det_eq_zero_of_row_eq_zero 0
@@ -211,16 +211,16 @@ theorem kinematicEntanglementWormhole (u : Universe) :
     intro alpha
     exact rotated_flux_tube_electric_zero (θ 0) alpha x
 
-  have h_y : (urbantkeMetric (fun m n => curvatureSl2c u.self_dual m n y)).det = 0 := by
+  have h_y : (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n y)).det = 0 := by
     have h_t1 := h_path 1 (by norm_num) (by norm_num)
     rcases h_t1 with ⟨h_val', h_deriv'⟩
-    have h_val : ∀ mu, u.self_dual mu y = rotateZ fluxTubeFrame (θ 1) mu y := by
+    have h_val : ∀ mu, u.sd_sector mu y = rotateZ fluxTubeFrame (θ 1) mu y := by
       intro mu; have h := h_val' mu; rw [h_γ1] at h; exact h
-    have h_deriv : ∀ mu nu, partialDerivSl2c nu (u.self_dual mu) y = partialDerivSl2c nu (rotateZ fluxTubeFrame (θ 1) mu) y := by
+    have h_deriv : ∀ mu nu, partialDerivSl2c nu (u.sd_sector mu) y = partialDerivSl2c nu (rotateZ fluxTubeFrame (θ 1) mu) y := by
       intro mu nu; have h := h_deriv' mu nu; rw[h_γ1] at h; exact h
-    have h_curv : ∀ mu nu, curvatureSl2c u.self_dual mu nu y = curvatureSl2c (rotateZ fluxTubeFrame (θ 1)) mu nu y :=
-      fluxTubeIsMinimal_curvature_congruence u.self_dual (rotateZ fluxTubeFrame (θ 1)) y h_val h_deriv
-    have h_F : (fun m n => curvatureSl2c u.self_dual m n y) = (fun m n => curvatureSl2c (rotateZ fluxTubeFrame (θ 1)) m n y) := by
+    have h_curv : ∀ mu nu, curvatureSl2c u.sd_sector mu nu y = curvatureSl2c (rotateZ fluxTubeFrame (θ 1)) mu nu y :=
+      fluxTubeIsMinimal_curvature_congruence u.sd_sector (rotateZ fluxTubeFrame (θ 1)) y h_val h_deriv
+    have h_F : (fun m n => curvatureSl2c u.sd_sector m n y) = (fun m n => curvatureSl2c (rotateZ fluxTubeFrame (θ 1)) m n y) := by
       funext m n; exact h_curv m n
     rw [h_F]
     apply Matrix.det_eq_zero_of_row_eq_zero 0

@@ -30,20 +30,20 @@ theorem kinematicActionQuantization
   [tc : CartanMaurerTopology (BoundaryManifold → SL2C) HasTopologicalMeasure.windingNumber HasTopologicalMeasure.cartanMaurerIntegral]
   [belavin : Eq18 BoundaryManifold SL2C HasTopologicalMeasure.windingNumber HasTopologicalMeasure.cartanMaurerIntegral]
   (u : Universe)
-  (h_homeo : IsHomeomorphism (HasAsymptoticBoundary.boundaryMap u.self_dual.val : BoundaryManifold → SL2C)) :
-  HasTopologicalMeasure.cartanMaurerIntegral (HasAsymptoticBoundary.boundaryMap u.self_dual.val : BoundaryManifold → SL2C) = 1 ∨ 
-  HasTopologicalMeasure.cartanMaurerIntegral (HasAsymptoticBoundary.boundaryMap u.self_dual.val : BoundaryManifold → SL2C) = -1 := by
-  have h_deg := belavin.degree_of_homeomorph (HasAsymptoticBoundary.boundaryMap u.self_dual.val : BoundaryManifold → SL2C) h_homeo
-  have h_thm := tc.degreeTheorem (HasAsymptoticBoundary.boundaryMap u.self_dual.val : BoundaryManifold → SL2C)
+  (h_homeo : IsHomeomorphism (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SL2C)) :
+  HasTopologicalMeasure.cartanMaurerIntegral (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SL2C) = 1 ∨ 
+  HasTopologicalMeasure.cartanMaurerIntegral (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SL2C) = -1 := by
+  have h_deg := belavin.degree_of_homeomorph (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SL2C) h_homeo
+  have h_thm := tc.degreeTheorem (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SL2C)
   cases h_deg with
   | inl h_pos => 
     left
-    have h_eval : (HasTopologicalMeasure.windingNumber (HasAsymptoticBoundary.boundaryMap u.self_dual.val : BoundaryManifold → SL2C) : ℝ) = 1 := by rw [h_pos]; norm_num
+    have h_eval : (HasTopologicalMeasure.windingNumber (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SL2C) : ℝ) = 1 := by rw [h_pos]; norm_num
     rw [←h_thm] at h_eval
     exact h_eval
   | inr h_neg => 
     right
-    have h_eval : (HasTopologicalMeasure.windingNumber (HasAsymptoticBoundary.boundaryMap u.self_dual.val : BoundaryManifold → SL2C) : ℝ) = -1 := by rw [h_neg]; norm_num
+    have h_eval : (HasTopologicalMeasure.windingNumber (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SL2C) : ℝ) = -1 := by rw [h_neg]; norm_num
     rw [←h_thm] at h_eval
     exact h_eval
 

@@ -22,12 +22,12 @@ ALGEBRAIC CONTEXT: By enforcing the TopologicalInitialCondition, the Big Bang is
 PHYSICAL SIGNIFICANCE: The Big Bang is not a mathematical singularity. Provided the bouncing instanton is topologically non-degenerate (metric ≠ 0), it strictly forms a non-zero, macroscopic Euclidean scale state (c ≠ 0). 
 -/
 theorem kinematicBigBang (u : Universe)
-  (h_tic : ∀ x, x 0 = 0 → isFully4DSymmetric (fun mu nu => curvatureSl2c u.self_dual mu nu x))
-  (h_non_degenerate : ∀ x, x 0 = 0 → urbantkeMetric (fun mu nu => curvatureSl2c u.self_dual mu nu x) ≠ 0) :
-  ∀ x, x 0 = 0 → ∃ c : Complex, c ≠ 0 ∧ urbantkeMetric (fun mu nu => curvatureSl2c u.self_dual mu nu x) = c • 1 := by
+  (h_tic : ∀ x, x 0 = 0 → isFully4DSymmetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x))
+  (h_non_degenerate : ∀ x, x 0 = 0 → urbantkeMetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x) ≠ 0) :
+  ∀ x, x 0 = 0 → ∃ c : Complex, c ≠ 0 ∧ urbantkeMetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x) = c • 1 := by
   intro x hx
   have h_symm := h_tic x hx
-  have h_g := urbantke_eq_smul_id_of_self_dual (fun mu nu => curvatureSl2c u.self_dual mu nu x) h_symm
+  have h_g := urbantke_eq_smul_id_of_self_dual (fun mu nu => curvatureSl2c u.sd_sector mu nu x) h_symm
   rcases h_g with ⟨c, hc⟩
   use c
   constructor
@@ -93,10 +93,10 @@ PHYSICAL SIGNIFICANCE: In pure connection gravity, 4D spacetime volume geometric
 -/
 theorem kinematicStaticUniverseDegeneracy (u : Universe) :
   isStaticUniverse u →
-  ∀ x, (urbantkeMetric (fun mu nu => curvatureSl2c u.self_dual mu nu x)).det = 0 := by
+  ∀ x, (urbantkeMetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x)).det = 0 := by
   intro h x
-  have h_static : ∀ j : Fin 4, curvatureSl2c u.self_dual 0 j x = 0 := h x
-  have h_metric_zero_row := math_Static_Electric_Zero (fun mu nu => curvatureSl2c u.self_dual mu nu x) h_static
+  have h_static : ∀ j : Fin 4, curvatureSl2c u.sd_sector 0 j x = 0 := h x
+  have h_metric_zero_row := math_Static_Electric_Zero (fun mu nu => curvatureSl2c u.sd_sector mu nu x) h_static
   exact det_zero_of_row_zero _ h_metric_zero_row
 
 end CGD.Cosmology

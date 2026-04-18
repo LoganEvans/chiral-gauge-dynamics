@@ -17,8 +17,8 @@ open Matrix Complex BigOperators CGD.Axioms
 namespace CGD.Foundations
 
 noncomputable def eulerLagrangePDEs (u : Universe) : Prop :=
-  (∀ nu x, (∑ mu, ∑ rho, (CGD.Axioms.eta mu rho : Complex) • (covariantDeriv u.self_dual mu rho nu x).val) = 0) ∧
-  (∀ nu x, (∑ mu, ∑ rho, (CGD.Axioms.eta mu rho : Complex) • (covariantDeriv u.anti_self_dual mu rho nu x).val) = 0)
+  (∀ nu x, (∑ mu, ∑ rho, (CGD.Axioms.eta mu rho : Complex) • (covariantDeriv u.sd_sector mu rho nu x).val) = 0) ∧
+  (∀ nu x, (∑ mu, ∑ rho, (CGD.Axioms.eta mu rho : Complex) • (covariantDeriv u.asd_sector mu rho nu x).val) = 0)
 
 lemma F_self_zero (F : Fin 4 → Fin 4 → ChiralM) (h_anti : ∀ μ ν, F μ ν = - F ν μ) (μ : Fin 4) : F μ μ = 0 := by
   ext i j
@@ -115,11 +115,11 @@ lemma dstar_to_pdes (u : Universe) :
   
   unfold u_dStar u_to_form at h_zero
   
-  have h_self_dual : u.self_dual.val = fun _ _ => 0 := by
+  have h_self_dual : u.sd_sector.val = fun _ _ => 0 := by
     rw [h_zero]
     rfl
     
-  have h_anti_self_dual : u.anti_self_dual.val = fun _ _ => 0 := by
+  have h_anti_self_dual : u.asd_sector.val = fun _ _ => 0 := by
     rw [h_zero]
     rfl
 
@@ -160,8 +160,8 @@ lemma dstar_to_pdes (u : Universe) :
 theorem dynamicEulerLagrangeEOM 
   [ymfd : Litlib.Y1982.uhlenbeck1982connections.YangMillsFunctionalDerivative cgdConnectionSpace cgdFormSpace isValidUniverseVariation universeAction u_to_form u_dStar] 
   (u : Universe)
-  (h_smooth : (∀ mu i j, ContDiff ℝ ⊤ (fun x => (u.self_dual mu x).val i j)) ∧ 
-              (∀ mu i j, ContDiff ℝ ⊤ (fun x => (u.anti_self_dual mu x).val i j)))
+  (h_smooth : (∀ mu i j, ContDiff ℝ ⊤ (fun x => (u.sd_sector mu x).val i j)) ∧ 
+              (∀ mu i j, ContDiff ℝ ⊤ (fun x => (u.asd_sector mu x).val i j)))
   (h : principleOfLeastAction u) : eulerLagrangePDEs u := by
   have h_dstar := ymfd.stationaryImpliesEOM u h
   exact dstar_to_pdes u h_dstar
@@ -242,8 +242,8 @@ theorem algebraicLagrangianExpansion
 
 /-- 🟢 DYNAMIC: The trivial vacuum (A = 0) everywhere is trivially a solution to the equations of motion. -/
 theorem dynamicVacuumIsSolution (u : Universe)
-  (h_self_dual : u.self_dual.val = fun _ _ => 0)
-  (h_anti_self_dual : u.anti_self_dual.val = fun _ _ => 0) :
+  (h_self_dual : u.sd_sector.val = fun _ _ => 0)
+  (h_anti_self_dual : u.asd_sector.val = fun _ _ => 0) :
   eulerLagrangePDEs u := by
   have hd : ∀ μ x, partialDerivMat μ (fun _ => (0 : Matrix (Fin 2) (Fin 2) ℂ)) x = 0 := by
     intro μ x; ext i j; unfold partialDerivMat partialDeriv; simp[fderiv_const]
@@ -282,21 +282,21 @@ noncomputable def globalNoetherCurrent (A : Fin 4 → SpacetimePoint → SL2C) (
 
 /-- 🟢 DYNAMIC: The exact global SU(2) Noether current is strictly conserved. -/
 theorem dynamicNoetherCurrent (u : Universe)
-  (h_smooth : (∀ mu i j, ContDiff ℝ ⊤ (fun x => (u.self_dual mu x).val i j)) ∧ 
-              (∀ mu i j, ContDiff ℝ ⊤ (fun x => (u.anti_self_dual mu x).val i j)))
+  (h_smooth : (∀ mu i j, ContDiff ℝ ⊤ (fun x => (u.sd_sector mu x).val i j)) ∧ 
+              (∀ mu i j, ContDiff ℝ ⊤ (fun x => (u.asd_sector mu x).val i j)))
   (h_eom : eulerLagrangePDEs u) :
-  ∀ x, (∑ μ : Fin 4, ∑ ρ : Fin 4, CGD.Axioms.eta μ ρ • partialDerivMat ρ (fun p => globalNoetherCurrent u.self_dual μ p) x) = 0 := by
+  ∀ x, (∑ μ : Fin 4, ∑ ρ : Fin 4, CGD.Axioms.eta μ ρ • partialDerivMat ρ (fun p => globalNoetherCurrent u.sd_sector μ p) x) = 0 := by
   intro x
   have h_self_dual_eom := h_eom.1
-  have h_expand := noetherDivergenceExpansion u.self_dual h_smooth.1 x
+  have h_expand := noetherDivergenceExpansion u.sd_sector h_smooth.1 x
   
   unfold globalNoetherCurrent
   rw [h_expand]
   
   have h_step1 : ∑ ν : Fin 4, ∑ β : Fin 4, CGD.Axioms.eta ν β • (
-    (∑ μ : Fin 4, ∑ ρ : Fin 4, (CGD.Axioms.eta μ ρ : ℂ) • (covariantDeriv u.self_dual μ ρ β x).val) * (u.self_dual ν x).val -
-    (u.self_dual ν x).val * (∑ μ : Fin 4, ∑ ρ : Fin 4, (CGD.Axioms.eta μ ρ : ℂ) • (covariantDeriv u.self_dual μ ρ β x).val)
-  ) = ∑ ν : Fin 4, ∑ β : Fin 4, CGD.Axioms.eta ν β • ((0 : Matrix (Fin 2) (Fin 2) ℂ) * (u.self_dual ν x).val - (u.self_dual ν x).val * (0 : Matrix (Fin 2) (Fin 2) ℂ)) := by
+    (∑ μ : Fin 4, ∑ ρ : Fin 4, (CGD.Axioms.eta μ ρ : ℂ) • (covariantDeriv u.sd_sector μ ρ β x).val) * (u.sd_sector ν x).val -
+    (u.sd_sector ν x).val * (∑ μ : Fin 4, ∑ ρ : Fin 4, (CGD.Axioms.eta μ ρ : ℂ) • (covariantDeriv u.sd_sector μ ρ β x).val)
+  ) = ∑ ν : Fin 4, ∑ β : Fin 4, CGD.Axioms.eta ν β • ((0 : Matrix (Fin 2) (Fin 2) ℂ) * (u.sd_sector ν x).val - (u.sd_sector ν x).val * (0 : Matrix (Fin 2) (Fin 2) ℂ)) := by
     apply Finset.sum_congr rfl
     intro ν _
     apply Finset.sum_congr rfl
@@ -305,7 +305,7 @@ theorem dynamicNoetherCurrent (u : Universe)
     
   rw [h_step1]
   
-  have h_step2 : ∑ ν : Fin 4, ∑ β : Fin 4, CGD.Axioms.eta ν β • ((0 : Matrix (Fin 2) (Fin 2) ℂ) * (u.self_dual ν x).val - (u.self_dual ν x).val * (0 : Matrix (Fin 2) (Fin 2) ℂ)) = 0 := by
+  have h_step2 : ∑ ν : Fin 4, ∑ β : Fin 4, CGD.Axioms.eta ν β • ((0 : Matrix (Fin 2) (Fin 2) ℂ) * (u.sd_sector ν x).val - (u.sd_sector ν x).val * (0 : Matrix (Fin 2) (Fin 2) ℂ)) = 0 := by
     apply Finset.sum_eq_zero
     intro ν _
     apply Finset.sum_eq_zero

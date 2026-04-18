@@ -331,14 +331,14 @@ lemma chiral_project_anti_self_dual_embed (L R : SL2C) :
   exact heq
 
 lemma extract_self_dual_block (u : Universe) (ν : Fin 4) (p : SpacetimePoint) (i j : Fin 2) :
-  (u.embed ν p) (chiralIso (Sum.inl i)) (chiralIso (Sum.inl j)) = (u.self_dual ν p).val i j := by
-  unfold Universe.embed embedSelfDual embedAntiSelfDual
+  (u.spin4c_connection ν p) (chiralIso (Sum.inl i)) (chiralIso (Sum.inl j)) = (u.sd_sector ν p).val i j := by
+  unfold Universe.spin4c_connection embedSelfDual embedAntiSelfDual
   simp only[Matrix.add_apply, Matrix.of_apply, Equiv.symm_apply_apply]
   exact add_zero _
 
 lemma extract_anti_self_dual_block (u : Universe) (ν : Fin 4) (p : SpacetimePoint) (i j : Fin 2) :
-  (u.embed ν p) (chiralIso (Sum.inr i)) (chiralIso (Sum.inr j)) = (u.anti_self_dual ν p).val i j := by
-  unfold Universe.embed embedSelfDual embedAntiSelfDual
+  (u.spin4c_connection ν p) (chiralIso (Sum.inr i)) (chiralIso (Sum.inr j)) = (u.asd_sector ν p).val i j := by
+  unfold Universe.spin4c_connection embedSelfDual embedAntiSelfDual
   simp only[Matrix.add_apply, Matrix.of_apply, Equiv.symm_apply_apply]
   exact zero_add _
 
@@ -351,46 +351,46 @@ lemma to_sl2c_self (A : SL2C) : toSl2c A.val = A := by
   simp
 
 lemma to_sl2c_self_dual_eq (u : Universe) (ν : Fin 4) :
-  (fun p => toSl2c (fun i j => (u.embed ν p) (chiralIso (Sum.inl i)) (chiralIso (Sum.inl j)))) = (fun p => u.self_dual ν p) := by
+  (fun p => toSl2c (fun i j => (u.spin4c_connection ν p) (chiralIso (Sum.inl i)) (chiralIso (Sum.inl j)))) = (fun p => u.sd_sector ν p) := by
   ext p
-  have h1 : (fun i j => (u.embed ν p) (chiralIso (Sum.inl i)) (chiralIso (Sum.inl j))) = (u.self_dual ν p).val := by
+  have h1 : (fun i j => (u.spin4c_connection ν p) (chiralIso (Sum.inl i)) (chiralIso (Sum.inl j))) = (u.sd_sector ν p).val := by
     ext i j; exact extract_self_dual_block u ν p i j
   rw[h1, to_sl2c_self]
 
 lemma to_sl2c_anti_self_dual_eq (u : Universe) (ν : Fin 4) :
-  (fun p => toSl2c (fun i j => (u.embed ν p) (chiralIso (Sum.inr i)) (chiralIso (Sum.inr j)))) = (fun p => u.anti_self_dual ν p) := by
+  (fun p => toSl2c (fun i j => (u.spin4c_connection ν p) (chiralIso (Sum.inr i)) (chiralIso (Sum.inr j)))) = (fun p => u.asd_sector ν p) := by
   ext p
-  have h1 : (fun i j => (u.embed ν p) (chiralIso (Sum.inr i)) (chiralIso (Sum.inr j))) = (u.anti_self_dual ν p).val := by
+  have h1 : (fun i j => (u.spin4c_connection ν p) (chiralIso (Sum.inr i)) (chiralIso (Sum.inr j))) = (u.asd_sector ν p).val := by
     ext i j; exact extract_anti_self_dual_block u ν p i j
   rw[h1, to_sl2c_self]
 
 theorem nativeEmbedDerivative (u : Universe) (μ ν : Fin 4) (x : SpacetimePoint) :
-  partialDerivChiral μ (fun p => u.embed ν p) x =
-  embedSelfDual (partialDerivSl2c μ (u.self_dual ν) x) + embedAntiSelfDual (partialDerivSl2c μ (u.anti_self_dual ν) x) := by
+  partialDerivChiral μ (fun p => u.spin4c_connection ν p) x =
+  embedSelfDual (partialDerivSl2c μ (u.sd_sector ν) x) + embedAntiSelfDual (partialDerivSl2c μ (u.asd_sector ν) x) := by
   unfold partialDerivChiral
-  have hL : (fun p => toSl2c (fun i j => (u.embed ν p) (chiralIso (Sum.inl i)) (chiralIso (Sum.inl j)))) = u.self_dual ν := to_sl2c_self_dual_eq u ν
-  have hR : (fun p => toSl2c (fun i j => (u.embed ν p) (chiralIso (Sum.inr i)) (chiralIso (Sum.inr j)))) = u.anti_self_dual ν := to_sl2c_anti_self_dual_eq u ν
+  have hL : (fun p => toSl2c (fun i j => (u.spin4c_connection ν p) (chiralIso (Sum.inl i)) (chiralIso (Sum.inl j)))) = u.sd_sector ν := to_sl2c_self_dual_eq u ν
+  have hR : (fun p => toSl2c (fun i j => (u.spin4c_connection ν p) (chiralIso (Sum.inr i)) (chiralIso (Sum.inr j)))) = u.asd_sector ν := to_sl2c_anti_self_dual_eq u ν
   rw[hL, hR]
 
 lemma curvature_embed_eq (u : Universe) (mu nu : Fin 4) (x : SpacetimePoint) :
-  curvature (fun m p => u.embed m p) mu nu x =
-  embedSelfDual (curvatureSl2c u.self_dual mu nu x) + embedAntiSelfDual (curvatureSl2c u.anti_self_dual mu nu x) := by
+  curvature (fun m p => u.spin4c_connection m p) mu nu x =
+  embedSelfDual (curvatureSl2c u.sd_sector mu nu x) + embedAntiSelfDual (curvatureSl2c u.asd_sector mu nu x) := by
   unfold curvature curvatureSl2c
   rw[nativeEmbedDerivative _ _ _]
   rw[nativeEmbedDerivative _ _ _]
-  have h_mu : (fun m p => u.embed m p) mu x = embedSelfDual (u.self_dual mu x) + embedAntiSelfDual (u.anti_self_dual mu x) := rfl
-  have h_nu : (fun m p => u.embed m p) nu x = embedSelfDual (u.self_dual nu x) + embedAntiSelfDual (u.anti_self_dual nu x) := rfl
+  have h_mu : (fun m p => u.spin4c_connection m p) mu x = embedSelfDual (u.sd_sector mu x) + embedAntiSelfDual (u.asd_sector mu x) := rfl
+  have h_nu : (fun m p => u.spin4c_connection m p) nu x = embedSelfDual (u.sd_sector nu x) + embedAntiSelfDual (u.asd_sector nu x) := rfl
   rw [h_mu, h_nu]
   rw [bracket_embed]
-  have h_proj_L : (chiralProject (embedSelfDual ⁅u.self_dual mu x, u.self_dual nu x⁆ + embedAntiSelfDual ⁅u.anti_self_dual mu x, u.anti_self_dual nu x⁆)).self_dual = ⁅u.self_dual mu x, u.self_dual nu x⁆ := chiral_project_self_dual_embed _ _
-  have h_proj_R : (chiralProject (embedSelfDual ⁅u.self_dual mu x, u.self_dual nu x⁆ + embedAntiSelfDual ⁅u.anti_self_dual mu x, u.anti_self_dual nu x⁆)).anti_self_dual = ⁅u.anti_self_dual mu x, u.anti_self_dual nu x⁆ := chiral_project_anti_self_dual_embed _ _
+  have h_proj_L : (chiralProject (embedSelfDual ⁅u.sd_sector mu x, u.sd_sector nu x⁆ + embedAntiSelfDual ⁅u.asd_sector mu x, u.asd_sector nu x⁆)).self_dual = ⁅u.sd_sector mu x, u.sd_sector nu x⁆ := chiral_project_self_dual_embed _ _
+  have h_proj_R : (chiralProject (embedSelfDual ⁅u.sd_sector mu x, u.sd_sector nu x⁆ + embedAntiSelfDual ⁅u.asd_sector mu x, u.asd_sector nu x⁆)).anti_self_dual = ⁅u.asd_sector mu x, u.asd_sector nu x⁆ := chiral_project_anti_self_dual_embed _ _
 
-  change embedSelfDual (partialDerivSl2c mu (u.self_dual nu) x) + embedAntiSelfDual (partialDerivSl2c mu (u.anti_self_dual nu) x) -
-         (embedSelfDual (partialDerivSl2c nu (u.self_dual mu) x) + embedAntiSelfDual (partialDerivSl2c nu (u.anti_self_dual mu) x)) +
-         (embedSelfDual (chiralProject (embedSelfDual ⁅u.self_dual mu x, u.self_dual nu x⁆ + embedAntiSelfDual ⁅u.anti_self_dual mu x, u.anti_self_dual nu x⁆)).self_dual +
-          embedAntiSelfDual (chiralProject (embedSelfDual ⁅u.self_dual mu x, u.self_dual nu x⁆ + embedAntiSelfDual ⁅u.anti_self_dual mu x, u.anti_self_dual nu x⁆)).anti_self_dual) =
-         embedSelfDual (partialDerivSl2c mu (u.self_dual nu) x - partialDerivSl2c nu (u.self_dual mu) x + ⁅u.self_dual mu x, u.self_dual nu x⁆) +
-         embedAntiSelfDual (partialDerivSl2c mu (u.anti_self_dual nu) x - partialDerivSl2c nu (u.anti_self_dual mu) x + ⁅u.anti_self_dual mu x, u.anti_self_dual nu x⁆)
+  change embedSelfDual (partialDerivSl2c mu (u.sd_sector nu) x) + embedAntiSelfDual (partialDerivSl2c mu (u.asd_sector nu) x) -
+         (embedSelfDual (partialDerivSl2c nu (u.sd_sector mu) x) + embedAntiSelfDual (partialDerivSl2c nu (u.asd_sector mu) x)) +
+         (embedSelfDual (chiralProject (embedSelfDual ⁅u.sd_sector mu x, u.sd_sector nu x⁆ + embedAntiSelfDual ⁅u.asd_sector mu x, u.asd_sector nu x⁆)).self_dual +
+          embedAntiSelfDual (chiralProject (embedSelfDual ⁅u.sd_sector mu x, u.sd_sector nu x⁆ + embedAntiSelfDual ⁅u.asd_sector mu x, u.asd_sector nu x⁆)).anti_self_dual) =
+         embedSelfDual (partialDerivSl2c mu (u.sd_sector nu) x - partialDerivSl2c nu (u.sd_sector mu) x + ⁅u.sd_sector mu x, u.sd_sector nu x⁆) +
+         embedAntiSelfDual (partialDerivSl2c mu (u.asd_sector nu) x - partialDerivSl2c nu (u.asd_sector mu) x + ⁅u.asd_sector mu x, u.asd_sector nu x⁆)
 
   rw[h_proj_L, h_proj_R]
   exact embed_linear_combo _ _ _ _ _ _
@@ -401,17 +401,17 @@ lemma curvature_embed_eq (u : Universe) (mu nu : Fin 4) (x : SpacetimePoint) :
 
 /-- 🟡 KINEMATIC: Chiral Lagrangian strictly decomposes into SelfDual and AntiSelfDual actions when locally decoupled. -/
 theorem algebraicChiralDecomposition (u : Universe) (x : SpacetimePoint) :
-  lagrangianDensity (fun mu nu => curvature (fun m p => u.embed m p) mu nu x) =
-  actionVacuum (fun mu nu => curvature (fun m p => u.embed m p) mu nu x) +
-  actionAntiSelfDual (fun mu nu => curvature (fun m p => u.embed m p) mu nu x) := by
+  lagrangianDensity (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) =
+  actionVacuum (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) +
+  actionAntiSelfDual (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) := by
 
-  have h_proj_L : ∀ mu nu, (chiralProject (curvature (fun m p => u.embed m p) mu nu x)).self_dual = curvatureSl2c u.self_dual mu nu x := by
+  have h_proj_L : ∀ mu nu, (chiralProject (curvature (fun m p => u.spin4c_connection m p) mu nu x)).self_dual = curvatureSl2c u.sd_sector mu nu x := by
     intro mu nu
     have h_curv := curvature_embed_eq u mu nu x
     rw [h_curv]
     exact chiral_project_self_dual_embed _ _
 
-  have h_proj_R : ∀ mu nu, (chiralProject (curvature (fun m p => u.embed m p) mu nu x)).anti_self_dual = curvatureSl2c u.anti_self_dual mu nu x := by
+  have h_proj_R : ∀ mu nu, (chiralProject (curvature (fun m p => u.spin4c_connection m p) mu nu x)).anti_self_dual = curvatureSl2c u.asd_sector mu nu x := by
     intro mu nu
     have h_curv := curvature_embed_eq u mu nu x
     rw [h_curv]
@@ -419,9 +419,9 @@ theorem algebraicChiralDecomposition (u : Universe) (x : SpacetimePoint) :
 
   unfold lagrangianDensity actionVacuum actionAntiSelfDual
   have h_split : (∑ mu, ∑ nu, ∑ rho, ∑ sigma,
-      eta mu rho * eta nu sigma * Matrix.trace (curvature (fun m p => u.embed m p) mu nu x * curvature (fun m p => u.embed m p) rho sigma x)) =
-    (∑ mu, ∑ nu, ∑ rho, ∑ sigma, eta mu rho * eta nu sigma * Matrix.trace (((chiralProject (curvature (fun m p => u.embed m p) mu nu x)).self_dual).val * ((chiralProject (curvature (fun m p => u.embed m p) rho sigma x)).self_dual).val)) +
-    (∑ mu, ∑ nu, ∑ rho, ∑ sigma, eta mu rho * eta nu sigma * Matrix.trace (((chiralProject (curvature (fun m p => u.embed m p) mu nu x)).anti_self_dual).val * ((chiralProject (curvature (fun m p => u.embed m p) rho sigma x)).anti_self_dual).val)) := by
+      eta mu rho * eta nu sigma * Matrix.trace (curvature (fun m p => u.spin4c_connection m p) mu nu x * curvature (fun m p => u.spin4c_connection m p) rho sigma x)) =
+    (∑ mu, ∑ nu, ∑ rho, ∑ sigma, eta mu rho * eta nu sigma * Matrix.trace (((chiralProject (curvature (fun m p => u.spin4c_connection m p) mu nu x)).self_dual).val * ((chiralProject (curvature (fun m p => u.spin4c_connection m p) rho sigma x)).self_dual).val)) +
+    (∑ mu, ∑ nu, ∑ rho, ∑ sigma, eta mu rho * eta nu sigma * Matrix.trace (((chiralProject (curvature (fun m p => u.spin4c_connection m p) mu nu x)).anti_self_dual).val * ((chiralProject (curvature (fun m p => u.spin4c_connection m p) rho sigma x)).anti_self_dual).val)) := by
     rw[← Finset.sum_add_distrib]; apply Finset.sum_congr rfl; intro mu _
     rw[← Finset.sum_add_distrib]; apply Finset.sum_congr rfl; intro nu _
     rw[← Finset.sum_add_distrib]; apply Finset.sum_congr rfl; intro rho _
@@ -430,7 +430,7 @@ theorem algebraicChiralDecomposition (u : Universe) (x : SpacetimePoint) :
     have h_curv1 := curvature_embed_eq u mu nu x
     have h_curv2 := curvature_embed_eq u rho sigma x
     rw[h_curv1, h_curv2]
-    have h_trace := trace_embed_mul_embed (curvatureSl2c u.self_dual mu nu x) (curvatureSl2c u.anti_self_dual mu nu x) (curvatureSl2c u.self_dual rho sigma x) (curvatureSl2c u.anti_self_dual rho sigma x)
+    have h_trace := trace_embed_mul_embed (curvatureSl2c u.sd_sector mu nu x) (curvatureSl2c u.asd_sector mu nu x) (curvatureSl2c u.sd_sector rho sigma x) (curvatureSl2c u.asd_sector rho sigma x)
     rw [h_trace]
     ring
   rw[h_split, mul_add]
