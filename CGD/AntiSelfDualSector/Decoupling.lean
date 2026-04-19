@@ -45,7 +45,7 @@ lemma action_vacuum_congr (F1 F2 : Fin 4 -> Fin 4 -> ChiralM)
 
 /-- 🟡 KINEMATIC: AntiSelfDual Matter Decoupling -/
 theorem algebraicAntiSelfDualSectorDecoupling (u : Universe)
-  (A_R_alt : Su2GaugeField) (x : SpacetimePoint) :
+  (A_R_alt : Sl2cGaugeField) (x : SpacetimePoint) :
   actionVacuum (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) =
   actionVacuum (fun mu nu => curvature (fun m p => embedSelfDual (u.sd_sector m p) + embedAntiSelfDual (A_R_alt m p)) mu nu x) := by
 

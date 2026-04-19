@@ -23,10 +23,6 @@ def isHomotopicConnection (A0 A1 : Fin 4 → SpacetimePoint → SL2C) : Prop :=
     (∀ mu x, H 1 mu x = A1 mu x) ∧
     Continuous H
 
-variable {BoundaryManifold : Type*} [TopologicalSpace BoundaryManifold]
-variable [HasAsymptoticBoundary (Fin 4 → SpacetimePoint → SL2C) (BoundaryManifold → SL2C)]
-variable [HasTopologicalMeasure (BoundaryManifold → SL2C)]
-
 /-- 
 🔵 KINEMATIC: Topological Stability (The Proton cannot decay into the vacuum).
 Mathematically Honest Proof: By invoking Belavin Eq 18, we establish that because the 
@@ -35,8 +31,11 @@ its mapping degree must be strictly non-zero (±1). Therefore, it cannot be cont
 deformed into the vacuum state (degree 0).
 -/
 theorem kinematicTopologicalStability 
-  [tc : CartanMaurerTopology (BoundaryManifold → SL2C) HasTopologicalMeasure.windingNumber HasTopologicalMeasure.cartanMaurerIntegral] 
-  [belavin : Eq18 BoundaryManifold SL2C HasTopologicalMeasure.windingNumber HasTopologicalMeasure.cartanMaurerIntegral]
+  {BoundaryManifold : Type*} [TopologicalSpace BoundaryManifold]
+  [HasAsymptoticBoundary (Fin 4 → SpacetimePoint → SL2C) (BoundaryManifold → SL2C)]
+  [htm : HasTopologicalMeasure (BoundaryManifold → SL2C)]
+  [tc : CartanMaurerTopology (BoundaryManifold → SL2C) (@HasTopologicalMeasure.windingNumber (BoundaryManifold → SL2C) htm) (@HasTopologicalMeasure.cartanMaurerIntegral (BoundaryManifold → SL2C) htm)] 
+  [belavin : Eq18 BoundaryManifold SL2C (@HasTopologicalMeasure.windingNumber (BoundaryManifold → SL2C) htm) (@HasTopologicalMeasure.cartanMaurerIntegral (BoundaryManifold → SL2C) htm)]
   [pvac : PreservesVacuum (Fin 4 → SpacetimePoint → SL2C) (BoundaryManifold → SL2C)]
   [vzero : VacuumHasZeroMeasure (BoundaryManifold → SL2C)]
   (h_hedgehog_homeo : IsHomeomorphism (HasAsymptoticBoundary.boundaryMap hedgehogBps : BoundaryManifold → SL2C)) :
@@ -51,22 +50,19 @@ theorem kinematicTopologicalStability
   have h_eq := tc.homotopyInvariance (fun t => (HasAsymptoticBoundary.boundaryMap (H t) : BoundaryManifold → SL2C)) hHBoundCont 0 1
   
   have h0 : H 0 = hedgehogBps := by funext mu x; exact hH0 mu x
-  have h1 : H 1 = 0 := by funext mu x; exact hH1 mu x
   
-  have h_symm := (tc.degreeTheorem (0 : BoundaryManifold → SL2C)).symm
-  have hz := vzero.integral_zero
+  have h_bound_zero : HasAsymptoticBoundary.boundaryMap (H 1) = (0 : BoundaryManifold → SL2C) := by
+    have h1 : H 1 = 0 := by funext mu x; exact hH1 mu x
+    rw [h1]
+    exact pvac.boundary_zero
   
-  -- Let the unifier handle the substitution natively
-  rw [hz] at h_symm
+  have hz_wind : (@HasTopologicalMeasure.windingNumber (BoundaryManifold → SL2C) htm (0 : BoundaryManifold → SL2C) : ℝ) = 0 := by
+    rw [← tc.degreeTheorem (0 : BoundaryManifold → SL2C)]
+    exact vzero.integral_zero
+    
+  have hw1 : @HasTopologicalMeasure.windingNumber (BoundaryManifold → SL2C) htm (0 : BoundaryManifold → SL2C) = 0 := by exact_mod_cast hz_wind
   
-  have hw1 : HasTopologicalMeasure.windingNumber (0 : BoundaryManifold → SL2C) = 0 := by exact_mod_cast h_symm
-  
-  have h_wind_eq : HasTopologicalMeasure.windingNumber (HasAsymptoticBoundary.boundaryMap (H 0) : BoundaryManifold → SL2C) = HasTopologicalMeasure.windingNumber (HasAsymptoticBoundary.boundaryMap (H 1) : BoundaryManifold → SL2C) := h_eq
-  
-  have h_bound_zero : (HasAsymptoticBoundary.boundaryMap (H 1) : BoundaryManifold → SL2C) = (0 : BoundaryManifold → SL2C) := by
-    have step1 : (HasAsymptoticBoundary.boundaryMap (H 1) : BoundaryManifold → SL2C) = HasAsymptoticBoundary.boundaryMap (0 : Fin 4 → SpacetimePoint → SL2C) := congrArg HasAsymptoticBoundary.boundaryMap h1
-    have step2 := pvac.boundary_zero
-    exact step1.trans step2
+  have h_wind_eq : @HasTopologicalMeasure.windingNumber (BoundaryManifold → SL2C) htm (HasAsymptoticBoundary.boundaryMap (H 0) : BoundaryManifold → SL2C) = @HasTopologicalMeasure.windingNumber (BoundaryManifold → SL2C) htm (HasAsymptoticBoundary.boundaryMap (H 1) : BoundaryManifold → SL2C) := h_eq
   
   rw [h_bound_zero] at h_wind_eq
   rw [hw1] at h_wind_eq

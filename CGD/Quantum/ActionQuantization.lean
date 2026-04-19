@@ -16,10 +16,6 @@ open CGD.Axioms Litlib.Y2003.nakahara2003geometry Litlib.Y1975.belavin1975pseudo
 
 namespace CGD.Quantum
 
-variable {BoundaryManifold : Type*} [TopologicalSpace BoundaryManifold]
-variable [HasAsymptoticBoundary (Fin 4 → SpacetimePoint → SL2C) (BoundaryManifold → SL2C)]
-variable [HasTopologicalMeasure (BoundaryManifold → SL2C)]
-
 /-- 
 🟡 KINEMATIC: Topological Action Quantization.
 Mathematically Honest Proof: If a physical connection yields an asymptotic boundary map 
@@ -27,23 +23,26 @@ that is a topological homeomorphism to the gauge group, its Cartan-Maurer topolo
 charge inherently strictly evaluates to an integer quantization bound (±1).
 -/
 theorem kinematicActionQuantization
-  [tc : CartanMaurerTopology (BoundaryManifold → SL2C) HasTopologicalMeasure.windingNumber HasTopologicalMeasure.cartanMaurerIntegral]
-  [belavin : Eq18 BoundaryManifold SL2C HasTopologicalMeasure.windingNumber HasTopologicalMeasure.cartanMaurerIntegral]
+  {BoundaryManifold : Type*} [TopologicalSpace BoundaryManifold]
+  [HasAsymptoticBoundary (Fin 4 → SpacetimePoint → SL2C) (BoundaryManifold → SL2C)]
+  [htm : HasTopologicalMeasure (BoundaryManifold → SL2C)]
+  [tc : CartanMaurerTopology (BoundaryManifold → SL2C) (@HasTopologicalMeasure.windingNumber (BoundaryManifold → SL2C) htm) (@HasTopologicalMeasure.cartanMaurerIntegral (BoundaryManifold → SL2C) htm)]
+  [belavin : Eq18 BoundaryManifold SL2C (@HasTopologicalMeasure.windingNumber (BoundaryManifold → SL2C) htm) (@HasTopologicalMeasure.cartanMaurerIntegral (BoundaryManifold → SL2C) htm)]
   (u : Universe)
   (h_homeo : IsHomeomorphism (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SL2C)) :
-  HasTopologicalMeasure.cartanMaurerIntegral (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SL2C) = 1 ∨ 
-  HasTopologicalMeasure.cartanMaurerIntegral (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SL2C) = -1 := by
+  @HasTopologicalMeasure.cartanMaurerIntegral (BoundaryManifold → SL2C) htm (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SL2C) = 1 ∨ 
+  @HasTopologicalMeasure.cartanMaurerIntegral (BoundaryManifold → SL2C) htm (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SL2C) = -1 := by
   have h_deg := belavin.degree_of_homeomorph (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SL2C) h_homeo
   have h_thm := tc.degreeTheorem (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SL2C)
   cases h_deg with
   | inl h_pos => 
     left
-    have h_eval : (HasTopologicalMeasure.windingNumber (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SL2C) : ℝ) = 1 := by rw [h_pos]; norm_num
+    have h_eval : (@HasTopologicalMeasure.windingNumber (BoundaryManifold → SL2C) htm (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SL2C) : ℝ) = 1 := by rw [h_pos]; norm_num
     rw [←h_thm] at h_eval
     exact h_eval
   | inr h_neg => 
     right
-    have h_eval : (HasTopologicalMeasure.windingNumber (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SL2C) : ℝ) = -1 := by rw [h_neg]; norm_num
+    have h_eval : (@HasTopologicalMeasure.windingNumber (BoundaryManifold → SL2C) htm (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SL2C) : ℝ) = -1 := by rw [h_neg]; norm_num
     rw [←h_thm] at h_eval
     exact h_eval
 
