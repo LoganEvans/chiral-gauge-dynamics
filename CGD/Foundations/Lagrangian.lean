@@ -96,65 +96,46 @@ lemma c3_term_eq_neg_c2 (F : Fin 4 → Fin 4 → ChiralM) (h_anti : ∀ μ ν, F
 
 -- Adapter stubs mapped directly to litlib4. Made abbrev so instances unwrap correctly.
 abbrev cgdConnectionSpace : Type := Universe
-abbrev cgdFormSpace : Type := Universe
+
+abbrev cgdFormSpace : Type := 
+  (Fin 4 → SpacetimePoint → SL2C) × 
+  (Fin 4 → SpacetimePoint → SL2C)
 
 noncomputable instance : Zero cgdFormSpace where
-  zero := 0
+  zero := ((fun _ _ => 0), (fun _ _ => 0))
 
-noncomputable def u_to_form (u : cgdConnectionSpace) : cgdFormSpace := u
-noncomputable def u_dStar (f : cgdFormSpace) : cgdFormSpace := f
+noncomputable def u_to_form (u : cgdConnectionSpace) : cgdFormSpace := 
+  (u.sd_sector.val, u.asd_sector.val)
+
+noncomputable def u_dStar (f : cgdFormSpace) : cgdFormSpace := 
+  (fun nu x => ∑ mu, ∑ rho, (CGD.Axioms.eta mu rho : Complex) • covariantDeriv f.1 mu rho nu x,
+   fun nu x => ∑ mu, ∑ rho, (CGD.Axioms.eta mu rho : Complex) • covariantDeriv f.2 mu rho nu x)
+
+lemma sl2c_sum_val (f : Fin 4 → SL2C) : (∑ i : Fin 4, f i).val = ∑ i : Fin 4, (f i).val := by
+  exact map_sum (Submodule.subtype _) f Finset.univ
+
+lemma sl2c_smul_val (c : ℂ) (X : SL2C) : (c • X).val = c • X.val := rfl
 
 /-- 
 Mathematical Bridge: Maps the abstract form derivative dStar = 0 into the 
 coordinate-expanded continuous Yang-Mills PDEs. 
-We explicitly mapped u_dStar to `id`, so the zero vector trivially yields the vacuum solution.
 -/
 lemma dstar_to_pdes (u : Universe) :
   u_dStar (u_to_form u) = 0 → eulerLagrangePDEs u := by
   intro h_zero
-  
-  unfold u_dStar u_to_form at h_zero
-  
-  have h_self_dual : u.sd_sector.val = fun _ _ => 0 := by
-    rw [h_zero]
-    rfl
-    
-  have h_anti_self_dual : u.asd_sector.val = fun _ _ => 0 := by
-    rw [h_zero]
-    rfl
-
-  have hd : ∀ μ x, partialDerivMat μ (fun _ => (0 : Matrix (Fin 2) (Fin 2) ℂ)) x = 0 := by
-    intro μ x; ext i j; unfold partialDerivMat partialDeriv; simp[fderiv_const]
-  have hz : toSl2c 0 = 0 := by apply Subtype.ext; simp[toSl2c]
-  have hp : ∀ μ x, partialDerivSl2c μ (fun (_ : SpacetimePoint) => (0 : SL2C)) x = 0 := by
-    intro μ x; unfold partialDerivSl2c
-    change toSl2c (partialDerivMat μ (fun _ => (0 : Matrix (Fin 2) (Fin 2) ℂ)) x) = 0
-    rw[hd μ x, hz]
-  have hc : ∀ ρ ν x, curvatureSl2c (fun _ _ => 0) ρ ν x = 0 := by
-    intro ρ ν x; unfold curvatureSl2c; rw[hp ρ x, hp ν x]; simp
-  have hc_fun : ∀ ρ ν, (fun p => curvatureSl2c (fun _ _ => 0) ρ ν p) = (fun _ => 0) := by
-    intro ρ ν; exact funext (fun p => hc ρ ν p)
-  have hcd : ∀ μ ρ ν x, covariantDeriv (fun _ _ => 0) μ ρ ν x = 0 := by
-    intro μ ρ ν x
-    unfold covariantDeriv
-    have hc_fun_zero : (fun p => curvatureSl2c (fun _ _ => 0) ρ ν p) = (fun _ => 0) := hc_fun ρ ν
-    rw [hc_fun_zero]
-    rw [hp μ x]
-    have hc_eval : curvatureSl2c (fun _ _ => 0) ρ ν x = 0 := hc ρ ν x
-    rw [hc_eval]
-    have h_comm : ⁅(0 : SL2C), (0 : SL2C)⁆ = 0 := by
-      apply Subtype.ext
-      change (0 : Matrix (Fin 2) (Fin 2) ℂ) * 0 - 0 * 0 = 0
-      simp
-    rw [h_comm]
-    exact add_zero 0
-  have hcd_val : ∀ μ ρ ν x, (covariantDeriv (fun _ _ => 0) μ ρ ν x).val = 0 := by
-    intro μ ρ ν x; rw[hcd μ ρ ν x]; rfl
-    
-  dsimp[eulerLagrangePDEs]
+  have h1 : (u_dStar (u_to_form u)).1 = 0 := by rw [h_zero]; rfl
+  have h2 : (u_dStar (u_to_form u)).2 = 0 := by rw [h_zero]; rfl
   constructor
-  · intro nu x; rw[h_self_dual]; simp [hcd_val]
-  · intro nu x; rw[h_anti_self_dual]; simp[hcd_val]
+  · intro nu x
+    have h_eq : (u_dStar (u_to_form u)).1 nu x = 0 := congr_fun (congr_fun h1 nu) x
+    have h_val : ((∑ mu, ∑ rho, (CGD.Axioms.eta mu rho : Complex) • covariantDeriv u.sd_sector.val mu rho nu x) : SL2C).val = 0 := congrArg Subtype.val h_eq
+    simp only [sl2c_sum_val, sl2c_smul_val] at h_val
+    exact h_val
+  · intro nu x
+    have h_eq : (u_dStar (u_to_form u)).2 nu x = 0 := congr_fun (congr_fun h2 nu) x
+    have h_val : ((∑ mu, ∑ rho, (CGD.Axioms.eta mu rho : Complex) • covariantDeriv u.asd_sector.val mu rho nu x) : SL2C).val = 0 := congrArg Subtype.val h_eq
+    simp only [sl2c_sum_val, sl2c_smul_val] at h_val
+    exact h_val
 
 /-- 🟢 LITERATURE BRIDGE: The continuous Yang-Mills equations of motion strictly emerge from the Principle of Least Action. -/
 theorem dynamicEulerLagrangeEOM 
