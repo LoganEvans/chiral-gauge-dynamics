@@ -14,27 +14,21 @@ open Complex Matrix
 
 namespace CGD.Foundations
 
-/-- 
-CRITICAL ONTOLOGY NOTE: 
-Despite the historically inherited name `SL2C`, this type explicitly represents 
-the **Lie Algebra** $\mathfrak{sl}(2,\mathbb{C})$ (the vector space of trace-free 
-2x2 complex matrices), NOT the curved Lie Group (matrices with det=1).
-Because it is a vector space natively built on a Mathlib submodule, it supports 
-addition, scalar multiplication, and naturally inherits the `NormedSpace` topology 
-required for `ContDiff` (smooth functional variations).
--/
 noncomputable abbrev sl2cAlgebra := LieAlgebra.SpecialLinear.sl (Fin 2) Complex
 abbrev SL2C := ↥sl2cAlgebra
 abbrev ChiralM := Matrix (Fin 4) (Fin 4) Complex
 
 lemma mem_sl_iff (A : Matrix (Fin 2) (Fin 2) Complex) : A ∈ sl2cAlgebra ↔ Matrix.trace A = 0 := by rfl
 
-/-- The compact real form SU(2): Trace-free, anti-Hermitian 2x2 matrices. -/
 def isSu2 (M : Matrix (Fin 2) (Fin 2) Complex) : Prop := 
   Matrix.trace M = 0 ∧ M.conjTranspose = -M
 
-/-- We explicitly bind SU(2) as a trace-free physical phase space. -/
 abbrev su2 := { M : SL2C // isSu2 M.val }
+
+def SU2Group := { M : Matrix (Fin 2) (Fin 2) Complex // M * M.conjTranspose = 1 ∧ M.det = 1 }
+
+instance : One SU2Group where
+  one := ⟨1, by simp [Matrix.conjTranspose_one]⟩
 
 noncomputable def sigma1 : SL2C := ⟨Matrix.of ![![0, 1], ![1, 0]], by rw[mem_sl_iff, Matrix.trace_fin_two]; dsimp; ring⟩
 noncomputable def sigma2 : SL2C := ⟨Matrix.of ![![0, -I], ![I, 0]], by rw[mem_sl_iff, Matrix.trace_fin_two]; dsimp; ring⟩
