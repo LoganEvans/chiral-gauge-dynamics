@@ -304,20 +304,19 @@ its mapping degree must be strictly non-zero (±1). Therefore, it cannot be cont
 deformed into the vacuum state (degree 0).
 -/
 theorem kinematicTopologicalStability 
-  {BoundaryManifold : Type*} [TopologicalSpace BoundaryManifold]
-  [HasAsymptoticBoundary (Fin 4 → SpacetimePoint → SL2C) (BoundaryManifold → SU2Group)]
-  [htm : HasTopologicalMeasure (BoundaryManifold → SU2Group)]
-  [tc : CartanMaurerTopology (BoundaryManifold → SU2Group) (@HasTopologicalMeasure.windingNumber (BoundaryManifold → SU2Group) htm) (@HasTopologicalMeasure.cartanMaurerIntegral (BoundaryManifold → SU2Group) htm)] 
-  [belavin : Eq18 BoundaryManifold SU2Group (@HasTopologicalMeasure.windingNumber (BoundaryManifold → SU2Group) htm) (@HasTopologicalMeasure.cartanMaurerIntegral (BoundaryManifold → SU2Group) htm)]
-  [pvac : PreservesVacuum (Fin 4 → SpacetimePoint → SL2C) (BoundaryManifold → SU2Group)]
-  [vzero : VacuumHasZeroMeasure (BoundaryManifold → SU2Group)]
-  (h_bpst_homeo : IsHomeomorphism (HasAsymptoticBoundary.boundaryMap bpstInstanton : BoundaryManifold → SU2Group)) :
+  [HasAsymptoticBoundary (Fin 4 → SpacetimePoint → SL2C) (S3 → SU2Group)]
+  [htm : HasTopologicalMeasure (S3 → SU2Group)]
+  [tc : CartanMaurerTopology (S3 → SU2Group) Continuous (@HasTopologicalMeasure.windingNumber (S3 → SU2Group) htm) (@HasTopologicalMeasure.cartanMaurerIntegral (S3 → SU2Group) htm)] 
+  [belavin : Eq18 S3 SU2Group Continuous (@HasTopologicalMeasure.windingNumber (S3 → SU2Group) htm) (@HasTopologicalMeasure.cartanMaurerIntegral (S3 → SU2Group) htm)]
+  [pvac : PreservesVacuum (Fin 4 → SpacetimePoint → SL2C) (S3 → SU2Group)]
+  [vzero : VacuumHasZeroMeasure (S3 → SU2Group)]
+  (h_bpst_bound : HasAsymptoticBoundary.boundaryMap bpstInstanton = bpstAsymptoticMap) :
   ¬ isHomotopicConnection bpstInstanton 0 := by
   intro h_homotopy
   rcases h_homotopy with ⟨H, hH0, hH1, hHCont⟩
   
-  have hHBoundCont : Continuous (fun t => (HasAsymptoticBoundary.boundaryMap (H t) : BoundaryManifold → SU2Group)) := by
-    have hc : Continuous (HasAsymptoticBoundary.boundaryMap : (Fin 4 → SpacetimePoint → SL2C) → (BoundaryManifold → SU2Group)) := HasAsymptoticBoundary.map_continuous
+  have hHBoundCont : Continuous (fun t => (HasAsymptoticBoundary.boundaryMap (H t) : S3 → SU2Group)) := by
+    have hc : Continuous (HasAsymptoticBoundary.boundaryMap : (Fin 4 → SpacetimePoint → SL2C) → (S3 → SU2Group)) := HasAsymptoticBoundary.map_continuous
     have hH_cont : Continuous H := by
       apply continuous_pi
       intro mu
@@ -330,31 +329,32 @@ theorem kinematicTopologicalStability
       exact (hHCont mu i j).continuous.comp h_path
     exact Continuous.comp hc hH_cont
     
-  have h_eq := tc.homotopyInvariance (fun t => (HasAsymptoticBoundary.boundaryMap (H t) : BoundaryManifold → SU2Group)) hHBoundCont 0 1
+  have h_eq := tc.homotopyInvariance (fun t => (HasAsymptoticBoundary.boundaryMap (H t) : S3 → SU2Group)) hHBoundCont 0 1
   
   have h0 : H 0 = bpstInstanton := by funext mu x; exact hH0 mu x
   
-  have h_bound_zero : HasAsymptoticBoundary.boundaryMap (H 1) = (1 : BoundaryManifold → SU2Group) := by
+  have h_bound_zero : HasAsymptoticBoundary.boundaryMap (H 1) = (1 : S3 → SU2Group) := by
     have h1 : H 1 = 0 := by funext mu x; exact hH1 mu x
     rw [h1]
     exact pvac.boundary_vacuum
   
-  have hz_wind : (@HasTopologicalMeasure.windingNumber (BoundaryManifold → SU2Group) htm (1 : BoundaryManifold → SU2Group) : ℝ) = 0 := by
-    rw [← tc.degreeTheorem (1 : BoundaryManifold → SU2Group)]
+  have hz_wind : (@HasTopologicalMeasure.windingNumber (S3 → SU2Group) htm (1 : S3 → SU2Group) : ℝ) = 0 := by
+    rw [← tc.degreeTheorem (1 : S3 → SU2Group) continuous_const]
     exact vzero.integral_zero
     
-  have hw1 : @HasTopologicalMeasure.windingNumber (BoundaryManifold → SU2Group) htm (1 : BoundaryManifold → SU2Group) = 0 := by exact_mod_cast hz_wind
+  have hw1 : @HasTopologicalMeasure.windingNumber (S3 → SU2Group) htm (1 : S3 → SU2Group) = 0 := by exact_mod_cast hz_wind
   
-  have h_wind_eq : @HasTopologicalMeasure.windingNumber (BoundaryManifold → SU2Group) htm (HasAsymptoticBoundary.boundaryMap (H 0) : BoundaryManifold → SU2Group) = @HasTopologicalMeasure.windingNumber (BoundaryManifold → SU2Group) htm (HasAsymptoticBoundary.boundaryMap (H 1) : BoundaryManifold → SU2Group) := h_eq
+  have h_wind_eq : @HasTopologicalMeasure.windingNumber (S3 → SU2Group) htm (HasAsymptoticBoundary.boundaryMap (H 0) : S3 → SU2Group) = @HasTopologicalMeasure.windingNumber (S3 → SU2Group) htm (HasAsymptoticBoundary.boundaryMap (H 1) : S3 → SU2Group) := h_eq
   
   rw [h_bound_zero] at h_wind_eq
   rw [hw1] at h_wind_eq
   
-  have h0_eq : (HasAsymptoticBoundary.boundaryMap (H 0) : BoundaryManifold → SU2Group) = (HasAsymptoticBoundary.boundaryMap bpstInstanton : BoundaryManifold → SU2Group) := congrArg HasAsymptoticBoundary.boundaryMap h0
+  have h0_eq : (HasAsymptoticBoundary.boundaryMap (H 0) : S3 → SU2Group) = (HasAsymptoticBoundary.boundaryMap bpstInstanton : S3 → SU2Group) := congrArg HasAsymptoticBoundary.boundaryMap h0
   
   rw [h0_eq] at h_wind_eq
+  rw [h_bpst_bound] at h_wind_eq
   
-  have h_deg := belavin.degree_of_homeomorph (HasAsymptoticBoundary.boundaryMap bpstInstanton : BoundaryManifold → SU2Group) h_bpst_homeo
+  have h_deg := belavin.degree_of_homeomorph bpstAsymptoticMap bpst_is_homeomorphism
   
   cases h_deg with
   | inl h_pos => 

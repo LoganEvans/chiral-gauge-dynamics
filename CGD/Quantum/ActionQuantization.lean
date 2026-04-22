@@ -29,14 +29,14 @@ theorem kinematicActionQuantization
   {BoundaryManifold : Type*} [TopologicalSpace BoundaryManifold]
   [HasAsymptoticBoundary (Fin 4 → SpacetimePoint → SL2C) (BoundaryManifold → SU2Group)]
   [htm : HasTopologicalMeasure (BoundaryManifold → SU2Group)]
-  [tc : CartanMaurerTopology (BoundaryManifold → SU2Group) HasTopologicalMeasure.windingNumber HasTopologicalMeasure.cartanMaurerIntegral]
-  [belavin : Eq18 BoundaryManifold SU2Group HasTopologicalMeasure.windingNumber HasTopologicalMeasure.cartanMaurerIntegral]
+  [tc : CartanMaurerTopology (BoundaryManifold → SU2Group) Continuous HasTopologicalMeasure.windingNumber HasTopologicalMeasure.cartanMaurerIntegral]
+  [belavin : Eq18 BoundaryManifold SU2Group Continuous HasTopologicalMeasure.windingNumber HasTopologicalMeasure.cartanMaurerIntegral]
   (u : Universe)
   (h_homeo : IsHomeomorphism (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SU2Group)) :
   HasTopologicalMeasure.cartanMaurerIntegral (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SU2Group) = 1 ∨ 
   HasTopologicalMeasure.cartanMaurerIntegral (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SU2Group) = -1 := by
   have h_deg := belavin.degree_of_homeomorph (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SU2Group) h_homeo
-  have h_thm := tc.degreeTheorem (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SU2Group)
+  have h_thm := tc.degreeTheorem (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SU2Group) h_homeo.cont
   cases h_deg with
   | inl h_pos => 
     left
