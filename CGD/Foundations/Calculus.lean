@@ -3,9 +3,13 @@
 import CGD.Axioms.Spacetime
 import CGD.Foundations.GaugeGroup
 import Mathlib.Analysis.Calculus.FDeriv.Basic
+import Mathlib.Analysis.Calculus.FDeriv.Mul
+import Mathlib.Analysis.Calculus.FDeriv.Add
 import Mathlib.Analysis.Calculus.ContDiff.Basic
 import Mathlib.Analysis.Calculus.Deriv.Basic
 import Mathlib.Analysis.Complex.Basic
+
+set_option linter.unusedSimpArgs false
 
 namespace CGD.Foundations
 
@@ -84,6 +88,54 @@ lemma math_partialDerivMat_comp_coord (f : ℝ → Matrix (Fin 2) (Fin 2) ℂ) (
   ext i j
   unfold partialDerivMat
   exact partialDeriv_comp_coord (fun z => f z i j) c_idx μ h_neq x (hf i j)
+
+lemma partialDeriv_mul_c
+  (f g : SpacetimePoint → ℂ) (μ : Fin 4) (x : SpacetimePoint)
+  (hf : DifferentiableAt ℝ f x) (hg : DifferentiableAt ℝ g x) :
+  partialDeriv μ (fun p => f p * g p) x = f x * partialDeriv μ g x + partialDeriv μ f x * g x := by
+  unfold partialDeriv
+  have h_eq : (fun p => f p * g p) = f * g := rfl
+  rw [h_eq]
+  rw [fderiv_mul hf hg]
+  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
+  ring
+
+lemma partialDerivMat_smul_c_fun (c : SpacetimePoint → ℂ) (M : Matrix (Fin 2) (Fin 2) ℂ) (μ : Fin 4) (x : SpacetimePoint)
+  (hc : DifferentiableAt ℝ c x) :
+  partialDerivMat μ (fun p => c p • M) x = partialDeriv μ c x • M := by
+  ext i j
+  unfold partialDerivMat
+  change partialDeriv μ (fun p => c p * M i j) x = partialDeriv μ c x * M i j
+  rw [partialDeriv_mul_c _ _ _ _ hc (differentiable_const _).differentiableAt]
+  rw [partialDeriv_const, mul_zero, zero_add]
+
+lemma partialDerivSl2c_smul_c_fun (c : SpacetimePoint → ℂ) (M : SL2C) (μ : Fin 4) (x : SpacetimePoint)
+  (hc : DifferentiableAt ℝ c x) :
+  partialDerivSl2c μ (fun p => c p • M) x = partialDeriv μ c x • M := by
+  unfold partialDerivSl2c
+  have h_val : (fun p => (c p • M).val) = fun p => c p • M.val := rfl
+  rw [h_val]
+  rw [partialDerivMat_smul_c_fun _ _ _ _ hc]
+  apply Subtype.ext
+  unfold toSl2c
+  dsimp
+  have ht : Matrix.trace (partialDeriv μ c x • M.val) = 0 := by
+    unfold Matrix.trace Matrix.diag
+    simp only [Fin.sum_univ_two, Matrix.smul_apply, smul_eq_mul]
+    have h_tr_M : M.val 0 0 + M.val 1 1 = 0 := by
+      have hp := M.property
+      change Matrix.trace M.val = 0 at hp
+      unfold Matrix.trace Matrix.diag at hp
+      rw [Fin.sum_univ_two] at hp
+      exact hp
+    calc
+      partialDeriv μ c x * M.val 0 0 + partialDeriv μ c x * M.val 1 1 
+        = partialDeriv μ c x * (M.val 0 0 + M.val 1 1) := by ring
+      _ = partialDeriv μ c x * 0 := by rw [h_tr_M]
+      _ = 0 := by ring
+  rw [ht]
+  have hz : (0 : ℂ) / 2 = 0 := by ring
+  rw [hz, zero_smul, sub_zero]
 
 noncomputable def partialDerivChiral (μ : Fin 4) (f : SpacetimePoint → ChiralM) (x : SpacetimePoint) : ChiralM :=
   let L_A := fun p => toSl2c (fun i j => f p (chiralIso (Sum.inl i)) (chiralIso (Sum.inl j)))

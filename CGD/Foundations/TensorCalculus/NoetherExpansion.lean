@@ -11,6 +11,38 @@ set_option linter.unusedVariables false
 open Matrix Complex BigOperators CGD.Axioms Litlib.Y2003.nakahara2003geometry
 namespace CGD.Foundations
 
+lemma partialDeriv_smul_c_local (c : ℂ) (f : SpacetimePoint → ℂ) (μ : Fin 4) (x : SpacetimePoint)
+  (hf : DifferentiableAt ℝ f x) :
+  partialDeriv μ (fun p => c * f p) x = c * partialDeriv μ f x := by
+  have hc : DifferentiableAt ℝ (fun _ : SpacetimePoint => c) x := (differentiable_const c).differentiableAt
+  have h_eq : (fun p => c * f p) = fun p => (fun _ => c) p * f p := rfl
+  rw [h_eq]
+  rw [partialDeriv_mul_c (fun _ => c) f μ x hc hf]
+  rw [partialDeriv_const c μ x]
+  ring
+
+lemma partialDerivMat_smul_c (c : ℂ) (f : SpacetimePoint → Matrix (Fin 2) (Fin 2) ℂ) (μ : Fin 4) (x : SpacetimePoint)
+  (hf : ∀ i j, DifferentiableAt ℝ (fun p => f p i j) x) :
+  partialDerivMat μ (fun p => c • f p) x = c • partialDerivMat μ f x := by
+  ext i j
+  unfold partialDerivMat
+  change partialDeriv μ (fun p => c * f p i j) x = c * partialDeriv μ (fun p => f p i j) x
+  exact partialDeriv_smul_c_local c (fun p => f p i j) μ x (hf i j)
+
+lemma partialDerivMat_sum_c {ι : Type*} (s : Finset ι) (A : ι → SpacetimePoint → Matrix (Fin 2) (Fin 2) ℂ) (μ : Fin 4) (x : SpacetimePoint)
+  (h : ∀ i ∈ s, ∀ a b, DifferentiableAt ℝ (fun p => A i p a b) x) :
+  partialDerivMat μ (fun p => ∑ i ∈ s, A i p) x = ∑ i ∈ s, partialDerivMat μ (A i) x := by
+  ext a b
+  have hs_right : (∑ i ∈ s, partialDerivMat μ (A i) x) a b = ∑ i ∈ s, partialDerivMat μ (A i) x a b := by
+    simp only [Matrix.sum_apply]
+  rw [hs_right]
+  unfold partialDerivMat
+  have hs_left : (fun p => (∑ i ∈ s, A i p) a b) = fun p => ∑ i ∈ s, A i p a b := by
+    ext p
+    simp only [Matrix.sum_apply]
+  rw [hs_left]
+  exact partialDeriv_sum s (fun i p => A i p a b) μ x (fun i hi => h i hi a b)
+
 lemma eta_symm (μ ν : Fin 4) : CGD.Axioms.eta μ ν = CGD.Axioms.eta ν μ := by
   fin_cases μ <;> fin_cases ν <;> rfl
 

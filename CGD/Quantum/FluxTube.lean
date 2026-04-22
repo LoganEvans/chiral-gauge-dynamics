@@ -60,29 +60,23 @@ lemma diff_fluxTube_comp (sigma : Matrix (Fin 2) (Fin 2) ℂ) :
   · exact differentiable_const _
 
 lemma math_partialDerivMat_fluxTube_time_0 (x : SpacetimePoint) : partialDerivMat 0 (fun p => (fluxTubeFrame 0 p).val) x = 0 := by
-  have h0 : (fun p => (fluxTubeFrame 0 p).val) = fun _ => 0 := by ext p; rfl
+  have h0 : (fun p => (fluxTubeFrame 0 p).val) = fun _ => 0 := by ext p; unfold fluxTubeFrame; simp
   rw [h0]; exact partialDerivMat_const 0 0 x
 
 lemma math_partialDerivMat_fluxTube_time_1 (x : SpacetimePoint) : partialDerivMat 0 (fun p => (fluxTubeFrame 1 p).val) x = 0 := by
-  have h_neq : (0 : Fin 4) ≠ 1 := by decide
-  have h1 : (fun p => (fluxTubeFrame 1 p).val) = fun p => (fun z : ℝ => (Complex.I * (z : ℂ)) • sigma2.val) (p 1) := by
+  have h1 : (fun p => (fluxTubeFrame 1 p).val) = fun _ => (toSl2c ((Complex.I:ℂ) • sigma3.val)).val := by
     ext p; unfold fluxTubeFrame; simp
-  rw [h1]
-  exact math_partialDerivMat_comp_coord (fun z : ℝ => (Complex.I * (z : ℂ)) • sigma2.val) 1 0 h_neq x (diff_fluxTube_comp sigma2.val)
+  rw [h1]; exact partialDerivMat_const _ 0 x
 
 lemma math_partialDerivMat_fluxTube_time_2 (x : SpacetimePoint) : partialDerivMat 0 (fun p => (fluxTubeFrame 2 p).val) x = 0 := by
-  have h_neq : (0 : Fin 4) ≠ 1 := by decide
-  have h2 : (fun p => (fluxTubeFrame 2 p).val) = fun p => (fun z : ℝ => (Complex.I * (z : ℂ)) • sigma2.val) (p 1) := by
+  have h2 : (fun p => (fluxTubeFrame 2 p).val) = fun _ => (toSl2c ((Complex.I:ℂ) • sigma1.val)).val := by
     ext p; unfold fluxTubeFrame; simp
-  rw [h2]
-  exact math_partialDerivMat_comp_coord (fun z : ℝ => (Complex.I * (z : ℂ)) • sigma2.val) 1 0 h_neq x (diff_fluxTube_comp sigma2.val)
+  rw [h2]; exact partialDerivMat_const _ 0 x
 
 lemma math_partialDerivMat_fluxTube_time_3 (x : SpacetimePoint) : partialDerivMat 0 (fun p => (fluxTubeFrame 3 p).val) x = 0 := by
-  have h_neq : (0 : Fin 4) ≠ 1 := by decide
-  have h3 : (fun p => (fluxTubeFrame 3 p).val) = fun p => (fun z : ℝ => (Complex.I * (z : ℂ)) • sigma3.val) (p 1) := by
+  have h3 : (fun p => (fluxTubeFrame 3 p).val) = fun _ => (toSl2c ((Complex.I:ℂ) • sigma2.val)).val := by
     ext p; unfold fluxTubeFrame; simp
-  rw [h3]
-  exact math_partialDerivMat_comp_coord (fun z : ℝ => (Complex.I * (z : ℂ)) • sigma3.val) 1 0 h_neq x (diff_fluxTube_comp sigma3.val)
+  rw [h3]; exact partialDerivMat_const _ 0 x
 
 lemma math_partialDerivSl2c_fluxTube_time (nu : Fin 4) (x : SpacetimePoint) :
   partialDerivSl2c 0 (fluxTubeFrame nu) x = 0 := by
@@ -104,7 +98,7 @@ lemma math_partialDerivSl2c_fluxTube_time (nu : Fin 4) (x : SpacetimePoint) :
 
 lemma math_partialDerivSl2c_fluxTube_cross (nu : Fin 4) (x : SpacetimePoint) :
   partialDerivSl2c nu (fluxTubeFrame 0) x = 0 := by
-  have h_zero : fluxTubeFrame 0 = fun _ => 0 := by ext p; rfl
+  have h_zero : fluxTubeFrame 0 = fun _ => 0 := by ext p; unfold fluxTubeFrame; simp
   rw [h_zero]
   exact partialDerivSl2c_const 0 nu x
 
@@ -112,7 +106,7 @@ lemma flux_tube_electric_zero_at (nu : Fin 4) (x : SpacetimePoint) :
   curvatureSl2c fluxTubeFrame 0 nu x = 0 := by
   unfold curvatureSl2c
   rw[math_partialDerivSl2c_fluxTube_time nu x, math_partialDerivSl2c_fluxTube_cross nu x]
-  have h_frame_0 : fluxTubeFrame 0 x = 0 := rfl
+  have h_frame_0 : fluxTubeFrame 0 x = 0 := by unfold fluxTubeFrame; simp
   rw [h_frame_0]
   have h_bracket : ⁅(0 : SL2C), fluxTubeFrame nu x⁆ = 0 := by
     apply Subtype.ext; change (0 : Matrix (Fin 2) (Fin 2) ℂ) * _ - _ * 0 = 0; simp

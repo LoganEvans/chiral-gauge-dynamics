@@ -43,6 +43,15 @@ lemma partialDeriv_sub_c_local (f g : SpacetimePoint → ℂ) (μ : Fin 4) (x : 
   rw [h_eq, fderiv_sub hf hg]
   rfl
 
+lemma partialDeriv_const_mul_local (c : ℂ) (f : SpacetimePoint → ℂ) (μ : Fin 4) (x : SpacetimePoint)
+  (hf : DifferentiableAt ℝ f x) :
+  partialDeriv μ (fun p => c * f p) x = c * partialDeriv μ f x := by
+  have h_eq : (fun p => c * f p) = fun p => (fun _ => c) p * f p := rfl
+  rw [h_eq]
+  rw [partialDeriv_mul_c (fun _ => c) f μ x (differentiable_const _).differentiableAt hf]
+  rw [partialDeriv_const]
+  ring
+
 lemma diff_trace_F_F (A : Fin 4 → SpacetimePoint → SL2C) 
   (h_smooth : ∀ mu i j, ContDiff ℝ ⊤ (fun x => (A mu x).val i j))
   (μ α ν β : Fin 4) (x : SpacetimePoint) :
@@ -104,7 +113,7 @@ lemma deriv_sum_F_F (A : Fin 4 → SpacetimePoint → SL2C)
     exact DifferentiableAt.mul (differentiable_const _).differentiableAt (diff_trace_F_F A h_smooth μ α ν β x)
   rw [hs2]
   apply Finset.sum_congr rfl; intro β _
-  rw [partialDeriv_smul_c_local _ _ _ _ (diff_trace_F_F A h_smooth μ α ν β x)]
+  rw [partialDeriv_const_mul_local (eta α β) _ _ _ (diff_trace_F_F A h_smooth μ α ν β x)]
   rw [deriv_trace_F_F A h_smooth μ α ν β ρ x]
 
 lemma diff_sum_4F (A : Fin 4 → SpacetimePoint → SL2C) 
@@ -184,7 +193,7 @@ lemma deriv_sum_4F (A : Fin 4 → SpacetimePoint → SL2C)
   apply Finset.sum_congr rfl; intro γ _
   have h_eq : (fun p => eta ρ' κ * eta σ γ * Matrix.trace ((curvatureSl2c A ρ' σ p).val * (curvatureSl2c A κ γ p).val)) = fun p => (eta ρ' κ * eta σ γ) * Matrix.trace ((curvatureSl2c A ρ' σ p).val * (curvatureSl2c A κ γ p).val) := by ext p; ring
   rw [h_eq]
-  rw [partialDeriv_smul_c_local _ _ _ _ (diff_trace_F_F A h_smooth ρ' σ κ γ x)]
+  rw [partialDeriv_const_mul_local (eta ρ' κ * eta σ γ) _ _ _ (diff_trace_F_F A h_smooth ρ' σ κ γ x)]
   rw [deriv_trace_F_F A h_smooth ρ' σ κ γ ρ x]
 
 lemma LHS_stress_energy_deriv (A : Fin 4 → SpacetimePoint → SL2C) 
@@ -211,7 +220,7 @@ lemma LHS_stress_energy_deriv (A : Fin 4 → SpacetimePoint → SL2C)
   have h_eq : (fun p => (1 / 4 : Complex) * eta μ ν * (∑ ρ' : Fin 4, ∑ σ : Fin 4, ∑ κ : Fin 4, ∑ γ : Fin 4, eta ρ' κ * eta σ γ * Matrix.trace ((curvatureSl2c A ρ' σ p).val * (curvatureSl2c A κ γ p).val))) = 
               fun p => ((1 / 4 : Complex) * eta μ ν) * (∑ ρ' : Fin 4, ∑ σ : Fin 4, ∑ κ : Fin 4, ∑ γ : Fin 4, eta ρ' κ * eta σ γ * Matrix.trace ((curvatureSl2c A ρ' σ p).val * (curvatureSl2c A κ γ p).val)) := by ext p; ring
   rw [h_eq]
-  rw [partialDeriv_smul_c_local _ _ _ _ hd_right_sum]
+  rw [partialDeriv_const_mul_local ((1 / 4 : Complex) * eta μ ν) _ _ _ hd_right_sum]
   rw [deriv_sum_4F A h_smooth ρ x]
 
 lemma trace_exact (M : Matrix (Fin 2) (Fin 2) ℂ) : Matrix.trace M = M 0 0 + M 1 1 := by

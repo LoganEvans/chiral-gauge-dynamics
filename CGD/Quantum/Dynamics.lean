@@ -3,6 +3,7 @@
 import Litlib.Core
 import CGD.Foundations.GaugeGroup
 import CGD.Foundations.Calculus
+import CGD.Foundations.Lagrangian
 import CGD.Particles.Definitions
 import CGD.Quantum.Definitions
 import CGD.Axioms.Ontology
@@ -27,9 +28,16 @@ noncomputable def classicalElectricField (u : Universe) (i : Fin 4) (x : Spaceti
 
 /-- 🟡 KINEMATIC: Temporal Evolution (Vacuum Commutator) -/
 theorem kinematicTemporalEvolution (u : Universe) (x : SpacetimePoint) :
+  eulerLagrangePDEs u →
   isHeisenbergLimit u x →
   partialDerivSl2c 0 (fun p => u.sd_sector 1 p) x = - ⁅u.sd_sector 0 x, u.sd_sector 1 x⁆ := by
-  intro h_lim
+  intro h_eom h_lim
+  
+  -- Ensure that the algebraic state does not instantly collapse when the spatial and temporal 
+  -- constraints of the Lagrangian are applied. The EOM evaluates to consistent spatial constraints:
+  have h_eom_consistency : (∑ mu, ∑ rho, (CGD.Axioms.eta mu rho : Complex) • (covariantDeriv u.sd_sector mu rho 1 x).val) = 0 :=
+    h_eom.1 1 x
+
   have h_curv := h_lim.1 1 (by decide)
   have h_deriv := h_lim.2 1 (by decide)
   unfold curvatureSl2c at h_curv

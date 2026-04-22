@@ -66,12 +66,22 @@ lemma partialDerivMat_commutes (f : SpacetimePoint → Matrix (Fin 2) (Fin 2) �
   change (fderiv ℝ (fderiv ℝ (fun p => f p i j)) x v_μ) v_ν = (fderiv ℝ (fderiv ℝ (fun p => f p i j)) x v_ν) v_μ
   exact h_apply
 
-lemma partialDeriv_add_c_local (f g : SpacetimePoint → ℂ) (μ : Fin 4) (x : SpacetimePoint)
+lemma partialDeriv_add_local (f g : SpacetimePoint → ℂ) (μ : Fin 4) (x : SpacetimePoint)
   (hf : DifferentiableAt ℝ f x) (hg : DifferentiableAt ℝ g x) :
   partialDeriv μ (fun p => f p + g p) x = partialDeriv μ f x + partialDeriv μ g x := by
   unfold partialDeriv
+  have h_has := HasFDerivAt.add hf.hasFDerivAt hg.hasFDerivAt
   have h_eq : (fun p => f p + g p) = f + g := rfl
-  rw [h_eq, fderiv_add hf hg]
+  rw [h_eq, h_has.fderiv]
+  rfl
+
+lemma partialDeriv_sub_local (f g : SpacetimePoint → ℂ) (μ : Fin 4) (x : SpacetimePoint)
+  (hf : DifferentiableAt ℝ f x) (hg : DifferentiableAt ℝ g x) :
+  partialDeriv μ (fun p => f p - g p) x = partialDeriv μ f x - partialDeriv μ g x := by
+  unfold partialDeriv
+  have h_has := HasFDerivAt.sub hf.hasFDerivAt hg.hasFDerivAt
+  have h_eq : (fun p => f p - g p) = f - g := rfl
+  rw [h_eq, h_has.fderiv]
   rfl
 
 lemma partialDerivMat_trace (f : SpacetimePoint → Matrix (Fin 2) (Fin 2) ℂ) (μ : Fin 4) (x : SpacetimePoint)
@@ -155,17 +165,6 @@ lemma partialDerivSl2c_commutes (A : Fin 4 → SpacetimePoint → SL2C) (α μ �
   rw [h_eq_lhs, h_eq_rhs]
   exact partialDerivMat_commutes (fun p => (A α p).val) μ ν x h_smooth
 
-lemma partialDeriv_mul_c
-  (f g : SpacetimePoint → ℂ) (μ : Fin 4) (x : SpacetimePoint)
-  (hf : DifferentiableAt ℝ f x) (hg : DifferentiableAt ℝ g x) :
-  partialDeriv μ (fun p => f p * g p) x = f x * partialDeriv μ g x + partialDeriv μ f x * g x := by
-  unfold partialDeriv
-  have h_eq : (fun p => f p * g p) = f * g := rfl
-  rw [h_eq, fderiv_mul hf hg]
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply]
-  change f x * _ + g x * _ = _
-  ring
-
 lemma partialDerivMat_mul (f g : SpacetimePoint → Matrix (Fin 2) (Fin 2) ℂ) (μ : Fin 4) (x : SpacetimePoint)
   (hf : ∀ i j, DifferentiableAt ℝ (fun p => f p i j) x)
   (hg : ∀ i j, DifferentiableAt ℝ (fun p => g p i j) x) :
@@ -196,7 +195,9 @@ lemma partialDerivMat_sub (f g : SpacetimePoint → Matrix (Fin 2) (Fin 2) ℂ) 
   ext i j
   unfold partialDerivMat partialDeriv
   have h_eq : (fun p => (f p - g p) i j) = (fun p => f p i j) - (fun p => g p i j) := rfl
-  rw [h_eq, fderiv_sub (hf i j) (hg i j)]
+  rw [h_eq]
+  have h_has := HasFDerivAt.sub (hf i j).hasFDerivAt (hg i j).hasFDerivAt
+  rw [h_has.fderiv]
   rfl
 
 lemma diff_matrix_mul (f g : SpacetimePoint → Matrix (Fin 2) (Fin 2) ℂ) (x : SpacetimePoint)
@@ -261,7 +262,9 @@ lemma partialDerivMat_add (f g : SpacetimePoint → Matrix (Fin 2) (Fin 2) ℂ) 
   ext i j
   unfold partialDerivMat partialDeriv
   have h_eq : (fun p => (f p + g p) i j) = (fun p => f p i j) + (fun p => g p i j) := rfl
-  rw [h_eq, fderiv_add (hf i j) (hg i j)]
+  rw [h_eq]
+  have h_has := HasFDerivAt.add (hf i j).hasFDerivAt (hg i j).hasFDerivAt
+  rw [h_has.fderiv]
   rfl
 
 lemma partialDerivSl2c_add (f g : SpacetimePoint → SL2C) (μ : Fin 4) (x : SpacetimePoint) 
@@ -289,7 +292,9 @@ lemma partialDerivMat_sub_c (f g : SpacetimePoint → Matrix (Fin 2) (Fin 2) ℂ
   ext i j
   unfold partialDerivMat partialDeriv
   have h_eq : (fun p => (f p - g p) i j) = (fun p => f p i j) - (fun p => g p i j) := rfl
-  rw [h_eq, fderiv_sub (hf i j) (hg i j)]
+  rw [h_eq]
+  have h_has := HasFDerivAt.sub (hf i j).hasFDerivAt (hg i j).hasFDerivAt
+  rw [h_has.fderiv]
   rfl
 
 lemma partialDerivSl2c_sub (f g : SpacetimePoint → SL2C) (μ : Fin 4) (x : SpacetimePoint) 
@@ -362,37 +367,129 @@ lemma diff_curvature (A : Fin 4 → SpacetimePoint → SL2C) (h_smooth : ∀ mu 
   
   exact DifferentiableAt.add hdSub hdComm
 
-lemma partialDeriv_smul_c_local (c : ℂ) (f : SpacetimePoint → ℂ) (μ : Fin 4) (x : SpacetimePoint)
-  (hf : DifferentiableAt ℝ f x) :
-  partialDeriv μ (fun p => c * f p) x = c * partialDeriv μ f x := by
-  rw [partialDeriv_mul_c (fun _ => c) f μ x (differentiable_const _).differentiableAt hf]
-  rw [partialDeriv_const]
-  ring
+-- Abelian Exact Solutions and Collapse
+lemma commutator_smul_smul (c1 c2 : ℂ) (M : SL2C) : ⁅c1 • M, c2 • M⁆ = 0 := by
+  apply Subtype.ext
+  change (c1 • M.val) * (c2 • M.val) - (c2 • M.val) * (c1 • M.val) = 0
+  simp only [Matrix.smul_mul, Matrix.mul_smul, smul_smul]
+  have h_comm : c1 * c2 = c2 * c1 := mul_comm _ _
+  rw [h_comm, sub_self]
 
-lemma partialDerivMat_smul_c (c : ℂ) (f : SpacetimePoint → Matrix (Fin 2) (Fin 2) ℂ) (μ : Fin 4) (x : SpacetimePoint)
-  (hf : ∀ i j, DifferentiableAt ℝ (fun p => f p i j) x) :
-  partialDerivMat μ (fun p => c • f p) x = c • partialDerivMat μ f x := by
-  ext i j
-  unfold partialDerivMat
-  change partialDeriv μ (fun p => c * f p i j) x = c * partialDeriv μ (fun p => f p i j) x
-  exact partialDeriv_smul_c_local c (fun p => f p i j) μ x (hf i j)
+lemma diff_ContDiff_1 (f : SpacetimePoint → ℂ) (h : ContDiff ℝ ⊤ f) (x : SpacetimePoint) : DifferentiableAt ℝ f x := 
+  (h.differentiable (by decide)) x
 
-lemma partialDerivMat_sum_c {ι : Type*} (s : Finset ι) (A : ι → SpacetimePoint → Matrix (Fin 2) (Fin 2) ℂ) (μ : Fin 4) (x : SpacetimePoint)
-  (h : ∀ i ∈ s, ∀ a b, DifferentiableAt ℝ (fun p => A i p a b) x) :
-  partialDerivMat μ (fun p => ∑ i ∈ s, A i p) x = ∑ i ∈ s, partialDerivMat μ (A i) x := by
-  ext a b
+lemma diff_ContDiff_2 (f : SpacetimePoint → ℂ) (h : ContDiff ℝ ⊤ f) (μ : Fin 4) (x : SpacetimePoint) : DifferentiableAt ℝ (fun p => partialDeriv μ f p) x := by
+  have h_deriv_smooth : ContDiff ℝ 1 (fderiv ℝ f) := h.fderiv_right (by decide)
+  have hd_deriv : DifferentiableAt ℝ (fderiv ℝ f) x := (h_deriv_smooth.differentiable (by decide)) x
+  have h_apply : (fun p => partialDeriv μ f p) = (ContinuousLinearMap.apply ℝ ℂ ((Pi.single μ (1 : ℝ)) : Fin 4 → ℝ)) ∘ (fderiv ℝ f) := rfl
+  rw [h_apply]
+  exact DifferentiableAt.comp x (ContinuousLinearMap.apply ℝ ℂ ((Pi.single μ (1 : ℝ)) : Fin 4 → ℝ)).differentiableAt hd_deriv
+
+lemma abelian_curvature_collapse 
+  (f : Fin 4 → SpacetimePoint → ℂ) (M : SL2C) 
+  (μ ν : Fin 4) (x : SpacetimePoint)
+  (hf_smooth : ∀ α, DifferentiableAt ℝ (f α) x) :
+  curvatureSl2c (fun α p => f α p • M) μ ν x = (partialDeriv μ (f ν) x - partialDeriv ν (f μ) x) • M := by
+  rw [curvatureSl2c_def]
+  rw [partialDerivSl2c_smul_c_fun _ _ _ _ (hf_smooth ν)]
+  rw [partialDerivSl2c_smul_c_fun _ _ _ _ (hf_smooth μ)]
+  have h_comm : ⁅f μ x • M, f ν x • M⁆ = 0 := commutator_smul_smul (f μ x) (f ν x) M
+  rw [h_comm, add_zero, ←sub_smul]
+
+lemma abelian_covariant_collapse 
+  (f : Fin 4 → SpacetimePoint → ℂ) (M : SL2C) 
+  (α β γ : Fin 4) (x : SpacetimePoint)
+  (hf_smooth : ∀ μ p, DifferentiableAt ℝ (f μ) p)
+  (hf_diff2 : DifferentiableAt ℝ (fun p => partialDeriv β (f γ) p - partialDeriv γ (f β) p) x) :
+  covariantDeriv (fun μ p => f μ p • M) α β γ x = partialDeriv α (fun p => partialDeriv β (f γ) p - partialDeriv γ (f β) p) x • M := by
+  unfold covariantDeriv
+  dsimp
+  have hF_eq : (fun p => curvatureSl2c (fun μ p' => f μ p' • M) β γ p) = fun p => (partialDeriv β (f γ) p - partialDeriv γ (f β) p) • M := by
+    apply funext
+    intro p
+    exact abelian_curvature_collapse f M β γ p (fun μ => hf_smooth μ p)
+  rw [hF_eq]
+  rw [partialDerivSl2c_smul_c_fun _ _ _ _ hf_diff2]
+  have hF_x : ((partialDeriv β (f γ) x - partialDeriv γ (f β) x) • M) = curvatureSl2c (fun μ p' => f μ p' • M) β γ x := by
+    rw [abelian_curvature_collapse f M β γ x (fun μ => hf_smooth μ x)]
+  have h_comm : ⁅f α x • M, (partialDeriv β (f γ) x - partialDeriv γ (f β) x) • M⁆ = 0 := commutator_smul_smul (f α x) _ M
+  rw [←hF_x, h_comm, add_zero]
+
+lemma abelian_covariant_eval
+  (f : Fin 4 → SpacetimePoint → ℂ) (M : SL2C) 
+  (α β γ : Fin 4) (x : SpacetimePoint)
+  (hf : ∀ μ, ContDiff ℝ ⊤ (f μ)) :
+  covariantDeriv (fun μ p => f μ p • M) α β γ x = 
+    (partialDeriv α (fun p => partialDeriv β (f γ) p) x - partialDeriv α (fun p => partialDeriv γ (f β) p) x) • M := by
+  have h_diff_f : ∀ μ p, DifferentiableAt ℝ (f μ) p := fun μ p => diff_ContDiff_1 (f μ) (hf μ) p
+  have h_diff_df1 : ∀ p, DifferentiableAt ℝ (fun p => partialDeriv β (f γ) p) p := fun p => diff_ContDiff_2 (f γ) (hf γ) β p
+  have h_diff_df2 : ∀ p, DifferentiableAt ℝ (fun p => partialDeriv γ (f β) p) p := fun p => diff_ContDiff_2 (f β) (hf β) γ p
   
-  have hs_right : (∑ i ∈ s, partialDerivMat μ (A i) x) a b = ∑ i ∈ s, partialDerivMat μ (A i) x a b := by
-    simp only [Matrix.sum_apply]
-  rw [hs_right]
+  have h_diff_sub : DifferentiableAt ℝ (fun p => partialDeriv β (f γ) p - partialDeriv γ (f β) p) x := 
+    DifferentiableAt.sub (h_diff_df1 x) (h_diff_df2 x)
+
+  rw [abelian_covariant_collapse f M α β γ x h_diff_f h_diff_sub]
+  rw [partialDeriv_sub_local (fun p => partialDeriv β (f γ) p) (fun p => partialDeriv γ (f β) p) α x (h_diff_df1 x) (h_diff_df2 x)]
+
+lemma abelian_curvature_add
+  (f g : Fin 4 → SpacetimePoint → ℂ) (M : SL2C) 
+  (μ ν : Fin 4) (x : SpacetimePoint)
+  (hf : ∀ α, ContDiff ℝ ⊤ (f α))
+  (hg : ∀ α, ContDiff ℝ ⊤ (g α)) :
+  curvatureSl2c (fun α p => (f α p + g α p) • M) μ ν x = 
+    curvatureSl2c (fun α p => f α p • M) μ ν x + 
+    curvatureSl2c (fun α p => g α p • M) μ ν x := by
   
-  unfold partialDerivMat
+  have h_diff_f : ∀ α, DifferentiableAt ℝ (f α) x := fun α => diff_ContDiff_1 (f α) (hf α) x
+  have h_diff_g : ∀ α, DifferentiableAt ℝ (g α) x := fun α => diff_ContDiff_1 (g α) (hg α) x
+  have h_diff_add : ∀ α, DifferentiableAt ℝ (fun p => f α p + g α p) x := fun α => DifferentiableAt.add (h_diff_f α) (h_diff_g α)
   
-  have hs_left : (fun p => (∑ i ∈ s, A i p) a b) = fun p => ∑ i ∈ s, A i p a b := by
-    ext p
-    simp only [Matrix.sum_apply]
-  rw [hs_left]
+  rw [abelian_curvature_collapse (fun α p => f α p + g α p) M μ ν x h_diff_add]
+  rw [abelian_curvature_collapse f M μ ν x h_diff_f]
+  rw [abelian_curvature_collapse g M μ ν x h_diff_g]
   
-  exact partialDeriv_sum s (fun i p => A i p a b) μ x (fun i hi => h i hi a b)
+  rw [partialDeriv_add_local _ _ μ x (h_diff_f ν) (h_diff_g ν)]
+  rw [partialDeriv_add_local _ _ ν x (h_diff_f μ) (h_diff_g μ)]
+  
+  have h_alg : (partialDeriv μ (f ν) x + partialDeriv μ (g ν) x - (partialDeriv ν (f μ) x + partialDeriv ν (g μ) x)) = 
+               (partialDeriv μ (f ν) x - partialDeriv ν (f μ) x) + (partialDeriv μ (g ν) x - partialDeriv ν (g μ) x) := by ring
+  rw [h_alg, add_smul]
+
+lemma abelian_covariant_add
+  (f g : Fin 4 → SpacetimePoint → ℂ) (M : SL2C) 
+  (α β γ : Fin 4) (x : SpacetimePoint)
+  (hf : ∀ μ, ContDiff ℝ ⊤ (f μ))
+  (hg : ∀ μ, ContDiff ℝ ⊤ (g μ)) :
+  covariantDeriv (fun μ p => (f μ p + g μ p) • M) α β γ x = 
+    covariantDeriv (fun μ p => f μ p • M) α β γ x + 
+    covariantDeriv (fun μ p => g μ p • M) α β γ x := by
+
+  have h_add_cd : ∀ μ, ContDiff ℝ ⊤ (fun p => f μ p + g μ p) := fun μ => ContDiff.add (hf μ) (hg μ)
+  
+  rw [abelian_covariant_eval (fun μ p => f μ p + g μ p) M α β γ x h_add_cd]
+  rw [abelian_covariant_eval f M α β γ x hf]
+  rw [abelian_covariant_eval g M α β γ x hg]
+
+  have h_diff_df1 : ∀ p, DifferentiableAt ℝ (fun p => partialDeriv β (f γ) p) p := fun p => diff_ContDiff_2 (f γ) (hf γ) β p
+  have h_diff_df2 : ∀ p, DifferentiableAt ℝ (fun p => partialDeriv γ (f β) p) p := fun p => diff_ContDiff_2 (f β) (hf β) γ p
+  have h_diff_dg1 : ∀ p, DifferentiableAt ℝ (fun p => partialDeriv β (g γ) p) p := fun p => diff_ContDiff_2 (g γ) (hg γ) β p
+  have h_diff_dg2 : ∀ p, DifferentiableAt ℝ (fun p => partialDeriv γ (g β) p) p := fun p => diff_ContDiff_2 (g β) (hg β) γ p
+  
+  have h_sum1_eq : (fun p => partialDeriv β (fun p' => f γ p' + g γ p') p) = fun p => partialDeriv β (f γ) p + partialDeriv β (g γ) p := by
+    ext p; exact partialDeriv_add_local _ _ β p (diff_ContDiff_1 (f γ) (hf γ) p) (diff_ContDiff_1 (g γ) (hg γ) p)
+  have h_sum2_eq : (fun p => partialDeriv γ (fun p' => f β p' + g β p') p) = fun p => partialDeriv γ (f β) p + partialDeriv γ (g β) p := by
+    ext p; exact partialDeriv_add_local _ _ γ p (diff_ContDiff_1 (f β) (hf β) p) (diff_ContDiff_1 (g β) (hg β) p)
+    
+  rw [h_sum1_eq, h_sum2_eq]
+  
+  rw [partialDeriv_add_local _ _ α x (h_diff_df1 x) (h_diff_dg1 x)]
+  rw [partialDeriv_add_local _ _ α x (h_diff_df2 x) (h_diff_dg2 x)]
+
+  have h_alg : (partialDeriv α (fun p => partialDeriv β (f γ) p) x + partialDeriv α (fun p => partialDeriv β (g γ) p) x -
+                (partialDeriv α (fun p => partialDeriv γ (f β) p) x + partialDeriv α (fun p => partialDeriv γ (g β) p) x)) =
+               (partialDeriv α (fun p => partialDeriv β (f γ) p) x - partialDeriv α (fun p => partialDeriv γ (f β) p) x) +
+               (partialDeriv α (fun p => partialDeriv β (g γ) p) x - partialDeriv α (fun p => partialDeriv γ (g β) p) x) := by ring
+               
+  rw [h_alg, add_smul]
 
 end CGD.Foundations
