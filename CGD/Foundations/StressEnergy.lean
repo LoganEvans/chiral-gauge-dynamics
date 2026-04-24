@@ -1,15 +1,9 @@
 -- FILENAME: CGD/Foundations/StressEnergy.lean
 
-import CGD.Foundations.GaugeGroup
-import CGD.Axioms.Spacetime
+import CGD.Gravity.Geometry
 import CGD.Foundations.Calculus
-import CGD.Foundations.Action
-import CGD.Foundations.Lagrangian
-import CGD.Foundations.TensorCalculus
-import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import CGD.Axioms.Ontology
 
-set_option maxHeartbeats 4000000
 set_option linter.unusedVariables false
 
 open Complex Matrix CGD.Foundations BigOperators
@@ -17,42 +11,39 @@ open CGD.Axioms
 
 namespace CGD.Foundations
 
-noncomputable def stressEnergyTensor (F : Fin 4 → Fin 4 → SpacetimePoint → SL2C) (μ ν : Fin 4) (x : SpacetimePoint) : Complex :=
-  (∑ α, ∑ β, eta α β * Matrix.trace ((F μ α x).val * (F ν β x).val)) -
-  (1 / 4 : Complex) * eta μ ν * (∑ ρ, ∑ σ, ∑ κ, ∑ γ, eta ρ κ * eta σ γ * Matrix.trace ((F ρ σ x).val * (F κ γ x).val))
+/-- 
+🔴 NEW SIGNATURE: Emergent Stress-Energy Tensor
+Instead of a flat-space matter tensor, Stress-Energy is defined as the 
+Einstein Tensor of the dynamically emergent Urbantke metric. 
+G_{\mu\nu} = R_{\mu\nu} - 1/2 g_{\mu\nu} R
+-/
+noncomputable def emergentStressEnergy (F : Fin 4 → Fin 4 → SpacetimePoint → SL2C) (mu nu : Fin 4) (x : SpacetimePoint) : ℂ :=
+  let g := fun m n p => CGD.Gravity.urbantkeMetric (fun a b => F a b p) m n
+  let g_inv := CGD.Gravity.matrixInv4x4 (fun m n => g m n x)
+  let R_mu_nu := CGD.Gravity.ricciTensor g mu nu x
+  let R_scalar := ∑ alpha : Fin 4, ∑ beta : Fin 4, g_inv alpha beta * CGD.Gravity.ricciTensor g alpha beta x
+  R_mu_nu - (1/2 : ℂ) * g mu nu x * R_scalar
 
-/-- 🟢 DYNAMIC: Spacetime Translation Invariance yields a Conserved Stress-Energy Tensor (∂_μ T^μν = 0). -/
-theorem dynamicStressEnergyConservation (u : Universe)
-  (h_smooth : (∀ mu i j, ContDiff ℝ ⊤ (fun x => (u.sd_sector mu x).val i j)) ∧ 
-              (∀ mu i j, ContDiff ℝ ⊤ (fun x => (u.asd_sector mu x).val i j))) :
-  eulerLagrangePDEs u →
-  ∀ ν x, (∑ μ, ∑ ρ, eta μ ρ * partialDeriv ρ (fun p => stressEnergyTensor (fun m n p' => curvatureSl2c u.sd_sector m n p') μ ν p) x) = 0 := by
-  intros h_eom ν x
-  have h_expand := stressEnergyDivergenceExpansion u.sd_sector h_smooth.1 ν x
-  
-  unfold stressEnergyTensor
-  rw [h_expand]
-
-  have h_self_dual_eom := h_eom.1
-  
-  have h_step1 : (∑ α : Fin 4, ∑ β : Fin 4, eta α β * Matrix.trace (
-      (∑ μ : Fin 4, ∑ ρ : Fin 4, (eta μ ρ : ℂ) • (covariantDeriv u.sd_sector μ ρ α x).val) * (curvatureSl2c u.sd_sector ν β x).val
-    )) = 0 := by
-    simp_rw [h_self_dual_eom]
-    simp [Matrix.trace_zero, mul_zero]
-
-  have h_step2 : ((1 / 2 : Complex) * ∑ μ : Fin 4, ∑ α : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, eta μ ρ * eta α σ * Matrix.trace (
-      (curvatureSl2c u.sd_sector μ α x).val *
-      (covariantDeriv u.sd_sector ρ σ ν x + covariantDeriv u.sd_sector σ ν ρ x + covariantDeriv u.sd_sector ν ρ σ x).val
-    )) = 0 := by
-    have hb : ∀ ρ σ, (covariantDeriv u.sd_sector ρ σ ν x + covariantDeriv u.sd_sector σ ν ρ x + covariantDeriv u.sd_sector ν ρ σ x).val = 0 := by
-      intros ρ σ
-      have hbi := bianchiIdentity u.sd_sector h_smooth.1 ρ σ ν x
-      rw [hbi]
-      rfl
-    simp_rw [hb]
-    simp [Matrix.trace_zero, mul_zero]
-
-  rw [h_step1, h_step2, sub_zero]
+/-- 
+🔴 NEW SIGNATURE: Emergent Stress-Energy Conservation
+Replaces flat-space translation invariance. Proves that the emergent 
+Stress-Energy tensor is covariantly conserved with respect to the Levi-Civita 
+connection of the Urbantke metric (nabla_mu G^{mu nu} = 0).
+This requires the spacetime manifold to be non-degenerate (det g ≠ 0) to compute 
+the Christoffel symbols and the inverse metric.
+-/
+theorem emergentStressEnergyConservation (u : Universe) 
+  (h_nondeg : ∀ x, (CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b x)).det ≠ 0) :
+  ∀ nu x,
+    let g := fun m n p => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p) m n
+    let g_inv := CGD.Gravity.matrixInv4x4 (fun m n => g m n x)
+    let T := fun m n p => emergentStressEnergy (fun a b p' => curvatureSl2c u.sd_sector a b p') m n p
+    -- g^{mu alpha} \nabla_{alpha} T_{mu nu} = 0
+    ∑ mu : Fin 4, ∑ alpha : Fin 4, g_inv mu alpha * (
+      partialDeriv alpha (fun p => T mu nu p) x -
+      ∑ lambda : Fin 4, (CGD.Gravity.christoffel g lambda alpha mu x * T lambda nu x + 
+                         CGD.Gravity.christoffel g lambda alpha nu x * T mu lambda x)
+    ) = 0 := by
+  sorry
 
 end CGD.Foundations

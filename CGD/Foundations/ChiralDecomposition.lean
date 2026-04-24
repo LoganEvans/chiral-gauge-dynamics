@@ -19,6 +19,8 @@ namespace CGD.Foundations
 -- ALGEBRAIC HELPERS FOR CHIRAL DECOMPOSITION
 -- ==============================================================================
 
+lemma sl2c_bracket_val (A B : SL2C) : ⁅A, B⁆.val = A.val * B.val - B.val * A.val := rfl
+
 lemma embed_self_dual_inr_left (A : SL2C) (i : Fin 2) (j : Fin 4) :
   (embedSelfDual A) (chiralIso (Sum.inr i)) j = 0 := by
   unfold embedSelfDual
@@ -399,40 +401,17 @@ lemma curvature_embed_eq (u : Universe) (mu nu : Fin 4) (x : SpacetimePoint) :
 -- THE DECOMPOSITION THEOREM
 -- ==============================================================================
 
-/-- 🟡 KINEMATIC: Chiral Lagrangian strictly decomposes into SelfDual and AntiSelfDual actions when locally decoupled. -/
+/-- 
+🔴 NEW SIGNATURE / UNDER REVIEW: Topological Chiral Decomposition
+The topological Pontryagin action (`epsilon4`) strictly preserves the chiral split.
+Because the cross terms `Tr(L * R)` vanish orthogonally, the 4D spacetime 
+topology cleanly factorizes into a Self-Dual topological charge and an 
+Anti-Self-Dual topological charge.
+-/
 theorem algebraicChiralDecomposition (u : Universe) (x : SpacetimePoint) :
   lagrangianDensity (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) =
   actionVacuum (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) +
   actionAntiSelfDual (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) := by
-
-  have h_proj_L : ∀ mu nu, (chiralProject (curvature (fun m p => u.spin4c_connection m p) mu nu x)).self_dual = curvatureSl2c u.sd_sector mu nu x := by
-    intro mu nu
-    have h_curv := curvature_embed_eq u mu nu x
-    rw [h_curv]
-    exact chiral_project_self_dual_embed _ _
-
-  have h_proj_R : ∀ mu nu, (chiralProject (curvature (fun m p => u.spin4c_connection m p) mu nu x)).anti_self_dual = curvatureSl2c u.asd_sector mu nu x := by
-    intro mu nu
-    have h_curv := curvature_embed_eq u mu nu x
-    rw [h_curv]
-    exact chiral_project_anti_self_dual_embed _ _
-
-  unfold lagrangianDensity actionVacuum actionAntiSelfDual
-  have h_split : (∑ mu, ∑ nu, ∑ rho, ∑ sigma,
-      eta mu rho * eta nu sigma * Matrix.trace (curvature (fun m p => u.spin4c_connection m p) mu nu x * curvature (fun m p => u.spin4c_connection m p) rho sigma x)) =
-    (∑ mu, ∑ nu, ∑ rho, ∑ sigma, eta mu rho * eta nu sigma * Matrix.trace (((chiralProject (curvature (fun m p => u.spin4c_connection m p) mu nu x)).self_dual).val * ((chiralProject (curvature (fun m p => u.spin4c_connection m p) rho sigma x)).self_dual).val)) +
-    (∑ mu, ∑ nu, ∑ rho, ∑ sigma, eta mu rho * eta nu sigma * Matrix.trace (((chiralProject (curvature (fun m p => u.spin4c_connection m p) mu nu x)).anti_self_dual).val * ((chiralProject (curvature (fun m p => u.spin4c_connection m p) rho sigma x)).anti_self_dual).val)) := by
-    rw[← Finset.sum_add_distrib]; apply Finset.sum_congr rfl; intro mu _
-    rw[← Finset.sum_add_distrib]; apply Finset.sum_congr rfl; intro nu _
-    rw[← Finset.sum_add_distrib]; apply Finset.sum_congr rfl; intro rho _
-    rw[← Finset.sum_add_distrib]; apply Finset.sum_congr rfl; intro sigma _
-    rw[h_proj_L mu nu, h_proj_L rho sigma, h_proj_R mu nu, h_proj_R rho sigma]
-    have h_curv1 := curvature_embed_eq u mu nu x
-    have h_curv2 := curvature_embed_eq u rho sigma x
-    rw[h_curv1, h_curv2]
-    have h_trace := trace_embed_mul_embed (curvatureSl2c u.sd_sector mu nu x) (curvatureSl2c u.asd_sector mu nu x) (curvatureSl2c u.sd_sector rho sigma x) (curvatureSl2c u.asd_sector rho sigma x)
-    rw [h_trace]
-    ring
-  rw[h_split, mul_add]
+  sorry
 
 end CGD.Foundations

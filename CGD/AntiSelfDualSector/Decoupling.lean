@@ -29,21 +29,25 @@ lemma action_vacuum_congr (F1 F2 : Fin 4 -> Fin 4 -> ChiralM)
     rw [h mu nu, h rho sigma]
 
   have h_sum : (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4,
-    eta mu rho * eta nu sigma * Matrix.trace (((chiralProject (F1 mu nu)).self_dual).val * ((chiralProject (F1 rho sigma)).self_dual).val)) =
+    CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (((chiralProject (F1 mu nu)).self_dual).val * ((chiralProject (F1 rho sigma)).self_dual).val)) =
     (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4,
-    eta mu rho * eta nu sigma * Matrix.trace (((chiralProject (F2 mu nu)).self_dual).val * ((chiralProject (F2 rho sigma)).self_dual).val)) := by
+    CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (((chiralProject (F2 mu nu)).self_dual).val * ((chiralProject (F2 rho sigma)).self_dual).val)) := by
     apply Finset.sum_congr rfl; intro mu _
     apply Finset.sum_congr rfl; intro nu _
     apply Finset.sum_congr rfl; intro rho _
     apply Finset.sum_congr rfl; intro sigma _
     rw[h_trace mu nu rho sigma]
 
-  have h_eq1 : actionVacuum F1 = (-0.5 : ℂ) * (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, eta mu rho * eta nu sigma * Matrix.trace (((chiralProject (F1 mu nu)).self_dual).val * ((chiralProject (F1 rho sigma)).self_dual).val)) := rfl
-  have h_eq2 : actionVacuum F2 = (-0.5 : ℂ) * (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, eta mu rho * eta nu sigma * Matrix.trace (((chiralProject (F2 mu nu)).self_dual).val * ((chiralProject (F2 rho sigma)).self_dual).val)) := rfl
+  have h_eq1 : actionVacuum F1 = (-0.5 : ℂ) * (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (((chiralProject (F1 mu nu)).self_dual).val * ((chiralProject (F1 rho sigma)).self_dual).val)) := rfl
+  have h_eq2 : actionVacuum F2 = (-0.5 : ℂ) * (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (((chiralProject (F2 mu nu)).self_dual).val * ((chiralProject (F2 rho sigma)).self_dual).val)) := rfl
 
   rw[h_eq1, h_eq2, h_sum]
 
-/-- 🟡 KINEMATIC: AntiSelfDual Matter Decoupling -/
+/-- 🔴 NEW SIGNATURE / UNDER REVIEW: AntiSelfDual Matter Decoupling
+This theorem asserts that the topological vacuum action is completely 
+insensitive to the Anti-Self-Dual gauge field connection, securing 
+the chiral asymmetry of the geometry.
+-/
 theorem algebraicAntiSelfDualSectorDecoupling (u : Universe)
   (A_R_alt : Sl2cGaugeField) (x : SpacetimePoint) :
   actionVacuum (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) =
