@@ -11,11 +11,6 @@ open CGD.Axioms CGD.Foundations
 
 namespace CGD.Gravity
 
-lemma eta_det_nonzero : Matrix.det (Matrix.of CGD.Axioms.eta) ≠ 0 := by
-  rw [Litlib.Math.Matrix4.expand_det_4]
-  -- `simp` natively reduces all the if-then-else blocks inside `eta` and does the arithmetic
-  simp [CGD.Axioms.eta]
-
 /-- 4-dimensional Levi-Civita tensor over Int for O(1) kernel evaluation -/
 def epsilon4_int : Fin 4 → Fin 4 → Fin 4 → Fin 4 → Int
 | 0, 1, 2, 3 => 1

@@ -4,6 +4,7 @@ import CGD.Axioms.Spacetime
 import CGD.Foundations.GaugeGroup
 import CGD.Foundations.Calculus
 import CGD.Axioms.Ontology
+import CGD.Gravity.Geometry
 import Mathlib.LinearAlgebra.Matrix.Trace
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
@@ -23,21 +24,21 @@ open CGD.Axioms
 noncomputable def lagrangianDensity (F : Fin 4 -> Fin 4 -> ChiralM) : Complex :=
   (-0.5 : Complex) * (
     ∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4,
-      eta mu rho * eta nu sigma * Matrix.trace (F mu nu * F rho sigma)
+      CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (F mu nu * F rho sigma)
   )
 
 noncomputable def actionVacuum (F : Fin 4 -> Fin 4 -> ChiralM) : Complex :=
   let F_L := fun mu nu => (chiralProject (F mu nu)).self_dual
   (-0.5 : Complex) * (
     ∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4,
-      eta mu rho * eta nu sigma * Matrix.trace ((F_L mu nu).val * (F_L rho sigma).val)
+      CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace ((F_L mu nu).val * (F_L rho sigma).val)
   )
 
 noncomputable def actionAntiSelfDual (F : Fin 4 -> Fin 4 -> ChiralM) : Complex :=
   let F_R := fun mu nu => (chiralProject (F mu nu)).anti_self_dual
   (-0.5 : Complex) * (
     ∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4,
-      eta mu rho * eta nu sigma * Matrix.trace ((F_R mu nu).val * (F_R rho sigma).val)
+      CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace ((F_R mu nu).val * (F_R rho sigma).val)
   )
 
 -- ============================================================================
@@ -63,13 +64,13 @@ noncomputable def universeAction (u : Universe) : ℝ :=
 
 /-- 
 Explicit geometric topological action map over the continuous geometry, 
-utilizing the Euclidean delta metric rather than Lorentzian eta metric. 
+utilizing the strictly background-independent topological density.
 -/
 noncomputable def topologicalAction (A : Fin 4 → SpacetimePoint → SL2C) : ℝ :=
   volumeIntegral (fun p =>
     let F := fun mu nu => curvatureSl2c A mu nu p
     (-0.5 : ℂ).re * (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4,
-      (if mu = rho then (1 : ℂ) else 0) * (if nu = sigma then (1 : ℂ) else 0) * Matrix.trace ((F mu nu).val * (F rho sigma).val)).re)
+      CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace ((F mu nu).val * (F rho sigma).val)).re)
 
 /--
 A physically valid universe variation is mathematically constrained:

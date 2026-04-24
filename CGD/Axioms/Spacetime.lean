@@ -23,10 +23,6 @@ instance spacetime_is_infinite : Infinite SpacetimePoint :=
     intro x y h
     exact congr_fun h 0)
 
-/-- The standard Minkowski metric (-+++). -/
-def eta (μ ν : Fin 4) : Complex := 
-  if μ = ν then (if μ = 0 then -1 else 1) else 0
-
 /-- Noncomputable definition of the invariant volume integral over the 4D Spacetime manifold,
     mapped directly to Mathlib's native Bochner integral over Lebesgue measure. -/
 noncomputable def volumeIntegral (f : CGD.Axioms.SpacetimePoint → ℝ) : ℝ :=
