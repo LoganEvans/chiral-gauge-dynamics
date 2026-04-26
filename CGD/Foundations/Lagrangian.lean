@@ -19,7 +19,7 @@ namespace CGD.Foundations
 
 variable [ue : Litlib.Y1956.utiyama1956invariant.UtiyamaExpansion.{0}]
 variable [bi : CGD.Litlib.Y1956.utiyama1956invariant.AppendixI_InvariantBilinearForm]
-variable [pv : Litlib.Y2003.nakahara2003geometry.PontryaginActionVariation Universe universeAction isValidUniverseVariation]
+variable [pv : Litlib.Y2003.nakahara2003geometry.PontryaginActionVariation Universe ℂ universeAction isValidUniverseVariation]
 
 /-- 
 Pure Math Lemma: Any fully alternating rank-4 tensor on a 4D space 
@@ -189,7 +189,7 @@ lemma action_variation_master_lemma (u : Universe) (v : ℝ → Universe)
   (h_valid : isValidUniverseVariation v)
   (h_zero : v 0 = u) :
   HasDerivAt (fun t => universeAction (v t)) 0 0 := by
-  exact Litlib.Y2003.nakahara2003geometry.PontryaginActionVariation.variation_zero u v h_valid h_zero
+  exact pv.variation_zero u v h_valid h_zero
 
 /-- Rigorous evaluator for pulling Kronecker deltas out of sums without `simp` explosion. -/
 lemma sum_ite_mul {α β : Type*} [Ring β] [Fintype α] [DecidableEq α] 

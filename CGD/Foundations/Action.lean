@@ -46,31 +46,36 @@ noncomputable def actionAntiSelfDual (F : Fin 4 -> Fin 4 -> ChiralM) : Complex :
 -- ============================================================================
 
 /-- Defines a local stationary point for functional variations (δS = 0) on the manifold.
-    Now rigorously enforces that variations must be physically valid (smooth & compactly supported). -/
-def isStationaryPoint {α : Type*} (Action : α → ℝ) (state : α) (is_valid_var : (ℝ → α) → Prop) : Prop :=
+    Now rigorously enforces that variations must be physically valid (smooth & compactly supported). 
+    Upgraded to fully support Complex-valued paths without mutilation. -/
+def isStationaryPoint {α β : Type*} [NormedAddCommGroup β] [NormedSpace ℝ β] (Action : α → β) (state : α) (is_valid_var : (ℝ → α) → Prop) : Prop :=
   is_valid_var (fun _ => state) ∧
   ∀ (variation : ℝ → α), is_valid_var variation → variation 0 = state →
-    HasDerivAt (fun t => Action (variation t)) 0 0
+    HasDerivAt (fun t => Action (variation t)) (0 : β) (0 : ℝ)
 
-/-- Defines a local minimum for functional variations on the manifold (allowing for flat moduli directions). -/
+/-- Defines a local minimum for functional variations on the manifold (allowing for flat moduli directions). 
+    Requires a Real-valued action (e.g. Energy) because complex paths cannot be ordered. -/
 def isLocalMinimum {α : Type*} (Action : α → ℝ) (state : α) (is_valid_var : (ℝ → α) → Prop) : Prop :=
   is_valid_var (fun _ => state) ∧
   ∀ (variation : ℝ → α), is_valid_var variation → variation 0 = state →
     ∃ (ε : ℝ), ε > 0 ∧ ∀ t, -ε < t ∧ t < ε → Action state ≤ Action (variation t)
 
+noncomputable def complexVolumeIntegral (f : SpacetimePoint → ℂ) : ℂ :=
+  Complex.mk (volumeIntegral (fun p => (f p).re)) (volumeIntegral (fun p => (f p).im))
+
 /-- Explicit geometric universe action map over the continuous geometry -/
-noncomputable def universeAction (u : Universe) : ℝ :=
-  volumeIntegral (fun p => (lagrangianDensity (fun mu nu => curvature (fun m x => u.spin4c_connection m x) mu nu p)).re)
+noncomputable def universeAction (u : Universe) : ℂ :=
+  complexVolumeIntegral (fun p => lagrangianDensity (fun mu nu => curvature (fun m x => u.spin4c_connection m x) mu nu p))
 
 /-- 
 Explicit geometric topological action map over the continuous geometry, 
 utilizing the strictly background-independent topological density.
 -/
-noncomputable def topologicalAction (A : Fin 4 → SpacetimePoint → SL2C) : ℝ :=
-  volumeIntegral (fun p =>
+noncomputable def topologicalAction (A : Fin 4 → SpacetimePoint → SL2C) : ℂ :=
+  complexVolumeIntegral (fun p =>
     let F := fun mu nu => curvatureSl2c A mu nu p
-    (-0.5 : ℂ).re * (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4,
-      CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace ((F mu nu).val * (F rho sigma).val)).re)
+    (-0.5 : ℂ) * (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4,
+      CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace ((F mu nu).val * (F rho sigma).val)))
 
 /--
 A physically valid universe variation is mathematically constrained:
@@ -85,7 +90,7 @@ def isValidUniverseVariation (v : ℝ → Universe) : Prop :=
   (∀ t, ∃ R > 0, ∀ x, (x 0)^2 + (x 1)^2 + (x 2)^2 + (x 3)^2 > R^2 →
     (∀ mu, (v t).sd_sector mu x = (v 0).sd_sector mu x) ∧
     (∀ mu, (v t).asd_sector mu x = (v 0).asd_sector mu x)) ∧
-  (∀ t, MeasureTheory.Integrable (fun p => (lagrangianDensity (fun mu nu => curvature (fun m x => (v t).spin4c_connection m x) mu nu p)).re))
+  (∀ t, MeasureTheory.Integrable (fun p => lagrangianDensity (fun mu nu => curvature (fun m x => (v t).spin4c_connection m x) mu nu p)))
 
 /-- A physically valid W=1 gauge variation (smooth and compactly supported). -/
 def isValidW1Variation (v : ℝ → (Fin 4 → CGD.Axioms.SpacetimePoint → SL2C)) : Prop :=
