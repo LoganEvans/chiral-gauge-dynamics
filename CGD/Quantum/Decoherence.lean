@@ -23,18 +23,44 @@ The Gatekeeper must review if this classical decoherence limit still logically f
 from the topological CDJ constraints instead of the flat Yang-Mills PDEs.
 -/
 theorem phenomenologicalMeasurementDecoherence (u : Universe) :
-  CGD.Gravity.satisfiesCdjConstraint (fun m n p => curvatureSl2c u.sd_sector m n p) →
   ∀ (x : SpacetimePoint) (theta M : ℂ),
     isOrthogonalDecoherenceLimit u x theta M sigmaX sigmaZ →
     Matrix.trace ((curvatureSl2c u.sd_sector 1 2 x).val * (curvatureSl2c u.asd_sector 1 2 x).val) = 0 →
     Complex.sin theta = 0 := by
-  sorry
+  intro x theta M hLimit hTrace
+  unfold isOrthogonalDecoherenceLimit at hLimit
+  rcases hLimit with ⟨hM, hSD, hASD⟩
+  rw [hSD, hASD] at hTrace
+  
+  have hXX : Matrix.trace (sigmaX * sigmaX) = 2 := by
+    unfold Matrix.trace Matrix.diag
+    simp [sigmaX, mkMat, Matrix.mul_apply, Fin.sum_univ_two, Fin.sum_univ_succ, Fin.sum_univ_zero]
+    ring
 
--- 🚨 THEORETICAL PIVOT SECURED 🚨
--- `dynamicWaveInterference` has been permanently purged.
--- Linear wave interference relies on overlapping flat-space Yang-Mills solutions
--- governed by `eta`. In pure emergent connection gravity, superposition is 
--- highly non-linear (the metrics superpose!) and standard flat-space wave 
--- mechanics do not apply natively without quantum limits.
+  have hZX : Matrix.trace (sigmaZ * sigmaX) = 0 := by
+    unfold Matrix.trace Matrix.diag
+    simp [sigmaZ, sigmaX, mkMat, Matrix.mul_apply, Fin.sum_univ_two, Fin.sum_univ_succ, Fin.sum_univ_zero]
+
+  have h_expand : Matrix.trace (((Complex.cos theta) • sigmaZ + (Complex.sin theta) • sigmaX) * (M • sigmaX)) = 
+                  Complex.cos theta * M * Matrix.trace (sigmaZ * sigmaX) + Complex.sin theta * M * Matrix.trace (sigmaX * sigmaX) := by
+    simp [Matrix.add_mul, add_mul, smul_mul_assoc, mul_smul_comm, Matrix.trace_add, Matrix.trace_smul]
+    ring
+
+  rw [h_expand, hXX, hZX] at hTrace
+  
+  have h_eq : 2 * M * Complex.sin theta = 0 := by
+    calc 2 * M * Complex.sin theta
+      _ = Complex.cos theta * M * 0 + Complex.sin theta * M * 2 := by ring
+      _ = 0 := hTrace
+      
+  cases mul_eq_zero.mp h_eq with
+  | inl h2M =>
+    cases mul_eq_zero.mp h2M with
+    | inl h2 => 
+      revert h2
+      norm_num
+    | inr hM_zero => 
+      contradiction
+  | inr hSin => exact hSin
 
 end CGD.Quantum
