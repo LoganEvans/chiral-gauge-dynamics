@@ -3,6 +3,8 @@
 import CGD.Foundations.Calculus
 import CGD.Foundations.Action
 import CGD.Gravity.Geometry
+import CGD.Foundations.TensorCalculus.DifferentialRules
+import CGD.Foundations.TensorCalculus.BianchiIdentity
 
 set_option maxHeartbeats 4000000
 set_option linter.unusedSimpArgs false
@@ -34,6 +36,23 @@ noncomputable def canonicalHamiltonianDensity (A : Fin 4 → SpacetimePoint → 
   (∑ i : Fin 3, Matrix.trace (conjugateMomentum A i x * (partialDerivSl2c 0 (A (spatialIdx i)) x).val)) -
   (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, 
     epsilon4 μ ν ρ σ * Matrix.trace ((curvatureSl2c A μ ν x).val * (curvatureSl2c A ρ σ x).val))
+
+/-- 
+The Gauss Constraint: Generates spatial SU(2) gauge transformations.
+Formally: G = D_i Π^i.
+By leveraging the linearity of the covariant derivative over the Lie algebra, 
+this is strictly equivalent to the fully contracted spatial covariant 
+divergence of the magnetic field tensor.
+-/
+noncomputable def gaussConstraintDensity (A : Fin 4 → SpacetimePoint → SL2C) (x : SpacetimePoint) : Matrix (Fin 2) (Fin 2) ℂ :=
+  (4 : ℂ) • ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, (epsilon3 i j k) • (covariantDeriv A (spatialIdx i) (spatialIdx j) (spatialIdx k) x).val
+
+/--
+The Momentum (Diffeomorphism) Constraint: Generates spatial diffeomorphisms.
+Formally: V_j = Tr(Π^i F_{ij}).
+-/
+noncomputable def momentumConstraintDensity (A : Fin 4 → SpacetimePoint → SL2C) (j : Fin 3) (x : SpacetimePoint) : ℂ :=
+  ∑ i : Fin 3, Matrix.trace (conjugateMomentum A i x * (curvatureSl2c A (spatialIdx i) (spatialIdx j) x).val)
 
 -- ==============================================================================
 -- Algebraic & Combinatorial Helpers for 4D -> 3D Reduction
@@ -256,5 +275,141 @@ theorem canonicalHamiltonianVanishes (A : Fin 4 → SpacetimePoint → SL2C) (x 
   have h := electricFieldDecomposition A x i
   rw [h]
   apply ext_trace_mul_sub_fin_2
+
+/--
+🟢 NEW SIGNATURE: Topological Gauss Constraint
+Because the underlying action is purely topological, the Gauss constraint 
+algebraically vanishes as an exact identity. The spatial divergence of the 
+conjugate momentum strictly reduces to the spatial Bianchi identity 
+(D_{[i} F_{jk]} = 0).
+-/
+theorem gaussConstraintVanishes (A : Fin 4 → SpacetimePoint → SL2C) (x : SpacetimePoint)
+  (h_smooth : ∀ mu i j, ContDiff ℝ ⊤ (fun p => (A mu p).val i j)) :
+  gaussConstraintDensity A x = 0 := by
+  unfold gaussConstraintDensity
+  have sp0 : spatialIdx 0 = 1 := rfl
+  have sp1 : spatialIdx 1 = 2 := rfl
+  have sp2 : spatialIdx 2 = 3 := rfl
+  simp only [sum_fin_3_expand,
+             Matrix.add_apply, Matrix.smul_apply, smul_eq_mul,
+             epsilon3, epsilon3_int, sp0, sp1, sp2,
+             Int.cast_zero, Int.cast_one, Int.cast_neg,
+             zero_smul, one_smul, neg_smul, add_zero, zero_add]
+             
+  have b1 := bianchiIdentity A h_smooth 1 2 3 x
+  have b2 := bianchiIdentity A h_smooth 1 3 2 x
+  
+  have b1_eq : (covariantDeriv A 1 2 3 x).val + (covariantDeriv A 2 3 1 x).val + (covariantDeriv A 3 1 2 x).val = 0 := by
+    calc (covariantDeriv A 1 2 3 x).val + (covariantDeriv A 2 3 1 x).val + (covariantDeriv A 3 1 2 x).val
+      _ = (covariantDeriv A 1 2 3 x + covariantDeriv A 2 3 1 x + covariantDeriv A 3 1 2 x).val := rfl
+      _ = (0 : SL2C).val := congrArg Subtype.val b1
+      _ = 0 := rfl
+      
+  have b2_eq : (covariantDeriv A 1 3 2 x).val + (covariantDeriv A 3 2 1 x).val + (covariantDeriv A 2 1 3 x).val = 0 := by
+    calc (covariantDeriv A 1 3 2 x).val + (covariantDeriv A 3 2 1 x).val + (covariantDeriv A 2 1 3 x).val
+      _ = (covariantDeriv A 1 3 2 x + covariantDeriv A 3 2 1 x + covariantDeriv A 2 1 3 x).val := rfl
+      _ = (0 : SL2C).val := congrArg Subtype.val b2
+      _ = 0 := rfl
+
+  ext i j
+  simp only [Matrix.smul_apply, Matrix.zero_apply, Matrix.add_apply, Matrix.sub_apply, Matrix.neg_apply, smul_eq_mul]
+  have h1 := congrFun (congrFun b1_eq i) j
+  have h2 := congrFun (congrFun b2_eq i) j
+  simp only [Matrix.add_apply, Matrix.zero_apply, Pi.add_apply, Pi.zero_apply] at h1 h2
+  
+  calc _ = (4 : ℂ) * (
+        ((covariantDeriv A 1 2 3 x).val i j + (covariantDeriv A 2 3 1 x).val i j + (covariantDeriv A 3 1 2 x).val i j) -
+        ((covariantDeriv A 1 3 2 x).val i j + (covariantDeriv A 3 2 1 x).val i j + (covariantDeriv A 2 1 3 x).val i j) ) := by ring
+    _ = (4 : ℂ) * (0 - 0) := by rw [h1, h2]
+    _ = 0 := by ring
+
+/--
+🟢 NEW SIGNATURE: Topological Momentum Constraint
+The momentum constraint generating spatial diffeomorphisms algebraically vanishes.
+This strictly follows from the total antisymmetry of the spatial volume form 
+contracting against the symmetric matrix trace of the field strength components.
+-/
+theorem momentumConstraintVanishes (A : Fin 4 → SpacetimePoint → SL2C) (j : Fin 3) (x : SpacetimePoint) :
+  momentumConstraintDensity A j x = 0 := by
+  unfold momentumConstraintDensity conjugateMomentum
+  
+  have hF_anti : ∀ μ ν, (curvatureSl2c A μ ν x).val = - (curvatureSl2c A ν μ x).val := by
+    intro μ ν
+    exact congrArg Subtype.val (curvatureSl2c_antisymm A μ ν x)
+    
+  let F (μ ν : Fin 4) := (curvatureSl2c A μ ν x).val
+  
+  have f11_00 : (F 1 1) 0 0 = 0 := skew_zero _ (congrFun (congrFun (hF_anti 1 1) 0) 0)
+  have f11_01 : (F 1 1) 0 1 = 0 := skew_zero _ (congrFun (congrFun (hF_anti 1 1) 0) 1)
+  have f11_10 : (F 1 1) 1 0 = 0 := skew_zero _ (congrFun (congrFun (hF_anti 1 1) 1) 0)
+  have f11_11 : (F 1 1) 1 1 = 0 := skew_zero _ (congrFun (congrFun (hF_anti 1 1) 1) 1)
+
+  have f22_00 : (F 2 2) 0 0 = 0 := skew_zero _ (congrFun (congrFun (hF_anti 2 2) 0) 0)
+  have f22_01 : (F 2 2) 0 1 = 0 := skew_zero _ (congrFun (congrFun (hF_anti 2 2) 0) 1)
+  have f22_10 : (F 2 2) 1 0 = 0 := skew_zero _ (congrFun (congrFun (hF_anti 2 2) 1) 0)
+  have f22_11 : (F 2 2) 1 1 = 0 := skew_zero _ (congrFun (congrFun (hF_anti 2 2) 1) 1)
+
+  have f33_00 : (F 3 3) 0 0 = 0 := skew_zero _ (congrFun (congrFun (hF_anti 3 3) 0) 0)
+  have f33_01 : (F 3 3) 0 1 = 0 := skew_zero _ (congrFun (congrFun (hF_anti 3 3) 0) 1)
+  have f33_10 : (F 3 3) 1 0 = 0 := skew_zero _ (congrFun (congrFun (hF_anti 3 3) 1) 0)
+  have f33_11 : (F 3 3) 1 1 = 0 := skew_zero _ (congrFun (congrFun (hF_anti 3 3) 1) 1)
+
+  have f21_00 : (F 2 1) 0 0 = - (F 1 2) 0 0 := congrFun (congrFun (hF_anti 2 1) 0) 0
+  have f21_01 : (F 2 1) 0 1 = - (F 1 2) 0 1 := congrFun (congrFun (hF_anti 2 1) 0) 1
+  have f21_10 : (F 2 1) 1 0 = - (F 1 2) 1 0 := congrFun (congrFun (hF_anti 2 1) 1) 0
+  have f21_11 : (F 2 1) 1 1 = - (F 1 2) 1 1 := congrFun (congrFun (hF_anti 2 1) 1) 1
+
+  have f31_00 : (F 3 1) 0 0 = - (F 1 3) 0 0 := congrFun (congrFun (hF_anti 3 1) 0) 0
+  have f31_01 : (F 3 1) 0 1 = - (F 1 3) 0 1 := congrFun (congrFun (hF_anti 3 1) 0) 1
+  have f31_10 : (F 3 1) 1 0 = - (F 1 3) 1 0 := congrFun (congrFun (hF_anti 3 1) 1) 0
+  have f31_11 : (F 3 1) 1 1 = - (F 1 3) 1 1 := congrFun (congrFun (hF_anti 3 1) 1) 1
+
+  have f32_00 : (F 3 2) 0 0 = - (F 2 3) 0 0 := congrFun (congrFun (hF_anti 3 2) 0) 0
+  have f32_01 : (F 3 2) 0 1 = - (F 2 3) 0 1 := congrFun (congrFun (hF_anti 3 2) 0) 1
+  have f32_10 : (F 3 2) 1 0 = - (F 2 3) 1 0 := congrFun (congrFun (hF_anti 3 2) 1) 0
+  have f32_11 : (F 3 2) 1 1 = - (F 2 3) 1 1 := congrFun (congrFun (hF_anti 3 2) 1) 1
+
+  have j_cases : j = 0 ∨ j = 1 ∨ j = 2 := by
+    rcases j with ⟨val, hj⟩
+    have : val = 0 ∨ val = 1 ∨ val = 2 := by omega
+    rcases this with rfl | rfl | rfl
+    · left; rfl
+    · right; left; rfl
+    · right; right; rfl
+
+  have sp0 : spatialIdx 0 = 1 := rfl
+  have sp1 : spatialIdx 1 = 2 := rfl
+  have sp2 : spatialIdx 2 = 3 := rfl
+
+  change ∑ i : Fin 3, Matrix.trace (((4 : ℂ) • ∑ a : Fin 3, ∑ b : Fin 3, (epsilon3 i a b) • F (spatialIdx a) (spatialIdx b)) * F (spatialIdx i) (spatialIdx j)) = 0
+  
+  rcases j_cases with rfl | rfl | rfl
+  · simp only [sum_fin_3_expand, Matrix.add_apply, Matrix.smul_apply, trace_mul_fin_2, smul_eq_mul,
+               epsilon3, epsilon3_int, Int.cast_zero, Int.cast_one, Int.cast_neg, sp0, sp1, sp2,
+               f11_00, f11_01, f11_10, f11_11,
+               f22_00, f22_01, f22_10, f22_11,
+               f33_00, f33_01, f33_10, f33_11,
+               f21_00, f21_01, f21_10, f21_11,
+               f31_00, f31_01, f31_10, f31_11,
+               f32_00, f32_01, f32_10, f32_11]
+    ring
+  · simp only [sum_fin_3_expand, Matrix.add_apply, Matrix.smul_apply, trace_mul_fin_2, smul_eq_mul,
+               epsilon3, epsilon3_int, Int.cast_zero, Int.cast_one, Int.cast_neg, sp0, sp1, sp2,
+               f11_00, f11_01, f11_10, f11_11,
+               f22_00, f22_01, f22_10, f22_11,
+               f33_00, f33_01, f33_10, f33_11,
+               f21_00, f21_01, f21_10, f21_11,
+               f31_00, f31_01, f31_10, f31_11,
+               f32_00, f32_01, f32_10, f32_11]
+    ring
+  · simp only [sum_fin_3_expand, Matrix.add_apply, Matrix.smul_apply, trace_mul_fin_2, smul_eq_mul,
+               epsilon3, epsilon3_int, Int.cast_zero, Int.cast_one, Int.cast_neg, sp0, sp1, sp2,
+               f11_00, f11_01, f11_10, f11_11,
+               f22_00, f22_01, f22_10, f22_11,
+               f33_00, f33_01, f33_10, f33_11,
+               f21_00, f21_01, f21_10, f21_11,
+               f31_00, f31_01, f31_10, f31_11,
+               f32_00, f32_01, f32_10, f32_11]
+    ring
 
 end CGD.Foundations
