@@ -48,6 +48,47 @@ lemma trace_parallelogram (X Y : Matrix n n ℂ) :
   simp[trace_add', trace_sub']
   ring
 
+/-- 
+🔵 ALGEBRAIC: The Pure Axial Vacuum (Volume Generation)
+Proves that the parity-even topological density (which generates the macroscopic Unimodular volume) 
+is sustained exactly by the sum of the Vector and Axial kinetic traces. 
+If the Vector field is identically zero (V = 0), the metric volume is generated entirely by the Axial background.
+-/
+theorem algebraicAxialVolumeGeneration (V A : Matrix (Fin 2) (Fin 2) ℂ) :
+  let L := V + A
+  let R := V - A
+  Matrix.trace (L * L) + Matrix.trace (R * R) = 2 * Matrix.trace (V * V) + 2 * Matrix.trace (A * A) := by
+  exact trace_parallelogram V A
+
+/-- 
+🔵 ALGEBRAIC: Topological Parity Violation is Vector-Axial Interference
+Proves that the chiral topological difference (L^2 - R^2), which geometrically drives 
+matter/antimatter asymmetry, algebraically reduces to exactly the cross-term of the 
+Vector and Axial fields. 
+-/
+theorem algebraicTopologicalInterference (V A : Matrix (Fin 2) (Fin 2) ℂ) :
+  let L := V + A
+  let R := V - A
+  Matrix.trace (L * L) - Matrix.trace (R * R) = 4 * Matrix.trace (V * A) := by
+  change Matrix.trace ((V + A) * (V + A)) - Matrix.trace ((V - A) * (V - A)) = 4 * Matrix.trace (V * A)
+  have expand_L : (V + A) * (V + A) = V * V + V * A + A * V + A * A := by
+    ext i j
+    simp only [Matrix.add_apply, Matrix.mul_apply, smul_eq_mul]
+    simp only [add_mul, mul_add]
+    simp only [Finset.sum_add_distrib]
+    ring
+  have expand_R : (V - A) * (V - A) = V * V - V * A - A * V + A * A := by
+    ext i j
+    simp only [Matrix.add_apply, Matrix.sub_apply, Matrix.mul_apply, smul_eq_mul]
+    simp only [sub_mul, mul_sub]
+    simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib]
+    ring
+  rw [expand_L, expand_R]
+  simp only [trace_sub', trace_add']
+  have tr_comm : Matrix.trace (A * V) = Matrix.trace (V * A) := Matrix.trace_mul_comm A V
+  rw [tr_comm]
+  ring
+
 /-- 🟡 KINEMATIC: Vector-Axial kinetic tracing identity perfectly splits. (Pure Math) -/
 theorem algebraicWeinbergDecomposition (_u : Universe) (_x : SpacetimePoint) (_mu _nu : Fin 4) :
   ∀ (dV dA V1 V2 A1 A2 : Matrix (Fin 2) (Fin 2) Complex),
