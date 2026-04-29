@@ -1,5 +1,6 @@
 -- FILENAME: CGD/AntiSelfDualSector/Decoupling.lean
 
+import Litlib.Core
 import CGD.Foundations.Action
 import CGD.Foundations.Lagrangian
 import CGD.Foundations.ChiralDecomposition
@@ -18,7 +19,7 @@ lemma F_L_eq (u : Universe) (mu nu : Fin 4) (x : SpacetimePoint) :
   rw[curvature_embed_eq u mu nu x]
   exact chiral_project_self_dual_embed _ _
 
-/-- An "Airlock" Lemma: Prevents Lean's unifier from expanding the massive AST of the curvature fields. -/
+/-- Prevents Lean's unifier from expanding the massive AST of the curvature fields. -/
 lemma action_vacuum_congr (F1 F2 : Fin 4 -> Fin 4 -> ChiralM)
   (h : ∀ mu nu, (chiralProject (F1 mu nu)).self_dual = (chiralProject (F2 mu nu)).self_dual) :
   actionVacuum F1 = actionVacuum F2 := by
@@ -43,7 +44,9 @@ lemma action_vacuum_congr (F1 F2 : Fin 4 -> Fin 4 -> ChiralM)
 
   rw[h_eq1, h_eq2, h_sum]
 
-/-- 🔴 NEW SIGNATURE / UNDER REVIEW: AntiSelfDual Matter Decoupling
+Litlib.theorem
+  description "Anti-Self-Dual Matter Decoupling"
+/-- 
 This theorem asserts that the topological vacuum action is completely 
 insensitive to the Anti-Self-Dual gauge field connection, securing 
 the chiral asymmetry of the geometry.

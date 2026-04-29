@@ -1,5 +1,6 @@
 -- FILENAME: CGD/Foundations/Lagrangian.lean
 
+import Litlib.Core
 import CGD.Axioms.Dynamics
 import CGD.Foundations.Action
 import CGD.Gravity.Geometry
@@ -21,11 +22,6 @@ variable [ue : Litlib.Y1956.utiyama1956invariant.UtiyamaExpansion.{0}]
 variable [bi : CGD.Litlib.Y1956.utiyama1956invariant.AppendixI_InvariantBilinearForm]
 variable [pv : Litlib.Y2003.nakahara2003geometry.PontryaginActionVariation Universe ℂ universeAction isValidUniverseVariation]
 
-/-- 
-Pure Math Lemma: Any fully alternating rank-4 tensor on a 4D space 
-is strictly proportional to the Levi-Civita epsilon tensor. 
-Proven using explicit permutation group sign mappings without the unifier.
--/
 lemma alternating_is_proportional_to_epsilon (T : Fin 4 → Fin 4 → Fin 4 → Fin 4 → ℂ)
   (h_alt : ∀ μ ν ρ σ, 
     T μ ν ρ σ = -T ν μ ρ σ ∧ 
@@ -191,7 +187,6 @@ lemma action_variation_master_lemma (u : Universe) (v : ℝ → Universe)
   HasDerivAt (fun t => universeAction (v t)) 0 0 := by
   exact pv.variation_zero u v h_valid h_zero
 
-/-- Rigorous evaluator for pulling Kronecker deltas out of sums without `simp` explosion. -/
 lemma sum_ite_mul {α β : Type*} [Ring β] [Fintype α] [DecidableEq α] 
   (a : α) (f : α → β) (g : α → β) :
   (∑ x : α, (if x = a then f x else 0) * g x) = f a * g a := by
@@ -329,7 +324,6 @@ lemma det_swapMatrix (i j : Fin 4) (h : i ≠ j) :
   push_cast
   rfl
 
-/-- Rigorous evaluator for pulling Kronecker deltas out of scalar-multiplied sums. -/
 lemma sum_ite_smul {α M : Type*} [AddCommMonoid M] [Module ℂ M] [Fintype α] [DecidableEq α]
   (a : α) (f : α → ℂ) (g : α → M) :
   (∑ x : α, (if x = a then f x else 0) • g x) = f a • g a := by
@@ -374,7 +368,6 @@ lemma permMatrix_apply_factor (p : Equiv.Perm (Fin 4)) (F : Fin 4 → Fin 4 → 
   rw [h_pull_smul]
   apply Finset.sum_congr rfl; intro α _
   apply Finset.sum_congr rfl; intro β _
-  -- Explicitly bypass the unifier for mul_smul
   exact Eq.symm (mul_smul (if α = p.symm μ then (1 : ℂ) else 0) (if β = p.symm ν then (1 : ℂ) else 0) (F α β))
 
 lemma permMatrix_apply (p : Equiv.Perm (Fin 4)) (F : Fin 4 → Fin 4 → ChiralM) :
@@ -389,10 +382,6 @@ lemma permMatrix_apply (p : Equiv.Perm (Fin 4)) (F : Fin 4 → Fin 4 → ChiralM
   rw [sum_ite_smul]
   simp
 
-/-- 
-Executes 4096 discrete permutation evaluations natively in Lean to prove that swapping 
-two indices of the Levi-Civita symbol strictly multiplies it by the permutation sign.
--/
 lemma epsilon_int_swap (a b μ ν ρ σ : Fin 4) :
   CGD.Gravity.epsilon4_int (Equiv.swap a b μ) (Equiv.swap a b ν) (Equiv.swap a b ρ) (Equiv.swap a b σ) =
   (Equiv.Perm.sign (Equiv.swap a b) : ℤ) * CGD.Gravity.epsilon4_int μ ν ρ σ := by
@@ -410,11 +399,9 @@ lemma epsilon_swap_sign (a b μ ν ρ σ : Fin 4) :
   push_cast at h_cast
   exact h_cast
 
-/-- Formalizes the symmetric component of the rank-4 tensor. -/
 def symm_part (T : Fin 4 → Fin 4 → Fin 4 → Fin 4 → ℂ) (μ ν ρ σ : Fin 4) : ℂ :=
   T μ ν ρ σ + T ρ σ μ ν
 
-/-- Rigorous sum swapping to bypass unifier failures. -/
 lemma sum_swap_ab_cd (f : Fin 4 → Fin 4 → Fin 4 → Fin 4 → ℂ) :
   (∑ a : Fin 4, ∑ b : Fin 4, ∑ c : Fin 4, ∑ d : Fin 4, f a b c d) =
   (∑ c : Fin 4, ∑ d : Fin 4, ∑ a : Fin 4, ∑ b : Fin 4, f a b c d) := by
@@ -1085,7 +1072,6 @@ lemma symm_part_is_alternating
   intro μ ν ρ σ
   exact ⟨h_alt1 μ ν ρ σ, h_alt2 μ ν ρ σ, h_alt3 μ ν ρ σ⟩
 
-/-- The final Master Lemma bridging Utiyama Expansion to Topological Uniqueness. -/
 lemma uniqueness_master_lemma
   (ue : Litlib.Y1956.utiyama1956invariant.UtiyamaExpansion.{0})
   (bi : CGD.Litlib.Y1956.utiyama1956invariant.AppendixI_InvariantBilinearForm)
@@ -1183,11 +1169,10 @@ lemma uniqueness_master_lemma
   rw [h_pull]
   ring
 
+Litlib.theorem
+  description "Topological Lagrangian Uniqueness"
 /-- 
-🔴 NEW SIGNATURE: Topological Lagrangian Uniqueness 
-Replaces the old flat-space Utiyama expansion. The only quadratic, gauge-invariant 
-Lagrangian density that can be constructed without a background metric 
-is the fully antisymmetric topological density.
+The fully antisymmetric Pontryagin topological density is mathematically the unique quadratic, gauge-invariant Lagrangian density that can be constructed without a pre-existing background metric.
 -/
 theorem topologicalLagrangianUniqueness 
   (L : ((Fin 4 → Fin 4 → ChiralM) → Complex))
@@ -1201,13 +1186,10 @@ theorem topologicalLagrangianUniqueness
   ∃ c : ℂ, ∀ F, L F = c * ∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, CGD.Gravity.epsilon4 μ ν ρ σ * Matrix.trace (F μ ν * F ρ σ) := by
   exact uniqueness_master_lemma ue bi L h_inv h_topological hLQuadScale hLQuadAdd
 
+Litlib.theorem
+  description "Topological Action Variation"
 /-- 
-🔴 NEW SIGNATURE: Topological Action Variation
-Replaces the flat-space Yang-Mills equations of motion. Because the action 
-is the topological Pontryagin density, its functional variation with respect 
-to compactly supported, smooth gauge field perturbations is identically zero.
-The "equations of motion" are simply 0 = 0, establishing this as a pure 
-topological constraint theory.
+Because the action is the topological Pontryagin density, its functional variation with respect to compactly supported, smooth gauge field perturbations is identically zero. This establishes the framework as a pure topological constraint theory.
 -/
 theorem topologicalActionVariationZero (u : Universe) (v : ℝ → Universe) :
   isValidUniverseVariation v →

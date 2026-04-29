@@ -1,5 +1,6 @@
 -- FILENAME: CGD/Cosmology/TimeEmergence.lean
 
+import Litlib.Core
 import CGD.Cosmology.Definitions
 import CGD.Gravity.Geometry
 import Mathlib.Data.Complex.Basic
@@ -578,10 +579,10 @@ lemma math_TimeIsChiralPhase_det (F : Fin 4 → Fin 4 → SL2C)
   have h_pos : 0 ≤ c.re^4 := Even.pow_nonneg h_even c.re
   linarith
 
+Litlib.theorem
+  description "Time Emergence via Symmetry Breaking"
 /--
-🟡 KINEMATIC: Time is a Chiral Phase (Fully symmetric 4D spatial structure collapses)
-ALGEBRAIC CONTEXT: A fully 4D symmetric tensor naturally yields a metric with a Euclidean or degenerate signature, algebraically forbidding the unique odd-sign axis required for a Lorentzian (-+++) signature.
-PHYSICAL SIGNIFICANCE: "Time" is not a pre-existing, hardcoded dimension. It emerges geometrically only when the continuous gauge field spontaneously breaks 4D Euclidean (SO(4)) symmetry, natively tying the arrow of time to symmetry breaking.
+A fully 4D symmetric field tensor naturally yields a metric with a Euclidean or degenerate signature, forbidding the unique odd-sign axis required for a Lorentzian signature. Therefore, the Lorentzian time dimension emerges geometrically only when the gauge field spontaneously breaks 4D Euclidean (SO(4)) symmetry.
 -/
 theorem kinematicTimeEmergence (u : Universe)
   (h_tic : ∀ x, x 0 = 0 → isFully4DSymmetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x)) :

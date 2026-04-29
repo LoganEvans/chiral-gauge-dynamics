@@ -1,5 +1,6 @@
 -- FILENAME: CGD/Gravity/DomainSeparation.lean
 
+import Litlib.Core
 import CGD.Axioms.Ontology
 import CGD.Axioms.Spacetime
 import CGD.Gravity.Geometry
@@ -13,30 +14,20 @@ namespace CGD.Gravity
 
 open Set Complex Matrix BigOperators CGD.Axioms CGD.Foundations Classical
 
-/-- 
-Defines a region where the topological CDJ constraint holds strictly, 
-representing the macroscopic vacuum with a cosmological constant Λ. 
--/
 def isVacuumRegion (region : Set SpacetimePoint) (u : Universe) (Λ : ℂ) : Prop :=
   ∀ x ∈ region, 
     (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
       epsilon4 μ ν ρ σ * Matrix.trace ((curvatureSl2c u.sd_sector μ ν x).val * (curvatureSl2c u.sd_sector ρ σ x).val)) = Λ
 
-/-- 
-Defines a defect core region where the CDJ constraint is violated 
-due to localized topological matter (e.g., an instanton or hedgehog). 
--/
 def isDefectRegion (region : Set SpacetimePoint) (u : Universe) (Λ : ℂ) : Prop :=
   ∃ x ∈ region, 
     (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
       epsilon4 μ ν ρ σ * Matrix.trace ((curvatureSl2c u.sd_sector μ ν x).val * (curvatureSl2c u.sd_sector ρ σ x).val)) ≠ Λ
 
+Litlib.theorem
+  description "Macroscopic Unimodular Vacuum Emergence"
 /--
-Domain Separation Theorem: Unimodular Vacuum Emergence.
-
-By treating the bulk vacuum as its own topological subspace (a Lean `Subtype`), 
-we can map the global Unimodular CDJ theorem to the exterior region. This proves that 
-the constant macroscopic volume form emerges independently of the defect core.
+By treating the bulk vacuum as its own topological subspace, we map the global Unimodular CDJ theorem to the exterior region. This proves that the constant macroscopic volume form emerges strictly independently of the defect core.
 -/
 theorem macroscopicVacuumEmergence 
   (F_adj : Fin 4 → Fin 4 → SpacetimePoint → Matrix (Fin 3) (Fin 3) ℂ)
@@ -131,13 +122,10 @@ lemma ricciTensor_congr_open (g1 g2 : SpacetimeIndex → SpacetimeIndex → Spac
   intro lam _
   rw [h_chris_eq x hx ρ lam ρ, h_chris_eq x hx lam μ ν, h_chris_eq x hx ρ lam ν, h_chris_eq x hx lam μ ρ]
 
+Litlib.theorem
+  description "Macroscopic Ricci-Flat Vacuum Emergence"
 /--
-Domain Separation Theorem: Pure GR Vacuum Emergence (Λ = 0).
-
-A parallel theorem for the Ricci-flat limit outside a defect, 
-evaluated on the open bulk manifold subspace. The subspace functions 
-are extended to the global manifold via zero-extension, which is 
-mathematically exact for local derivatives because the domain is open.
+A parallel theorem for the pure GR vacuum limit ($\Lambda = 0$) evaluated on the open bulk manifold subspace outside a topological defect. Because the domain is open, the mapping is mathematically exact for local derivatives.
 -/
 theorem macroscopicRicciFlatEmergence
   (u : Universe)

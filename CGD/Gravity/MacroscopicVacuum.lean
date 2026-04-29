@@ -1,5 +1,6 @@
 -- FILENAME: CGD/Gravity/MacroscopicVacuum.lean
 
+import Litlib.Core
 import CGD.Gravity.Geometry
 import CGD.Axioms.Ontology
 import Litlib.Y1991.capovilla1991pure.Signature
@@ -22,10 +23,6 @@ noncomputable def cgdUnimodularMetricAdapter (F_adj : Fin 4 → Fin 4 → Matrix
   urbantkeMetric (fun μ ν => 
     toSl2c (F_adj μ ν 0 0 • sigma1.val + F_adj μ ν 1 1 • sigma2.val + F_adj μ ν 2 2 • sigma3.val))
 
-/-- 
-Strict Pure CDJ Constraint (Tr(F ^ F) = 0). 
-Unlike the unimodular topological constraint (which yields Lambda > 0), this strictly enforces Lambda = 0.
--/
 def satisfiesPureCdjConstraint (F : SpacetimePoint → Fin 4 → Fin 4 → Matrix (Fin 2) (Fin 2) ℂ) : Prop :=
   ∀ x : SpacetimePoint,
     (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
@@ -35,10 +32,11 @@ def satisfiesPureCdjConstraint (F : SpacetimePoint → Fin 4 → Fin 4 → Matri
 -- THEOREMS
 -- ==========================================
 
+Litlib.theorem
+  description "Macroscopic Complex Ricci-Flat GR Vacuum"
 /-- 
-🟢 GRAVITY TARGET CLEARED: Macroscopic Complex Ricci Flat GR Vacuum.
 We rigorously prove that the generated complex spacetime metric maps exactly 
-to a complex Ricci-flat tensor, as expected from the Plebanski/Capovilla pure connection formulation.
+to a complex Ricci-flat tensor, as derived from the pure CDJ constraint equation.
 -/
 theorem macroscopicVacuumGR 
   [eq2_2c : Eq2_2c 
@@ -65,11 +63,11 @@ theorem macroscopicVacuumGR
     exact one_ne_zero
   exact eq2_2c.urbantkeIsRicciFlat (fun p m n => (curvatureSl2c u.sd_sector m n p).val) epsilon4 hEpsilonAlt hEpsilonNondeg h_nondeg h_cdj x μ ν
 
+Litlib.theorem
+  description "Unimodular Vacuum Form"
 /-- 
-🟢 GRAVITY TARGET CLEARED: Unimodular Vacuum (CDJ Constraint fixes the volume form globally)
-By mapping the continuous Spin(4,C) connections into the rigorous 3x3 Adjoint su(2) representation, 
-we invoke the Unimodular CDJ theorem to extract the strict global volume invariant `c`.
-Note: h_anti defines the physical domain (antisymmetric field tensors) of the target F_adj test variable.
+By mapping the continuous Spin(4,C) connections into the 3x3 Adjoint su(2) representation, 
+we show that the Unimodular CDJ theorem extracts a strict global volume invariant `c` from the topological CDJ condition.
 -/
 theorem kinematicUnimodularVacuum 
   [ucdj_vol : UnimodularCDJ SpacetimePoint cgdUnimodularMetricAdapter] 

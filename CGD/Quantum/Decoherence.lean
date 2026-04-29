@@ -17,10 +17,10 @@ open CGD.Axioms
 
 namespace CGD.Quantum
 
+Litlib.theorem
+  description "Measurement Decoherence Limit"
 /-- 
-🔴 NEW SIGNATURE / UNDER REVIEW: Measurement Decoherence
-The Gatekeeper must review if this classical decoherence limit still logically follows 
-from the topological CDJ constraints instead of the flat Yang-Mills PDEs.
+In the orthogonal limit where the anti-self-dual measurement frame completely decouples from the self-dual observable (zero cross-trace), the continuous gauge parameter collapses precisely to the discrete eigenstates (sin(theta) = 0 -> theta = 0, pi).
 -/
 theorem phenomenologicalMeasurementDecoherence (u : Universe) :
   ∀ (x : SpacetimePoint) (theta M : ℂ),

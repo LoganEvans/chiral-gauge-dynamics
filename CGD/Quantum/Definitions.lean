@@ -16,7 +16,6 @@ open CGD.Axioms CGD.Foundations Matrix Complex
 
 namespace CGD.Quantum
 
-/-- Re-engineered to explicitly embed the strictly anti-Hermitian generator via Complex.I -/
 noncomputable def fluxTubeFrame (mu : Fin 4) (x : SpacetimePoint) : SL2C :=
   toSl2c (if mu = 0 then 0 else if mu = 1 then (Complex.I:ℂ) • sigma3.val else if mu = 2 then (Complex.I:ℂ) • sigma1.val else (Complex.I:ℂ) • sigma2.val)
 
@@ -46,7 +45,7 @@ variable (integral1d : (ℝ → ℝ) → ℝ → ℝ → ℝ)
 noncomputable def clickProbabilityCore (hbar E_threshold : ℝ) (pdf : ℝ → ℝ) : ℝ :=
   integral1d pdf E_threshold hbar
 
-/-- Mathematically extracts the real Hermitian observable from the anti-Hermitian SU(2) holonomy (-i * U). -/
+/-- Extracts the real Hermitian observable from the anti-Hermitian SU(2) holonomy (-i * U). -/
 noncomputable def macroscopicObservable
   (holonomy : (ℝ → Matrix (Fin 2) (Fin 2) ℂ) → ℝ → ℝ → Matrix (Fin 2) (Fin 2) ℂ)
   (A : Fin 4 → SpacetimePoint → SL2C) (mu : Fin 4) (L : ℝ) : Matrix (Fin 2) (Fin 2) ℂ := 

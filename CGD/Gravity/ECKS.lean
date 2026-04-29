@@ -1,5 +1,6 @@
 -- FILENAME: CGD/Gravity/ECKS.lean
 
+import Litlib.Core
 import CGD.Gravity.Geometry
 import CGD.Axioms.Ontology
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
@@ -30,7 +31,11 @@ lemma torsion_of_sum (e : TetradField) (ω K : SpinConnection) (I μ ν : Spacet
   rw[h_sum]
   ring
 
-/-- 🟡 KINEMATIC: ECKS Gravity (Contortion from Chiral Connection) -/
+Litlib.theorem
+  description "ECKS Gravity (Contortion from Chiral Connection)"
+/--
+The torsion of the combined spin connection cleanly separates into the base torsion and a contortion tensor derived from the chiral connection, recovering Einstein-Cartan-Kibble-Sciama gravity.
+-/
 theorem algebraicECKS (u : Universe)
   (e : TetradField) (ω_lc : SpinConnection)
   (_h_lc_torsion_free : isTorsionFree e ω_lc) :

@@ -1,5 +1,6 @@
 -- FILENAME: CGD/Foundations/GeodesicMotion.lean
 
+import Litlib.Core
 import CGD.Foundations.StressEnergy
 import Litlib.Y1975.geroch1975motion.Signature
 
@@ -8,12 +9,12 @@ open CGD.Axioms
 
 namespace CGD.Foundations
 
+Litlib.theorem
+  description "Topological Matter Follows Geodesics"
 /--
 Topological matter natively falls along geodesics of the Urbantke metric.
-Maps the `emergentStressEnergyConservation` theorem into the Geroch-Jang 
-literature axiom. We assume the existence of a family of CGD universes 
-whose emergent matter supports can be localized to an arbitrary neighborhood 
-of a curve `gamma`, while sharing the same asymptotic background metric.
+By mapping emergent stress-energy conservation to the Geroch-Jang theorem, 
+we establish that localized topological defects follow background geodesics.
 -/
 theorem topologicalMatterIsGeodesic 
   [TopologicalSpace SpacetimePoint]

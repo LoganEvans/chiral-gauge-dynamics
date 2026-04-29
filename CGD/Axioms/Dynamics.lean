@@ -9,7 +9,6 @@ open CGD.Foundations
 
 /--
 The Principle of Least Action requires the path to be a stationary point (δS = 0).
-Now secured against discontinuous trap-door exploits.
 -/
 def principleOfLeastAction (u : Universe) : Prop :=
   isStationaryPoint universeAction u isValidUniverseVariation

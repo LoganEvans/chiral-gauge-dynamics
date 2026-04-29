@@ -1,5 +1,6 @@
 -- FILENAME: CGD/Foundations/Hamiltonian.lean
 
+import Litlib.Core
 import CGD.Foundations.Calculus
 import CGD.Foundations.Action
 import CGD.Gravity.Geometry
@@ -128,7 +129,7 @@ lemma trace_toSl2c_mul_trace_free (M F : Matrix (Fin 2) (Fin 2) ℂ) (hF_trace :
     _ = M 0 0 * F 0 0 + M 0 1 * F 1 0 + M 1 0 * F 0 1 + M 1 1 * F 1 1 := by ring
     _ = Matrix.trace (M * F) := (trace_mul_fin_2 M F).symm
 
-/-- Shatters the matrix algebra trace constraint to natively bypass non-commutativity limits. -/
+/-- Expands the trace constraint to evaluate over individual components. -/
 lemma topological_action_identity_matrix (F : Fin 4 → Fin 4 → Matrix (Fin 2) (Fin 2) ℂ)
   (hF_anti : ∀ μ ν, F μ ν = - F ν μ) :
   (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, 
@@ -208,10 +209,11 @@ lemma topological_action_identity_matrix (F : Fin 4 → Fin 4 → Matrix (Fin 2)
 -- Physical Equivalences
 -- ==============================================================================
 
+Litlib.theorem
+  description "Spatial Expansion of Topological Action"
 /-- 
-The 4D topological action perfectly reduces to Tr(Π^i F_{0i}) on the spatial slice.
-This isolates the 256-term 4D Levi-Civita expansion into the 8 specific permutations 
-that contain a temporal electric field component.
+The 4D topological action reduces to Tr(Π^i F_{0i}) on the spatial slice.
+This isolates the permutations that contain a temporal electric field component.
 -/
 theorem topologicalActionSpatialExpansion (A : Fin 4 → SpacetimePoint → SL2C) (x : SpacetimePoint) :
   (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, 
@@ -232,10 +234,11 @@ theorem topologicalActionSpatialExpansion (A : Fin 4 → SpacetimePoint → SL2C
   rw [h_rhs]
   exact topological_action_identity_matrix (fun μ ν => (curvatureSl2c A μ ν x).val) hF_anti
 
+Litlib.theorem
+  description "Electric Field Decomposition"
 /-- 
 Decomposition of the temporal electric field F_{0i} into the time derivative 
 of A_i minus the spatial covariant derivative of A_0.
-F_{0i} = ∂_0 A_i - ∂_i A_0 + [A_0, A_i]
 -/
 theorem electricFieldDecomposition (A : Fin 4 → SpacetimePoint → SL2C) (x : SpacetimePoint) (i : Fin 3) :
   (curvatureSl2c A 0 (spatialIdx i) x).val =
@@ -255,13 +258,14 @@ lemma ext_trace_mul_sub_fin_2 (M X Y : Matrix (Fin 2) (Fin 2) ℂ) :
   simp only [trace_mul_fin_2, matrix_sub_fin_2]
   ring
 
+Litlib.theorem
+  description "Topological Hamiltonian Constraint"
 /--
-🟢 NEW SIGNATURE: Topological Hamiltonian Constraint
-Proves that the canonical Hamiltonian density of the pure connection sector
+The canonical Hamiltonian density of the pure connection sector
 algebraically reduces to the temporal gauge field A_0 acting as a Lagrange 
 multiplier for the spatial covariant derivative of the conjugate momentum.
-Because there are no local dynamical energy terms (no E^2 + B^2), this strictly 
-proves the bulk geometry is purely topological (H ≈ 0 on the constraint surface).
+Since there are no local dynamical energy terms, this establishes that 
+the bulk geometry is purely topological (H ≈ 0 on the constraint surface).
 -/
 theorem canonicalHamiltonianVanishes (A : Fin 4 → SpacetimePoint → SL2C) (x : SpacetimePoint) :
   canonicalHamiltonianDensity A x =
@@ -276,12 +280,11 @@ theorem canonicalHamiltonianVanishes (A : Fin 4 → SpacetimePoint → SL2C) (x 
   rw [h]
   apply ext_trace_mul_sub_fin_2
 
+Litlib.theorem
+  description "Topological Gauss Constraint"
 /--
-🟢 NEW SIGNATURE: Topological Gauss Constraint
-Because the underlying action is purely topological, the Gauss constraint 
-algebraically vanishes as an exact identity. The spatial divergence of the 
-conjugate momentum strictly reduces to the spatial Bianchi identity 
-(D_{[i} F_{jk]} = 0).
+The Gauss constraint algebraically vanishes as an exact identity. 
+The spatial divergence of the conjugate momentum reduces to the spatial Bianchi identity.
 -/
 theorem gaussConstraintVanishes (A : Fin 4 → SpacetimePoint → SL2C) (x : SpacetimePoint)
   (h_smooth : ∀ mu i j, ContDiff ℝ ⊤ (fun p => (A mu p).val i j)) :
@@ -323,11 +326,12 @@ theorem gaussConstraintVanishes (A : Fin 4 → SpacetimePoint → SL2C) (x : Spa
     _ = (4 : ℂ) * (0 - 0) := by rw [h1, h2]
     _ = 0 := by ring
 
+Litlib.theorem
+  description "Topological Momentum Constraint"
 /--
-🟢 NEW SIGNATURE: Topological Momentum Constraint
-The momentum constraint generating spatial diffeomorphisms algebraically vanishes.
-This strictly follows from the total antisymmetry of the spatial volume form 
-contracting against the symmetric matrix trace of the field strength components.
+The momentum constraint generating spatial diffeomorphisms algebraically vanishes, 
+following from the total antisymmetry of the spatial volume form contracting 
+against the symmetric matrix trace of the field strength components.
 -/
 theorem momentumConstraintVanishes (A : Fin 4 → SpacetimePoint → SL2C) (j : Fin 3) (x : SpacetimePoint) :
   momentumConstraintDensity A j x = 0 := by

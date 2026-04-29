@@ -59,8 +59,7 @@ lemma partialDerivSl2c_const (c : SL2C) (μ : Fin 4) (x : SpacetimePoint) :
   have hz : (0:ℂ) / 2 = 0 := by ring
   rw [hz, zero_smul, sub_zero]
 
--- Differentiability explicitly required. 
--- Fully verified using the exact mathematical Fréchet Derivative chain rule.
+-- Differentiability explicitly required and evaluated using the Fréchet Derivative chain rule.
 lemma partialDeriv_comp_coord {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   (f : ℝ → E) (c_idx μ : Fin 4) (h_neq : μ ≠ c_idx) (x : SpacetimePoint) 
   (hf : Differentiable ℝ f) :
@@ -167,9 +166,8 @@ lemma curvatureSl2c_def (A : Fin 4 → SpacetimePoint → SL2C) (mu nu : Fin 4) 
   curvatureSl2c A mu nu x = partialDerivSl2c mu (A nu) x - partialDerivSl2c nu (A mu) x + ⁅A mu x, A nu x⁆ := rfl
 
 /-- 
-🟢 PROVEN: The curvature tensor mathematically satisfies exact antisymmetry.
-We do not lazily assume antisymmetry; it strictly emerges from the commutative subtraction 
-of partial derivatives and the native anti-commutativity of the Lie Algebra bracket.
+The curvature tensor strictly satisfies exact antisymmetry, emerging natively from the 
+commutativity of partial derivatives and the anti-commutativity of the Lie algebra bracket.
 -/
 lemma curvatureSl2c_antisymm (A : Fin 4 → SpacetimePoint → SL2C) (mu nu : Fin 4) (x : SpacetimePoint) :
   curvatureSl2c A mu nu x = - curvatureSl2c A nu mu x := by

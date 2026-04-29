@@ -12,6 +12,7 @@ import Litlib.Math.LeviCivita
 import Mathlib.Topology.Constructions
 import Mathlib.Analysis.Calculus.ContDiff.Basic
 import Mathlib.Tactic.Ring
+import Litlib.Core
 
 set_option autoImplicit false
 set_option linter.unusedVariables false
@@ -33,7 +34,6 @@ def isHomotopicConnection (A0 A1 : Fin 4 → SpacetimePoint → SL2C) : Prop :=
     (∀ mu x, H 1 mu x = A1 mu x) ∧
     (∀ mu i j, ContDiff ℝ ⊤ (fun (tx : ℝ × SpacetimePoint) => (H tx.1 mu tx.2).val i j))
 
--- 1. Pre-chewed Matrix lemma avoiding all simp tactics (Compiled perfectly)
 lemma su2_matrix_prop (a b : ℂ) (h : a * star a + b * star b = 1) :
   let M : Matrix (Fin 2) (Fin 2) ℂ := !![a, b; -star b, star a]
   M * M.conjTranspose = 1 ∧ M.det = 1 := by
@@ -78,12 +78,9 @@ lemma su2_matrix_prop (a b : ℂ) (h : a * star a + b * star b = 1) :
   exact ⟨h_mul, h_det⟩
 
 noncomputable def bpstAsymptoticMap (x : S3) : SU2Group := by
-  -- 2. Brutal Unpacking: Use the `cases` tactic to destruct S3, bypassing all opacity.
-  -- This creates two inaccessible variables, which `rename_i` safely pulls into scope as `v` and `hv`.
   cases x
   rename_i v hv
 
-  -- 3. Use raw Complex.mk to avoid ofReal and I_sq expansion issues
   let a : ℂ := Complex.mk (v 0) (-(v 3))
   let b : ℂ := Complex.mk (-(v 2)) (-(v 1))
 
@@ -99,7 +96,6 @@ noncomputable def bpstAsymptoticMap (x : S3) : SU2Group := by
   let M : Matrix (Fin 2) (Fin 2) ℂ := !![a, b; -star b, star a]
   have h_prop : M * M.conjTranspose = 1 ∧ M.det = 1 := su2_matrix_prop a b h_sum
   
-  -- 4. Construct the SU2Group element
   exact ⟨M, h_prop⟩
 
 noncomputable def su2ToS3 (M : SU2Group) : S3 :=
@@ -296,12 +292,10 @@ theorem bpst_is_homeomorphism : IsHomeomorphism bpstAsymptoticMap := by
           rw [h_eq]
           exact Continuous.neg (Complex.continuous_im.comp h00)
 
-/-- 
-🔵 KINEMATIC: Topological Stability (The Proton cannot decay into the vacuum).
-Mathematically Honest Proof: By invoking Belavin Eq 18, we establish that because the 
-instanton configuration is structurally a topological homeomorphism to the gauge group, 
-its mapping degree must be strictly non-zero (±1). Therefore, it cannot be continuously 
-deformed into the vacuum state (degree 0).
+Litlib.theorem
+  description "Topological Stability of the Instanton"
+/--
+Establishes the absolute topological stability of the instanton configuration. Because the boundary mapping of the instanton constitutes a topological homeomorphism to the SU(2) gauge group, its Cartan-Maurer mapping degree must be strictly non-zero. Consequently, the state is topologically protected and cannot continuously decay into the trivial vacuum.
 -/
 theorem kinematicTopologicalStability 
   [HasAsymptoticBoundary (Fin 4 → SpacetimePoint → SL2C) (S3 → SU2Group)]

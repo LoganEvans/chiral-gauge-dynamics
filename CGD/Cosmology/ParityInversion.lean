@@ -1,5 +1,6 @@
 -- FILENAME: CGD/Cosmology/ParityInversion.lean
 
+import Litlib.Core
 import CGD.Cosmology.Definitions
 import CGD.Gravity.Geometry
 import Mathlib.Tactic.FinCases
@@ -47,7 +48,6 @@ lemma trace_neg_val (A : Matrix (Fin 2) (Fin 2) ℂ) : Matrix.trace (-A) = - Mat
 lemma neg_mul_val (A B : Matrix (Fin 2) (Fin 2) ℂ) : -A * B = -(A * B) := neg_mul A B
 lemma mul_neg_val (A B : Matrix (Fin 2) (Fin 2) ℂ) : A * -B = -(A * B) := mul_neg A B
 
--- Nauseatingly explicit bypass of fin_cases rfl kernel evaluation
 lemma eps_zero_12_int (k l : Fin 4) (i : Fin 4) : epsilon4_int i i k l = 0 := by revert i k l; decide
 @[simp] lemma eps_zero_12 (k l : Fin 4) (i : Fin 4) : epsilon4 i i k l = 0 := by
   unfold epsilon4; exact_mod_cast eps_zero_12_int k l i
@@ -95,10 +95,10 @@ lemma P_F_eq (F P_F : Fin 4 → Fin 4 → SL2C)
     have h_nu : ν ≠ 0 := h3
     exact h_parity_ij μ ν h_mu h_nu
 
+Litlib.theorem
+  description "Geometric Parity Inversion"
 /--
-🟡 KINEMATIC: Parity Inversion is Geometric (Topological parity flips cleanly)
-ALGEBRAIC CONTEXT: Negating the electric (temporal) components of the field strength tensor while preserving the magnetic (spatial) components naturally flips the overall sign of the fully antisymmetric topological density (F ∧ F).
-PHYSICAL SIGNIFICANCE: Parity inversion of the local geometry directly negates the topological charge (Pontryagin density). This seamlessly maps the geometric arrow of time to matter/antimatter asymmetry, providing a structural foundation for Parity Inversion without requiring ad-hoc CP-violating parameters.
+Negating the electric (temporal) components of the field strength tensor while preserving the magnetic (spatial) components inverts the sign of the fully antisymmetric topological density. This directly links the parity inversion of the local geometry to the negation of the topological charge (Pontryagin density), seamlessly mapping the geometric arrow of time to matter/antimatter asymmetry.
 -/
 theorem kinematicParityInversion (u : Universe) :
   ∀ (x : SpacetimePoint) (P_F : Fin 4 → Fin 4 → SL2C),

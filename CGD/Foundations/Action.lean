@@ -45,16 +45,18 @@ noncomputable def actionAntiSelfDual (F : Fin 4 -> Fin 4 -> ChiralM) : Complex :
 -- Action Definitions
 -- ============================================================================
 
-/-- Defines a local stationary point for functional variations (δS = 0) on the manifold.
-    Now rigorously enforces that variations must be physically valid (smooth & compactly supported). 
-    Upgraded to fully support Complex-valued paths without mutilation. -/
+/-- 
+Defines a local stationary point for functional variations (δS = 0) on the manifold.
+Enforces that variations must be physically valid (smooth and compactly supported). 
+-/
 def isStationaryPoint {α β : Type*} [NormedAddCommGroup β] [NormedSpace ℝ β] (Action : α → β) (state : α) (is_valid_var : (ℝ → α) → Prop) : Prop :=
   is_valid_var (fun _ => state) ∧
   ∀ (variation : ℝ → α), is_valid_var variation → variation 0 = state →
     HasDerivAt (fun t => Action (variation t)) (0 : β) (0 : ℝ)
 
-/-- Defines a local minimum for functional variations on the manifold (allowing for flat moduli directions). 
-    Requires a Real-valued action (e.g. Energy) because complex paths cannot be ordered. -/
+/-- 
+Defines a local minimum for functional variations on the manifold (allowing for flat moduli directions). 
+-/
 def isLocalMinimum {α : Type*} (Action : α → ℝ) (state : α) (is_valid_var : (ℝ → α) → Prop) : Prop :=
   is_valid_var (fun _ => state) ∧
   ∀ (variation : ℝ → α), is_valid_var variation → variation 0 = state →
@@ -79,10 +81,9 @@ noncomputable def topologicalAction (A : Fin 4 → SpacetimePoint → SL2C) : �
 
 /--
 A physically valid universe variation is mathematically constrained:
-1. It must be a smooth path through configuration space (ContDiff).
-2. It must have compact support (vanish at infinity/boundaries) so integration by parts is valid.
-3. The underlying physical Lagrangian density must be strictly Lebesgue Integrable,
-   preventing the Mathlib Bochner integral from collapsing divergent actions to a trivial 0.
+1. It must be a smooth path through configuration space.
+2. It must have compact support (vanish at spatial infinity).
+3. The underlying physical Lagrangian density must be Lebesgue Integrable.
 -/
 def isValidUniverseVariation (v : ℝ → Universe) : Prop :=
   (∀ mu i j, ContDiff ℝ ⊤ (fun (tx : ℝ × CGD.Axioms.SpacetimePoint) => ((v tx.1).sd_sector mu tx.2).val i j)) ∧

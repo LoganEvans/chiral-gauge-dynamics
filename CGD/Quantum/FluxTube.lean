@@ -21,6 +21,7 @@ import Mathlib.Analysis.Calculus.Deriv.Linear
 import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.Ring
+import Litlib.Core
 
 set_option linter.unusedVariables false
 
@@ -142,13 +143,21 @@ lemma curvature_congruence (A B : Fin 4 → SpacetimePoint → SL2C) (x : Spacet
   intros mu nu; unfold curvatureSl2c
   rw[h_deriv mu nu, h_deriv nu mu, h_val mu, h_val nu]
 
-/-- 🟢 PROVEN: The flux tube algebraically satisfies the 1D minimal energy differential bounds. -/
+Litlib.theorem
+  description "Flux Tube Minimal Energy Bounds"
+/--
+Proves that the classical flux tube geometry exactly satisfies the 1D minimal energy differential boundary conditions.
+-/
 theorem fluxTubeIsMinimal : ∀ x, satisfies1DMinimalEnergyBound fluxTubeFrame x := by
   intro x; unfold satisfies1DMinimalEnergyBound; apply And.intro
   · intro nu; exact flux_tube_electric_zero_at nu x
   · intro nu; exact math_partialDerivSl2c_fluxTube_time nu x
 
-/-- 🟡 KINEMATIC: Flux Tube Degeneracy -/
+Litlib.theorem
+  description "Degeneracy of the Flux Tube Metric"
+/--
+Demonstrates that the spatial metric describing an isolated 1D flux tube has a strictly zero determinant, indicating that it represents a degenerate, non-macroscopic topological background.
+-/
 theorem kinematicFluxTubeStability (u : Universe) :
   ∀ (x : SpacetimePoint),
     isFluxTube u.sd_sector x →

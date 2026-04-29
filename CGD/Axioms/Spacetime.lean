@@ -10,11 +10,8 @@ import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 namespace CGD.Axioms
 
 /-- 
-The Spacetime Manifold is rigorously mapped to `Fin 4 → ℝ`. 
-By relying on Mathlib's native Pi-types over Reals, this natively instantiates 
-`NormedAddCommGroup` and `NormedSpace ℝ`. This completely mathematically secures 
-all `ContDiff` (smoothness) requirements, preventing arbitrary "dummy topologies" 
-from being hallucinated to trivially bypass the Calculus of Variations.
+The Spacetime Manifold is defined as a map `Fin 4 → ℝ`. 
+This instantiates the standard `NormedAddCommGroup` and `NormedSpace ℝ` required for rigorous calculus of variations over the manifold.
 -/
 abbrev SpacetimePoint := Fin 4 → ℝ
 

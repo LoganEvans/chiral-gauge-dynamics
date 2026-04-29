@@ -9,6 +9,7 @@ import Mathlib.Data.Complex.Basic
 import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.FinCases
+import Litlib.Core
 
 open CGD.Axioms CGD.Foundations CGD.Gravity Matrix Complex BigOperators
 
@@ -104,10 +105,9 @@ lemma triple_sum_eps (f : Fin 3 → Fin 3 → Fin 3 → Complex) :
   ring
 
 /--
-Algebraic Helper: The scalar triple product of the Pauli projections
-of three trace-free 2x2 matrices is strictly proportional to the trace of
-their Lie bracket. If the field is single color (all components commute),
-the triple product identically vanishes.
+The scalar triple product of the Pauli projections of three trace-free 2x2 matrices 
+is strictly proportional to the trace of their Lie bracket. If the field is single color 
+(all components commute), the triple product identically vanishes.
 -/
 lemma single_color_triple_product_zero (F : Fin 4 → Fin 4 → SL2C) (h : isSingleColor F)
   (mu nu : Fin 4) (alpha beta gamma delta : Fin 4) :
@@ -264,10 +264,10 @@ lemma metric_eq_zero_matrix (F : Fin 4 -> Fin 4 -> SL2C) (h : isSingleColor F) :
   unfold urbantkeMetric
   exact single_color_space_term_zero F h mu nu
 
+Litlib.theorem
+  description "Metric Confinement of Abelian Fields"
 /--
-🟡 KINEMATIC: Metric Confinement (Single Color Singular)
-ALGEBRAIC CONTEXT: The Urbantke metric determinant relies on the non-vanishing scalar triple product of Lie algebra generators. If the field is Abelian (all components commute), the Lie bracket vanishes, algebraically forcing the determinant to zero.
-PHYSICAL SIGNIFICANCE: Single-color (Abelian) states cannot generate 3D macroscopic volume. Hadrons must possess non-commuting components (e.g., 3 distinct colors) to expand into stable physical spacetime geometries. This geometrically manifests color confinement: isolated single color charges carry no volume and collapse topologically.
+Demonstrates that the Urbantke metric determinant fundamentally requires non-commuting Lie algebra generators. For an Abelian (single-color) field, the Lie bracket vanishes, algebraically forcing the macroscopic spacetime volume to zero. Physical spacetime geometries therefore require non-Abelian fields (such as multi-color hadrons) to expand into stable configurations, geometrically manifesting color confinement.
 -/
 theorem kinematicSingleColorDegeneracy (_u : Universe) :
   ∀ (F : Fin 4 → Fin 4 → SL2C),
@@ -278,7 +278,11 @@ theorem kinematicSingleColorDegeneracy (_u : Universe) :
   rw[h_zero]
   exact Matrix.det_zero ⟨0⟩
 
-/-- 🟡 KINEMATIC: Hadrons Require Three Colors for Volume -/
+Litlib.theorem
+  description "Non-Abelian Volume Requirement"
+/--
+Demonstrates that a non-zero macroscopic spacetime volume strictly requires non-Abelian fields.
+-/
 theorem kinematicMultiColorRequirement (_u : Universe) :
   ∀ (F : Fin 4 → Fin 4 → SL2C),
     (urbantkeMetric F).det ≠ 0 →

@@ -1,5 +1,6 @@
 -- FILENAME: CGD/Foundations/Charge.lean
 
+import Litlib.Core
 import CGD.Axioms.Spacetime
 import CGD.Foundations.Calculus
 import CGD.Gravity.Geometry
@@ -21,9 +22,7 @@ noncomputable def emergentElectricCurrent
     epsilon4 μ ν ρ σ * partialDeriv ν (fun p => F ρ σ p) x
 
 /-- 
-A mathematically bulletproof lemma to extract the negative sign from a finite sum.
-This avoids Mathlib versioning issues between `sum_neg` and `sum_neg_distrib` 
-by natively factoring out the complex constant (-1).
+Extracts the negative sign from a finite sum.
 -/
 lemma sum_neg_extract (n : Type*) [Fintype n] (f : n → ℂ) :
   ∑ i : n, - f i = - ∑ i : n, f i := by
@@ -66,12 +65,12 @@ lemma sum_antisymm_zero (S : Fin 4 → Fin 4 → ℂ) (h : ∀ i j, S i j = - S 
     _ = (1 / 2 : ℂ) * 0 := by rw [h2]
     _ = 0 := by ring
 
-/-- 
-Topological Charge Conservation.
+Litlib.theorem
+  description "Topological Charge Conservation"
+/--
 Because the emergent current is purely topological (defined via the Levi-Civita symbol),
 its divergence strictly vanishes due to the commutativity of partial derivatives,
-without requiring any dynamical equations of motion.
-∂_μ J^μ = 0
+independent of any dynamical equations of motion.
 -/
 theorem topologicalChargeConservation 
   (F : Fin 4 → Fin 4 → SpacetimePoint → ℂ)

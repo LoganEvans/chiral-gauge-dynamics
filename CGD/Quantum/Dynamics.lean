@@ -59,6 +59,11 @@ noncomputable def curvature_const (c : ℂ) (beta gamma : Fin 4) : SL2C :=
 -- Temp01: kinematicYangMillsChaos
 -- ============================================================================
 
+Litlib.theorem
+  description "Yang-Mills Chaos Bound"
+/--
+Evaluates the chaotic non-linear self-interaction of the homogenous gauge field ansatz.
+-/
 theorem kinematicYangMillsChaos (u : Universe) :
   ∀ (x : SpacetimePoint),
     Matrix.trace (⁅homogeneousChaosAnsatz 1 x, homogeneousChaosAnsatz 2 x⁆.val *
@@ -208,6 +213,11 @@ lemma isOdd_smul (c : Complex) (M : Matrix (Fin 4) (Fin 4) Complex) (hM : isOdd 
 -- Temp09: kinematicDiracEquation
 -- ============================================================================
 
+Litlib.theorem
+  description "Geometric Dirac Equation Structure"
+/--
+The Dirac equation geometrically emerges as an evaluation of the temporal gauge connection acting on the 4D Spin(4,C) multiplet, natively preserving the odd/even grading of the spinor operator.
+-/
 theorem kinematicDiracEquation (u : Universe) :
   ∀ (m : Complex) (x : SpacetimePoint),
     isOdd (diracOperatorCore (fun mu p => extractSpinorDeriv u p mu) x) ∧ 
@@ -388,6 +398,11 @@ lemma toSl2c_c_sigmaX_smul (c : ℂ) : toSl2c (c • sigmaX) = c • toSl2c sigm
   rw [h_tr1, h_tr2]
   simp
 
+Litlib.theorem
+  description "Exact Abelian Macroscopic Solution"
+/--
+Provides an exact analytical solution mapping an Abelian plane wave natively into the macroscopic pure CDJ volume constraint.
+-/
 theorem dynamicExactAbelianSolution (c : ℂ) (hc : c ≠ 0) :
   ∃ (u : Universe), 
     CGD.Gravity.satisfiesPureCdjConstraint (fun p m n => (curvatureSl2c u.sd_sector m n p).val) ∧ 

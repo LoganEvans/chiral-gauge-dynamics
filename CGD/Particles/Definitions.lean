@@ -16,7 +16,7 @@ namespace CGD.Particles
 noncomputable def solitonCore : SpacetimePoint := fun i => if i ≠ 0 then 1 else 0
 
 /-- 
-The true W=1 Topological Hedgehog (Physical su(2) mapping).
+W=1 Topological Hedgehog mapping into the physical su(2) phase space.
 Utilizes the strictly winding 't Hooft Levi-Civita tensor (ε_{ijk} x_j σ_k), 
 the 1/(r^2+1) finite-energy topological boundary envelope, and the 
 imaginary factor `Complex.I` to map the Hermitian Pauli observables 
@@ -35,7 +35,7 @@ noncomputable def shiftedHedgehog (center : SpacetimePoint) : Fin 4 → Spacetim
   fun mu p => hedgehogBps mu (fun i => p i - center i)
 
 /-- 
-The true 4D BPST Instanton (regular gauge, lambda=1). 
+The 4D BPST Instanton in the regular gauge.
 Topologically localizes in both space and time via the 't Hooft symbols.
 Multiplied by Complex.I to map into the strictly anti-Hermitian su(2) Lie algebra.
 -/
@@ -61,10 +61,7 @@ def isCrushedString (E : Matrix (Fin 3) (Fin 3) ℂ) (E_z : ℂ) : Prop :=
   ∃ (v : Fin 3 → ℂ), (∀ i j, E i j = E_z * v i * v j) ∧ (v 0 * v 0 + v 1 * v 1 + v 2 * v 2 = 1)
 
 /--
-Hypothesis: Single Color Condensate.
-Instead of forcing generators to zero, we define an Abelian reduction formally:
-all components of the curvature tensor commute. This means the field lies entirely
-within a single U(1) Cartan subalgebra, organically destroying the 3D SU(2) volume.
+Defines a single-color (Abelian) condensate where all components of the curvature tensor commute, constraining the field to a single U(1) Cartan subalgebra.
 -/
 def isSingleColor (F : Fin 4 -> Fin 4 -> SL2C) : Prop :=
   ∀ mu nu rho sigma, ⁅F mu nu, F rho sigma⁆ = 0

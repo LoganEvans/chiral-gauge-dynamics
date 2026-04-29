@@ -1,5 +1,6 @@
 -- FILENAME: CGD/Foundations/TensorCalculus/GaugeTransform.lean
 
+import Litlib.Core
 import CGD.Foundations.TensorCalculus.DifferentialRules
 import CGD.Foundations.Calculus
 import Mathlib.LinearAlgebra.Matrix.Trace
@@ -127,11 +128,7 @@ lemma gauge_algebra_antisymm (U V dA_nu dA_mu dV_mu dV_nu ddV A_mu A_nu : Matrix
   abel
 
 /-- 
-Secured Gauge Transform: Mathematically prevents two critical topological trapdoors:
-1. Prevents the trivial U=0 collapse by rigorously requiring invertible mappings (U * U_inv = 1).
-2. Prevents discontinuous mappings by rigorously requiring `ContDiff` (smoothness)
-   for all matrix components of U across the entire manifold. A discontinuous 
-   gauge transformation would physically destroy the integrity of the calculus.
+A mathematically rigorous definition of a gauge transformation, requiring invertible and globally smooth mappings to preserve the integrity of the differential calculus.
 -/
 def isGaugeTransform (A B : Fin 4 → SpacetimePoint → SL2C) : Prop :=
   (∀ mu i j, ContDiff ℝ ⊤ (fun x => (A mu x).val i j)) ∧
@@ -330,6 +327,11 @@ lemma gauge_curvature_covariance (A B : Fin 4 → SpacetimePoint → SL2C)
     _ = U_x * (partialDerivMat mu (fun p => (A nu p).val) x - partialDerivMat nu (fun p => (A mu p).val) x + ((A mu x).val * (A nu x).val - (A nu x).val * (A mu x).val)) * V_x := by rfl
     _ = U_x * (curvatureSl2c A mu nu x).val * V_x := by rw [← curvature_val_expansion A mu nu x hdA_mu hdA_nu]
 
+Litlib.theorem
+  description "Gauge Invariance of the Curvature Trace"
+/--
+The trace of the square of the curvature tensor is invariant under gauge transformations.
+-/
 theorem gauge_transform_curvature_trace (A B : Fin 4 → SpacetimePoint → SL2C) :
   isGaugeTransform A B →
   ∀ x mu nu, Matrix.trace ((curvatureSl2c A mu nu x).val * (curvatureSl2c A mu nu x).val) =

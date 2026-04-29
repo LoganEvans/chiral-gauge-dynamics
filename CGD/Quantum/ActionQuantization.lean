@@ -19,11 +19,10 @@ open CGD.Axioms Litlib.Y2003.nakahara2003geometry Litlib.Y1975.belavin1975pseudo
 
 namespace CGD.Quantum
 
+Litlib.theorem
+  description "Topological Action Quantization"
 /-- 
-🟡 KINEMATIC: Topological Action Quantization.
-Mathematically Honest Proof: If a physical connection yields an asymptotic boundary map 
-that is a topological homeomorphism to the gauge group, its Cartan-Maurer topological 
-charge inherently strictly evaluates to an integer quantization bound (±1).
+If a physical connection yields an asymptotic boundary map that is a topological homeomorphism to the gauge group, its Cartan-Maurer topological charge strictly evaluates to an integer quantization bound (±1).
 -/
 theorem kinematicActionQuantization
   {BoundaryManifold : Type*} [TopologicalSpace BoundaryManifold]

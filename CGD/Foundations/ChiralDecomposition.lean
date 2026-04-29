@@ -1,5 +1,6 @@
 -- FILENAME: CGD/Foundations/ChiralDecomposition.lean
 
+import Litlib.Core
 import CGD.Foundations.GaugeGroup
 import CGD.Axioms.Spacetime
 import CGD.Foundations.Calculus
@@ -401,12 +402,10 @@ lemma curvature_embed_eq (u : Universe) (mu nu : Fin 4) (x : SpacetimePoint) :
 -- THE DECOMPOSITION THEOREM
 -- ==============================================================================
 
-/-- 
-🔴 NEW SIGNATURE / UNDER REVIEW: Topological Chiral Decomposition
-The topological Pontryagin action (`epsilon4`) strictly preserves the chiral split.
-Because the cross terms `Tr(L * R)` vanish orthogonally, the 4D spacetime 
-topology cleanly factorizes into a Self-Dual topological charge and an 
-Anti-Self-Dual topological charge.
+Litlib.theorem
+  description "Topological Chiral Decomposition"
+/--
+The topological Pontryagin action strictly preserves the chiral split. Because the cross terms vanish orthogonally, the 4D spacetime topology cleanly factorizes into a self-dual topological charge and an anti-self-dual topological charge.
 -/
 theorem algebraicChiralDecomposition (u : Universe) (x : SpacetimePoint) :
   lagrangianDensity (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) =

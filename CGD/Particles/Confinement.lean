@@ -6,6 +6,7 @@ import CGD.Axioms.Ontology
 import CGD.Foundations.Calculus
 import Mathlib.LinearAlgebra.Matrix.Trace
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Litlib.Core
 
 set_option linter.unusedVariables false
 
@@ -17,10 +18,10 @@ namespace CGD.Particles
 noncomputable def densitizedHamiltonian (E B : Matrix (Fin 3) (Fin 3) ℂ) : ℂ := 
   (1 / 2 : ℂ) * ∑ a : Fin 3, ∑ b : Fin 3, (E a b * E a b + B a b * B a b)
 
-/-- 
-🟡 KINEMATIC: Degenerate Confinement (1D String Hamiltonian on arbitrary axis).
-When the electric field collapses into a 1D crushed string along vector v (where v^2 = 1),
-the 3D electric Hamiltonian geometrically collapses precisely into the scalar E_z^2.
+Litlib.theorem
+  description "Degenerate Confinement Hamiltonian"
+/--
+Establishes that when the continuous electric field geometrically collapses into a 1D string aligned along an arbitrary axis, the 3D densitized Hamiltonian precisely reduces to the exact 1D confinement Hamiltonian.
 -/
 theorem kinematicStringConfinement (_u : Universe) :
   ∀ (_x : SpacetimePoint) (E B : Matrix (Fin 3) (Fin 3) ℂ) (E_z : ℂ),

@@ -1,5 +1,6 @@
 -- FILENAME: CGD/Cosmology/ScaleBreaking.lean
 
+import Litlib.Core
 import CGD.Gravity.Geometry
 import CGD.Foundations.GaugeGroup
 import Mathlib.Data.Complex.Basic
@@ -34,7 +35,11 @@ lemma project_scaled (F : Fin 4 → Fin 4 → SL2C) (lambda_sq : ℂ) (a : Fin 3
   rw [smul_eq_mul]
   ring
 
-/-- 🔵 KINEMATIC: Classical Scale Breaking (The Urbantke metric natively breaks conformal symmetry without quantum loops). -/
+Litlib.theorem
+  description "Classical Scale Breaking"
+/--
+The Urbantke metric natively breaks conformal symmetry at the classical level. A scale transformation of the field strength tensor results in a non-trivial scaling of the emergent metric.
+-/
 theorem kinematicClassicalScaleBreaking (F : Fin 4 → Fin 4 → SL2C) (lambda_scale : ℂ) :
   let F_scaled := fun μ ν => toSl2c (lambda_scale^2 • (F μ ν).val);
   (∀ μ ν, urbantkeMetric F_scaled μ ν = lambda_scale^6 * urbantkeMetric F μ ν) ∧

@@ -1,5 +1,6 @@
 -- FILENAME: CGD/Cosmology/BigBang.lean
 
+import Litlib.Core
 import CGD.Cosmology.Definitions
 import CGD.Cosmology.TimeEmergence
 import CGD.Gravity.Geometry
@@ -16,10 +17,10 @@ open CGD.Axioms CGD.Foundations
 
 namespace CGD.Cosmology
 
-/-- 
-🟡 KINEMATIC: Big Bang Singularity Resolution (Euclidean Bounce)
-ALGEBRAIC CONTEXT: By enforcing the TopologicalInitialCondition, the Big Bang is a pure Euclidean SO(4) instanton.
-PHYSICAL SIGNIFICANCE: The Big Bang is not a mathematical singularity. Provided the bouncing instanton is topologically non-degenerate (metric ≠ 0), it strictly forms a non-zero, macroscopic Euclidean scale state (c ≠ 0). 
+Litlib.theorem
+  description "Big Bang Singularity Resolution (Euclidean Bounce)"
+/--
+By enforcing a topological initial condition, the Big Bang manifests as a pure Euclidean SO(4) instanton rather than a mathematical singularity. Provided the bouncing instanton is topologically non-degenerate (metric determinant is non-zero), it forms a strictly non-zero, macroscopic Euclidean scale state.
 -/
 theorem kinematicBigBang (u : Universe)
   (h_tic : ∀ x, x 0 = 0 → isFully4DSymmetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x))
@@ -86,10 +87,10 @@ lemma det_zero_of_row_zero (M : Matrix (Fin 4) (Fin 4) Complex)
   rw [h_prod]
   exact smul_zero _
 
-/-- 
-🟢 DYNAMIC: Static Universe Degeneracy
-ALGEBRAIC CONTEXT: If the electric/temporal components of the field strength are zero, the 0-th row of the Urbantke metric vanishes, forcing the determinant to zero.
-PHYSICAL SIGNIFICANCE: In pure connection gravity, 4D spacetime volume geometrically requires time-evolution. A completely static universe (F_{0i} = 0) cannot sustain a macroscopic 4D metric and topologically collapses. Time is the evolution of the field.
+Litlib.theorem
+  description "Static Universe Degeneracy"
+/--
+In pure connection gravity, 4D spacetime volume geometrically requires time-evolution. A completely static universe (where electric/temporal components of the field strength are zero) cannot sustain a macroscopic 4D metric and topologically collapses, forcing the metric determinant to zero.
 -/
 theorem kinematicStaticUniverseDegeneracy (u : Universe) :
   isStaticUniverse u →

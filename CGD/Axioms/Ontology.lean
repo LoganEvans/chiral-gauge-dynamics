@@ -10,7 +10,7 @@ open CGD.Foundations
 
 /-- 
 A smooth SL(2, C) gauge field. 
-(As an abstract Lie algebra, it possesses no spacetime chirality).
+As an abstract Lie algebra, it possesses no native spacetime chirality.
 -/
 structure Sl2cGaugeField where
   val : Fin 4 → CGD.Axioms.SpacetimePoint → SL2C
@@ -25,12 +25,11 @@ instance : Zero Sl2cGaugeField where
 /-- 
 The Core Ontology: The Universe is a macroscopic Spin(4, C) connection.
 
-PHYSICAL AXIOM: By the canonical exceptional isomorphism of continuous Lie algebras:
+By the canonical exceptional isomorphism of continuous Lie algebras:
   𝔰p𝔦n(4, ℂ) ≅ 𝔰𝔩(2, ℂ)_SD ⊕ 𝔰𝔩(2, ℂ)_ASD
 Defining the universe as the direct sum of two independent chiral SL(2, C) sectors 
-is mathematically strictly equivalent to defining a single global Spin(4, C) gauge field.
-This split representation is natively utilized because it elegantly isolates the 
-spacetime chirality required to generate the macroscopic volume form.
+is mathematically equivalent to defining a single global Spin(4, C) gauge field.
+This split representation elegantly isolates the spacetime chirality required to generate the macroscopic volume form.
 -/
 structure Universe where
   sd_sector : Sl2cGaugeField
@@ -42,8 +41,8 @@ instance : Zero Universe where
 /-- 
 The Spin(4, C) 4x4 Dirac Representation.
 This definition mathematically enforces the spacetime chirality of the Universe. 
-The sd_sector is strictly embedded as the Self-Dual (+1) eigenspace of γ5 (top-left), 
-and the asd_sector is strictly embedded as the Anti-Self-Dual (-1) eigenspace (bottom-right).
+The self-dual sector is strictly embedded as the +1 eigenspace of γ5 (top-left), 
+and the anti-self-dual sector is embedded as the -1 eigenspace (bottom-right).
 -/
 noncomputable def Universe.spin4c_connection (u : Universe) (mu : Fin 4) (x : CGD.Axioms.SpacetimePoint) : ChiralM :=
   embedSelfDual (u.sd_sector mu x) + embedAntiSelfDual (u.asd_sector mu x)

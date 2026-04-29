@@ -24,8 +24,11 @@ variable (intactFluxTube snappedFluxTube : ℝ → Fin 4 → SpacetimePoint → 
 def isGlobalMinimum {α : Type*} (Energy : α → ℝ) (state : α) : Prop :=
   ∀ (other : α), Energy state ≤ Energy other
 
-/-- 🟢 PREDICTION TARGET: Hamiltonian Crossover. 
-Rigorously backed by the true Litlib macroscopic string bounds. -/
+Litlib.theorem
+  description "Entanglement Hamiltonian Crossover"
+/-- 
+Based on the Litlib macroscopic flux tube bounds, if the spatial distance exceeds the ratio of the static mass to the string tension, the classical intact string geometry ceases to be the state of minimum energy.
+-/
 theorem kinematicHamiltonianCrossover {sigma M : ℝ} [eb : FluxTubeEnergyBounds (Fin 4 → SpacetimePoint → SL2C) spatialEnergy intactFluxTube snappedFluxTube sigma M]
   (L : ℝ) (h_sigma : sigma > 0) (h_L : L > (2 * M) / sigma) :
   spatialEnergy (intactFluxTube L) > spatialEnergy (snappedFluxTube L) := by
@@ -38,7 +41,11 @@ theorem kinematicHamiltonianCrossover {sigma M : ℝ} [eb : FluxTubeEnergyBounds
   rw [h_cancel] at h_bound
   exact h_bound
 
-/-- 🟢 PREDICTION TARGET: The Death of Entanglement. -/
+Litlib.theorem
+  description "Entanglement Decay"
+/--
+When the distance exceeds the crossover bound, the intact flux tube holding the entangled pair drops out of the global minimum.
+-/
 theorem dynamicEntanglementDecay {sigma M : ℝ} [eb : FluxTubeEnergyBounds (Fin 4 → SpacetimePoint → SL2C) spatialEnergy intactFluxTube snappedFluxTube sigma M]
   (L : ℝ) (h_sigma : sigma > 0) (h_L : L > (2 * M) / sigma) :
   ¬ isGlobalMinimum spatialEnergy (intactFluxTube L) := by
@@ -285,7 +292,11 @@ lemma curvature_congruence (A B : Fin 4 → SpacetimePoint → SL2C) (x : Spacet
   intros mu nu; unfold curvatureSl2c
   rw[h_deriv mu nu, h_deriv nu mu, h_val mu, h_val nu]
 
-/-- 🟡 KINEMATIC: Entanglement is a Wormhole (Metric Rank Deficiency) -/
+Litlib.theorem
+  description "Entanglement Metric Rank Deficiency"
+/--
+The spatial metric defining the wormhole channel connecting entangled particles has a rigorously zero determinant, confirming its non-local, degenerate topology.
+-/
 theorem kinematicEntanglementWormhole (u : Universe) :
   ∀ (x y : SpacetimePoint) (theta : ℝ),
     areEntangled u.sd_sector x y theta →

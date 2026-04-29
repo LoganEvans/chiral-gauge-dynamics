@@ -1,5 +1,6 @@
 -- FILENAME: CGD/Phenomenology/Weinberg.lean
 
+import Litlib.Core
 import CGD.Foundations.GaugeGroup
 import CGD.Axioms.Spacetime
 import Mathlib.Data.Complex.Basic
@@ -48,11 +49,12 @@ lemma trace_parallelogram (X Y : Matrix n n ℂ) :
   simp[trace_add', trace_sub']
   ring
 
+Litlib.theorem
+  description "Pure Axial Volume Generation"
 /-- 
-🔵 ALGEBRAIC: The Pure Axial Vacuum (Volume Generation)
-Proves that the parity-even topological density (which generates the macroscopic Unimodular volume) 
+The parity-even topological density (which generates the macroscopic Unimodular volume) 
 is sustained exactly by the sum of the Vector and Axial kinetic traces. 
-If the Vector field is identically zero (V = 0), the metric volume is generated entirely by the Axial background.
+If the Vector field is identically zero, the metric volume is generated entirely by the Axial background.
 -/
 theorem algebraicAxialVolumeGeneration (V A : Matrix (Fin 2) (Fin 2) ℂ) :
   let L := V + A
@@ -60,11 +62,12 @@ theorem algebraicAxialVolumeGeneration (V A : Matrix (Fin 2) (Fin 2) ℂ) :
   Matrix.trace (L * L) + Matrix.trace (R * R) = 2 * Matrix.trace (V * V) + 2 * Matrix.trace (A * A) := by
   exact trace_parallelogram V A
 
+Litlib.theorem
+  description "Topological Parity Violation is Vector-Axial Interference"
 /-- 
-🔵 ALGEBRAIC: Topological Parity Violation is Vector-Axial Interference
-Proves that the chiral topological difference (L^2 - R^2), which geometrically drives 
-matter/antimatter asymmetry, algebraically reduces to exactly the cross-term of the 
-Vector and Axial fields. 
+The chiral topological difference (L^2 - R^2), which geometrically drives 
+matter/antimatter asymmetry, algebraically reduces strictly to the cross-term 
+of the Vector and Axial fields. 
 -/
 theorem algebraicTopologicalInterference (V A : Matrix (Fin 2) (Fin 2) ℂ) :
   let L := V + A
@@ -89,7 +92,11 @@ theorem algebraicTopologicalInterference (V A : Matrix (Fin 2) (Fin 2) ℂ) :
   rw [tr_comm]
   ring
 
-/-- 🟡 KINEMATIC: Vector-Axial kinetic tracing identity perfectly splits. (Pure Math) -/
+Litlib.theorem
+  description "Weinberg Decomposition Identity"
+/-- 
+The vector-axial kinetic tracing identity algebraically separates the total chiral structure into pure kinetic vector terms and vector-axial coupled terms. 
+-/
 theorem algebraicWeinbergDecomposition (_u : Universe) (_x : SpacetimePoint) (_mu _nu : Fin 4) :
   ∀ (dV dA V1 V2 A1 A2 : Matrix (Fin 2) (Fin 2) Complex),
     Matrix.trace (fMode (dV + dA) (V1 + A1) (V2 + A2) * fMode (dV + dA) (V1 + A1) (V2 + A2)) +
@@ -116,7 +123,11 @@ theorem algebraicWeinbergDecomposition (_u : Universe) (_x : SpacetimePoint) (_m
   rw[h1, h2]
   exact trace_parallelogram X Y
 
-/-- 🔵 ALGEBRAIC: Weinberg Sum Splitting (If Chiral symmetry is broken L ≠ R, the Axial vector A cannot be zero). -/
+Litlib.theorem
+  description "Weinberg Sum Splitting"
+/-- 
+If Chiral symmetry is broken (L ≠ R), the Axial vector part A cannot be identically zero. 
+-/
 theorem algebraicWeinbergSumSplitting (V1 A1 : Matrix (Fin 2) (Fin 2) ℂ) :
   let L := V1 + A1;
   let R := V1 - A1;
@@ -126,7 +137,11 @@ theorem algebraicWeinbergSumSplitting (V1 A1 : Matrix (Fin 2) (Fin 2) ℂ) :
   change V1 + A1 = V1 - A1
   rw [h_eq, add_zero, sub_zero]
 
-/-- 🔵 ALGEBRAIC: Axial Truncation Error (Pure Vector Dominance truncates out exactly 2A^2). -/
+Litlib.theorem
+  description "Axial Truncation Error"
+/-- 
+Enforcing Pure Vector Dominance manually truncates out exactly 2A^2 from the chiral dynamics. 
+-/
 theorem algebraicAxialTruncationError (V A : Matrix (Fin 2) (Fin 2) ℂ) :
   2 * Matrix.trace (V * V) + 2 * Matrix.trace (A * A) - 2 * Matrix.trace (V * V) = 2 * Matrix.trace (A * A) := by
   ring

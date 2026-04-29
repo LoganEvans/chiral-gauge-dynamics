@@ -1,5 +1,6 @@
 -- FILENAME: CGD/Gravity/MetricSuperposition.lean
 
+import Litlib.Core
 import CGD.Gravity.Geometry
 import CGD.Axioms.Ontology
 
@@ -14,7 +15,11 @@ noncomputable def metricChiral (F : Fin 4 → Fin 4 → ChiralM) : Matrix (Fin 4
   urbantkeMetric (fun mu nu => (chiralProject (F mu nu)).self_dual) +
   urbantkeMetric (fun mu nu => (chiralProject (F mu nu)).anti_self_dual)
 
-/-- 🟡 KINEMATIC: Metric Superposition -/
+Litlib.theorem
+  description "Metric Superposition"
+/--
+The emergent metric can be linearly superposed into self-dual and anti-self-dual components.
+-/
 theorem algebraicMetricSuperposition (u : Universe) (x : SpacetimePoint) :
   metricChiral (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) =
   urbantkeMetric (fun mu nu => (chiralProject (curvature (fun m p => u.spin4c_connection m p) mu nu x)).self_dual) +
