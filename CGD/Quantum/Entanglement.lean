@@ -285,7 +285,7 @@ lemma rotateZ_metric_electric_zero_at (C : ℝ) (nu : Fin 4) (x : SpacetimePoint
     rw[h_proj]; ring
   rw [h_sum, mul_zero]
 
-lemma curvature_congruence (A B : Fin 4 → SpacetimePoint → SL2C) (x : SpacetimePoint)
+lemma entang_curvature_congruence (A B : Fin 4 → SpacetimePoint → SL2C) (x : SpacetimePoint)
   (h_val : ∀ mu, A mu x = B mu x)
   (h_deriv : ∀ mu nu, partialDerivSl2c nu (A mu) x = partialDerivSl2c nu (B mu) x) :
   ∀ mu nu, curvatureSl2c A mu nu x = curvatureSl2c B mu nu x := by
@@ -321,7 +321,7 @@ theorem kinematicEntanglementWormhole (u : Universe) :
     exact h_eval
 
   have h_curv_x : ∀ mu nu, curvatureSl2c u.sd_sector mu nu x = curvatureSl2c (rotateZ fluxTubeFrame (θ 0)) mu nu x :=
-    curvature_congruence u.sd_sector (rotateZ fluxTubeFrame (θ 0)) x h_x_val h_x_deriv
+    entang_curvature_congruence u.sd_sector (rotateZ fluxTubeFrame (θ 0)) x h_x_val h_x_deriv
 
   have h_F_x : (fun m n => curvatureSl2c u.sd_sector m n x) = (fun m n => curvatureSl2c (rotateZ fluxTubeFrame (θ 0)) m n x) := by funext m n; exact h_curv_x m n
   have h_det_x : (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x)).det = 0 := by
@@ -345,7 +345,7 @@ theorem kinematicEntanglementWormhole (u : Universe) :
     exact h_eval
 
   have h_curv_y : ∀ mu nu, curvatureSl2c u.sd_sector mu nu y = curvatureSl2c (rotateZ fluxTubeFrame (θ 1)) mu nu y :=
-    curvature_congruence u.sd_sector (rotateZ fluxTubeFrame (θ 1)) y h_y_val h_y_deriv
+    entang_curvature_congruence u.sd_sector (rotateZ fluxTubeFrame (θ 1)) y h_y_val h_y_deriv
 
   have h_F_y : (fun m n => curvatureSl2c u.sd_sector m n y) = (fun m n => curvatureSl2c (rotateZ fluxTubeFrame (θ 1)) m n y) := by funext m n; exact h_curv_y m n
   have h_det_y : (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n y)).det = 0 := by

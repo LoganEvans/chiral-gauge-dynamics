@@ -3,6 +3,7 @@
 import Litlib.Core
 import CGD.Cosmology.Definitions
 import CGD.Gravity.Geometry
+import CGD.Foundations.Math
 import Mathlib.Data.Complex.Basic
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.FinCases
@@ -53,15 +54,6 @@ lemma math_Time_Metric_Zero (F : Fin 4 → Fin 4 → SL2C)
   apply Finset.sum_eq_zero; intro c _
   have h_inner := math_Time_inner_sum_zero F h_time a b c j
   rw [h_inner, mul_zero]
-
-lemma sum_fin_4_expand (f : Fin 4 → Complex) : ∑ i : Fin 4, f i = f 0 + f 1 + f 2 + f 3 := by
-  simp only [Fin.sum_univ_four]
-
-lemma sum_fin_4_expand_mat (f : Fin 4 → Matrix (Fin 2) (Fin 2) ℂ) : ∑ i : Fin 4, f i = f 0 + f 1 + f 2 + f 3 := by
-  simp only [Fin.sum_univ_four]
-
-lemma sum_fin_3_expand (f : Fin 3 → Complex) : ∑ i : Fin 3, f i = f 0 + f 1 + f 2 := by
-  rw[Fin.sum_univ_castSucc, Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]; simp
 
 lemma sl2c_eq_iff_val (A B : SL2C) : A = B ↔ A.val = B.val := Subtype.ext_iff
 lemma sl2c_smul_val (c : ℂ) (A : SL2C) : (c • A).val = c • A.val := rfl

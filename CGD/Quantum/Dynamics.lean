@@ -2,6 +2,7 @@
 
 import Litlib.Core
 import CGD.Foundations.GaugeGroup
+import CGD.Foundations.Math
 import CGD.Foundations.Calculus
 import CGD.Foundations.Lagrangian
 import CGD.Particles.Definitions
@@ -15,15 +16,13 @@ import Mathlib.Tactic.FinCases
 
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
+set_option linter.unusedTactic false
+set_option linter.unreachableTactic false
 
 open CGD.Foundations CGD.Particles Matrix Complex BigOperators Litlib.Math.Dirac
 open CGD.Axioms
 
 namespace CGD.Quantum
-
--- ============================================================================
--- Temp00: Definitions
--- ============================================================================
 
 noncomputable def gaugeCommutator (A B : Matrix (Fin 2) (Fin 2) ℂ) : Matrix (Fin 2) (Fin 2) ℂ := A * B - B * A
 
@@ -41,9 +40,6 @@ noncomputable def extractSpinorDeriv (u : Universe) (x : SpacetimePoint) (mu : F
 noncomputable def diracOperatorCore (dPsi : Fin 4 → SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) (x : SpacetimePoint) : Matrix (Fin 4) (Fin 4) Complex :=
   ∑ mu, gammaVec mu * dPsi mu x
 
-noncomputable instance matNormedAddCommGroup : NormedAddCommGroup (Matrix (Fin 2) (Fin 2) ℂ) := Pi.normedAddCommGroup
-noncomputable instance matNormedSpaceR : NormedSpace ℝ (Matrix (Fin 2) (Fin 2) ℂ) := Pi.normedSpace
-
 noncomputable def exactAbelianL (c : ℂ) (x : SpacetimePoint) : Matrix (Fin 2) (Fin 2) ℂ :=
   (x 1 : ℝ) • (c • sigmaX)
 
@@ -54,10 +50,6 @@ noncomputable def curvature_const (c : ℂ) (beta gamma : Fin 4) : SL2C :=
   if beta = 1 ∧ gamma = 2 then toSl2c (c • sigmaX)
   else if beta = 2 ∧ gamma = 1 then toSl2c ((-c) • sigmaX)
   else 0
-
--- ============================================================================
--- Temp01: kinematicYangMillsChaos
--- ============================================================================
 
 Litlib.theorem
   description "Yang-Mills Chaos Bound"
@@ -88,7 +80,7 @@ theorem kinematicYangMillsChaos (u : Universe) :
   rw [h_mat_smul]
   have h_trace_smul (c : ℂ) (M : Matrix (Fin 2) (Fin 2) ℂ) : Matrix.trace (c • M) = c * Matrix.trace M := by
     unfold Matrix.trace Matrix.diag
-    rw [Fin.sum_univ_two]
+    rw [sum_fin_2_expand]
     simp only [Fin.sum_univ_two, Matrix.smul_apply, smul_eq_mul]
     ring
   rw [h_trace_smul]
@@ -99,27 +91,34 @@ theorem kinematicYangMillsChaos (u : Universe) :
       _ = (x 1)^2 * (x 2)^2 := by ring
   rw [hc_sq]
   have h_trace_8 : Matrix.trace ((sigma1.val * sigma2.val - sigma2.val * sigma1.val) * (sigma1.val * sigma2.val - sigma2.val * sigma1.val)) = -8 := by
-    unfold sigma1 sigma2
-    dsimp [toSl2c, Matrix.trace, Matrix.diag, Matrix.mul_apply, Matrix.sub_apply]
-    simp [Fin.sum_univ_two]
-    calc
-      _ = Complex.I^2 * 8 := by ring
-      _ = (-1) * 8 := by rw [Complex.I_sq]
+    rw [val_sigma1, val_sigma2]
+    have eq_comm : sigmaX * sigmaY - sigmaY * sigmaX = (2 * Complex.I) • sigmaZ := by
+      ext i j
+      unfold sigmaX sigmaY sigmaZ mkMat
+      fin_cases i <;> fin_cases j <;> simp [Matrix.sub_apply, Matrix.mul_apply, sum_fin_2_expand, Matrix.smul_apply] <;> ring
+    rw [eq_comm]
+    have eq_sq : ((2 * Complex.I) • sigmaZ) * ((2 * Complex.I) • sigmaZ) = (2 * Complex.I)^2 • (sigmaZ * sigmaZ) := by
+      ext i j; simp [Matrix.mul_apply, sum_fin_2_expand, Matrix.smul_apply]; ring
+    rw [eq_sq]
+    have eq_z_sq : sigmaZ * sigmaZ = 1 := by
+      ext i j
+      unfold sigmaZ mkMat
+      fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, sum_fin_2_expand, Matrix.one_apply] <;> ring
+    rw [eq_z_sq]
+    have eq_tr : Matrix.trace ((2 * Complex.I) ^ 2 • (1 : Matrix (Fin 2) (Fin 2) ℂ)) = (2 * Complex.I)^2 * 2 := by
+      unfold Matrix.trace Matrix.diag
+      simp [sum_fin_2_expand, Matrix.smul_apply, Matrix.one_apply]
+      ring
+    rw [eq_tr]
+    calc (2 * Complex.I) ^ 2 * 2 = 4 * Complex.I ^ 2 * 2 := by ring
+      _ = 4 * (-1) * 2 := by rw [Complex.I_sq]
       _ = -8 := by ring
   rw [h_trace_8]
   ring
 
--- ============================================================================
--- Temp02: isOdd_add
--- ============================================================================
-
 lemma isOdd_add (A B : Matrix (Fin 4) (Fin 4) Complex) (hA : isOdd A) (hB : isOdd B) : isOdd (A + B) := by
   intros i j hij
   rw [Matrix.add_apply, hA i j hij, hB i j hij, add_zero]
-
--- ============================================================================
--- Temp03: isOdd_sum
--- ============================================================================
 
 lemma isOdd_sum (f : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) 
   (hf : ∀ mu, isOdd (f mu)) : isOdd (∑ mu, f mu) := by
@@ -128,10 +127,6 @@ lemma isOdd_sum (f : Fin 4 → Matrix (Fin 4) (Fin 4) Complex)
   apply Finset.sum_eq_zero
   intros mu _
   exact hf mu i j hij
-
--- ============================================================================
--- Temp04: isEven_embedSelfDual
--- ============================================================================
 
 lemma isEven_embedSelfDual (M : SL2C) : isEven (embedSelfDual M) := by
   intros i j hij
@@ -153,10 +148,6 @@ lemma isEven_embedSelfDual (M : SL2C) : isEven (embedSelfDual M) := by
   · rfl
   · rfl
 
--- ============================================================================
--- Temp05: isEven_embedAntiSelfDual
--- ============================================================================
-
 lemma isEven_embedAntiSelfDual (M : SL2C) : isEven (embedAntiSelfDual M) := by
   intros i j hij
   unfold embedAntiSelfDual
@@ -177,10 +168,6 @@ lemma isEven_embedAntiSelfDual (M : SL2C) : isEven (embedAntiSelfDual M) := by
     rw [h_light_i, h_light_j] at hij
     contradiction
 
--- ============================================================================
--- Temp06: isEven_extractSpinorMode
--- ============================================================================
-
 lemma isEven_extractSpinorMode (u : Universe) (x : SpacetimePoint) : isEven (extractSpinorMode u x) := by
   intros i j hij
   unfold extractSpinorMode Universe.spin4c_connection
@@ -188,10 +175,6 @@ lemma isEven_extractSpinorMode (u : Universe) (x : SpacetimePoint) : isEven (ext
   have h2 := isEven_embedAntiSelfDual (u.asd_sector 0 x) i j hij
   change (embedSelfDual (u.sd_sector 0 x) + embedAntiSelfDual (u.asd_sector 0 x)) i j = 0
   rw [Matrix.add_apply, h1, h2, zero_add]
-
--- ============================================================================
--- Temp07: isEven_extractSpinorDeriv
--- ============================================================================
 
 lemma isEven_extractSpinorDeriv (u : Universe) (x : SpacetimePoint) (mu : Fin 4) : isEven (extractSpinorDeriv u x mu) := by
   intros i j hij
@@ -201,17 +184,9 @@ lemma isEven_extractSpinorDeriv (u : Universe) (x : SpacetimePoint) (mu : Fin 4)
   change (embedSelfDual _ + embedAntiSelfDual _) i j = 0
   rw [Matrix.add_apply, h1, h2, zero_add]
 
--- ============================================================================
--- Temp08: isOdd_smul
--- ============================================================================
-
 lemma isOdd_smul (c : Complex) (M : Matrix (Fin 4) (Fin 4) Complex) (hM : isOdd M) : isOdd (c • M) := by
   intros i j hij
   rw [Matrix.smul_apply, hM i j hij, smul_zero]
-
--- ============================================================================
--- Temp09: kinematicDiracEquation
--- ============================================================================
 
 Litlib.theorem
   description "Geometric Dirac Equation Structure"
@@ -234,10 +209,6 @@ theorem kinematicDiracEquation (u : Universe) :
     apply Litlib.Math.Dirac.even_mul_odd
     · exact isEven_extractSpinorMode u x
     · exact Litlib.Math.Dirac.is_odd_gamma0
-
--- ============================================================================
--- Temp10: partialDerivSl2c_exactAbelian and helpers
--- ============================================================================
 
 lemma partialDeriv_coord_smul {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] 
   (c_idx : Fin 4) (M : E) (k : Fin 4) (x : SpacetimePoint) :
@@ -324,10 +295,6 @@ lemma partialDerivSl2c_exactAbelian (c : ℂ) (k l : Fin 4) (x : SpacetimePoint)
     rw [if_neg h_false]
     exact partialDerivSl2c_const 0 k x
 
--- ============================================================================
--- Temp11: comm_exactAbelian
--- ============================================================================
-
 lemma comm_exactAbelian (c : ℂ) (m n : Fin 4) (x : SpacetimePoint) :
   ⁅exactAbelianField c m x, exactAbelianField c n x⁆ = 0 := by
   unfold exactAbelianField
@@ -336,10 +303,6 @@ lemma comm_exactAbelian (c : ℂ) (m n : Fin 4) (x : SpacetimePoint) :
   · simp [hm, hn]
   · simp [hm, hn]
   · simp [hm, hn]
-
--- ============================================================================
--- Temp12: curvature_exactAbelian
--- ============================================================================
 
 lemma toSl2c_neg (M : Matrix (Fin 2) (Fin 2) ℂ) : toSl2c (- M) = - toSl2c M := by
   apply Subtype.ext
@@ -379,10 +342,6 @@ lemma curvature_exactAbelian (c : ℂ) (m n : Fin 4) (x : SpacetimePoint) :
         apply h2
         exact And.intro h.right h.left
       simp only [if_neg h1, if_neg h2, if_neg h2_rev_false, sub_zero]
-
--- ============================================================================
--- Temp13: dynamicExactAbelianSolution
--- ============================================================================
 
 lemma toSl2c_c_sigmaX_smul (c : ℂ) : toSl2c (c • sigmaX) = c • toSl2c sigmaX := by
   apply Subtype.ext
@@ -471,10 +430,10 @@ theorem dynamicExactAbelianSolution (c : ℂ) (hc : c ≠ 0) :
       refine ⟨hc, ?_⟩
       intro h_contra
       have hz2 : (toSl2c sigmaX).val = 0 := by rw [h_contra]; rfl
-      have hz3 : (toSl2c sigmaX).val 0 1 = 0 := by rw [hz2]; rfl
-      have h_val : (toSl2c sigmaX).val 0 1 = 1 := by
-        unfold toSl2c Matrix.trace Matrix.diag sigmaX mkMat
-        simp [Fin.sum_univ_two]
+      have h_val_sigma1 : (toSl2c sigmaX).val = sigmaX := val_sigma1
+      rw [h_val_sigma1] at hz2
+      have hz3 : sigmaX 0 1 = 0 := by rw [hz2]; rfl
+      have h_val : sigmaX 0 1 = 1 := rfl
       rw [h_val] at hz3
       exact one_ne_zero hz3
 

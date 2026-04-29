@@ -26,19 +26,23 @@ open Litlib.Y2000.hall2000elementary
 
 namespace CGD.Quantum
 
+lemma sigma1_val_eq_mat : sigma1.val = Matrix.of ![![0, 1], ![1, 0]] := by rw [val_sigma1]; rfl
+lemma sigma2_val_eq_mat : sigma2.val = Matrix.of ![![0, -Complex.I], ![Complex.I, 0]] := by rw [val_sigma2]; rfl
+lemma sigma3_val_eq_mat : sigma3.val = Matrix.of ![![1, 0], ![0, -1]] := by rw [val_sigma3]; rfl
+
 noncomputable def bellCorrelationDeg (A B : Matrix (Fin 2) (Fin 2) ℂ) : ℂ :=
   (1 / 2 : ℂ) * Matrix.trace (A * B)
 
 lemma pauli_algebra_sigma2_sq : sigma2.val ^ 2 = 1 := by
   rw [pow_two]
   ext i j
-  unfold sigma2
+  rw [sigma2_val_eq_mat]
   fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two, Matrix.one_apply, Complex.I_sq, mul_neg, neg_mul]
 
 lemma pauli_algebra_sigma1_sq : sigma1.val ^ 2 = 1 := by
   rw [pow_two]
   ext i j
-  unfold sigma1
+  rw [sigma1_val_eq_mat]
   fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two, Matrix.one_apply]
 
 lemma M_sq (θ : ℝ) :
@@ -46,16 +50,16 @@ lemma M_sq (θ : ℝ) :
   ((Complex.cos (θ:ℂ)) • sigma3.val + (Complex.sin (θ:ℂ)) • sigma1.val) = 1 := by
   ext i j
   fin_cases i <;> fin_cases j
-  · simp [sigma1, sigma3, Matrix.add_apply, Matrix.smul_apply, Matrix.mul_apply, Fin.sum_univ_two, Matrix.one_apply]
+  · simp [sigma1_val_eq_mat, sigma3_val_eq_mat, Matrix.add_apply, Matrix.smul_apply, Matrix.mul_apply, Fin.sum_univ_two, Matrix.one_apply]
     have h1 : Complex.cos ↑θ * Complex.cos ↑θ = Complex.cos ↑θ ^ 2 := by ring
     have h2 : Complex.sin ↑θ * Complex.sin ↑θ = Complex.sin ↑θ ^ 2 := by ring
     rw [h1, h2, add_comm]
     exact Complex.sin_sq_add_cos_sq (θ:ℂ)
-  · simp [sigma1, sigma3, Matrix.add_apply, Matrix.smul_apply, Matrix.mul_apply, Fin.sum_univ_two, Matrix.one_apply]
+  · simp [sigma1_val_eq_mat, sigma3_val_eq_mat, Matrix.add_apply, Matrix.smul_apply, Matrix.mul_apply, Fin.sum_univ_two, Matrix.one_apply]
     ring
-  · simp [sigma1, sigma3, Matrix.add_apply, Matrix.smul_apply, Matrix.mul_apply, Fin.sum_univ_two, Matrix.one_apply]
+  · simp [sigma1_val_eq_mat, sigma3_val_eq_mat, Matrix.add_apply, Matrix.smul_apply, Matrix.mul_apply, Fin.sum_univ_two, Matrix.one_apply]
     ring
-  · simp [sigma1, sigma3, Matrix.add_apply, Matrix.smul_apply, Matrix.mul_apply, Fin.sum_univ_two, Matrix.one_apply]
+  · simp [sigma1_val_eq_mat, sigma3_val_eq_mat, Matrix.add_apply, Matrix.smul_apply, Matrix.mul_apply, Fin.sum_univ_two, Matrix.one_apply]
     have h1 : Complex.sin ↑θ * Complex.sin ↑θ = Complex.sin ↑θ ^ 2 := by ring
     have h2 : Complex.cos ↑θ * Complex.cos ↑θ = Complex.cos ↑θ ^ 2 := by ring
     rw [h1, h2]
@@ -78,15 +82,6 @@ lemma scalar_integral_deriv (t0 t : ℝ) :
   rw [h_eq] at hd3
   exact hd3
 
-noncomputable instance matNormedAddCommGroup : NormedAddCommGroup (Matrix (Fin 2) (Fin 2) ℂ) :=
-  inferInstanceAs (NormedAddCommGroup (Fin 2 → Fin 2 → ℂ))
-
-noncomputable instance matNormedSpaceC : NormedSpace ℂ (Matrix (Fin 2) (Fin 2) ℂ) :=
-  inferInstanceAs (NormedSpace ℂ (Fin 2 → Fin 2 → ℂ))
-
-noncomputable instance matNormedSpaceR : NormedSpace ℝ (Matrix (Fin 2) (Fin 2) ℂ) :=
-  inferInstanceAs (NormedSpace ℝ (Fin 2 → Fin 2 → ℂ))
-
 lemma integral_t_M (M : Matrix (Fin 2) (Fin 2) ℂ) (t0 t : ℝ) :
   HasDerivAt (fun s : ℝ => (Complex.I * ((s:ℂ) - (t0:ℂ))) • M)
              (Complex.I • M) t :=
@@ -103,29 +98,29 @@ lemma A_path_comm (M : Matrix (Fin 2) (Fin 2) ℂ) :
   (Complex.I • M) * (Complex.I • M) := rfl
 
 lemma trace_sigma2 : Matrix.trace sigma2.val = 0 := by
-  unfold sigma2
+  rw [sigma2_val_eq_mat]
   simp [Matrix.trace, Fin.sum_univ_two, Matrix.zero_apply]
 
 lemma trace_sigma1 : Matrix.trace sigma1.val = 0 := by
-  unfold sigma1
+  rw [sigma1_val_eq_mat]
   simp [Matrix.trace, Fin.sum_univ_two, Matrix.zero_apply]
 
 lemma trace_sigma3 : Matrix.trace sigma3.val = 0 := by
-  unfold sigma3
+  rw [sigma3_val_eq_mat]
   simp [Matrix.trace, Fin.sum_univ_two, Matrix.zero_apply]
 
 lemma trace_sigma3_sigma1 : Matrix.trace (sigma3.val * sigma1.val) = 0 := by
-  unfold sigma1 sigma3
+  rw [sigma3_val_eq_mat, sigma1_val_eq_mat]
   simp [Matrix.trace, Fin.sum_univ_two, Matrix.mul_apply, Matrix.zero_apply]
 
 lemma trace_sigma1_sigma3 : Matrix.trace (sigma1.val * sigma3.val) = 0 := by
-  unfold sigma1 sigma3
+  rw [sigma1_val_eq_mat, sigma3_val_eq_mat]
   simp [Matrix.trace, Fin.sum_univ_two, Matrix.mul_apply, Matrix.zero_apply]
 
 lemma pauli_algebra_sigma3_sq : sigma3.val ^ 2 = 1 := by
   rw [pow_two]
   ext i j
-  unfold sigma3
+  rw [sigma3_val_eq_mat]
   fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two, Matrix.one_apply]
 
 lemma trace_sigma3_sq : Matrix.trace (sigma3.val * sigma3.val) = 2 := by
@@ -213,7 +208,7 @@ lemma complex_double_angle_sin (θ : ℝ) : Complex.cos ↑(θ / 2) * Complex.si
   have h_final2 : Complex.cos ↑(θ / 2) * Complex.sin ↑(θ / 2) + Complex.sin ↑(θ / 2) * Complex.cos ↑(θ / 2) = ↑(Real.sin θ) := Eq.trans h_final1 h_complex
   exact Eq.trans h_final2 c10
 
-lemma toSl2c_val_eq (M : Matrix (Fin 2) (Fin 2) ℂ) (h_tr : Matrix.trace M = 0) : (toSl2c M).val = M := by
+lemma hol_toSl2c_val_eq (M : Matrix (Fin 2) (Fin 2) ℂ) (h_tr : Matrix.trace M = 0) : (toSl2c M).val = M := by
   unfold toSl2c; dsimp
   rw [h_tr]
   have hz : (0:ℂ) / 2 = 0 := by ring
@@ -234,7 +229,7 @@ lemma trace_obs_M (θ : ℝ) : Matrix.trace (Complex.I • obs_M θ) = 0 := by
   ring
 
 lemma toSl2c_obs_M (θ : ℝ) : (toSl2c (Complex.I • obs_M θ)).val = Complex.I • obs_M θ :=
-  toSl2c_val_eq _ (trace_obs_M θ)
+  hol_toSl2c_val_eq _ (trace_obs_M θ)
 
 lemma matrix_mul_2x2_00 (A B : Matrix (Fin 2) (Fin 2) ℂ) : (A * B) 0 0 = A 0 0 * B 0 0 + A 0 1 * B 1 0 := by
   have eq : (A * B) 0 0 = ∑ k : Fin 2, A 0 k * B k 0 := rfl
@@ -265,25 +260,25 @@ lemma R_sigma3_Rinv_eq_obs_M (θ : ℝ) :
 
   let M := Complex.I • sigma3.val
   have hM00 : M 0 0 = Complex.I := by 
-    have h : sigma3.val 0 0 = 1 := rfl
+    have h : sigma3.val 0 0 = 1 := by rw [sigma3_val_eq_mat]; rfl
     calc M 0 0 = Complex.I * sigma3.val 0 0 := rfl
     _ = Complex.I * 1 := by rw [h]
     _ = Complex.I := mul_one _
   
   have hM01 : M 0 1 = 0 := by 
-    have h : sigma3.val 0 1 = 0 := rfl
+    have h : sigma3.val 0 1 = 0 := by rw [sigma3_val_eq_mat]; rfl
     calc M 0 1 = Complex.I * sigma3.val 0 1 := rfl
     _ = Complex.I * 0 := by rw [h]
     _ = 0 := mul_zero _
 
   have hM10 : M 1 0 = 0 := by 
-    have h : sigma3.val 1 0 = 0 := rfl
+    have h : sigma3.val 1 0 = 0 := by rw [sigma3_val_eq_mat]; rfl
     calc M 1 0 = Complex.I * sigma3.val 1 0 := rfl
     _ = Complex.I * 0 := by rw [h]
     _ = 0 := mul_zero _
 
   have hM11 : M 1 1 = -Complex.I := by 
-    have h : sigma3.val 1 1 = -1 := rfl
+    have h : sigma3.val 1 1 = -1 := by rw [sigma3_val_eq_mat]; rfl
     calc M 1 1 = Complex.I * sigma3.val 1 1 := rfl
     _ = Complex.I * -1 := by rw [h]
     _ = -Complex.I := mul_neg_one _
@@ -360,8 +355,8 @@ lemma R_sigma3_Rinv_eq_obs_M (θ : ℝ) :
     _ = -Complex.I * Complex.cos ↑θ := by rw [h_cos_eq]
 
   have hTarget00 : (Complex.I • obs_M θ) 0 0 = Complex.I * Complex.cos ↑θ := by
-    have hs3 : sigma3.val 0 0 = 1 := rfl
-    have hs1 : sigma1.val 0 0 = 0 := rfl
+    have hs3 : sigma3.val 0 0 = 1 := by rw [sigma3_val_eq_mat]; rfl
+    have hs1 : sigma1.val 0 0 = 0 := by rw [sigma1_val_eq_mat]; rfl
     have h_obs : obs_M θ 0 0 = Complex.cos ↑θ := by
       calc obs_M θ 0 0 = (Complex.cos ↑θ) * sigma3.val 0 0 + (Complex.sin ↑θ) * sigma1.val 0 0 := rfl
       _ = (Complex.cos ↑θ) * 1 + (Complex.sin ↑θ) * 0 := by rw [hs3, hs1]
@@ -370,8 +365,8 @@ lemma R_sigma3_Rinv_eq_obs_M (θ : ℝ) :
     _ = Complex.I * Complex.cos ↑θ := by rw [h_obs]
 
   have hTarget01 : (Complex.I • obs_M θ) 0 1 = Complex.I * Complex.sin ↑θ := by
-    have hs3 : sigma3.val 0 1 = 0 := rfl
-    have hs1 : sigma1.val 0 1 = 1 := rfl
+    have hs3 : sigma3.val 0 1 = 0 := by rw [sigma3_val_eq_mat]; rfl
+    have hs1 : sigma1.val 0 1 = 1 := by rw [sigma1_val_eq_mat]; rfl
     have h_obs : obs_M θ 0 1 = Complex.sin ↑θ := by
       calc obs_M θ 0 1 = (Complex.cos ↑θ) * sigma3.val 0 1 + (Complex.sin ↑θ) * sigma1.val 0 1 := rfl
       _ = (Complex.cos ↑θ) * 0 + (Complex.sin ↑θ) * 1 := by rw [hs3, hs1]
@@ -380,8 +375,8 @@ lemma R_sigma3_Rinv_eq_obs_M (θ : ℝ) :
     _ = Complex.I * Complex.sin ↑θ := by rw [h_obs]
 
   have hTarget10 : (Complex.I • obs_M θ) 1 0 = Complex.I * Complex.sin ↑θ := by
-    have hs3 : sigma3.val 1 0 = 0 := rfl
-    have hs1 : sigma1.val 1 0 = 1 := rfl
+    have hs3 : sigma3.val 1 0 = 0 := by rw [sigma3_val_eq_mat]; rfl
+    have hs1 : sigma1.val 1 0 = 1 := by rw [sigma1_val_eq_mat]; rfl
     have h_obs : obs_M θ 1 0 = Complex.sin ↑θ := by
       calc obs_M θ 1 0 = (Complex.cos ↑θ) * sigma3.val 1 0 + (Complex.sin ↑θ) * sigma1.val 1 0 := rfl
       _ = (Complex.cos ↑θ) * 0 + (Complex.sin ↑θ) * 1 := by rw [hs3, hs1]
@@ -390,8 +385,8 @@ lemma R_sigma3_Rinv_eq_obs_M (θ : ℝ) :
     _ = Complex.I * Complex.sin ↑θ := by rw [h_obs]
 
   have hTarget11 : (Complex.I • obs_M θ) 1 1 = -Complex.I * Complex.cos ↑θ := by
-    have hs3 : sigma3.val 1 1 = -1 := rfl
-    have hs1 : sigma1.val 1 1 = 0 := rfl
+    have hs3 : sigma3.val 1 1 = -1 := by rw [sigma3_val_eq_mat]; rfl
+    have hs1 : sigma1.val 1 1 = 0 := by rw [sigma1_val_eq_mat]; rfl
     have h_obs : obs_M θ 1 1 = -Complex.cos ↑θ := by
       calc obs_M θ 1 1 = (Complex.cos ↑θ) * sigma3.val 1 1 + (Complex.sin ↑θ) * sigma1.val 1 1 := rfl
       _ = (Complex.cos ↑θ) * -1 + (Complex.sin ↑θ) * 0 := by rw [hs3, hs1]
@@ -423,16 +418,16 @@ lemma obs_A_path_eq (θ : ℝ) (s : ℝ) : obs_A_path θ s = Complex.I • obs_M
   rw [h_f]
 
   have h_toSl2c : (toSl2c (Complex.I • sigma3.val)).val = Complex.I • sigma3.val := by
-    apply toSl2c_val_eq
+    apply hol_toSl2c_val_eq
     unfold Matrix.trace Matrix.diag
     rw [Fin.sum_univ_two]
     have h00 : (Complex.I • sigma3.val) 0 0 = Complex.I := by
-      have hs : sigma3.val 0 0 = 1 := rfl
+      have hs : sigma3.val 0 0 = 1 := by rw [sigma3_val_eq_mat]; rfl
       calc (Complex.I • sigma3.val) 0 0 = Complex.I * sigma3.val 0 0 := rfl
       _ = Complex.I * 1 := by rw [hs]
       _ = Complex.I := mul_one _
     have h11 : (Complex.I • sigma3.val) 1 1 = -Complex.I := by
-      have hs : sigma3.val 1 1 = -1 := rfl
+      have hs : sigma3.val 1 1 = -1 := by rw [sigma3_val_eq_mat]; rfl
       calc (Complex.I • sigma3.val) 1 1 = Complex.I * sigma3.val 1 1 := rfl
       _ = Complex.I * -1 := by rw [hs]
       _ = -Complex.I := mul_neg_one _
@@ -643,16 +638,16 @@ lemma gen_A_path_eq (u : Universe) (alpha : ℝ) (γ : ℝ → SpacetimePoint)
   rw [h_f]
 
   have h_toSl2c : (toSl2c (Complex.I • sigma3.val)).val = Complex.I • sigma3.val := by
-    apply toSl2c_val_eq
+    apply hol_toSl2c_val_eq
     unfold Matrix.trace Matrix.diag
     rw [Fin.sum_univ_two]
     have h00 : (Complex.I • sigma3.val) 0 0 = Complex.I := by
-      have hs : sigma3.val 0 0 = 1 := rfl
+      have hs : sigma3.val 0 0 = 1 := by rw [sigma3_val_eq_mat]; rfl
       calc (Complex.I • sigma3.val) 0 0 = Complex.I * sigma3.val 0 0 := rfl
       _ = Complex.I * 1 := by rw [hs]
       _ = Complex.I := mul_one _
     have h11 : (Complex.I • sigma3.val) 1 1 = -Complex.I := by
-      have hs : sigma3.val 1 1 = -1 := rfl
+      have hs : sigma3.val 1 1 = -1 := by rw [sigma3_val_eq_mat]; rfl
       calc (Complex.I • sigma3.val) 1 1 = Complex.I * sigma3.val 1 1 := rfl
       _ = Complex.I * -1 := by rw [hs]
       _ = -Complex.I := mul_neg_one _

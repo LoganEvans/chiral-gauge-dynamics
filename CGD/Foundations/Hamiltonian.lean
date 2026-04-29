@@ -1,6 +1,7 @@
 -- FILENAME: CGD/Foundations/Hamiltonian.lean
 
 import Litlib.Core
+import CGD.Foundations.Math
 import CGD.Foundations.Calculus
 import CGD.Foundations.Action
 import CGD.Gravity.Geometry
@@ -59,22 +60,6 @@ noncomputable def momentumConstraintDensity (A : Fin 4 → SpacetimePoint → SL
 -- Algebraic & Combinatorial Helpers for 4D -> 3D Reduction
 -- ==============================================================================
 
-lemma sum_fin_2_expand {M} [AddCommMonoid M] (f : Fin 2 → M) : 
-  (∑ i : Fin 2, f i) = f 0 + f 1 := by
-  rw [Fin.sum_univ_succ, Fin.sum_univ_succ, Fin.sum_univ_zero, add_zero]
-  rfl
-
-lemma sum_fin_3_expand {M} [AddCommMonoid M] (f : Fin 3 → M) : 
-  (∑ i : Fin 3, f i) = f 0 + f 1 + f 2 := by
-  rw [Fin.sum_univ_succ, Fin.sum_univ_succ, Fin.sum_univ_succ, Fin.sum_univ_zero, add_zero, add_assoc]
-  rfl
-
-lemma sum_fin_4_expand {M} [AddCommMonoid M] (f : Fin 4 → M) : 
-  (∑ i : Fin 4, f i) = f 0 + f 1 + f 2 + f 3 := by
-  rw [Fin.sum_univ_succ, Fin.sum_univ_succ, Fin.sum_univ_succ, Fin.sum_univ_succ, Fin.sum_univ_zero]
-  simp only [add_zero, add_assoc]
-  rfl
-
 lemma skew_zero (x : ℂ) (h : x = -x) : x = 0 := by
   have h_sub : x - (-x) = 0 := sub_eq_zero.mpr h
   have h2 : x + x = 0 := by
@@ -86,39 +71,20 @@ lemma skew_zero (x : ℂ) (h : x = -x) : x = 0 := by
   have h4 : (2 : ℂ) ≠ 0 := by norm_num
   exact (mul_eq_zero.mp h3).resolve_left h4
 
-lemma trace_fin_2 (M : Matrix (Fin 2) (Fin 2) ℂ) : Matrix.trace M = M 0 0 + M 1 1 := by
-  unfold Matrix.trace Matrix.diag
-  rw [Fin.sum_univ_succ, Fin.sum_univ_succ, Fin.sum_univ_zero, add_zero]
-  rfl
-
-lemma mul_fin_2 (A B : Matrix (Fin 2) (Fin 2) ℂ) (i j : Fin 2) : 
-  (A * B) i j = A i 0 * B 0 j + A i 1 * B 1 j := by
-  change (∑ k : Fin 2, A i k * B k j) = _
-  rw [Fin.sum_univ_succ, Fin.sum_univ_succ, Fin.sum_univ_zero, add_zero]
-  rfl
-
-lemma trace_mul_fin_2 (A B : Matrix (Fin 2) (Fin 2) ℂ) :
-  Matrix.trace (A * B) = A 0 0 * B 0 0 + A 0 1 * B 1 0 + A 1 0 * B 0 1 + A 1 1 * B 1 1 := by
-  rw [trace_fin_2, mul_fin_2, mul_fin_2]
-  ring
-
-lemma matrix_sub_fin_2 (A B : Matrix (Fin 2) (Fin 2) ℂ) (i j : Fin 2) :
-  (A - B) i j = A i j - B i j := rfl
-
-lemma matrix_smul_fin_2 (c : ℂ) (A : Matrix (Fin 2) (Fin 2) ℂ) (i j : Fin 2) :
-  (c • A) i j = c * A i j := rfl
-
 lemma trace_toSl2c_mul_trace_free (M F : Matrix (Fin 2) (Fin 2) ℂ) (hF_trace : F 0 0 + F 1 1 = 0) :
   Matrix.trace ((toSl2c M).val * F) = Matrix.trace (M * F) := by
   have h_val : (toSl2c M).val = M - (Matrix.trace M / 2) • 1 := rfl
   rw [h_val]
-  rw [trace_mul_fin_2 (M - (Matrix.trace M / 2) • 1) F]
+  rw [trace_mul_2x2 (M - (Matrix.trace M / 2) • 1) F]
   have one_00 : (1 : Matrix (Fin 2) (Fin 2) ℂ) 0 0 = 1 := rfl
   have one_01 : (1 : Matrix (Fin 2) (Fin 2) ℂ) 0 1 = 0 := rfl
   have one_10 : (1 : Matrix (Fin 2) (Fin 2) ℂ) 1 0 = 0 := rfl
   have one_11 : (1 : Matrix (Fin 2) (Fin 2) ℂ) 1 1 = 1 := rfl
-  simp only [matrix_sub_fin_2, matrix_smul_fin_2]
-  rw [one_00, one_01, one_10, one_11, trace_fin_2 M]
+  have sub_00 : (M - (Matrix.trace M / 2) • 1) 0 0 = M 0 0 - ((M 0 0 + M 1 1) / 2) * 1 := by rw [trace_2x2]; rfl
+  have sub_01 : (M - (Matrix.trace M / 2) • 1) 0 1 = M 0 1 - ((M 0 0 + M 1 1) / 2) * 0 := by rw [trace_2x2]; rfl
+  have sub_10 : (M - (Matrix.trace M / 2) • 1) 1 0 = M 1 0 - ((M 0 0 + M 1 1) / 2) * 0 := by rw [trace_2x2]; rfl
+  have sub_11 : (M - (Matrix.trace M / 2) • 1) 1 1 = M 1 1 - ((M 0 0 + M 1 1) / 2) * 1 := by rw [trace_2x2]; rfl
+  rw [sub_00, sub_01, sub_10, sub_11]
   calc
     (M 0 0 - (M 0 0 + M 1 1) / 2 * 1) * F 0 0 +
     (M 0 1 - (M 0 0 + M 1 1) / 2 * 0) * F 1 0 +
@@ -127,7 +93,7 @@ lemma trace_toSl2c_mul_trace_free (M F : Matrix (Fin 2) (Fin 2) ℂ) (hF_trace :
     = (M 0 0 * F 0 0 + M 0 1 * F 1 0 + M 1 0 * F 0 1 + M 1 1 * F 1 1) - ((M 0 0 + M 1 1) / 2) * (F 0 0 + F 1 1) := by ring
     _ = (M 0 0 * F 0 0 + M 0 1 * F 1 0 + M 1 0 * F 0 1 + M 1 1 * F 1 1) - ((M 0 0 + M 1 1) / 2) * 0 := by rw [hF_trace]
     _ = M 0 0 * F 0 0 + M 0 1 * F 1 0 + M 1 0 * F 0 1 + M 1 1 * F 1 1 := by ring
-    _ = Matrix.trace (M * F) := (trace_mul_fin_2 M F).symm
+    _ = Matrix.trace (M * F) := (trace_mul_2x2 M F).symm
 
 /-- Expands the trace constraint to evaluate over individual components. -/
 lemma topological_action_identity_matrix (F : Fin 4 → Fin 4 → Matrix (Fin 2) (Fin 2) ℂ)
@@ -190,7 +156,7 @@ lemma topological_action_identity_matrix (F : Fin 4 → Fin 4 → Matrix (Fin 2)
   have sp2 : spatialIdx 2 = 3 := rfl
 
   simp only [sum_fin_4_expand, sum_fin_3_expand,
-             trace_mul_fin_2, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul,
+             trace_mul_2x2, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul,
              epsilon4, epsilon4_int, sp0, sp1, sp2, epsilon3, epsilon3_int,
              Int.cast_zero, Int.cast_one, Int.cast_neg,
              f00_00, f00_01, f00_10, f00_11,
@@ -255,7 +221,11 @@ theorem electricFieldDecomposition (A : Fin 4 → SpacetimePoint → SL2C) (x : 
 
 lemma ext_trace_mul_sub_fin_2 (M X Y : Matrix (Fin 2) (Fin 2) ℂ) :
   Matrix.trace (M * X) - Matrix.trace (M * (X - Y)) = Matrix.trace (M * Y) := by
-  simp only [trace_mul_fin_2, matrix_sub_fin_2]
+  have sub_00 : (X - Y) 0 0 = X 0 0 - Y 0 0 := rfl
+  have sub_01 : (X - Y) 0 1 = X 0 1 - Y 0 1 := rfl
+  have sub_10 : (X - Y) 1 0 = X 1 0 - Y 1 0 := rfl
+  have sub_11 : (X - Y) 1 1 = X 1 1 - Y 1 1 := rfl
+  simp only [trace_mul_2x2, sub_00, sub_01, sub_10, sub_11]
   ring
 
 Litlib.theorem
@@ -388,7 +358,7 @@ theorem momentumConstraintVanishes (A : Fin 4 → SpacetimePoint → SL2C) (j : 
   change ∑ i : Fin 3, Matrix.trace (((4 : ℂ) • ∑ a : Fin 3, ∑ b : Fin 3, (epsilon3 i a b) • F (spatialIdx a) (spatialIdx b)) * F (spatialIdx i) (spatialIdx j)) = 0
   
   rcases j_cases with rfl | rfl | rfl
-  · simp only [sum_fin_3_expand, Matrix.add_apply, Matrix.smul_apply, trace_mul_fin_2, smul_eq_mul,
+  · simp only [sum_fin_3_expand, Matrix.add_apply, Matrix.smul_apply, trace_mul_2x2, smul_eq_mul,
                epsilon3, epsilon3_int, Int.cast_zero, Int.cast_one, Int.cast_neg, sp0, sp1, sp2,
                f11_00, f11_01, f11_10, f11_11,
                f22_00, f22_01, f22_10, f22_11,
@@ -397,7 +367,7 @@ theorem momentumConstraintVanishes (A : Fin 4 → SpacetimePoint → SL2C) (j : 
                f31_00, f31_01, f31_10, f31_11,
                f32_00, f32_01, f32_10, f32_11]
     ring
-  · simp only [sum_fin_3_expand, Matrix.add_apply, Matrix.smul_apply, trace_mul_fin_2, smul_eq_mul,
+  · simp only [sum_fin_3_expand, Matrix.add_apply, Matrix.smul_apply, trace_mul_2x2, smul_eq_mul,
                epsilon3, epsilon3_int, Int.cast_zero, Int.cast_one, Int.cast_neg, sp0, sp1, sp2,
                f11_00, f11_01, f11_10, f11_11,
                f22_00, f22_01, f22_10, f22_11,
@@ -406,7 +376,7 @@ theorem momentumConstraintVanishes (A : Fin 4 → SpacetimePoint → SL2C) (j : 
                f31_00, f31_01, f31_10, f31_11,
                f32_00, f32_01, f32_10, f32_11]
     ring
-  · simp only [sum_fin_3_expand, Matrix.add_apply, Matrix.smul_apply, trace_mul_fin_2, smul_eq_mul,
+  · simp only [sum_fin_3_expand, Matrix.add_apply, Matrix.smul_apply, trace_mul_2x2, smul_eq_mul,
                epsilon3, epsilon3_int, Int.cast_zero, Int.cast_one, Int.cast_neg, sp0, sp1, sp2,
                f11_00, f11_01, f11_10, f11_11,
                f22_00, f22_01, f22_10, f22_11,

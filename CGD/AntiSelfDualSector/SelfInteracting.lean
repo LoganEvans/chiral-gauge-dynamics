@@ -4,6 +4,7 @@ import Litlib.Core
 import CGD.Axioms.Spacetime
 import CGD.Axioms.Ontology
 import CGD.Foundations.GaugeGroup
+import CGD.Foundations.Math
 import Mathlib.LinearAlgebra.Matrix.Trace
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Tactic.Ring
@@ -15,13 +16,6 @@ set_option linter.unusedSimpArgs false
 open CGD.Axioms CGD.Foundations Matrix BigOperators
 
 namespace CGD.AntiSelfDualSector
-
-lemma trace_2x2 (A : Matrix (Fin 2) (Fin 2) ℂ) : Matrix.trace A = A 0 0 + A 1 1 := by
-  dsimp[Matrix.trace, Matrix.diag]; rw[Fin.sum_univ_two]
-
-lemma mul_2x2 (A B : Matrix (Fin 2) (Fin 2) ℂ) (i j : Fin 2) :
-  (A * B) i j = A i 0 * B 0 j + A i 1 * B 1 j := by
-  rw[Matrix.mul_apply, Fin.sum_univ_two]
 
 lemma c11_eq_neg_c00 (C : Matrix (Fin 2) (Fin 2) ℂ) (hTr : Matrix.trace C = 0) : C 1 1 = - C 0 0 := by
   have h_add : C 0 0 + C 1 1 = 0 := by rw [← trace_2x2]; exact hTr

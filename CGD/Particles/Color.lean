@@ -1,5 +1,6 @@
 -- FILENAME: CGD/Particles/Color.lean
 
+import CGD.Foundations.Math
 import CGD.Foundations.GaugeGroup
 import CGD.Particles.Definitions
 import CGD.Gravity.Geometry
@@ -17,81 +18,59 @@ set_option linter.unusedSimpArgs false
 
 namespace CGD.Particles
 
-/-- Pure equation compiler exhaustiveness for Fin 3. -/
-lemma fin3_eq_zero : ∀ (x : Fin 3), x ≠ 1 → x ≠ 2 → x = 0
-| 0, _, _ => rfl
-| 1, h1, _ => False.elim (h1 rfl)
-| 2, _, h2 => False.elim (h2 rfl)
-
-lemma sum_fin_2 (f : Fin 2 → Complex) : ∑ i : Fin 2, f i = f 0 + f 1 := by
-  rw[Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]
-  simp
-
-lemma sum_fin_3_expand (f : Fin 3 → Complex) : ∑ i : Fin 3, f i = f 0 + f 1 + f 2 := by
-  rw[Fin.sum_univ_castSucc, Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]
-  simp[add_assoc, add_comm]
-
-lemma mul_2x2 (A B : Matrix (Fin 2) (Fin 2) Complex) (i j : Fin 2) :
-  (A * B) i j = A i 0 * B 0 j + A i 1 * B 1 j := by
-  rw[Matrix.mul_apply, sum_fin_2]
-
-lemma trace_2x2 (M : Matrix (Fin 2) (Fin 2) Complex) : Matrix.trace M = M 0 0 + M 1 1 := by
-  change ∑ i : Fin 2, M i i = _
-  rw[sum_fin_2]
-
-lemma sl2c_trace (X : SL2C) : X.1 0 0 + X.1 1 1 = 0 := by
+lemma sl2c_trace (X : SL2C) : X.val 0 0 + X.val 1 1 = 0 := by
   have h := X.property
-  change ∑ i : Fin 2, X.1 i i = 0 at h
-  rw [sum_fin_2] at h
+  change ∑ i : Fin 2, X.val i i = 0 at h
+  rw [sum_fin_2_expand] at h
   exact h
 
-lemma sl2c_val_1_1 (X : SL2C) : X.1 1 1 = -X.1 0 0 := by
+lemma sl2c_val_1_1 (X : SL2C) : X.val 1 1 = -X.val 0 0 := by
   have h := sl2c_trace X
-  calc X.1 1 1 = X.1 0 0 + X.1 1 1 - X.1 0 0 := by ring
-    _ = (0 : Complex) - X.1 0 0 := by rw [h]
-    _ = -X.1 0 0 := by ring
+  calc X.val 1 1 = X.val 0 0 + X.val 1 1 - X.val 0 0 := by ring
+    _ = (0 : Complex) - X.val 0 0 := by rw [h]
+    _ = -X.val 0 0 := by ring
 
-lemma bracket_eq_sub (A B : SL2C) : ⁅A, B⁆.1 = A.1 * B.1 - B.1 * A.1 := rfl
+lemma bracket_eq_sub (A B : SL2C) : ⁅A, B⁆.val = A.val * B.val - B.val * A.val := rfl
 
-lemma s1_00 : sigma1.1 0 0 = 0 := rfl
-lemma s1_01 : sigma1.1 0 1 = 1 := rfl
-lemma s1_10 : sigma1.1 1 0 = 1 := rfl
-lemma s1_11 : sigma1.1 1 1 = 0 := rfl
+lemma s1_00 : sigma1.val 0 0 = 0 := by rw [val_sigma1]; rfl
+lemma s1_01 : sigma1.val 0 1 = 1 := by rw [val_sigma1]; rfl
+lemma s1_10 : sigma1.val 1 0 = 1 := by rw [val_sigma1]; rfl
+lemma s1_11 : sigma1.val 1 1 = 0 := by rw [val_sigma1]; rfl
 
-lemma s2_00 : sigma2.1 0 0 = 0 := rfl
-lemma s2_01 : sigma2.1 0 1 = -I := rfl
-lemma s2_10 : sigma2.1 1 0 = I := rfl
-lemma s2_11 : sigma2.1 1 1 = 0 := rfl
+lemma s2_00 : sigma2.val 0 0 = 0 := by rw [val_sigma2]; rfl
+lemma s2_01 : sigma2.val 0 1 = -I := by rw [val_sigma2]; rfl
+lemma s2_10 : sigma2.val 1 0 = I := by rw [val_sigma2]; rfl
+lemma s2_11 : sigma2.val 1 1 = 0 := by rw [val_sigma2]; rfl
 
-lemma s3_00 : sigma3.1 0 0 = 1 := rfl
-lemma s3_01 : sigma3.1 0 1 = 0 := rfl
-lemma s3_10 : sigma3.1 1 0 = 0 := rfl
-lemma s3_11 : sigma3.1 1 1 = -1 := rfl
+lemma s3_00 : sigma3.val 0 0 = 1 := by rw [val_sigma3]; rfl
+lemma s3_01 : sigma3.val 0 1 = 0 := by rw [val_sigma3]; rfl
+lemma s3_10 : sigma3.val 1 0 = 0 := by rw [val_sigma3]; rfl
+lemma s3_11 : sigma3.val 1 1 = -1 := by rw [val_sigma3]; rfl
 
 lemma eval_project_0 (F : Fin 4 → Fin 4 → SL2C) (mu alpha : Fin 4) :
-  project F 0 mu alpha = 0.5 * ((F mu alpha).1 0 1 + (F mu alpha).1 1 0) := by
+  project F 0 mu alpha = 0.5 * ((F mu alpha).val 0 1 + (F mu alpha).val 1 0) := by
   unfold project getPauli
-  change 0.5 * Matrix.trace ((F mu alpha).1 * sigma1.1) = _
+  change 0.5 * Matrix.trace ((F mu alpha).val * sigma1.val) = _
   rw[trace_2x2, mul_2x2, mul_2x2, s1_00, s1_01, s1_10, s1_11]
   ring
 
 lemma eval_project_1 (F : Fin 4 → Fin 4 → SL2C) (mu alpha : Fin 4) :
-  project F 1 mu alpha = 0.5 * I * ((F mu alpha).1 0 1 - (F mu alpha).1 1 0) := by
+  project F 1 mu alpha = 0.5 * I * ((F mu alpha).val 0 1 - (F mu alpha).val 1 0) := by
   unfold project getPauli
-  change 0.5 * Matrix.trace ((F mu alpha).1 * sigma2.1) = _
+  change 0.5 * Matrix.trace ((F mu alpha).val * sigma2.val) = _
   rw[trace_2x2, mul_2x2, mul_2x2, s2_00, s2_01, s2_10, s2_11]
   ring
 
 lemma eval_project_2 (F : Fin 4 → Fin 4 → SL2C) (mu alpha : Fin 4) :
-  project F 2 mu alpha = (F mu alpha).1 0 0 := by
+  project F 2 mu alpha = (F mu alpha).val 0 0 := by
   unfold project getPauli
-  change 0.5 * Matrix.trace ((F mu alpha).1 * sigma3.1) = _
+  change 0.5 * Matrix.trace ((F mu alpha).val * sigma3.val) = _
   rw[trace_2x2, mul_2x2, mul_2x2, s3_00, s3_01, s3_10, s3_11]
   have h := sl2c_val_1_1 (F mu alpha)
-  calc 0.5 * (((F mu alpha).1 0 0 * 1 + (F mu alpha).1 0 1 * 0) + ((F mu alpha).1 1 0 * 0 + (F mu alpha).1 1 1 * -1))
-    _ = 0.5 * ((F mu alpha).1 0 0 - (F mu alpha).1 1 1) := by ring
-    _ = 0.5 * ((F mu alpha).1 0 0 - -(F mu alpha).1 0 0) := by rw [h]
-    _ = (F mu alpha).1 0 0 := by ring
+  calc 0.5 * (((F mu alpha).val 0 0 * 1 + (F mu alpha).val 0 1 * 0) + ((F mu alpha).val 1 0 * 0 + (F mu alpha).val 1 1 * -1))
+    _ = 0.5 * ((F mu alpha).val 0 0 - (F mu alpha).val 1 1) := by ring
+    _ = 0.5 * ((F mu alpha).val 0 0 - -(F mu alpha).val 0 0) := by rw [h]
+    _ = (F mu alpha).val 0 0 := by ring
 
 lemma triple_sum_eps (f : Fin 3 → Fin 3 → Fin 3 → Complex) :
   (∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3, epsilon3 a b c * f a b c) =
@@ -118,90 +97,90 @@ lemma single_color_triple_product_zero (F : Fin 4 → Fin 4 → SL2C) (h : isSin
   let Y := F nu beta
 
   have h_comm : ⁅X, Y⁆ = 0 := h mu alpha nu beta
-  have h_comm_val : X.1 * Y.1 - Y.1 * X.1 = 0 := by
-    calc X.1 * Y.1 - Y.1 * X.1 = ⁅X, Y⁆.1 := bracket_eq_sub X Y |>.symm
-      _ = (0 : SL2C).1 := by rw [h_comm]
+  have h_comm_val : X.val * Y.val - Y.val * X.val = 0 := by
+    calc X.val * Y.val - Y.val * X.val = ⁅X, Y⁆.val := bracket_eq_sub X Y |>.symm
+      _ = (0 : SL2C).val := by rw [h_comm]
       _ = 0 := rfl
 
-  have h00 : (X.1 * Y.1 - Y.1 * X.1) 0 0 = 0 := by rw [h_comm_val]; rfl
-  have h01 : (X.1 * Y.1 - Y.1 * X.1) 0 1 = 0 := by rw [h_comm_val]; rfl
-  have h10 : (X.1 * Y.1 - Y.1 * X.1) 1 0 = 0 := by rw[h_comm_val]; rfl
+  have h00 : (X.val * Y.val - Y.val * X.val) 0 0 = 0 := by rw [h_comm_val]; rfl
+  have h01 : (X.val * Y.val - Y.val * X.val) 0 1 = 0 := by rw [h_comm_val]; rfl
+  have h10 : (X.val * Y.val - Y.val * X.val) 1 0 = 0 := by rw[h_comm_val]; rfl
 
   have x11 := sl2c_val_1_1 X
   have y11 := sl2c_val_1_1 Y
 
   simp only[Matrix.sub_apply, mul_2x2, x11, y11, Matrix.zero_apply] at h00 h01 h10
 
-  have eq1 : X.1 0 1 * Y.1 1 0 = X.1 1 0 * Y.1 0 1 := by
+  have eq1 : X.val 0 1 * Y.val 1 0 = X.val 1 0 * Y.val 0 1 := by
     apply sub_eq_zero.mp
-    calc X.1 0 1 * Y.1 1 0 - X.1 1 0 * Y.1 0 1
-      _ = (X.1 0 0 * Y.1 0 0 + X.1 0 1 * Y.1 1 0) - (Y.1 0 0 * X.1 0 0 + Y.1 0 1 * X.1 1 0) := by ring
+    calc X.val 0 1 * Y.val 1 0 - X.val 1 0 * Y.val 0 1
+      _ = (X.val 0 0 * Y.val 0 0 + X.val 0 1 * Y.val 1 0) - (Y.val 0 0 * X.val 0 0 + Y.val 0 1 * X.val 1 0) := by ring
       _ = 0 := h00
 
-  have eq2 : X.1 0 0 * Y.1 0 1 = X.1 0 1 * Y.1 0 0 := by
+  have eq2 : X.val 0 0 * Y.val 0 1 = X.val 0 1 * Y.val 0 0 := by
     apply sub_eq_zero.mp
-    have h_double : 2 * (X.1 0 0 * Y.1 0 1 - X.1 0 1 * Y.1 0 0) = 0 := by
-      calc 2 * (X.1 0 0 * Y.1 0 1 - X.1 0 1 * Y.1 0 0)
-        _ = (X.1 0 0 * Y.1 0 1 + X.1 0 1 * (-Y.1 0 0)) - (Y.1 0 0 * X.1 0 1 + Y.1 0 1 * (-X.1 0 0)) := by ring
+    have h_double : 2 * (X.val 0 0 * Y.val 0 1 - X.val 0 1 * Y.val 0 0) = 0 := by
+      calc 2 * (X.val 0 0 * Y.val 0 1 - X.val 0 1 * Y.val 0 0)
+        _ = (X.val 0 0 * Y.val 0 1 + X.val 0 1 * (-Y.val 0 0)) - (Y.val 0 0 * X.val 0 1 + Y.val 0 1 * (-X.val 0 0)) := by ring
         _ = 0 := h01
     cases mul_eq_zero.mp h_double with
     | inl h2 => norm_num at h2
     | inr h_eq => exact h_eq
 
-  have eq3 : X.1 1 0 * Y.1 0 0 = X.1 0 0 * Y.1 1 0 := by
+  have eq3 : X.val 1 0 * Y.val 0 0 = X.val 0 0 * Y.val 1 0 := by
     apply sub_eq_zero.mp
-    have h_double : 2 * (X.1 1 0 * Y.1 0 0 - X.1 0 0 * Y.1 1 0) = 0 := by
-      calc 2 * (X.1 1 0 * Y.1 0 0 - X.1 0 0 * Y.1 1 0)
-        _ = (X.1 1 0 * Y.1 0 0 + (-X.1 0 0) * Y.1 1 0) - (Y.1 1 0 * X.1 0 0 + (-Y.1 0 0) * X.1 1 0) := by ring
+    have h_double : 2 * (X.val 1 0 * Y.val 0 0 - X.val 0 0 * Y.val 1 0) = 0 := by
+      calc 2 * (X.val 1 0 * Y.val 0 0 - X.val 0 0 * Y.val 1 0)
+        _ = (X.val 1 0 * Y.val 0 0 + (-X.val 0 0) * Y.val 1 0) - (Y.val 1 0 * X.val 0 0 + (-Y.val 0 0) * X.val 1 0) := by ring
         _ = 0 := h10
     cases mul_eq_zero.mp h_double with
     | inl h2 => norm_num at h2
     | inr h_eq => exact h_eq
 
-  have z2 : X.1 0 1 * Y.1 0 0 - X.1 0 0 * Y.1 0 1 = 0 := by
-    calc X.1 0 1 * Y.1 0 0 - X.1 0 0 * Y.1 0 1
-      _ = X.1 0 1 * Y.1 0 0 - X.1 0 1 * Y.1 0 0 := by rw [eq2]
+  have z2 : X.val 0 1 * Y.val 0 0 - X.val 0 0 * Y.val 0 1 = 0 := by
+    calc X.val 0 1 * Y.val 0 0 - X.val 0 0 * Y.val 0 1
+      _ = X.val 0 1 * Y.val 0 0 - X.val 0 1 * Y.val 0 0 := by rw [eq2]
       _ = 0 := by ring
 
-  have z3 : X.1 1 0 * Y.1 0 0 - X.1 0 0 * Y.1 1 0 = 0 := by
-    calc X.1 1 0 * Y.1 0 0 - X.1 0 0 * Y.1 1 0
-      _ = X.1 1 0 * Y.1 0 0 - X.1 1 0 * Y.1 0 0 := by rw [eq3]
+  have z3 : X.val 1 0 * Y.val 0 0 - X.val 0 0 * Y.val 1 0 = 0 := by
+    calc X.val 1 0 * Y.val 0 0 - X.val 0 0 * Y.val 1 0
+      _ = X.val 1 0 * Y.val 0 0 - X.val 1 0 * Y.val 0 0 := by rw [eq3]
       _ = 0 := by ring
 
-  have z1_rev : X.1 1 0 * Y.1 0 1 - X.1 0 1 * Y.1 1 0 = 0 := by
-    calc X.1 1 0 * Y.1 0 1 - X.1 0 1 * Y.1 1 0
-      _ = X.1 1 0 * Y.1 0 1 - X.1 1 0 * Y.1 0 1 := by rw [eq1]
+  have z1_rev : X.val 1 0 * Y.val 0 1 - X.val 0 1 * Y.val 1 0 = 0 := by
+    calc X.val 1 0 * Y.val 0 1 - X.val 0 1 * Y.val 1 0
+      _ = X.val 1 0 * Y.val 0 1 - X.val 1 0 * Y.val 0 1 := by rw [eq1]
       _ = 0 := by ring
 
-  have z2_rev : X.1 0 0 * Y.1 0 1 - X.1 0 1 * Y.1 0 0 = 0 := by
-    calc X.1 0 0 * Y.1 0 1 - X.1 0 1 * Y.1 0 0
-      _ = X.1 0 0 * Y.1 0 1 - X.1 0 0 * Y.1 0 1 := by rw[← eq2]
+  have z2_rev : X.val 0 0 * Y.val 0 1 - X.val 0 1 * Y.val 0 0 = 0 := by
+    calc X.val 0 0 * Y.val 0 1 - X.val 0 1 * Y.val 0 0
+      _ = X.val 0 0 * Y.val 0 1 - X.val 0 0 * Y.val 0 1 := by rw[← eq2]
       _ = 0 := by ring
 
-  have z3_rev : X.1 0 0 * Y.1 1 0 - X.1 1 0 * Y.1 0 0 = 0 := by
-    calc X.1 0 0 * Y.1 1 0 - X.1 1 0 * Y.1 0 0
-      _ = X.1 0 0 * Y.1 1 0 - X.1 0 0 * Y.1 1 0 := by rw [← eq3]
+  have z3_rev : X.val 0 0 * Y.val 1 0 - X.val 1 0 * Y.val 0 0 = 0 := by
+    calc X.val 0 0 * Y.val 1 0 - X.val 1 0 * Y.val 0 0
+      _ = X.val 0 0 * Y.val 1 0 - X.val 0 0 * Y.val 1 0 := by rw [← eq3]
       _ = 0 := by ring
 
   have cross1 : project F 1 mu alpha * project F 2 nu beta - project F 2 mu alpha * project F 1 nu beta = 0 := by
     rw[eval_project_1 F mu alpha, eval_project_2 F mu alpha, eval_project_1 F nu beta, eval_project_2 F nu beta]
-    calc (0.5 * I * (X.1 0 1 - X.1 1 0)) * Y.1 0 0 - X.1 0 0 * (0.5 * I * (Y.1 0 1 - Y.1 1 0))
-      _ = 0.5 * I * ((X.1 0 1 * Y.1 0 0 - X.1 0 0 * Y.1 0 1) - (X.1 1 0 * Y.1 0 0 - X.1 0 0 * Y.1 1 0)) := by ring
+    calc (0.5 * I * (X.val 0 1 - X.val 1 0)) * Y.val 0 0 - X.val 0 0 * (0.5 * I * (Y.val 0 1 - Y.val 1 0))
+      _ = 0.5 * I * ((X.val 0 1 * Y.val 0 0 - X.val 0 0 * Y.val 0 1) - (X.val 1 0 * Y.val 0 0 - X.val 0 0 * Y.val 1 0)) := by ring
       _ = 0.5 * I * (0 - 0) := by rw [z2, z3]
       _ = 0 := by ring
 
   have cross2 : project F 2 mu alpha * project F 0 nu beta - project F 0 mu alpha * project F 2 nu beta = 0 := by
     rw[eval_project_2 F mu alpha, eval_project_0 F mu alpha, eval_project_2 F nu beta, eval_project_0 F nu beta]
-    calc X.1 0 0 * (0.5 * (Y.1 0 1 + Y.1 1 0)) - (0.5 * (X.1 0 1 + X.1 1 0)) * Y.1 0 0
-      _ = 0.5 * ((X.1 0 0 * Y.1 0 1 - X.1 0 1 * Y.1 0 0) + (X.1 0 0 * Y.1 1 0 - X.1 1 0 * Y.1 0 0)) := by ring
+    calc X.val 0 0 * (0.5 * (Y.val 0 1 + Y.val 1 0)) - (0.5 * (X.val 0 1 + X.val 1 0)) * Y.val 0 0
+      _ = 0.5 * ((X.val 0 0 * Y.val 0 1 - X.val 0 1 * Y.val 0 0) + (X.val 0 0 * Y.val 1 0 - X.val 1 0 * Y.val 0 0)) := by ring
       _ = 0.5 * (0 + 0) := by rw[z2_rev, z3_rev]
       _ = 0 := by ring
 
   have cross3 : project F 0 mu alpha * project F 1 nu beta - project F 1 mu alpha * project F 0 nu beta = 0 := by
     rw[eval_project_0 F mu alpha, eval_project_1 F mu alpha, eval_project_0 F nu beta, eval_project_1 F nu beta]
-    calc 0.5 * (X.1 0 1 + X.1 1 0) * (0.5 * I * (Y.1 0 1 - Y.1 1 0)) -
-         (0.5 * I * (X.1 0 1 - X.1 1 0)) * (0.5 * (Y.1 0 1 + Y.1 1 0))
-      _ = 0.5 * I * (X.1 1 0 * Y.1 0 1 - X.1 0 1 * Y.1 1 0) := by ring
+    calc 0.5 * (X.val 0 1 + X.val 1 0) * (0.5 * I * (Y.val 0 1 - Y.val 1 0)) -
+         (0.5 * I * (X.val 0 1 - X.val 1 0)) * (0.5 * (Y.val 0 1 + Y.val 1 0))
+      _ = 0.5 * I * (X.val 1 0 * Y.val 0 1 - X.val 0 1 * Y.val 1 0) := by ring
       _ = 0.5 * I * 0 := by rw [z1_rev]
       _ = 0 := by ring
 

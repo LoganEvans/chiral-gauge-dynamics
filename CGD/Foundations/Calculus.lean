@@ -2,6 +2,7 @@
 
 import CGD.Axioms.Spacetime
 import CGD.Foundations.GaugeGroup
+import CGD.Foundations.Math
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Mul
 import Mathlib.Analysis.Calculus.FDeriv.Add
@@ -175,6 +176,13 @@ lemma curvatureSl2c_antisymm (A : Fin 4 → SpacetimePoint → SL2C) (mu nu : Fi
   have h_comm : ⁅A mu x, A nu x⁆ = - ⁅A nu x, A mu x⁆ := (lie_skew (A mu x) (A nu x)).symm
   rw [h_comm]
   abel
+
+lemma curvature_congruence (A B : Fin 4 → SpacetimePoint → SL2C) (x : SpacetimePoint)
+  (h_val : ∀ mu, A mu x = B mu x)
+  (h_deriv : ∀ mu nu, partialDerivSl2c nu (A mu) x = partialDerivSl2c nu (B mu) x) :
+  ∀ mu nu, curvatureSl2c A mu nu x = curvatureSl2c B mu nu x := by
+  intros mu nu; unfold curvatureSl2c
+  rw[h_deriv mu nu, h_deriv nu mu, h_val mu, h_val nu]
 
 attribute [irreducible] curvatureSl2c
 

@@ -1,6 +1,7 @@
 -- FILENAME: CGD/Quantum/Definitions.lean
 
 import Litlib.Core
+import CGD.Foundations.Math
 import CGD.Foundations.Calculus
 import CGD.Foundations.GaugeGroup
 import CGD.Foundations.Lagrangian
@@ -60,14 +61,6 @@ def isOrthogonalDecoherenceLimit (u : Universe) (x : SpacetimePoint)
   M ≠ 0 ∧
   (curvatureSl2c u.sd_sector 1 2 x).val = (Complex.cos theta) • sigZ + (Complex.sin theta) • sigX ∧
   (curvatureSl2c u.asd_sector 1 2 x).val = M • sigX
-
-def mkMat (m00 m01 m10 m11 : ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
-  Matrix.of ![![m00, m01], ![m10, m11]]
-
-noncomputable def idMat : Matrix (Fin 2) (Fin 2) ℂ := mkMat 1 0 0 1
-noncomputable def sigmaX : Matrix (Fin 2) (Fin 2) ℂ := mkMat 0 1 1 0
-noncomputable def sigmaY : Matrix (Fin 2) (Fin 2) ℂ := mkMat 0 (-Complex.I) Complex.I 0
-noncomputable def sigmaZ : Matrix (Fin 2) (Fin 2) ℂ := mkMat 1 0 0 (-1)
 
 noncomputable def a1Opt : Matrix (Fin 2) (Fin 2) ℂ := sigmaZ
 noncomputable def a2Opt : Matrix (Fin 2) (Fin 2) ℂ := sigmaX
