@@ -6,7 +6,7 @@ import Mathlib.Tactic.NoncommRing
 
 set_option linter.unusedVariables false
 
-open Matrix Complex BigOperators CGD.Axioms
+open Matrix Complex BigOperators
 
 namespace CGD.Foundations
 
@@ -34,11 +34,5 @@ lemma bracket_jacobi (A B C : SL2C) : ⁅A, ⁅B, C⁆⁆ + ⁅B, ⁅C, A⁆⁆ 
        + (C.val * (A.val * B.val - B.val * A.val) - (A.val * B.val - B.val * A.val) * C.val) = 0
   simp only [Matrix.mul_sub, Matrix.sub_mul, ←Matrix.mul_assoc]
   abel
-
-lemma bracket_mul_distrib (A B C : SL2C) : 
-  (A.val * B.val - B.val * A.val) * C.val - C.val * (A.val * B.val - B.val * A.val) = 
-  A.val * (B.val * C.val - C.val * B.val) - (B.val * C.val - C.val * B.val) * A.val +
-  (A.val * C.val - C.val * A.val) * B.val - B.val * (A.val * C.val - C.val * A.val) := by
-  noncomm_ring
 
 end CGD.Foundations

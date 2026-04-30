@@ -1,6 +1,6 @@
 -- FILENAME: CGD/Particles/Confinement.lean
 
-import CGD.Axioms.Spacetime
+import CGD.Foundations.Spacetime
 import CGD.Particles.Definitions
 import CGD.Axioms.Ontology
 import CGD.Foundations.Calculus

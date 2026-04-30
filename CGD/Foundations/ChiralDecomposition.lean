@@ -2,7 +2,7 @@
 
 import Litlib.Core
 import CGD.Foundations.GaugeGroup
-import CGD.Axioms.Spacetime
+import CGD.Foundations.Spacetime
 import CGD.Foundations.Calculus
 import CGD.Foundations.Action
 import CGD.Foundations.Lagrangian

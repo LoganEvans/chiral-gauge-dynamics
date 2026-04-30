@@ -25,12 +25,6 @@ lemma sum_fin_4_expand {M} [AddCommMonoid M] (f : Fin 4 → M) :
   simp only [add_zero, add_assoc]
   rfl
 
-/-- Pure equation compiler exhaustiveness for Fin 3. -/
-lemma fin3_eq_zero : ∀ (x : Fin 3), x ≠ 1 → x ≠ 2 → x = 0
-| 0, _, _ => rfl
-| 1, h1, _ => False.elim (h1 rfl)
-| 2, _, h2 => False.elim (h2 rfl)
-
 lemma trace_2x2 (M : Matrix (Fin 2) (Fin 2) ℂ) : Matrix.trace M = M 0 0 + M 1 1 := by
   unfold Matrix.trace Matrix.diag
   rw [sum_fin_2_expand]

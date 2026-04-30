@@ -7,7 +7,7 @@ import CGD.Foundations.Calculus
 import CGD.Foundations.Topology
 import CGD.Particles.Definitions
 import CGD.Axioms.Ontology
-import CGD.Axioms.Spacetime
+import CGD.Foundations.Spacetime
 import Litlib.Math.LeviCivita
 import Mathlib.Topology.Constructions
 import Mathlib.Analysis.Calculus.ContDiff.Basic

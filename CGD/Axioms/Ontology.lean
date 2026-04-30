@@ -2,7 +2,7 @@
 
 import Mathlib.Analysis.Calculus.ContDiff.Basic
 import CGD.Foundations.GaugeGroup
-import CGD.Axioms.Spacetime
+import CGD.Foundations.Spacetime
 
 namespace CGD.Axioms
 
@@ -13,10 +13,10 @@ A smooth SL(2, C) gauge field.
 As an abstract Lie algebra, it possesses no native spacetime chirality.
 -/
 structure Sl2cGaugeField where
-  val : Fin 4 → CGD.Axioms.SpacetimePoint → SL2C
+  val : Fin 4 → CGD.Foundations.SpacetimePoint → SL2C
   is_smooth : ∀ mu i j, ContDiff ℝ ⊤ (fun x => (val mu x).val i j)
 
-instance : CoeFun Sl2cGaugeField (fun _ => Fin 4 → CGD.Axioms.SpacetimePoint → SL2C) where
+instance : CoeFun Sl2cGaugeField (fun _ => Fin 4 → CGD.Foundations.SpacetimePoint → SL2C) where
   coe F := F.val
 
 instance : Zero Sl2cGaugeField where
@@ -35,16 +35,13 @@ structure Universe where
   sd_sector : Sl2cGaugeField
   asd_sector : Sl2cGaugeField
 
-instance : Zero Universe where
-  zero := ⟨0, 0⟩
-
 /-- 
 The Spin(4, C) 4x4 Dirac Representation.
 This definition mathematically enforces the spacetime chirality of the Universe. 
 The self-dual sector is strictly embedded as the +1 eigenspace of γ5 (top-left), 
 and the anti-self-dual sector is embedded as the -1 eigenspace (bottom-right).
 -/
-noncomputable def Universe.spin4c_connection (u : Universe) (mu : Fin 4) (x : CGD.Axioms.SpacetimePoint) : ChiralM :=
+noncomputable def Universe.spin4c_connection (u : Universe) (mu : Fin 4) (x : CGD.Foundations.SpacetimePoint) : ChiralM :=
   embedSelfDual (u.sd_sector mu x) + embedAntiSelfDual (u.asd_sector mu x)
 
 end CGD.Axioms

@@ -27,17 +27,10 @@ open Litlib.Y2000.hall2000elementary
 namespace CGD.Quantum
 
 lemma sigma1_val_eq_mat : sigma1.val = Matrix.of ![![0, 1], ![1, 0]] := by rw [val_sigma1]; rfl
-lemma sigma2_val_eq_mat : sigma2.val = Matrix.of ![![0, -Complex.I], ![Complex.I, 0]] := by rw [val_sigma2]; rfl
 lemma sigma3_val_eq_mat : sigma3.val = Matrix.of ![![1, 0], ![0, -1]] := by rw [val_sigma3]; rfl
 
 noncomputable def bellCorrelationDeg (A B : Matrix (Fin 2) (Fin 2) ℂ) : ℂ :=
   (1 / 2 : ℂ) * Matrix.trace (A * B)
-
-lemma pauli_algebra_sigma2_sq : sigma2.val ^ 2 = 1 := by
-  rw [pow_two]
-  ext i j
-  rw [sigma2_val_eq_mat]
-  fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two, Matrix.one_apply, Complex.I_sq, mul_neg, neg_mul]
 
 lemma pauli_algebra_sigma1_sq : sigma1.val ^ 2 = 1 := by
   rw [pow_two]
@@ -87,20 +80,6 @@ lemma integral_t_M (M : Matrix (Fin 2) (Fin 2) ℂ) (t0 t : ℝ) :
              (Complex.I • M) t :=
   HasDerivAt.smul_const (scalar_integral_deriv t0 t) M
 
-lemma integral_t_M_init (M : Matrix (Fin 2) (Fin 2) ℂ) (t0 : ℝ) :
-  (Complex.I * ((t0:ℂ) - (t0:ℂ))) • M = 0 := by 
-  have eq : (t0:ℂ) - (t0:ℂ) = 0 := sub_self _
-  rw [eq]
-  simp
-
-lemma A_path_comm (M : Matrix (Fin 2) (Fin 2) ℂ) :
-  (Complex.I • M) * (Complex.I • M) =
-  (Complex.I • M) * (Complex.I • M) := rfl
-
-lemma trace_sigma2 : Matrix.trace sigma2.val = 0 := by
-  rw [sigma2_val_eq_mat]
-  simp [Matrix.trace, Fin.sum_univ_two, Matrix.zero_apply]
-
 lemma trace_sigma1 : Matrix.trace sigma1.val = 0 := by
   rw [sigma1_val_eq_mat]
   simp [Matrix.trace, Fin.sum_univ_two, Matrix.zero_apply]
@@ -141,9 +120,6 @@ lemma trace_sigma1_sq : Matrix.trace (sigma1.val * sigma1.val) = 2 := by
 
 noncomputable def obs_M (θ : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
   (Complex.cos (θ:ℂ)) • sigma3.val + (Complex.sin (θ:ℂ)) • sigma1.val
-
-noncomputable def obs_A_path (θ : ℝ) (s : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
-  ((rotateZ fluxTubeFrame θ) 1 (fun i => if i = 1 then s else 0)).val
 
 noncomputable def obs_integral (θ : ℝ) (t0 t : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
   (Complex.I * ((t:ℂ) - (t0:ℂ))) • obs_M θ
@@ -404,98 +380,6 @@ lemma R_sigma3_Rinv_eq_obs_M (θ : ℝ) :
   · exact Eq.trans hRMRinv10_final (Eq.symm hTarget10)
   · exact Eq.trans hRMRinv11_final (Eq.symm hTarget11)
 
-lemma obs_A_path_eq (θ : ℝ) (s : ℝ) : obs_A_path θ s = Complex.I • obs_M θ := by
-  unfold obs_A_path rotateZ
-  have h11 : (1 : Fin 4) = 1 := rfl
-  simp only [h11, ite_true]
-  
-  have h_f : fluxTubeFrame 1 (fun i => if i = 1 then s else 0) = toSl2c (Complex.I • sigma3.val) := by
-    unfold fluxTubeFrame
-    have h_neq : (1 : Fin 4) ≠ 0 := by decide
-    have h_eq : (1 : Fin 4) = 1 := rfl
-    rw [if_neg h_neq, if_pos h_eq]
-  
-  rw [h_f]
-
-  have h_toSl2c : (toSl2c (Complex.I • sigma3.val)).val = Complex.I • sigma3.val := by
-    apply hol_toSl2c_val_eq
-    unfold Matrix.trace Matrix.diag
-    rw [Fin.sum_univ_two]
-    have h00 : (Complex.I • sigma3.val) 0 0 = Complex.I := by
-      have hs : sigma3.val 0 0 = 1 := by rw [sigma3_val_eq_mat]; rfl
-      calc (Complex.I • sigma3.val) 0 0 = Complex.I * sigma3.val 0 0 := rfl
-      _ = Complex.I * 1 := by rw [hs]
-      _ = Complex.I := mul_one _
-    have h11 : (Complex.I • sigma3.val) 1 1 = -Complex.I := by
-      have hs : sigma3.val 1 1 = -1 := by rw [sigma3_val_eq_mat]; rfl
-      calc (Complex.I • sigma3.val) 1 1 = Complex.I * sigma3.val 1 1 := rfl
-      _ = Complex.I * -1 := by rw [hs]
-      _ = -Complex.I := mul_neg_one _
-    rw [h00, h11]
-    ring
-
-  rw [h_toSl2c]
-  
-  have h_rot := R_sigma3_Rinv_eq_obs_M θ
-
-  have h_theta_div : (↑θ / 2 : ℂ) = ↑(θ / 2) := by
-    have h2 : (2 : ℂ) = ↑(2 : ℝ) := rfl
-    rw [h2, ← Complex.ofReal_div]
-
-  have h_cos_eq : Complex.cos (↑θ / 2) = Complex.cos ↑(θ / 2) := by rw [h_theta_div]
-  have h_sin_eq : Complex.sin (↑θ / 2) = Complex.sin ↑(θ / 2) := by rw [h_theta_div]
-
-  have h_R_eq : Matrix.of ![![Complex.cos (↑θ / 2), -Complex.sin (↑θ / 2)], ![Complex.sin (↑θ / 2), Complex.cos (↑θ / 2)]] =
-                Matrix.of ![![Complex.cos ↑(θ / 2), -Complex.sin ↑(θ / 2)], ![Complex.sin ↑(θ / 2), Complex.cos ↑(θ / 2)]] := by
-    ext i j
-    fin_cases i <;> fin_cases j
-    · exact h_cos_eq
-    · calc -Complex.sin (↑θ / 2) = -(Complex.sin ↑(θ / 2)) := by rw [h_sin_eq]
-      _ = -Complex.sin ↑(θ / 2) := rfl
-    · exact h_sin_eq
-    · exact h_cos_eq
-
-  have h_Rinv_eq : Matrix.of ![![Complex.cos (↑θ / 2), Complex.sin (↑θ / 2)], ![-Complex.sin (↑θ / 2), Complex.cos (↑θ / 2)]] =
-                   Matrix.of ![![Complex.cos ↑(θ / 2), Complex.sin ↑(θ / 2)], ![-Complex.sin ↑(θ / 2), Complex.cos ↑(θ / 2)]] := by
-    ext i j
-    fin_cases i <;> fin_cases j
-    · exact h_cos_eq
-    · exact h_sin_eq
-    · calc -Complex.sin (↑θ / 2) = -(Complex.sin ↑(θ / 2)) := by rw [h_sin_eq]
-      _ = -Complex.sin ↑(θ / 2) := rfl
-    · exact h_cos_eq
-
-  have h_inner_eq :
-    Matrix.of ![![Complex.cos (↑θ / 2), -Complex.sin (↑θ / 2)], ![Complex.sin (↑θ / 2), Complex.cos (↑θ / 2)]] *
-    (Complex.I • sigma3.val) *
-    Matrix.of ![![Complex.cos (↑θ / 2), Complex.sin (↑θ / 2)], ![-Complex.sin (↑θ / 2), Complex.cos (↑θ / 2)]] =
-    Complex.I • obs_M θ := by
-    rw [h_R_eq, h_Rinv_eq]
-    exact h_rot
-
-  have h_toSl2c_M : (toSl2c (Complex.I • obs_M θ)).val = Complex.I • obs_M θ := toSl2c_obs_M θ
-  
-  have h_goal : (toSl2c (
-    Matrix.of ![![Complex.cos (↑θ / 2), -Complex.sin (↑θ / 2)], ![Complex.sin (↑θ / 2), Complex.cos (↑θ / 2)]] *
-    (Complex.I • sigma3.val) *
-    Matrix.of ![![Complex.cos (↑θ / 2), Complex.sin (↑θ / 2)], ![-Complex.sin (↑θ / 2), Complex.cos (↑θ / 2)]]
-  )).val = Complex.I • obs_M θ := by
-    rw [h_inner_eq]
-    exact h_toSl2c_M
-
-  exact h_goal
-
-lemma obs_A_path_comm (θ : ℝ) (s1 s2 : ℝ) :
-  obs_A_path θ s1 * obs_A_path θ s2 = obs_A_path θ s2 * obs_A_path θ s1 := by
-  rw [obs_A_path_eq θ s1, obs_A_path_eq θ s2]
-
-lemma obs_A_path_cont (θ : ℝ) : Continuous (obs_A_path θ) := by
-  have h_eq : obs_A_path θ = (fun _ : ℝ => Complex.I • obs_M θ) := by
-    funext s
-    exact obs_A_path_eq θ s
-  rw [h_eq]
-  exact continuous_const
-
 lemma obs_integral_eval (θ : ℝ) :
   obs_integral θ 0 (Real.pi / 2) = (Complex.I * (Real.pi / 2 : ℂ)) • obs_M θ := by
   unfold obs_integral
@@ -509,95 +393,6 @@ lemma obs_integral_eval (θ : ℝ) :
   calc (Complex.I * (↑(Real.pi / 2) - ↑(0 : ℝ))) • obs_M θ
     _ = (Complex.I * (↑Real.pi / 2 - 0)) • obs_M θ := by rw [h_div, hz]
     _ = (Complex.I * (↑Real.pi / 2)) • obs_M θ := by rw [sub_zero]
-
-lemma eval_macroscopic_observable 
-  (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
-  (holonomy integral : (ℝ → Matrix (Fin 2) (Fin 2) ℂ) → ℝ → ℝ → Matrix (Fin 2) (Fin 2) ℂ)
-  [mc : MatrixCalculus (Fin 2) matrixExp holonomy integral] 
-  (θ : ℝ) :
-  macroscopicObservable holonomy (rotateZ fluxTubeFrame θ) 1 (Real.pi / 2) = obs_M θ := by
-  
-  let L := Real.pi / 2
-
-  have h_hol_eq := mc.holonomySelfCommuting 
-    (obs_A_path θ) 
-    0 L 
-    (obs_A_path_comm θ)
-
-  have h_int_eval : integral (obs_A_path θ) 0 L = obs_integral θ 0 L := by
-    have hd : ∀ t, HasDerivAt (fun s => integral (obs_A_path θ) 0 s - obs_integral θ 0 s) 0 t := by
-      intro t
-      have h1 := mc.hIntegralDeriv (obs_A_path θ) 0 t (obs_A_path_cont θ)
-      have h2 : HasDerivAt (obs_integral θ 0) (obs_A_path θ t) t := by
-        have heq : obs_A_path θ t = Complex.I • obs_M θ := obs_A_path_eq θ t
-        rw [heq]
-        exact integral_t_M (obs_M θ) 0 t
-      have h3 := HasDerivAt.sub h1 h2
-      simp only [sub_self] at h3
-      exact h3
-    have hd_diff : Differentiable ℝ (fun s => integral (obs_A_path θ) 0 s - obs_integral θ 0 s) := fun t => (hd t).differentiableAt
-    have hd_zero : ∀ t, deriv (fun s => integral (obs_A_path θ) 0 s - obs_integral θ 0 s) t = 0 := fun t => (hd t).deriv
-    have h_eq : integral (obs_A_path θ) 0 L - obs_integral θ 0 L = integral (obs_A_path θ) 0 0 - obs_integral θ 0 0 :=
-      is_const_of_deriv_eq_zero hd_diff hd_zero L 0
-    have h_init1 := mc.hIntegralInit (obs_A_path θ) 0
-    have h_init2 : obs_integral θ 0 0 = 0 := by
-      unfold obs_integral
-      have hz : (↑(0:ℝ):ℂ) = 0 := Complex.ofReal_zero
-      simp [hz]
-    rw [h_init1, h_init2] at h_eq
-    simp only [sub_zero] at h_eq
-    exact sub_eq_zero.mp h_eq
-
-  have h_hol_eq2 : holonomy (obs_A_path θ) 0 L = matrixExp (obs_integral θ 0 L) := by
-    rw [← h_int_eval]
-    exact h_hol_eq
-
-  have h_integral_eval := obs_integral_eval θ
-  have h_hol_eq3 : holonomy (obs_A_path θ) 0 L = matrixExp ((Complex.I * (Real.pi / 2 : ℂ)) • obs_M θ) := by
-    rw [h_integral_eval] at h_hol_eq2
-    exact h_hol_eq2
-  
-  have h_M_sq : obs_M θ * obs_M θ = 1 := by
-    have h_def : obs_M θ = (Complex.cos ↑θ) • sigma3.val + (Complex.sin ↑θ) • sigma1.val := rfl
-    rw [h_def]
-    exact M_sq θ
-
-  have h_euler := mc.involutoryEulerFormula (obs_M θ) h_M_sq (Real.pi / 2)
-  
-  have h_div : (↑(Real.pi / 2) : ℂ) = ↑Real.pi / 2 := by
-    have h2 : (2 : ℂ) = ↑(2 : ℝ) := rfl
-    rw [h2, ← Complex.ofReal_div]
-
-  rw [h_div] at h_euler
-
-  have h_cos : Real.cos (Real.pi / 2) = 0 := Real.cos_pi_div_two
-  have h_sin : Real.sin (Real.pi / 2) = 1 := Real.sin_pi_div_two
-  
-  have h_euler_simp : matrixExp ((Complex.I * (Real.pi / 2 : ℂ)) • obs_M θ) = Complex.I • obs_M θ := by
-    have eq_cos : (Real.cos (Real.pi / 2) : ℂ) = ↑(Real.cos (Real.pi / 2)) := by push_cast; rfl
-    rw [eq_cos, h_cos, Complex.ofReal_zero] at h_euler
-    have eq_sin : (Real.sin (Real.pi / 2) : ℂ) = ↑(Real.sin (Real.pi / 2)) := by push_cast; rfl
-    rw [eq_sin, h_sin, Complex.ofReal_one] at h_euler
-    calc matrixExp ((Complex.I * (Real.pi / 2 : ℂ)) • obs_M θ)
-      _ = (0 : ℂ) • 1 + (Complex.I * 1) • obs_M θ := h_euler
-      _ = 0 + Complex.I • obs_M θ := by rw [zero_smul, mul_one]
-      _ = Complex.I • obs_M θ := zero_add _
-
-  have h_hol_eq4 : holonomy (obs_A_path θ) 0 L = Complex.I • obs_M θ := Eq.trans h_hol_eq3 h_euler_simp
-  
-  unfold macroscopicObservable
-  have h_A_path : (fun s => ((rotateZ fluxTubeFrame θ) 1 (fun i => if i = 1 then s else 0)).val) = obs_A_path θ := by rfl
-  rw [h_A_path]
-  rw [h_hol_eq4]
-  have h_final : (-Complex.I) • Complex.I • obs_M θ = obs_M θ := by
-    have eq1 : (-Complex.I) • Complex.I • obs_M θ = ((-Complex.I) * Complex.I) • obs_M θ := by rw [smul_smul]
-    rw [eq1]
-    have eq2 : (-Complex.I) * Complex.I = 1 := by
-      calc (-Complex.I) * Complex.I = -(Complex.I * Complex.I) := by ring
-        _ = -(-1) := by rw [Complex.I_mul_I]
-        _ = 1 := by ring
-    rw [eq2, one_smul]
-  exact h_final
 
 noncomputable def gen_A_path (u : Universe) (alpha : ℝ) (s : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
   ((fun mu p => rotateZ (fun m p => u.sd_sector m p) alpha mu p) 1 (fun i => if i = 1 then s else 0)).val

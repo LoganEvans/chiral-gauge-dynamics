@@ -1,13 +1,13 @@
 -- FILENAME: CGD/Gravity/Geometry.lean
 
-import CGD.Axioms.Spacetime
+import CGD.Foundations.Spacetime
 import CGD.Foundations.Calculus
 import CGD.Foundations.GaugeGroup
 import Mathlib.Analysis.Calculus.ContDiff.Basic
 import Litlib.Math.Matrix4
 
 open Complex Matrix BigOperators
-open CGD.Axioms CGD.Foundations
+open CGD.Foundations
 
 namespace CGD.Gravity
 
@@ -86,9 +86,6 @@ noncomputable def torsionTensor (e : TetradField) (ω : SpinConnection) (I : Int
 def isTorsionFree (e : TetradField) (ω : SpinConnection) : Prop :=
   ∀ I μ ν x, torsionTensor e ω I μ ν x = 0
 
-def metricCompatible (ω : SpinConnection) : Prop :=
-  ∀ I J μ x, ω I J μ x = - ω J I μ x
-
 noncomputable def getPauli (a : Fin 3) : SL2C :=
   match a with
   | 0 => sigma1
@@ -124,14 +121,6 @@ noncomputable def urbantkeMetric (F : Fin 4 -> Fin 4 -> SL2C) : Matrix (Fin 4) (
           let F3 := project F c gamma delta
           eps_space * F1 * F2 * F3
       eps_iso * space_term
-
-def satisfiesCdjConstraint (F : Fin 4 → Fin 4 → SpacetimePoint → SL2C) : Prop :=
-  ∀ (a b : Fin 3) (x : SpacetimePoint),
-    (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
-      epsilon4 μ ν ρ σ *
-      project (fun m n => F m n x) a μ ν *
-      project (fun m n => F m n x) b ρ σ)
-    = if a = b then 1 else 0
 
 noncomputable def matrixInv4x4 (M : Matrix (Fin 4) (Fin 4) Complex) : Matrix (Fin 4) (Fin 4) Complex :=
   (1 / M.det) • M.adjugate

@@ -19,49 +19,6 @@ open CGD.Axioms
 
 namespace CGD.Cosmology
 
-lemma sl2c_zero_val : (0 : SL2C).val = 0 := rfl
-
-lemma math_Time_Spatial_Zero_term (F : Fin 4 → Fin 4 → SL2C)
-  (h_time : ∀ j : Fin 4, F 0 j = 0)
-  (a b c : Fin 3) (j α β γ δ : Fin 4) :
-  epsilon4 α β γ δ * project F a 0 α * project F b j β * project F c γ δ = 0 := by
-  have h_proj : project F a 0 α = 0 := by
-    dsimp [project]
-    have h : F 0 α = 0 := h_time α
-    rw [h, sl2c_zero_val]
-    simp
-  rw [h_proj]
-  simp
-
-lemma math_Time_inner_sum_zero (F : Fin 4 → Fin 4 → SL2C)
-  (h_time : ∀ j : Fin 4, F 0 j = 0)
-  (a b c : Fin 3) (j : Fin 4) :
-  (∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4,
-    epsilon4 α β γ δ * project F a 0 α * project F b j β * project F c γ δ) = 0 := by
-  apply Finset.sum_eq_zero; intro α _
-  apply Finset.sum_eq_zero; intro β _
-  apply Finset.sum_eq_zero; intro γ _
-  apply Finset.sum_eq_zero; intro δ _
-  exact math_Time_Spatial_Zero_term F h_time a b c j α β γ δ
-
-lemma math_Time_Metric_Zero (F : Fin 4 → Fin 4 → SL2C)
-  (h_time : ∀ j : Fin 4, F 0 j = 0) :
-  ∀ j : Fin 4, (urbantkeMetric F) 0 j = 0 := by
-  intro j
-  unfold urbantkeMetric
-  apply Finset.sum_eq_zero; intro a _
-  apply Finset.sum_eq_zero; intro b _
-  apply Finset.sum_eq_zero; intro c _
-  have h_inner := math_Time_inner_sum_zero F h_time a b c j
-  rw [h_inner, mul_zero]
-
-lemma sl2c_eq_iff_val (A B : SL2C) : A = B ↔ A.val = B.val := Subtype.ext_iff
-lemma sl2c_smul_val (c : ℂ) (A : SL2C) : (c • A).val = c • A.val := rfl
-lemma sl2c_neg_val (A : SL2C) : (-A).val = -A.val := rfl
-lemma sl2c_sum_val_4 (f : Fin 4 → SL2C) : (∑ i : Fin 4, f i).val = ∑ i : Fin 4, (f i).val := by
-  simp only[Fin.sum_univ_four]; rfl
-
-lemma sl2c_neg_val_apply (A : SL2C) (i j : Fin 2) : (-A).val i j = -A.val i j := rfl
 lemma sl2c_smul_val_apply (c : ℂ) (A : SL2C) (i j : Fin 2) : (c • A).val i j = c * A.val i j := rfl
 
 lemma sl2c_sum_val_4_2 (f : Fin 4 → Fin 4 → SL2C) (x y : Fin 2) :
@@ -345,10 +302,6 @@ noncomputable def pMat (x y z : ℂ) : Matrix (Fin 4) (Fin 4) ℂ :=
     else if i = 3 ∧ j = 0 then -z else if i = 3 ∧ j = 1 then y else if i = 3 ∧ j = 2 then -x
     else 0
 
-lemma P_mat_anti (x y z : ℂ) (i j : Fin 4) : pMat x y z i j = - pMat x y z j i := by
-  unfold pMat
-  fin_cases i <;> fin_cases j <;> simp
-
 lemma project_eq_P_mat (F : Fin 4 → Fin 4 → SL2C) (h_symm : isFully4DSymmetric F) (a : Fin 3) (i j : Fin 4) :
   project F a i j = pMat (bField F a 0) (bField F a 1) (bField F a 2) i j := by
   have h00 := proj_00 F h_symm a; have h01 := proj_01 F a; have h02 := proj_02 F a; have h03 := proj_03 F a
@@ -423,24 +376,6 @@ lemma urbantke_symbolic_collapse (A B C : Matrix (Fin 4) (Fin 4) ℂ) (hB_anti :
       rw [Finset.sum_mul, Finset.mul_sum]
     _ = ∑ α : Fin 4, ∑ β : Fin 4, -2 * (A μ α * C α β * B β ν) := by rw [Finset.sum_comm]
     _ = ∑ α : Fin 4, ∑ β : Fin 4, 2 * A μ α * B ν β * C α β := by
-      apply Finset.sum_congr rfl; intro α _
-      apply Finset.sum_congr rfl; intro β _
-      have hb : B ν β = - B β ν := hB_anti ν β
-      rw [hb]
-      ring
-
-lemma urbantke_symbolic_collapse_neg (A B C : Matrix (Fin 4) (Fin 4) ℂ) (hB_anti : ∀ i j, B i j = - B j i) (μ ν : Fin 4) :
-  (∑ α : Fin 4, ∑ β : Fin 4, -(2 * A μ α * B ν β * C α β)) = 2 * (A * C * B) μ ν := by
-  symm
-  calc
-    2 * (A * C * B) μ ν
-    _ = 2 * ∑ β : Fin 4, (∑ α : Fin 4, A μ α * C α β) * B β ν := rfl
-    _ = ∑ β : Fin 4, 2 * ((∑ α : Fin 4, A μ α * C α β) * B β ν) := by rw [Finset.mul_sum]
-    _ = ∑ β : Fin 4, ∑ α : Fin 4, 2 * (A μ α * C α β * B β ν) := by
-      apply Finset.sum_congr rfl; intro β _
-      rw [Finset.sum_mul, Finset.mul_sum]
-    _ = ∑ α : Fin 4, ∑ β : Fin 4, 2 * (A μ α * C α β * B β ν) := by rw [Finset.sum_comm]
-    _ = ∑ α : Fin 4, ∑ β : Fin 4, -(2 * A μ α * B ν β * C α β) := by
       apply Finset.sum_congr rfl; intro α _
       apply Finset.sum_congr rfl; intro β _
       have hb : B ν β = - B β ν := hB_anti ν β

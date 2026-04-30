@@ -29,8 +29,6 @@ noncomputable def toSl2c (M : Matrix (Fin 2) (Fin 2) Complex) : SL2C :=
 def isSu2 (M : Matrix (Fin 2) (Fin 2) Complex) : Prop := 
   Matrix.trace M = 0 ∧ M.conjTranspose = -M
 
-abbrev su2 := { M : SL2C // isSu2 M.val }
-
 def SU2Group := { M : Matrix (Fin 2) (Fin 2) Complex // M * M.conjTranspose = 1 ∧ M.det = 1 }
 
 instance : One SU2Group where

@@ -24,13 +24,6 @@ open CGD.Axioms
 
 namespace CGD.Quantum
 
-noncomputable def gaugeCommutator (A B : Matrix (Fin 2) (Fin 2) ℂ) : Matrix (Fin 2) (Fin 2) ℂ := A * B - B * A
-
-noncomputable def classicalElectricField (u : Universe) (i : Fin 4) (x : SpacetimePoint) : Matrix (Fin 2) (Fin 2) ℂ :=
-  partialDerivMat 0 (fun p => (u.sd_sector i p).val) x -
-  partialDerivMat i (fun p => (u.sd_sector 0 p).val) x +
-  gaugeCommutator (u.sd_sector 0 x).val (u.sd_sector i x).val
-
 noncomputable def extractSpinorMode (u : Universe) (x : SpacetimePoint) : Matrix (Fin 4) (Fin 4) Complex :=
   u.spin4c_connection 0 x
 
@@ -115,10 +108,6 @@ theorem kinematicYangMillsChaos (u : Universe) :
       _ = -8 := by ring
   rw [h_trace_8]
   ring
-
-lemma isOdd_add (A B : Matrix (Fin 4) (Fin 4) Complex) (hA : isOdd A) (hB : isOdd B) : isOdd (A + B) := by
-  intros i j hij
-  rw [Matrix.add_apply, hA i j hij, hB i j hij, add_zero]
 
 lemma isOdd_sum (f : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) 
   (hf : ∀ mu, isOdd (f mu)) : isOdd (∑ mu, f mu) := by
@@ -247,20 +236,6 @@ lemma toSl2c_exactAbelianL (c : ℂ) (p : SpacetimePoint) :
     rw [h_sum]
     unfold sigmaX mkMat
     change p 1 * (c * 0) + p 1 * (c * 0) = 0
-    ring
-  rw [h_tr]
-  have hz : (0 : ℂ) / 2 = 0 := by ring
-  rw [hz, zero_smul, sub_zero]
-
-lemma toSl2c_c_sigmaX (c : ℂ) : (toSl2c (c • sigmaX)).val = c • sigmaX := by
-  unfold toSl2c
-  dsimp
-  have h_tr : Matrix.trace (c • sigmaX) = 0 := by
-    unfold Matrix.trace Matrix.diag
-    have h_sum : ∑ i : Fin 2, (c • sigmaX) i i = (c • sigmaX) 0 0 + (c • sigmaX) 1 1 := Fin.sum_univ_two _
-    rw [h_sum]
-    unfold sigmaX mkMat
-    change c * 0 + c * 0 = 0
     ring
   rw [h_tr]
   have hz : (0 : ℂ) / 2 = 0 := by ring

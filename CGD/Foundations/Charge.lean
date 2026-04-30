@@ -1,11 +1,11 @@
 -- FILENAME: CGD/Foundations/Charge.lean
 
 import Litlib.Core
-import CGD.Axioms.Spacetime
+import CGD.Foundations.Spacetime
 import CGD.Foundations.Calculus
 import CGD.Gravity.Geometry
 
-open CGD.Foundations CGD.Axioms CGD.Gravity
+open CGD.Foundations CGD.Gravity
 open BigOperators Complex
 
 namespace CGD.Foundations

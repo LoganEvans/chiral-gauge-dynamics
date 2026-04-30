@@ -10,7 +10,7 @@ import Mathlib.Algebra.Lie.Classical
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
-open Matrix Complex BigOperators CGD.Axioms Litlib.Y2003.nakahara2003geometry
+open Matrix Complex BigOperators Litlib.Y2003.nakahara2003geometry
 
 namespace CGD.Foundations
 
@@ -60,22 +60,6 @@ lemma diff_partial_mat (f : SpacetimePoint → Matrix (Fin 2) (Fin 2) ℂ) (h : 
   have h_eq : (fun p => partialDerivMat μ f p i j) = fun p => partialDeriv μ (fun p2 => f p2 i j) p := rfl
   rw [h_eq]
   exact diff_partial (fun p => f p i j) (h i j) μ x
-
-lemma matrix_linear_sub (U A B V : Matrix (Fin 2) (Fin 2) ℂ) :
-  U * A * V - U * B * V = U * (A - B) * V := by
-  calc U * A * V - U * B * V
-    _ = (U * A) * V - (U * B) * V := rfl
-    _ = (U * A - U * B) * V := by rw [sub_mul]
-    _ = (U * (A - B)) * V := by rw [mul_sub]
-    _ = U * (A - B) * V := rfl
-
-lemma matrix_linear_add (U A B V : Matrix (Fin 2) (Fin 2) ℂ) :
-  U * A * V + U * B * V = U * (A + B) * V := by
-  calc U * A * V + U * B * V
-    _ = (U * A) * V + (U * B) * V := rfl
-    _ = (U * A + U * B) * V := by rw [add_mul]
-    _ = (U * (A + B)) * V := by rw [mul_add]
-    _ = U * (A + B) * V := rfl
 
 lemma matrix_gauge_mul (U V A_mu A_nu dV_mu dV_nu dU_mu : Matrix (Fin 2) (Fin 2) ℂ)
   (hVU : V * U = 1) (hdV : U * dV_mu = - dU_mu * V) :

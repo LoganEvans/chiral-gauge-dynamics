@@ -55,58 +55,6 @@ theorem dynamicEntanglementDecay {sigma M : ℝ} [eb : FluxTubeEnergyBounds (Fin
   have h_le := h_min (snappedFluxTube L)
   linarith
 
-lemma matrix_eq_fin2 (A B : Matrix (Fin 2) (Fin 2) ℂ)
-  (h00 : A 0 0 = B 0 0)
-  (h01 : A 0 1 = B 0 1)
-  (h10 : A 1 0 = B 1 0)
-  (h11 : A 1 1 = B 1 1) : A = B := by
-  ext i j
-  fin_cases i <;> fin_cases j
-  · exact h00
-  · exact h01
-  · exact h10
-  · exact h11
-
-lemma trace_fin2 (M : Matrix (Fin 2) (Fin 2) ℂ) : Matrix.trace M = M 0 0 + M 1 1 := by
-  unfold Matrix.trace Matrix.diag
-  simp only [Fin.sum_univ_two]
-
-lemma toSl2c_elem_00 (M : Matrix (Fin 2) (Fin 2) ℂ) : (toSl2c M).val 0 0 = M 0 0 - ((M 0 0 + M 1 1) / 2) := by
-  have h1 : (toSl2c M).val 0 0 = M 0 0 - ((Matrix.trace M / 2) • (1 : Matrix (Fin 2) (Fin 2) ℂ)) 0 0 := rfl
-  have h2 : ((Matrix.trace M / 2) • (1 : Matrix (Fin 2) (Fin 2) ℂ)) 0 0 = (Matrix.trace M / 2) * 1 := rfl
-  have h3 : Matrix.trace M = M 0 0 + M 1 1 := trace_fin2 M
-  have h4 : (Matrix.trace M / 2) * 1 = (Matrix.trace M / 2) := mul_one _
-  have h5 : (Matrix.trace M / 2) = (M 0 0 + M 1 1) / 2 := congr_arg (fun x => x / 2) h3
-  have h6 : ((Matrix.trace M / 2) • (1 : Matrix (Fin 2) (Fin 2) ℂ)) 0 0 = (M 0 0 + M 1 1) / 2 := Eq.trans h2 (Eq.trans h4 h5)
-  exact Eq.trans h1 (congr_arg (fun x => M 0 0 - x) h6)
-
-lemma toSl2c_elem_01 (M : Matrix (Fin 2) (Fin 2) ℂ) : (toSl2c M).val 0 1 = M 0 1 := by
-  have h1 : (toSl2c M).val 0 1 = M 0 1 - ((Matrix.trace M / 2) • (1 : Matrix (Fin 2) (Fin 2) ℂ)) 0 1 := rfl
-  have h2 : ((Matrix.trace M / 2) • (1 : Matrix (Fin 2) (Fin 2) ℂ)) 0 1 = (Matrix.trace M / 2) * 0 := rfl
-  have h3 : (Matrix.trace M / 2) * 0 = 0 := mul_zero _
-  have h4 : ((Matrix.trace M / 2) • (1 : Matrix (Fin 2) (Fin 2) ℂ)) 0 1 = 0 := Eq.trans h2 h3
-  have h5 : M 0 1 - ((Matrix.trace M / 2) • (1 : Matrix (Fin 2) (Fin 2) ℂ)) 0 1 = M 0 1 - 0 := congr_arg (fun x => M 0 1 - x) h4
-  have h6 : M 0 1 - 0 = M 0 1 := sub_zero _
-  exact Eq.trans h1 (Eq.trans h5 h6)
-
-lemma toSl2c_elem_10 (M : Matrix (Fin 2) (Fin 2) ℂ) : (toSl2c M).val 1 0 = M 1 0 := by
-  have h1 : (toSl2c M).val 1 0 = M 1 0 - ((Matrix.trace M / 2) • (1 : Matrix (Fin 2) (Fin 2) ℂ)) 1 0 := rfl
-  have h2 : ((Matrix.trace M / 2) • (1 : Matrix (Fin 2) (Fin 2) ℂ)) 1 0 = (Matrix.trace M / 2) * 0 := rfl
-  have h3 : (Matrix.trace M / 2) * 0 = 0 := mul_zero _
-  have h4 : ((Matrix.trace M / 2) • (1 : Matrix (Fin 2) (Fin 2) ℂ)) 1 0 = 0 := Eq.trans h2 h3
-  have h5 : M 1 0 - ((Matrix.trace M / 2) • (1 : Matrix (Fin 2) (Fin 2) ℂ)) 1 0 = M 1 0 - 0 := congr_arg (fun x => M 1 0 - x) h4
-  have h6 : M 1 0 - 0 = M 1 0 := sub_zero _
-  exact Eq.trans h1 (Eq.trans h5 h6)
-
-lemma toSl2c_elem_11 (M : Matrix (Fin 2) (Fin 2) ℂ) : (toSl2c M).val 1 1 = M 1 1 - ((M 0 0 + M 1 1) / 2) := by
-  have h1 : (toSl2c M).val 1 1 = M 1 1 - ((Matrix.trace M / 2) • (1 : Matrix (Fin 2) (Fin 2) ℂ)) 1 1 := rfl
-  have h2 : ((Matrix.trace M / 2) • (1 : Matrix (Fin 2) (Fin 2) ℂ)) 1 1 = (Matrix.trace M / 2) * 1 := rfl
-  have h3 : Matrix.trace M = M 0 0 + M 1 1 := trace_fin2 M
-  have h4 : (Matrix.trace M / 2) * 1 = (Matrix.trace M / 2) := mul_one _
-  have h5 : (Matrix.trace M / 2) = (M 0 0 + M 1 1) / 2 := congr_arg (fun x => x / 2) h3
-  have h6 : ((Matrix.trace M / 2) • (1 : Matrix (Fin 2) (Fin 2) ℂ)) 1 1 = (M 0 0 + M 1 1) / 2 := Eq.trans h2 (Eq.trans h4 h5)
-  exact Eq.trans h1 (congr_arg (fun x => M 1 1 - x) h6)
-
 lemma toSl2c_zero_val : (toSl2c (0 : Matrix (Fin 2) (Fin 2) ℂ)).val = 0 := by
   unfold toSl2c
   dsimp

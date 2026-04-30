@@ -2,7 +2,7 @@
 
 import Litlib.Core
 import CGD.Axioms.Ontology
-import CGD.Axioms.Spacetime
+import CGD.Foundations.Spacetime
 import CGD.Gravity.Geometry
 import CGD.Gravity.MacroscopicVacuum
 import Mathlib.Analysis.Calculus.FDeriv.Basic
@@ -18,11 +18,6 @@ def isVacuumRegion (region : Set SpacetimePoint) (u : Universe) (Λ : ℂ) : Pro
   ∀ x ∈ region, 
     (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
       epsilon4 μ ν ρ σ * Matrix.trace ((curvatureSl2c u.sd_sector μ ν x).val * (curvatureSl2c u.sd_sector ρ σ x).val)) = Λ
-
-def isDefectRegion (region : Set SpacetimePoint) (u : Universe) (Λ : ℂ) : Prop :=
-  ∃ x ∈ region, 
-    (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
-      epsilon4 μ ν ρ σ * Matrix.trace ((curvatureSl2c u.sd_sector μ ν x).val * (curvatureSl2c u.sd_sector ρ σ x).val)) ≠ Λ
 
 Litlib.theorem
   description "Macroscopic Unimodular Vacuum Emergence"

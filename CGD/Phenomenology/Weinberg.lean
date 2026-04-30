@@ -2,7 +2,7 @@
 
 import Litlib.Core
 import CGD.Foundations.GaugeGroup
-import CGD.Axioms.Spacetime
+import CGD.Foundations.Spacetime
 import Mathlib.Data.Complex.Basic
 import Mathlib.Data.Matrix.Basic
 import Mathlib.LinearAlgebra.Matrix.Trace

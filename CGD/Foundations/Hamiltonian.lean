@@ -71,30 +71,6 @@ lemma skew_zero (x : ℂ) (h : x = -x) : x = 0 := by
   have h4 : (2 : ℂ) ≠ 0 := by norm_num
   exact (mul_eq_zero.mp h3).resolve_left h4
 
-lemma trace_toSl2c_mul_trace_free (M F : Matrix (Fin 2) (Fin 2) ℂ) (hF_trace : F 0 0 + F 1 1 = 0) :
-  Matrix.trace ((toSl2c M).val * F) = Matrix.trace (M * F) := by
-  have h_val : (toSl2c M).val = M - (Matrix.trace M / 2) • 1 := rfl
-  rw [h_val]
-  rw [trace_mul_2x2 (M - (Matrix.trace M / 2) • 1) F]
-  have one_00 : (1 : Matrix (Fin 2) (Fin 2) ℂ) 0 0 = 1 := rfl
-  have one_01 : (1 : Matrix (Fin 2) (Fin 2) ℂ) 0 1 = 0 := rfl
-  have one_10 : (1 : Matrix (Fin 2) (Fin 2) ℂ) 1 0 = 0 := rfl
-  have one_11 : (1 : Matrix (Fin 2) (Fin 2) ℂ) 1 1 = 1 := rfl
-  have sub_00 : (M - (Matrix.trace M / 2) • 1) 0 0 = M 0 0 - ((M 0 0 + M 1 1) / 2) * 1 := by rw [trace_2x2]; rfl
-  have sub_01 : (M - (Matrix.trace M / 2) • 1) 0 1 = M 0 1 - ((M 0 0 + M 1 1) / 2) * 0 := by rw [trace_2x2]; rfl
-  have sub_10 : (M - (Matrix.trace M / 2) • 1) 1 0 = M 1 0 - ((M 0 0 + M 1 1) / 2) * 0 := by rw [trace_2x2]; rfl
-  have sub_11 : (M - (Matrix.trace M / 2) • 1) 1 1 = M 1 1 - ((M 0 0 + M 1 1) / 2) * 1 := by rw [trace_2x2]; rfl
-  rw [sub_00, sub_01, sub_10, sub_11]
-  calc
-    (M 0 0 - (M 0 0 + M 1 1) / 2 * 1) * F 0 0 +
-    (M 0 1 - (M 0 0 + M 1 1) / 2 * 0) * F 1 0 +
-    (M 1 0 - (M 0 0 + M 1 1) / 2 * 0) * F 0 1 +
-    (M 1 1 - (M 0 0 + M 1 1) / 2 * 1) * F 1 1
-    = (M 0 0 * F 0 0 + M 0 1 * F 1 0 + M 1 0 * F 0 1 + M 1 1 * F 1 1) - ((M 0 0 + M 1 1) / 2) * (F 0 0 + F 1 1) := by ring
-    _ = (M 0 0 * F 0 0 + M 0 1 * F 1 0 + M 1 0 * F 0 1 + M 1 1 * F 1 1) - ((M 0 0 + M 1 1) / 2) * 0 := by rw [hF_trace]
-    _ = M 0 0 * F 0 0 + M 0 1 * F 1 0 + M 1 0 * F 0 1 + M 1 1 * F 1 1 := by ring
-    _ = Matrix.trace (M * F) := (trace_mul_2x2 M F).symm
-
 /-- Expands the trace constraint to evaluate over individual components. -/
 lemma topological_action_identity_matrix (F : Fin 4 → Fin 4 → Matrix (Fin 2) (Fin 2) ℂ)
   (hF_anti : ∀ μ ν, F μ ν = - F ν μ) :

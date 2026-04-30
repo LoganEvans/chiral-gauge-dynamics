@@ -39,26 +39,6 @@ def satisfies1DMinimalEnergyBound (A : Fin 4 → SpacetimePoint → SL2C) (x : S
   rw[h_tr]; have h1 : (0 : ℂ) / 2 = 0 := by ring
   rw[h1, zero_smul, sub_zero]
 
-lemma diff_ofReal : Differentiable ℝ (fun z : ℝ => (z : ℂ)) := by
-  intro z
-  have h1 := hasDerivAt_id z
-  have h2 := HasDerivAt.smul_const h1 (1 : ℂ)
-  have eq1 : (fun (y : ℝ) => id y • (1 : ℂ)) = fun (s : ℝ) => (s : ℂ) := by ext x; simp
-  have eq2 : (1 : ℝ) • (1 : ℂ) = 1 := by simp
-  rw [eq1, eq2] at h2
-  exact h2.differentiableAt
-
-lemma diff_fluxTube_comp (sigma : Matrix (Fin 2) (Fin 2) ℂ) :
-  ∀ i j, Differentiable ℝ (fun z : ℝ => ((Complex.I * (z : ℂ)) • sigma) i j) := by
-  intro i j
-  have h : (fun z : ℝ => ((Complex.I * (z : ℂ)) • sigma) i j) = fun z : ℝ => (Complex.I * (z : ℂ)) * sigma i j := by ext z; rfl
-  rw [h]
-  apply Differentiable.mul
-  · apply Differentiable.mul
-    · exact differentiable_const _
-    · exact diff_ofReal
-  · exact differentiable_const _
-
 lemma math_partialDerivMat_fluxTube_time_0 (x : SpacetimePoint) : partialDerivMat 0 (fun p => (fluxTubeFrame 0 p).val) x = 0 := by
   have h0 : (fun p => (fluxTubeFrame 0 p).val) = fun _ => 0 := by ext p; unfold fluxTubeFrame; simp
   rw [h0]; exact partialDerivMat_const 0 0 x

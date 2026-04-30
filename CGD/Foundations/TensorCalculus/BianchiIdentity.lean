@@ -5,7 +5,7 @@ import CGD.Foundations.TensorCalculus.LieAlgebra
 
 set_option linter.unusedVariables false
 
-open Matrix Complex BigOperators CGD.Axioms Litlib.Y2003.nakahara2003geometry
+open Matrix Complex BigOperators Litlib.Y2003.nakahara2003geometry
 
 namespace CGD.Foundations
 

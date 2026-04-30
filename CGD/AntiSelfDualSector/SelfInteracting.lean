@@ -1,7 +1,7 @@
 -- FILENAME: CGD/AntiSelfDualSector/SelfInteracting.lean
 
 import Litlib.Core
-import CGD.Axioms.Spacetime
+import CGD.Foundations.Spacetime
 import CGD.Axioms.Ontology
 import CGD.Foundations.GaugeGroup
 import CGD.Foundations.Math

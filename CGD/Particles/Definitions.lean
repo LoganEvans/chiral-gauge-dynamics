@@ -1,6 +1,6 @@
 -- FILENAME: CGD/Particles/Definitions.lean
 
-import CGD.Axioms.Spacetime
+import CGD.Foundations.Spacetime
 import CGD.Gravity.Geometry
 import CGD.Foundations.Calculus
 import Mathlib.Data.Complex.Basic
@@ -12,27 +12,6 @@ set_option linter.unusedVariables false
 open CGD.Axioms CGD.Foundations Matrix Complex
 
 namespace CGD.Particles
-
-noncomputable def solitonCore : SpacetimePoint := fun i => if i ≠ 0 then 1 else 0
-
-/-- 
-W=1 Topological Hedgehog mapping into the physical su(2) phase space.
-Utilizes the strictly winding 't Hooft Levi-Civita tensor (ε_{ijk} x_j σ_k), 
-the 1/(r^2+1) finite-energy topological boundary envelope, and the 
-imaginary factor `Complex.I` to map the Hermitian Pauli observables 
-into the anti-Hermitian su(2) physical phase space.
--/
-noncomputable def hedgehogBps (mu : Fin 4) (x : SpacetimePoint) : SL2C :=
-  let r2 : ℂ := (x 1 : ℂ)^2 + (x 2 : ℂ)^2 + (x 3 : ℂ)^2
-  let decay : ℂ := 1 / (r2 + 1)
-  if mu = 1 then (Complex.I * decay) • ((x 2 : ℂ) • sigma3 - (x 3 : ℂ) • sigma2)
-  else if mu = 2 then (Complex.I * decay) • ((x 3 : ℂ) • sigma1 - (x 1 : ℂ) • sigma3)
-  else if mu = 3 then (Complex.I * decay) • ((x 1 : ℂ) • sigma2 - (x 2 : ℂ) • sigma1)
-  else 0
-
-/-- A translationally invariant representation of the W=1 topological boundary state -/
-noncomputable def shiftedHedgehog (center : SpacetimePoint) : Fin 4 → SpacetimePoint → SL2C :=
-  fun mu p => hedgehogBps mu (fun i => p i - center i)
 
 /-- 
 The 4D BPST Instanton in the regular gauge.

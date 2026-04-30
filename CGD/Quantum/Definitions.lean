@@ -37,14 +37,7 @@ def isFluxTube (A : Fin 4 → SpacetimePoint → SL2C) (x : SpacetimePoint) : Pr
   (∀ mu, A mu x = fluxTubeFrame mu x) ∧
   (∀ mu nu, partialDerivSl2c nu (A mu) x = partialDerivSl2c nu (fluxTubeFrame mu) x)
 
-def isHeisenbergLimit (u : Universe) (x : SpacetimePoint) : Prop :=
-  (∀ i, i ≠ 0 → curvatureSl2c u.sd_sector 0 i x = 0) ∧
-  (∀ i, i ≠ 0 → partialDerivSl2c i (fun p => u.sd_sector 0 p) x = 0)
-
 variable (integral1d : (ℝ → ℝ) → ℝ → ℝ → ℝ)
-
-noncomputable def clickProbabilityCore (hbar E_threshold : ℝ) (pdf : ℝ → ℝ) : ℝ :=
-  integral1d pdf E_threshold hbar
 
 /-- Extracts the real Hermitian observable from the anti-Hermitian SU(2) holonomy (-i * U). -/
 noncomputable def macroscopicObservable
@@ -52,27 +45,11 @@ noncomputable def macroscopicObservable
   (A : Fin 4 → SpacetimePoint → SL2C) (mu : Fin 4) (L : ℝ) : Matrix (Fin 2) (Fin 2) ℂ := 
   (-Complex.I : ℂ) • holonomy (fun s => (A mu (fun i => if i = 1 then s else 0)).val) 0 L
 
-def isCoherentSuperpositionState (u : Universe) (x : SpacetimePoint) 
-  (E0 phi_avg delta_phi : ℂ) (sig : Matrix (Fin 2) (Fin 2) ℂ) : Prop :=
-  (curvatureSl2c u.sd_sector 1 2 x).val = (E0 * Complex.cos (phi_avg + delta_phi / 2)) • sig + (E0 * Complex.cos (phi_avg - delta_phi / 2)) • sig
-
 def isOrthogonalDecoherenceLimit (u : Universe) (x : SpacetimePoint) 
   (theta M : ℂ) (sigX sigZ : Matrix (Fin 2) (Fin 2) ℂ) : Prop :=
   M ≠ 0 ∧
   (curvatureSl2c u.sd_sector 1 2 x).val = (Complex.cos theta) • sigZ + (Complex.sin theta) • sigX ∧
   (curvatureSl2c u.asd_sector 1 2 x).val = M • sigX
-
-noncomputable def a1Opt : Matrix (Fin 2) (Fin 2) ℂ := sigmaZ
-noncomputable def a2Opt : Matrix (Fin 2) (Fin 2) ℂ := sigmaX
-
-noncomputable def b1Opt (c : ℂ) : Matrix (Fin 2) (Fin 2) ℂ := 
-  mkMat (-c) (-c) (-c) c
-
-noncomputable def b2Opt (c : ℂ) : Matrix (Fin 2) (Fin 2) ℂ := 
-  mkMat c (-c) (-c) (-c)
-
-noncomputable def measurementFrame (theta : ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
-  (Complex.cos theta) • sigmaZ + (Complex.sin theta) • sigmaX
 
 noncomputable def bellCorrelationBell (A B : Matrix (Fin 2) (Fin 2) ℂ) : ℂ :=
   - (1 / 2 : ℂ) * Matrix.trace (A * B)
