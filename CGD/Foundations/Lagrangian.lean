@@ -1,7 +1,6 @@
 -- FILENAME: CGD/Foundations/Lagrangian.lean
 
 import Litlib.Core
-import CGD.Axioms.Dynamics
 import CGD.Foundations.Action
 import CGD.Gravity.Geometry
 import CGD.Litlib.Y1956.utiyama1956invariant.Signature

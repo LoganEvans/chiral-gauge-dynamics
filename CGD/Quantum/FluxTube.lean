@@ -6,7 +6,6 @@ import CGD.Gravity.Geometry
 import CGD.Foundations.Calculus
 import CGD.Foundations.Action
 import CGD.Axioms.Ontology
-import CGD.Axioms.Dynamics
 import Mathlib.Data.Complex.Basic
 import Mathlib.Data.Matrix.Basic
 import Mathlib.Analysis.Complex.Basic
