@@ -11,10 +11,14 @@ open CGD.Foundations
 
 Litlib.reference AppendixI_InvariantBilinearForm
   bibtex "utiyama1956invariant"
+  title "Invariant theoretical interpretation of interaction"
   authors ["Utiyama, Ryoyu"]
-  status Standard
-  granularity "Appendix I"
-
+  journal "Physical Review"
+  volume "101"
+  issue "5"
+  pages "1597"
+  year "1956"
+  publisher "APS"
 class AppendixI_InvariantBilinearForm where
   /-- 
   Utiyama 1956, Appendix I. 
