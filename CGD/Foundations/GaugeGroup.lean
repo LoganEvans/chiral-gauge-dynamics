@@ -90,4 +90,32 @@ noncomputable def chiralProject (M : ChiralM) : ChiralComponents :=
   let b := M.submatrix chiralIso chiralIso
   { self_dual := toSl2c (fun i j => b (Sum.inl i) (Sum.inl j)), anti_self_dual := toSl2c (fun i j => b (Sum.inr i) (Sum.inr j)) }
 
+@[simp]
+lemma chiralProject_embed_sd (L R : SL2C) :
+  (chiralProject (embedSelfDual L + embedAntiSelfDual R)).self_dual = L := by
+  apply Subtype.ext
+  change (toSl2c (fun i j => (embedSelfDual L + embedAntiSelfDual R) (chiralIso (Sum.inl i)) (chiralIso (Sum.inl j)))).val = L.val
+  have h : (fun i j => (embedSelfDual L + embedAntiSelfDual R) (chiralIso (Sum.inl i)) (chiralIso (Sum.inl j))) = L.val := by
+    ext i j
+    change (embedSelfDual L) (chiralIso (Sum.inl i)) (chiralIso (Sum.inl j)) + (embedAntiSelfDual R) (chiralIso (Sum.inl i)) (chiralIso (Sum.inl j)) = L.val i j
+    dsimp [embedSelfDual, embedAntiSelfDual]
+    simp only [Equiv.symm_apply_apply]
+    exact add_zero _
+  rw [h]
+  exact toSl2c_val_eq L.val L.property
+
+@[simp]
+lemma chiralProject_embed_asd (L R : SL2C) :
+  (chiralProject (embedSelfDual L + embedAntiSelfDual R)).anti_self_dual = R := by
+  apply Subtype.ext
+  change (toSl2c (fun i j => (embedSelfDual L + embedAntiSelfDual R) (chiralIso (Sum.inr i)) (chiralIso (Sum.inr j)))).val = R.val
+  have h : (fun i j => (embedSelfDual L + embedAntiSelfDual R) (chiralIso (Sum.inr i)) (chiralIso (Sum.inr j))) = R.val := by
+    ext i j
+    change (embedSelfDual L) (chiralIso (Sum.inr i)) (chiralIso (Sum.inr j)) + (embedAntiSelfDual R) (chiralIso (Sum.inr i)) (chiralIso (Sum.inr j)) = R.val i j
+    dsimp [embedSelfDual, embedAntiSelfDual]
+    simp only [Equiv.symm_apply_apply]
+    exact zero_add _
+  rw [h]
+  exact toSl2c_val_eq R.val R.property
+
 end CGD.Foundations

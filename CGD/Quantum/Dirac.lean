@@ -76,7 +76,8 @@ lemma isEven_embedAntiSelfDual (M : SL2C) : isEven (embedAntiSelfDual M) := by
 
 lemma isEven_extractSpinorMode (u : Universe) (x : SpacetimePoint) : isEven (extractSpinorMode u x) := by
   intros i j hij
-  unfold extractSpinorMode Universe.spin4c_connection
+  unfold extractSpinorMode
+  rw [spin4c_connection_eq_embed]
   have h1 := isEven_embedSelfDual (u.sd_sector 0 x) i j hij
   have h2 := isEven_embedAntiSelfDual (u.asd_sector 0 x) i j hij
   change (embedSelfDual (u.sd_sector 0 x) + embedAntiSelfDual (u.asd_sector 0 x)) i j = 0

@@ -194,11 +194,22 @@ theorem dynamicExactAbelianSolution (c : ℂ) (hc : c ≠ 0) :
     · simp only [h, if_false]
       exact contDiff_const
   ⟩
-  let u : Universe := ⟨A_sd, 0⟩
+  
+  -- Use the gatekeeper's Equiv to safely build the universe from the halves
+  let u : Universe := universeEquiv.symm (A_sd, 0)
   use u
+  
+  -- Extract the definitional equality we just used
+  have h_sd : u.sd_sector = A_sd := by
+    have h_pair : universeEquiv u = (A_sd, 0) := Equiv.apply_symm_apply universeEquiv (A_sd, 0)
+    change (universeEquiv u).1 = A_sd
+    rw [h_pair]
+    
   have h_F : ∀ m n x, curvatureSl2c u.sd_sector m n x = curvature_const c m n := by
     intros m n x
+    rw [h_sd]
     exact curvature_exactAbelian c m n x
+    
   constructor
   · intro x
     dsimp [CGD.Gravity.satisfiesPureCdjConstraint]

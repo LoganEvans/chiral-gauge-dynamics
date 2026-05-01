@@ -74,6 +74,20 @@ noncomputable def partialDerivChiral (μ : Fin 4) (f : SpacetimePoint → Chiral
   let R_A := fun p => toSl2c (fun i j => f p (chiralIso (Sum.inr i)) (chiralIso (Sum.inr j)))
   embedSelfDual (partialDerivSl2c μ L_A x) + embedAntiSelfDual (partialDerivSl2c μ R_A x)
 
+@[simp]
+lemma partialDerivChiral_proj_self_dual (μ : Fin 4) (f : SpacetimePoint → ChiralM) (x : SpacetimePoint) :
+  (chiralProject (partialDerivChiral μ f x)).self_dual = partialDerivSl2c μ (fun p => (chiralProject (f p)).self_dual) x := by
+  unfold partialDerivChiral
+  rw [chiralProject_embed_sd]
+  rfl
+
+@[simp]
+lemma partialDerivChiral_proj_anti_self_dual (μ : Fin 4) (f : SpacetimePoint → ChiralM) (x : SpacetimePoint) :
+  (chiralProject (partialDerivChiral μ f x)).anti_self_dual = partialDerivSl2c μ (fun p => (chiralProject (f p)).anti_self_dual) x := by
+  unfold partialDerivChiral
+  rw [chiralProject_embed_asd]
+  rfl
+
 noncomputable def bracket (A B : ChiralM) : ChiralM := A * B - B * A
 
 noncomputable def curvature (A : Fin 4 → SpacetimePoint → ChiralM) (mu nu : Fin 4) (x : SpacetimePoint) : ChiralM :=
