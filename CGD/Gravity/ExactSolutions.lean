@@ -1,14 +1,9 @@
--- FILENAME: CGD/Quantum/Dynamics.lean
+-- FILENAME: CGD/Gravity/ExactSolutions.lean
 
 import Litlib.Core
-import CGD.Foundations.GaugeGroup
-import CGD.Foundations.Math
 import CGD.Foundations.Calculus
-import CGD.Foundations.Lagrangian
-import CGD.Particles.Definitions
-import CGD.Quantum.Definitions
+import CGD.Foundations.GaugeGroup
 import CGD.Axioms.Ontology
-import Litlib.Math.Dirac
 import CGD.Gravity.MacroscopicVacuum
 import Mathlib.Data.Complex.Basic
 import Mathlib.Tactic.Ring
@@ -19,19 +14,10 @@ set_option linter.unusedSimpArgs false
 set_option linter.unusedTactic false
 set_option linter.unreachableTactic false
 
-open CGD.Foundations CGD.Particles Matrix Complex BigOperators Litlib.Math.Dirac
+open CGD.Foundations Matrix Complex BigOperators
 open CGD.Axioms
 
-namespace CGD.Quantum
-
-noncomputable def extractSpinorMode (u : Universe) (x : SpacetimePoint) : Matrix (Fin 4) (Fin 4) Complex :=
-  u.spin4c_connection 0 x
-
-noncomputable def extractSpinorDeriv (u : Universe) (x : SpacetimePoint) (mu : Fin 4) : Matrix (Fin 4) (Fin 4) Complex :=
-  partialDerivChiral mu (fun p => u.spin4c_connection 0 p) x
-
-noncomputable def diracOperatorCore (dPsi : Fin 4 → SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) (x : SpacetimePoint) : Matrix (Fin 4) (Fin 4) Complex :=
-  ∑ mu, gammaVec mu * dPsi mu x
+namespace CGD.Gravity
 
 noncomputable def exactAbelianL (c : ℂ) (x : SpacetimePoint) : Matrix (Fin 2) (Fin 2) ℂ :=
   (x 1 : ℝ) • (c • sigmaX)
@@ -43,161 +29,6 @@ noncomputable def curvature_const (c : ℂ) (beta gamma : Fin 4) : SL2C :=
   if beta = 1 ∧ gamma = 2 then toSl2c (c • sigmaX)
   else if beta = 2 ∧ gamma = 1 then toSl2c ((-c) • sigmaX)
   else 0
-
-Litlib.theorem
-  description "Yang-Mills Chaos Bound"
-/--
-Evaluates the chaotic non-linear self-interaction of the homogenous gauge field ansatz.
--/
-theorem kinematicYangMillsChaos (u : Universe) :
-  ∀ (x : SpacetimePoint),
-    Matrix.trace (⁅homogeneousChaosAnsatz 1 x, homogeneousChaosAnsatz 2 x⁆.val *
-                  ⁅homogeneousChaosAnsatz 1 x, homogeneousChaosAnsatz 2 x⁆.val) =
-    -8 * (x 1 : ℂ)^2 * (x 2 : ℂ)^2 := by
-  intro x
-  unfold homogeneousChaosAnsatz
-  have h1 : (if (1 : Fin 4) = 1 then (Complex.I * ↑(x 1)) • sigma1 else if (1 : Fin 4) = 2 then (Complex.I * ↑(x 2)) • sigma2 else 0) = (Complex.I * ↑(x 1)) • sigma1 := by exact if_pos rfl
-  have h2 : (if (2 : Fin 4) = 1 then (Complex.I * ↑(x 1)) • sigma1 else if (2 : Fin 4) = 2 then (Complex.I * ↑(x 2)) • sigma2 else 0) = (Complex.I * ↑(x 2)) • sigma2 := by
-    have h_neq : (2 : Fin 4) ≠ 1 := by decide
-    rw [if_neg h_neq, if_pos rfl]
-  rw [h1, h2]
-  have hb : ⁅(Complex.I * ↑(x 1)) • sigma1, (Complex.I * ↑(x 2)) • sigma2⁆.val = 
-            ((Complex.I * ↑(x 1)) * (Complex.I * ↑(x 2))) • (sigma1.val * sigma2.val - sigma2.val * sigma1.val) := by
-    change ((Complex.I * ↑(x 1)) • sigma1.val) * ((Complex.I * ↑(x 2)) • sigma2.val) - ((Complex.I * ↑(x 2)) • sigma2.val) * ((Complex.I * ↑(x 1)) • sigma1.val) = _
-    rw [Matrix.smul_mul, Matrix.mul_smul, smul_smul, Matrix.smul_mul, Matrix.mul_smul, smul_smul]
-    have h_comm_C : (Complex.I * ↑(x 2)) * (Complex.I * ↑(x 1)) = (Complex.I * ↑(x 1)) * (Complex.I * ↑(x 2)) := by ring
-    rw [h_comm_C, ← smul_sub]
-  rw [hb]
-  have h_mat_smul (c : ℂ) (M : Matrix (Fin 2) (Fin 2) ℂ) : (c • M) * (c • M) = (c^2) • (M * M) := by
-    rw [Matrix.smul_mul, Matrix.mul_smul, smul_smul, sq]
-  rw [h_mat_smul]
-  have h_trace_smul (c : ℂ) (M : Matrix (Fin 2) (Fin 2) ℂ) : Matrix.trace (c • M) = c * Matrix.trace M := by
-    unfold Matrix.trace Matrix.diag
-    rw [sum_fin_2_expand]
-    simp only [Fin.sum_univ_two, Matrix.smul_apply, smul_eq_mul]
-    ring
-  rw [h_trace_smul]
-  have hc_sq : ((Complex.I * ↑(x 1)) * (Complex.I * ↑(x 2)))^2 = (↑(x 1))^2 * (↑(x 2))^2 := by
-    calc ((Complex.I * ↑(x 1)) * (Complex.I * ↑(x 2)))^2
-      _ = Complex.I^2 * Complex.I^2 * (x 1)^2 * (x 2)^2 := by ring
-      _ = (-1) * (-1) * (x 1)^2 * (x 2)^2 := by rw [Complex.I_sq]
-      _ = (x 1)^2 * (x 2)^2 := by ring
-  rw [hc_sq]
-  have h_trace_8 : Matrix.trace ((sigma1.val * sigma2.val - sigma2.val * sigma1.val) * (sigma1.val * sigma2.val - sigma2.val * sigma1.val)) = -8 := by
-    rw [val_sigma1, val_sigma2]
-    have eq_comm : sigmaX * sigmaY - sigmaY * sigmaX = (2 * Complex.I) • sigmaZ := by
-      ext i j
-      unfold sigmaX sigmaY sigmaZ mkMat
-      fin_cases i <;> fin_cases j <;> simp [Matrix.sub_apply, Matrix.mul_apply, sum_fin_2_expand, Matrix.smul_apply] <;> ring
-    rw [eq_comm]
-    have eq_sq : ((2 * Complex.I) • sigmaZ) * ((2 * Complex.I) • sigmaZ) = (2 * Complex.I)^2 • (sigmaZ * sigmaZ) := by
-      ext i j; simp [Matrix.mul_apply, sum_fin_2_expand, Matrix.smul_apply]; ring
-    rw [eq_sq]
-    have eq_z_sq : sigmaZ * sigmaZ = 1 := by
-      ext i j
-      unfold sigmaZ mkMat
-      fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, sum_fin_2_expand, Matrix.one_apply] <;> ring
-    rw [eq_z_sq]
-    have eq_tr : Matrix.trace ((2 * Complex.I) ^ 2 • (1 : Matrix (Fin 2) (Fin 2) ℂ)) = (2 * Complex.I)^2 * 2 := by
-      unfold Matrix.trace Matrix.diag
-      simp [sum_fin_2_expand, Matrix.smul_apply, Matrix.one_apply]
-      ring
-    rw [eq_tr]
-    calc (2 * Complex.I) ^ 2 * 2 = 4 * Complex.I ^ 2 * 2 := by ring
-      _ = 4 * (-1) * 2 := by rw [Complex.I_sq]
-      _ = -8 := by ring
-  rw [h_trace_8]
-  ring
-
-lemma isOdd_sum (f : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) 
-  (hf : ∀ mu, isOdd (f mu)) : isOdd (∑ mu, f mu) := by
-  intros i j hij
-  rw [Finset.sum_apply, Finset.sum_apply]
-  apply Finset.sum_eq_zero
-  intros mu _
-  exact hf mu i j hij
-
-lemma isEven_embedSelfDual (M : SL2C) : isEven (embedSelfDual M) := by
-  intros i j hij
-  unfold embedSelfDual
-  change (match CGD.Foundations.chiralIso.symm i, CGD.Foundations.chiralIso.symm j with
-          | Sum.inl i', Sum.inl j' => M.val i' j'
-          | _, _ => 0) = 0
-  have h_symm_i_eq : CGD.Foundations.chiralIso.symm i = Litlib.Math.Dirac.chiralIsoInv i := by
-    fin_cases i <;> rfl
-  have h_symm_j_eq : CGD.Foundations.chiralIso.symm j = Litlib.Math.Dirac.chiralIsoInv j := by
-    fin_cases j <;> rfl
-  rw [h_symm_i_eq, h_symm_j_eq]
-  cases h_i : Litlib.Math.Dirac.chiralIsoInv i <;> cases h_j : Litlib.Math.Dirac.chiralIsoInv j
-  · have h_light_i : isLight i = true := by unfold isLight; rw [h_i]
-    have h_light_j : isLight j = true := by unfold isLight; rw [h_j]
-    rw [h_light_i, h_light_j] at hij
-    contradiction
-  · rfl
-  · rfl
-  · rfl
-
-lemma isEven_embedAntiSelfDual (M : SL2C) : isEven (embedAntiSelfDual M) := by
-  intros i j hij
-  unfold embedAntiSelfDual
-  change (match CGD.Foundations.chiralIso.symm i, CGD.Foundations.chiralIso.symm j with
-          | Sum.inr i', Sum.inr j' => M.val i' j'
-          | _, _ => 0) = 0
-  have h_symm_i_eq : CGD.Foundations.chiralIso.symm i = Litlib.Math.Dirac.chiralIsoInv i := by
-    fin_cases i <;> rfl
-  have h_symm_j_eq : CGD.Foundations.chiralIso.symm j = Litlib.Math.Dirac.chiralIsoInv j := by
-    fin_cases j <;> rfl
-  rw [h_symm_i_eq, h_symm_j_eq]
-  cases h_i : Litlib.Math.Dirac.chiralIsoInv i <;> cases h_j : Litlib.Math.Dirac.chiralIsoInv j
-  · rfl
-  · rfl
-  · rfl
-  · have h_light_i : isLight i = false := by unfold isLight; rw [h_i]
-    have h_light_j : isLight j = false := by unfold isLight; rw [h_j]
-    rw [h_light_i, h_light_j] at hij
-    contradiction
-
-lemma isEven_extractSpinorMode (u : Universe) (x : SpacetimePoint) : isEven (extractSpinorMode u x) := by
-  intros i j hij
-  unfold extractSpinorMode Universe.spin4c_connection
-  have h1 := isEven_embedSelfDual (u.sd_sector 0 x) i j hij
-  have h2 := isEven_embedAntiSelfDual (u.asd_sector 0 x) i j hij
-  change (embedSelfDual (u.sd_sector 0 x) + embedAntiSelfDual (u.asd_sector 0 x)) i j = 0
-  rw [Matrix.add_apply, h1, h2, zero_add]
-
-lemma isEven_extractSpinorDeriv (u : Universe) (x : SpacetimePoint) (mu : Fin 4) : isEven (extractSpinorDeriv u x mu) := by
-  intros i j hij
-  unfold extractSpinorDeriv partialDerivChiral
-  have h1 := isEven_embedSelfDual (partialDerivSl2c mu (fun p => toSl2c (fun i j => (u.spin4c_connection 0 p) (CGD.Foundations.chiralIso (Sum.inl i)) (CGD.Foundations.chiralIso (Sum.inl j)))) x) i j hij
-  have h2 := isEven_embedAntiSelfDual (partialDerivSl2c mu (fun p => toSl2c (fun i j => (u.spin4c_connection 0 p) (CGD.Foundations.chiralIso (Sum.inr i)) (CGD.Foundations.chiralIso (Sum.inr j)))) x) i j hij
-  change (embedSelfDual _ + embedAntiSelfDual _) i j = 0
-  rw [Matrix.add_apply, h1, h2, zero_add]
-
-lemma isOdd_smul (c : Complex) (M : Matrix (Fin 4) (Fin 4) Complex) (hM : isOdd M) : isOdd (c • M) := by
-  intros i j hij
-  rw [Matrix.smul_apply, hM i j hij, smul_zero]
-
-Litlib.theorem
-  description "Geometric Dirac Equation Structure"
-/--
-The Dirac equation geometrically emerges as an evaluation of the temporal gauge connection acting on the 4D Spin(4,C) multiplet, natively preserving the odd/even grading of the spinor operator.
--/
-theorem kinematicDiracEquation (u : Universe) :
-  ∀ (m : Complex) (x : SpacetimePoint),
-    isOdd (diracOperatorCore (fun mu p => extractSpinorDeriv u p mu) x) ∧ 
-    isOdd (m • (extractSpinorMode u x * gamma0)) := by
-  intros m x
-  constructor
-  · unfold diracOperatorCore
-    apply isOdd_sum
-    intros mu
-    apply Litlib.Math.Dirac.odd_mul_even
-    · exact Litlib.Math.Dirac.hestenesIsomorphism mu
-    · exact isEven_extractSpinorDeriv u x mu
-  · apply isOdd_smul
-    apply Litlib.Math.Dirac.even_mul_odd
-    · exact isEven_extractSpinorMode u x
-    · exact Litlib.Math.Dirac.is_odd_gamma0
 
 lemma partialDeriv_coord_smul {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] 
   (c_idx : Fin 4) (M : E) (k : Fin 4) (x : SpacetimePoint) :
@@ -412,4 +243,4 @@ theorem dynamicExactAbelianSolution (c : ℂ) (hc : c ≠ 0) :
       rw [h_val] at hz3
       exact one_ne_zero hz3
 
-end CGD.Quantum
+end CGD.Gravity

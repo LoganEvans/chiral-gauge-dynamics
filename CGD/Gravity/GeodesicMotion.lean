@@ -1,13 +1,14 @@
--- FILENAME: CGD/Foundations/GeodesicMotion.lean
+-- FILENAME: CGD/Gravity/GeodesicMotion.lean
 
 import Litlib.Core
-import CGD.Foundations.StressEnergy
+import CGD.Gravity.StressEnergy
+import CGD.Foundations.Calculus
 import Litlib.Y1975.geroch1975motion.Signature
 
 open Complex Matrix CGD.Foundations BigOperators
 open CGD.Axioms
 
-namespace CGD.Foundations
+namespace CGD.Gravity
 
 Litlib.theorem
   description "Topological Matter Follows Geodesics"
@@ -58,4 +59,4 @@ theorem topologicalMatterIsGeodesic
   simp only [h_ginv, h_gamma_sym] at h_cons
   exact h_cons
 
-end CGD.Foundations
+end CGD.Gravity

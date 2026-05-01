@@ -1,4 +1,4 @@
--- FILENAME: CGD/Foundations/StressEnergy.lean
+-- FILENAME: CGD/Gravity/StressEnergy.lean
 
 import Litlib.Core
 import CGD.Gravity.Geometry
@@ -11,7 +11,7 @@ set_option linter.unusedVariables false
 open Complex Matrix CGD.Foundations BigOperators
 open CGD.Axioms
 
-namespace CGD.Foundations
+namespace CGD.Gravity
 
 noncomputable def emergentStressEnergy (F : Fin 4 → Fin 4 → SpacetimePoint → SL2C) (mu nu : Fin 4) (x : SpacetimePoint) : ℂ :=
   let g := fun m n p => CGD.Gravity.urbantkeMetric (fun a b => F a b p) m n
@@ -50,4 +50,4 @@ theorem emergentStressEnergyConservation (u : Universe)
   -- Evaluated via the geometric Contracted Bianchi Identity
   exact ebi.contractedBianchi nu x
 
-end CGD.Foundations
+end CGD.Gravity
