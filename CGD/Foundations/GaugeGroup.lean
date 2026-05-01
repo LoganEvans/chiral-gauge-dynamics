@@ -9,6 +9,7 @@ import Mathlib.Data.Fin.Basic
 import Mathlib.Data.Fintype.Basic
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.FieldSimp
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import CGD.Foundations.Math
 
 open Complex Matrix
@@ -117,5 +118,195 @@ lemma chiralProject_embed_asd (L R : SL2C) :
     exact zero_add _
   rw [h]
   exact toSl2c_val_eq R.val R.property
+
+-- ==============================================================================
+-- ALGEBRAIC HELPERS FOR EMBEDDING TRACES AND ORTHOGONALITY
+-- ==============================================================================
+
+lemma embed_self_dual_inr_left (A : SL2C) (i : Fin 2) (j : Fin 4) :
+  (embedSelfDual A) (chiralIso (Sum.inr i)) j = 0 := by
+  unfold embedSelfDual
+  simp only[Matrix.of_apply, Equiv.symm_apply_apply]
+
+lemma embed_self_dual_inr_right (A : SL2C) (i : Fin 4) (j : Fin 2) :
+  (embedSelfDual A) i (chiralIso (Sum.inr j)) = 0 := by
+  unfold embedSelfDual
+  simp only [Matrix.of_apply, Equiv.symm_apply_apply]
+  cases chiralIso.symm i
+  · rfl
+  · rfl
+
+lemma embed_anti_self_dual_inl_left (A : SL2C) (i : Fin 2) (j : Fin 4) :
+  (embedAntiSelfDual A) (chiralIso (Sum.inl i)) j = 0 := by
+  unfold embedAntiSelfDual
+  simp only[Matrix.of_apply, Equiv.symm_apply_apply]
+
+lemma embed_anti_self_dual_inl_right (A : SL2C) (i : Fin 4) (j : Fin 2) :
+  (embedAntiSelfDual A) i (chiralIso (Sum.inl j)) = 0 := by
+  unfold embedAntiSelfDual
+  simp only [Matrix.of_apply, Equiv.symm_apply_apply]
+  cases chiralIso.symm i
+  · rfl
+  · rfl
+
+lemma embed_self_dual_inl_inl (A : SL2C) (i j : Fin 2) :
+  (embedSelfDual A) (chiralIso (Sum.inl i)) (chiralIso (Sum.inl j)) = A.val i j := by
+  unfold embedSelfDual
+  simp only[Matrix.of_apply, Equiv.symm_apply_apply]
+
+lemma embed_anti_self_dual_inr_inr (A : SL2C) (i j : Fin 2) :
+  (embedAntiSelfDual A) (chiralIso (Sum.inr i)) (chiralIso (Sum.inr j)) = A.val i j := by
+  unfold embedAntiSelfDual
+  simp only [Matrix.of_apply, Equiv.symm_apply_apply]
+
+lemma embed_self_dual_mul_inl_inl (A B : SL2C) (i j : Fin 2) :
+  (embedSelfDual A * embedSelfDual B) (chiralIso (Sum.inl i)) (chiralIso (Sum.inl j)) =
+  (A.val * B.val) i j := by
+  rw [Matrix.mul_apply, Matrix.mul_apply]
+  rw[← Equiv.sum_comp chiralIso (fun k => (embedSelfDual A) (chiralIso (Sum.inl i)) k * (embedSelfDual B) k (chiralIso (Sum.inl j)))]
+  rw[Fintype.sum_sum_type]
+  have h_inr : ∑ x : Fin 2, (embedSelfDual A) (chiralIso (Sum.inl i)) (chiralIso (Sum.inr x)) * (embedSelfDual B) (chiralIso (Sum.inr x)) (chiralIso (Sum.inl j)) = 0 := by
+    apply Finset.sum_eq_zero
+    intro x _
+    rw [embed_self_dual_inr_right]
+    exact zero_mul _
+  rw [h_inr, add_zero]
+  apply Finset.sum_congr rfl
+  intro x _
+  rw[embed_self_dual_inl_inl, embed_self_dual_inl_inl]
+
+lemma embed_anti_self_dual_mul_inr_inr (A B : SL2C) (i j : Fin 2) :
+  (embedAntiSelfDual A * embedAntiSelfDual B) (chiralIso (Sum.inr i)) (chiralIso (Sum.inr j)) =
+  (A.val * B.val) i j := by
+  rw [Matrix.mul_apply, Matrix.mul_apply]
+  rw[← Equiv.sum_comp chiralIso (fun k => (embedAntiSelfDual A) (chiralIso (Sum.inr i)) k * (embedAntiSelfDual B) k (chiralIso (Sum.inr j)))]
+  rw [Fintype.sum_sum_type]
+  have h_inl : ∑ x : Fin 2, (embedAntiSelfDual A) (chiralIso (Sum.inr i)) (chiralIso (Sum.inl x)) * (embedAntiSelfDual B) (chiralIso (Sum.inl x)) (chiralIso (Sum.inr j)) = 0 := by
+    apply Finset.sum_eq_zero
+    intro x _
+    rw[embed_anti_self_dual_inl_right]
+    exact zero_mul _
+  rw[h_inl, zero_add]
+  apply Finset.sum_congr rfl
+  intro x _
+  rw[embed_anti_self_dual_inr_inr, embed_anti_self_dual_inr_inr]
+
+lemma embed_self_dual_mul_apply (A B : SL2C) (x y : Fin 2 ⊕ Fin 2) :
+  (embedSelfDual A * embedSelfDual B) (chiralIso x) (chiralIso y) =
+  match x, y with
+  | Sum.inl i, Sum.inl j => (A.val * B.val) i j
+  | _, _ => 0 := by
+  cases x <;> cases y
+  · exact embed_self_dual_mul_inl_inl A B _ _
+  · rw[Matrix.mul_apply]; apply Finset.sum_eq_zero; intro k _; rw[embed_self_dual_inr_right]; exact mul_zero _
+  · rw[Matrix.mul_apply]; apply Finset.sum_eq_zero; intro k _; rw[embed_self_dual_inr_left]; exact zero_mul _
+  · rw[Matrix.mul_apply]; apply Finset.sum_eq_zero; intro k _; rw[embed_self_dual_inr_left]; exact zero_mul _
+
+lemma embed_anti_self_dual_mul_apply (A B : SL2C) (x y : Fin 2 ⊕ Fin 2) :
+  (embedAntiSelfDual A * embedAntiSelfDual B) (chiralIso x) (chiralIso y) =
+  match x, y with
+  | Sum.inr i, Sum.inr j => (A.val * B.val) i j
+  | _, _ => 0 := by
+  cases x <;> cases y
+  · rw[Matrix.mul_apply]; apply Finset.sum_eq_zero; intro k _; rw[embed_anti_self_dual_inl_left]; exact zero_mul _
+  · rw[Matrix.mul_apply]; apply Finset.sum_eq_zero; intro k _; rw[embed_anti_self_dual_inl_left]; exact zero_mul _
+  · rw[Matrix.mul_apply]; apply Finset.sum_eq_zero; intro k _; rw[embed_anti_self_dual_inl_right]; exact mul_zero _
+  · exact embed_anti_self_dual_mul_inr_inr A B _ _
+
+lemma orthogonality_term (A B : SL2C) (i j k : Fin 4) :
+  (embedSelfDual A) i k * (embedAntiSelfDual B) k j = 0 := by
+  rw[embedSelfDual, embedAntiSelfDual]
+  rw [Matrix.of_apply, Matrix.of_apply]
+  cases hk : chiralIso.symm k with
+  | inl kl => exact mul_zero _
+  | inr kr =>
+    cases hi : chiralIso.symm i with
+    | inl il => exact zero_mul _
+    | inr ir => exact zero_mul _
+
+lemma chiralOrthogonality (A B : SL2C) : (embedSelfDual A) * (embedAntiSelfDual B) = 0 := by
+  ext i j
+  rw [Matrix.mul_apply]
+  apply Finset.sum_eq_zero
+  intro k _
+  apply orthogonality_term
+
+lemma orthogonality_term_dl (A B : SL2C) (i j k : Fin 4) :
+  (embedAntiSelfDual A) i k * (embedSelfDual B) k j = 0 := by
+  rw[embedAntiSelfDual, embedSelfDual]
+  rw [Matrix.of_apply, Matrix.of_apply]
+  cases hk : chiralIso.symm k with
+  | inl kl =>
+    cases hi : chiralIso.symm i with
+    | inl il => exact zero_mul _
+    | inr ir => exact zero_mul _
+  | inr kr =>
+    cases hj : chiralIso.symm j with
+    | inl jl => exact mul_zero _
+    | inr jr => exact mul_zero _
+
+lemma chiralOrthogonalityDl (A B : SL2C) : (embedAntiSelfDual A) * (embedSelfDual B) = 0 := by
+  ext i j
+  rw [Matrix.mul_apply]
+  apply Finset.sum_eq_zero
+  intro k _
+  apply orthogonality_term_dl
+
+lemma trace_embed_self_dual_mul (A B : SL2C) :
+  Matrix.trace (embedSelfDual A * embedSelfDual B) = Matrix.trace (A.val * B.val) := by
+  rw [Matrix.trace, Matrix.trace]
+  simp only[Matrix.diag]
+  rw[← Equiv.sum_comp chiralIso (fun i => (embedSelfDual A * embedSelfDual B) i i)]
+  rw [Fintype.sum_sum_type]
+  have h_inr : ∑ x : Fin 2, (embedSelfDual A * embedSelfDual B) (chiralIso (Sum.inr x)) (chiralIso (Sum.inr x)) = 0 := by
+    apply Finset.sum_eq_zero
+    intro x _
+    rw [Matrix.mul_apply]
+    apply Finset.sum_eq_zero
+    intro k _
+    have hz : (embedSelfDual A) (chiralIso (Sum.inr x)) k = 0 := embed_self_dual_inr_left A x k
+    rw[hz, zero_mul]
+  rw [h_inr, add_zero]
+  apply Finset.sum_congr rfl
+  intro x _
+  rw [embed_self_dual_mul_inl_inl]
+
+lemma trace_embed_anti_self_dual_mul (A B : SL2C) :
+  Matrix.trace (embedAntiSelfDual A * embedAntiSelfDual B) = Matrix.trace (A.val * B.val) := by
+  rw [Matrix.trace, Matrix.trace]
+  simp only [Matrix.diag]
+  rw[← Equiv.sum_comp chiralIso (fun i => (embedAntiSelfDual A * embedAntiSelfDual B) i i)]
+  rw [Fintype.sum_sum_type]
+  have h_inl : ∑ x : Fin 2, (embedAntiSelfDual A * embedAntiSelfDual B) (chiralIso (Sum.inl x)) (chiralIso (Sum.inl x)) = 0 := by
+    apply Finset.sum_eq_zero
+    intro x _
+    rw [Matrix.mul_apply]
+    apply Finset.sum_eq_zero
+    intro k _
+    have hz : (embedAntiSelfDual A) (chiralIso (Sum.inl x)) k = 0 := embed_anti_self_dual_inl_left A x k
+    rw [hz, zero_mul]
+  rw[h_inl, zero_add]
+  apply Finset.sum_congr rfl
+  intro x _
+  rw[embed_anti_self_dual_mul_inr_inr]
+
+lemma trace_embed_mul_embed (L1 R1 L2 R2 : SL2C) :
+  Matrix.trace ((embedSelfDual L1 + embedAntiSelfDual R1) * (embedSelfDual L2 + embedAntiSelfDual R2)) =
+  Matrix.trace (L1.val * L2.val) + Matrix.trace (R1.val * R2.val) := by
+  have h1 : (embedSelfDual L1 + embedAntiSelfDual R1) * (embedSelfDual L2 + embedAntiSelfDual R2) =
+    embedSelfDual L1 * embedSelfDual L2 + embedAntiSelfDual R1 * embedAntiSelfDual R2 := by
+    rw[Matrix.add_mul, Matrix.mul_add, Matrix.mul_add]
+    rw[chiralOrthogonality, chiralOrthogonalityDl]
+    simp
+  rw[h1, Matrix.trace_add]
+  rw[trace_embed_self_dual_mul, trace_embed_anti_self_dual_mul]
+
+lemma to_sl2c_of_trace_zero (M : Matrix (Fin 2) (Fin 2) Complex) (h : Matrix.trace M = 0) :
+  (toSl2c M).val = M := by
+  unfold toSl2c
+  dsimp
+  rw [h]
+  have h0 : (0 : Complex) / 2 = 0 := zero_div 2
+  rw[h0, zero_smul, sub_zero]
 
 end CGD.Foundations
