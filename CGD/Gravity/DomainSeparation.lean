@@ -152,14 +152,9 @@ A parallel theorem for the pure GR vacuum limit ($\Lambda = 0$) evaluated on the
 theorem macroscopicRicciFlatEmergence
   (u : Universe)
   (e : TetradField)
-  (A : SpacetimePoint → Fin 4 → Matrix (Fin 2) (Fin 2) ℂ)
   (bulkVacuum : Set SpacetimePoint)
   (h_open : IsOpen bulkVacuum)
   (h_vacuum : isVacuumRegion bulkVacuum u 0)
-  (h_F_def : ∀ x μ ν i j, (curvatureSl2c u.sd_sector μ ν x).val i j = 
-      partialDeriv μ (fun p => A p ν i j) x - 
-      partialDeriv ν (fun p => A p μ i j) x + 
-      (A x μ * A x ν - A x ν * A x μ) i j)
   (h_urbantke : ∀ x ∈ bulkVacuum, ∀ μ ν, metricFromTetrad e μ ν x = urbantkeMetric (fun m n => toSl2c (curvatureSl2c u.sd_sector m n x).val) μ ν)
   (h_nondeg : ∀ x ∈ bulkVacuum, (urbantkeMetric (fun m n => toSl2c (curvatureSl2c u.sd_sector m n x).val)).det ≠ 0)
   [eq2_2c : Litlib.Y1991.capovilla1991pure.Eq2_2c 
@@ -173,25 +168,29 @@ theorem macroscopicRicciFlatEmergence
   intro x μ ν
   
   let F_sub := fun (p : bulkVacuum) (m n : Fin 4) => (curvatureSl2c u.sd_sector m n p.val).val
-  let A_sub := fun (p : bulkVacuum) (μ : Fin 4) => A p.val μ
+  let A_sub := fun (p : bulkVacuum) (μ : Fin 4) => (u.sd_sector μ p.val).val
   
+  have hd_A : ∀ α (p : SpacetimePoint) i j, DifferentiableAt ℝ (fun p' => (u.sd_sector α p').val i j) p := by
+    intro α p i j
+    exact ((u.sd_sector.is_smooth α i j).differentiable (by decide)) p
+    
   have h_F_sub_def : ∀ (x : bulkVacuum) μ ν i j, F_sub x μ ν i j = 
     partialDeriv μ (fun p => if h : p ∈ bulkVacuum then A_sub ⟨p, h⟩ ν i j else 0) x.val - 
     partialDeriv ν (fun p => if h : p ∈ bulkVacuum then A_sub ⟨p, h⟩ μ i j else 0) x.val + 
     (A_sub x μ * A_sub x ν - A_sub x ν * A_sub x μ) i j := by
     intro x μ ν i j
-    have hd1 : partialDeriv μ (fun p => if h : p ∈ bulkVacuum then A_sub ⟨p, h⟩ ν i j else 0) x.val = partialDeriv μ (fun p => A p ν i j) x.val := by
+    have hd1 : partialDeriv μ (fun p => if h : p ∈ bulkVacuum then A_sub ⟨p, h⟩ ν i j else 0) x.val = partialDeriv μ (fun p => (u.sd_sector ν p).val i j) x.val := by
       apply partialDeriv_congr_open _ _ bulkVacuum h_open
       · intro p hp
         exact dif_pos hp
       · exact x.property
-    have hd2 : partialDeriv ν (fun p => if h : p ∈ bulkVacuum then A_sub ⟨p, h⟩ μ i j else 0) x.val = partialDeriv ν (fun p => A p μ i j) x.val := by
+    have hd2 : partialDeriv ν (fun p => if h : p ∈ bulkVacuum then A_sub ⟨p, h⟩ μ i j else 0) x.val = partialDeriv ν (fun p => (u.sd_sector μ p).val i j) x.val := by
       apply partialDeriv_congr_open _ _ bulkVacuum h_open
       · intro p hp
         exact dif_pos hp
       · exact x.property
     rw [hd1, hd2]
-    exact h_F_def x.val μ ν i j
+    exact curvatureSl2c_val_eq u.sd_sector μ ν x.val (hd_A μ x.val) (hd_A ν x.val) i j
 
   have hEpsilonAlt : ∀ α β γ δ, epsilon4 α β γ δ = -epsilon4 β α γ δ ∧ epsilon4 α β γ δ = -epsilon4 α γ β δ ∧ epsilon4 α β γ δ = -epsilon4 α β δ γ := CGD.Gravity.epsilon4_alt
   

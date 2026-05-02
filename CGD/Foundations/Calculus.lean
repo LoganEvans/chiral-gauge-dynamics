@@ -160,6 +160,43 @@ lemma curvatureSl2c_antisymm (A : Fin 4 → SpacetimePoint → SL2C) (mu nu : Fi
   rw [h_comm]
   abel
 
+lemma partialDerivSl2c_eq_mat (A : SpacetimePoint → SL2C) (μ : Fin 4) (x : SpacetimePoint)
+  (hA : ∀ i j, DifferentiableAt ℝ (fun p => (A p).val i j) x) :
+  (partialDerivSl2c μ A x).val = partialDerivMat μ (fun p => (A p).val) x := by
+  unfold partialDerivSl2c toSl2c
+  dsimp
+  have h_tr_zero : (fun p => Matrix.trace ((A p).val)) = fun p => 0 := by
+    ext p
+    exact (A p).property
+  have h_pd_zero : partialDeriv μ (fun (p : SpacetimePoint) => (0 : ℂ)) x = 0 := partialDeriv_const 0 μ x
+  have h_tr_eval : partialDeriv μ (fun p => Matrix.trace ((A p).val)) x = 0 := by
+    rw [h_tr_zero, h_pd_zero]
+  have h_tr_mat : Matrix.trace (partialDerivMat μ (fun p => (A p).val) x) = 0 := by
+    have h_sum : Matrix.trace (partialDerivMat μ (fun p => (A p).val) x) = partialDeriv μ (fun p => ∑ i : Fin 2, (A p).val i i) x := by
+      unfold Matrix.trace partialDerivMat
+      exact (partialDeriv_sum (fun i p => (A p).val i i) μ x (fun i => hA i i)).symm
+    rw [h_sum]
+    exact h_tr_eval
+  rw [h_tr_mat]
+  have hz : (0 : ℂ) / 2 = 0 := by ring
+  rw [hz, zero_smul, sub_zero]
+
+lemma curvatureSl2c_val_eq (A : Fin 4 → SpacetimePoint → SL2C) (μ ν : Fin 4) (x : SpacetimePoint)
+  (hAμ : ∀ i j, DifferentiableAt ℝ (fun p => (A μ p).val i j) x)
+  (hAν : ∀ i j, DifferentiableAt ℝ (fun p => (A ν p).val i j) x) :
+  ∀ i j, (curvatureSl2c A μ ν x).val i j = 
+    partialDeriv μ (fun p => (A ν p).val i j) x - 
+    partialDeriv ν (fun p => (A μ p).val i j) x + 
+    ((A μ x).val * (A ν x).val - (A ν x).val * (A μ x).val) i j := by
+  intro i j
+  have h_curv : (curvatureSl2c A μ ν x).val = (partialDerivSl2c μ (A ν) x).val - (partialDerivSl2c ν (A μ) x).val + ((A μ x).val * (A ν x).val - (A ν x).val * (A μ x).val) := rfl
+  have h1 : (partialDerivSl2c μ (A ν) x).val = partialDerivMat μ (fun p => (A ν p).val) x := partialDerivSl2c_eq_mat (A ν) μ x hAν
+  have h2 : (partialDerivSl2c ν (A μ) x).val = partialDerivMat ν (fun p => (A μ p).val) x := partialDerivSl2c_eq_mat (A μ) ν x hAμ
+  have h_eval1 : (partialDerivMat μ (fun p => (A ν p).val) x) i j = partialDeriv μ (fun p => (A ν p).val i j) x := rfl
+  have h_eval2 : (partialDerivMat ν (fun p => (A μ p).val) x) i j = partialDeriv ν (fun p => (A μ p).val i j) x := rfl
+  change (partialDerivSl2c μ (A ν) x).val i j - (partialDerivSl2c ν (A μ) x).val i j + ((A μ x).val * (A ν x).val - (A ν x).val * (A μ x).val) i j = _
+  rw [h1, h2, h_eval1, h_eval2]
+
 attribute [irreducible] curvatureSl2c
 
 end CGD.Foundations

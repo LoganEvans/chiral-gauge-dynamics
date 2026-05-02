@@ -59,23 +59,7 @@ lemma partialDerivMat_trace (f : SpacetimePoint → Matrix (Fin 2) (Fin 2) ℂ) 
   (hf : ∀ i j, DifferentiableAt ℝ (fun p => f p i j) x) :
   Matrix.trace (partialDerivMat μ f x) = partialDeriv μ (fun p => Matrix.trace (f p)) x := by
   unfold partialDerivMat Matrix.trace
-  exact (partialDeriv_sum (fun i p => f p i i) μ x (fun i => hf i i)).symm
-
-lemma partialDerivSl2c_eq_mat (A : SpacetimePoint → SL2C) (μ : Fin 4) (x : SpacetimePoint)
-  (hA : ∀ i j, DifferentiableAt ℝ (fun p => (A p).val i j) x) :
-  (partialDerivSl2c μ A x).val = partialDerivMat μ (fun p => (A p).val) x := by
-  unfold partialDerivSl2c toSl2c
-  dsimp
-  have h_tr_zero : (fun p => Matrix.trace ((A p).val)) = fun p => 0 := by
-    ext p
-    exact (A p).property
-  have h_tr : Matrix.trace (partialDerivMat μ (fun p => (A p).val) x) = partialDeriv μ (fun p => Matrix.trace ((A p).val)) x := partialDerivMat_trace _ μ x hA
-  rw [h_tr_zero] at h_tr
-  have h_pd_zero : partialDeriv μ (fun (p : SpacetimePoint) => (0 : ℂ)) x = 0 := partialDeriv_const 0 μ x
-  rw [h_pd_zero] at h_tr
-  rw [h_tr]
-  have hz : (0 : ℂ) / 2 = 0 := by ring
-  rw [hz, zero_smul, sub_zero]
+  exact (partialDeriv_sum _ μ x (fun i => hf i i)).symm
 
 lemma partialDerivSl2c_commutes (A : Fin 4 → SpacetimePoint → SL2C) (α μ ν : Fin 4) (x : SpacetimePoint)
   (h_smooth : ∀ i j, ContDiff ℝ ⊤ (fun p => (A α p).val i j)) :

@@ -48,11 +48,6 @@ theorem macroscopicVacuumGR
     ricciTensor] 
   (u : Universe)
   (e : TetradField)
-  (A : SpacetimePoint → Fin 4 → Matrix (Fin 2) (Fin 2) ℂ)
-  (h_F_def : ∀ x μ ν i j, (curvatureSl2c u.sd_sector μ ν x).val i j = 
-      partialDeriv μ (fun p => A p ν i j) x - 
-      partialDeriv ν (fun p => A p μ i j) x + 
-      (A x μ * A x ν - A x ν * A x μ) i j)
   (h_urbantke : ∀ x μ ν, metricFromTetrad e μ ν x = urbantkeMetric (fun m n => toSl2c (curvatureSl2c u.sd_sector m n x).val) μ ν)
   (h_nondeg : ∀ x, (urbantkeMetric (fun m n => toSl2c (curvatureSl2c u.sd_sector m n x).val)).det ≠ 0)
   (h_cdj : satisfiesPureCdjConstraint (fun p m n => (curvatureSl2c u.sd_sector m n p).val)) :
@@ -66,7 +61,19 @@ theorem macroscopicVacuumGR
   have hEpsilonNondeg : epsilon4 0 1 2 3 ≠ 0 := by
     rw [CGD.Gravity.epsilon4_0123]
     exact one_ne_zero
-  exact eq2_2c.urbantkeIsRicciFlat A (fun p m n => (curvatureSl2c u.sd_sector m n p).val) epsilon4 hEpsilonAlt hEpsilonNondeg h_F_def h_nondeg h_cdj x μ ν
+    
+  have hd_A : ∀ α (p : SpacetimePoint) i j, DifferentiableAt ℝ (fun p' => (u.sd_sector α p').val i j) p := by
+    intro α p i j
+    exact ((u.sd_sector.is_smooth α i j).differentiable (by decide)) p
+    
+  have h_F_def : ∀ p μ ν i j, (curvatureSl2c u.sd_sector μ ν p).val i j = 
+    partialDeriv μ (fun p' => (u.sd_sector ν p').val i j) p - 
+    partialDeriv ν (fun p' => (u.sd_sector μ p').val i j) p + 
+    ((u.sd_sector μ p).val * (u.sd_sector ν p).val - (u.sd_sector ν p).val * (u.sd_sector μ p).val) i j := by
+    intro p μ ν i j
+    exact curvatureSl2c_val_eq u.sd_sector μ ν p (hd_A μ p) (hd_A ν p) i j
+    
+  exact eq2_2c.urbantkeIsRicciFlat (fun p μ => (u.sd_sector μ p).val) (fun p m n => (curvatureSl2c u.sd_sector m n p).val) epsilon4 hEpsilonAlt hEpsilonNondeg h_F_def h_nondeg h_cdj x μ ν
 
 Litlib.theorem
   description "Unimodular Vacuum Form"
