@@ -32,8 +32,12 @@ Based on the Litlib macroscopic flux tube bounds, if the spatial distance exceed
 theorem kinematicHamiltonianCrossover {sigma M : ℝ} [eb : FluxTubeEnergyBounds (Fin 4 → SpacetimePoint → SL2C) spatialEnergy intactFluxTube snappedFluxTube sigma M]
   (L : ℝ) (h_sigma : sigma > 0) (h_L : L > (2 * M) / sigma) :
   spatialEnergy (intactFluxTube L) > spatialEnergy (snappedFluxTube L) := by
-  have h_intact := eb.intactEnergy L
-  have h_snapped := eb.snappedEnergy L
+  have h_L_pos : L > 0 := by
+    have h_M_nonneg : 2 * M ≥ 0 := mul_nonneg (by norm_num) eb.h_M_nonneg
+    have h_div_nonneg : (2 * M) / sigma ≥ 0 := div_nonneg h_M_nonneg (le_of_lt h_sigma)
+    exact lt_of_le_of_lt h_div_nonneg h_L
+  have h_intact := eb.intactEnergy L h_L_pos
+  have h_snapped := eb.snappedEnergy L h_L_pos
   rw [h_intact, h_snapped]
   have h_bound : sigma * ((2 * M) / sigma) < sigma * L := mul_lt_mul_of_pos_left h_L h_sigma
   have h_sigma_ne_zero : sigma ≠ 0 := ne_of_gt h_sigma
