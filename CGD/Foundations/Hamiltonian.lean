@@ -7,6 +7,7 @@ import CGD.Foundations.Action
 import CGD.Gravity.Geometry
 import CGD.Foundations.TensorCalculus.DifferentialRules
 import CGD.Foundations.TensorCalculus.BianchiIdentity
+import CGD.Axioms.Ontology
 
 set_option maxHeartbeats 4000000
 set_option linter.unusedSimpArgs false
@@ -27,17 +28,17 @@ Extracted from the Pontryagin topological density: Π^i = 4 * ε^{ijk} F_{jk}
 Defined as a pure Matrix to bypass subtype coercion limits.
 Explicitly scaled by (4 : ℂ) to align with complex polynomial rings.
 -/
-noncomputable def conjugateMomentum (A : Fin 4 → SpacetimePoint → SL2C) (i : Fin 3) (x : SpacetimePoint) : Matrix (Fin 2) (Fin 2) ℂ :=
-  (4 : ℂ) • ∑ j : Fin 3, ∑ k : Fin 3, (epsilon3 i j k) • (curvatureSl2c A (spatialIdx j) (spatialIdx k) x).val
+noncomputable def conjugateMomentum (A : Sl2cGaugeField) (i : Fin 3) (x : SpacetimePoint) : Matrix (Fin 2) (Fin 2) ℂ :=
+  (4 : ℂ) • ∑ j : Fin 3, ∑ k : Fin 3, (epsilon3 i j k) • (curvatureSl2c A.val (spatialIdx j) (spatialIdx k) x).val
 
 /-- 
 The canonical Hamiltonian density: 
 H = Π^i ˙A_i - L_{topological} 
 -/
-noncomputable def canonicalHamiltonianDensity (A : Fin 4 → SpacetimePoint → SL2C) (x : SpacetimePoint) : ℂ :=
-  (∑ i : Fin 3, Matrix.trace (conjugateMomentum A i x * (partialDerivSl2c 0 (A (spatialIdx i)) x).val)) -
+noncomputable def canonicalHamiltonianDensity (A : Sl2cGaugeField) (x : SpacetimePoint) : ℂ :=
+  (∑ i : Fin 3, Matrix.trace (conjugateMomentum A i x * (partialDerivSl2c 0 (A.val (spatialIdx i)) x).val)) -
   (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, 
-    epsilon4 μ ν ρ σ * Matrix.trace ((curvatureSl2c A μ ν x).val * (curvatureSl2c A ρ σ x).val))
+    epsilon4 μ ν ρ σ * Matrix.trace ((curvatureSl2c A.val μ ν x).val * (curvatureSl2c A.val ρ σ x).val))
 
 /-- 
 The Gauss Constraint: Generates spatial SU(2) gauge transformations.
@@ -46,15 +47,15 @@ By leveraging the linearity of the covariant derivative over the Lie algebra,
 this is strictly equivalent to the fully contracted spatial covariant 
 divergence of the magnetic field tensor.
 -/
-noncomputable def gaussConstraintDensity (A : Fin 4 → SpacetimePoint → SL2C) (x : SpacetimePoint) : Matrix (Fin 2) (Fin 2) ℂ :=
-  (4 : ℂ) • ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, (epsilon3 i j k) • (covariantDeriv A (spatialIdx i) (spatialIdx j) (spatialIdx k) x).val
+noncomputable def gaussConstraintDensity (A : Sl2cGaugeField) (x : SpacetimePoint) : Matrix (Fin 2) (Fin 2) ℂ :=
+  (4 : ℂ) • ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, (epsilon3 i j k) • (covariantDeriv A.val (spatialIdx i) (spatialIdx j) (spatialIdx k) x).val
 
 /--
 The Momentum (Diffeomorphism) Constraint: Generates spatial diffeomorphisms.
 Formally: V_j = Tr(Π^i F_{ij}).
 -/
-noncomputable def momentumConstraintDensity (A : Fin 4 → SpacetimePoint → SL2C) (j : Fin 3) (x : SpacetimePoint) : ℂ :=
-  ∑ i : Fin 3, Matrix.trace (conjugateMomentum A i x * (curvatureSl2c A (spatialIdx i) (spatialIdx j) x).val)
+noncomputable def momentumConstraintDensity (A : Sl2cGaugeField) (j : Fin 3) (x : SpacetimePoint) : ℂ :=
+  ∑ i : Fin 3, Matrix.trace (conjugateMomentum A i x * (curvatureSl2c A.val (spatialIdx i) (spatialIdx j) x).val)
 
 -- ==============================================================================
 -- Algebraic & Combinatorial Helpers for 4D -> 3D Reduction
@@ -157,24 +158,24 @@ Litlib.theorem
 The 4D topological action reduces to Tr(Π^i F_{0i}) on the spatial slice.
 This isolates the permutations that contain a temporal electric field component.
 -/
-theorem topologicalActionSpatialExpansion (A : Fin 4 → SpacetimePoint → SL2C) (x : SpacetimePoint) :
+theorem topologicalActionSpatialExpansion (A : Sl2cGaugeField) (x : SpacetimePoint) :
   (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, 
-    epsilon4 μ ν ρ σ * Matrix.trace ((curvatureSl2c A μ ν x).val * (curvatureSl2c A ρ σ x).val)) =
-  ∑ i : Fin 3, Matrix.trace (conjugateMomentum A i x * (curvatureSl2c A 0 (spatialIdx i) x).val) := by
-  have hF_anti : ∀ μ ν, (curvatureSl2c A μ ν x).val = - (curvatureSl2c A ν μ x).val := by
+    epsilon4 μ ν ρ σ * Matrix.trace ((curvatureSl2c A.val μ ν x).val * (curvatureSl2c A.val ρ σ x).val)) =
+  ∑ i : Fin 3, Matrix.trace (conjugateMomentum A i x * (curvatureSl2c A.val 0 (spatialIdx i) x).val) := by
+  have hF_anti : ∀ μ ν, (curvatureSl2c A.val μ ν x).val = - (curvatureSl2c A.val ν μ x).val := by
     intro μ ν
-    have h := curvatureSl2c_antisymm A μ ν x
+    have h := curvatureSl2c_antisymm A.val μ ν x
     exact congrArg Subtype.val h
     
-  have h_rhs : (∑ i : Fin 3, Matrix.trace (conjugateMomentum A i x * (curvatureSl2c A 0 (spatialIdx i) x).val)) = 
-               (∑ i : Fin 3, Matrix.trace (((4 : ℂ) • ∑ j : Fin 3, ∑ k : Fin 3, (epsilon3 i j k) • (curvatureSl2c A (spatialIdx j) (spatialIdx k) x).val) * (curvatureSl2c A 0 (spatialIdx i) x).val)) := by
+  have h_rhs : (∑ i : Fin 3, Matrix.trace (conjugateMomentum A i x * (curvatureSl2c A.val 0 (spatialIdx i) x).val)) = 
+               (∑ i : Fin 3, Matrix.trace (((4 : ℂ) • ∑ j : Fin 3, ∑ k : Fin 3, (epsilon3 i j k) • (curvatureSl2c A.val (spatialIdx j) (spatialIdx k) x).val) * (curvatureSl2c A.val 0 (spatialIdx i) x).val)) := by
     apply Finset.sum_congr rfl
     intro i _
     unfold conjugateMomentum
     rfl
     
   rw [h_rhs]
-  exact topological_action_identity_matrix (fun μ ν => (curvatureSl2c A μ ν x).val) hF_anti
+  exact topological_action_identity_matrix (fun μ ν => (curvatureSl2c A.val μ ν x).val) hF_anti
 
 Litlib.theorem
   description "Electric Field Decomposition"
@@ -182,15 +183,15 @@ Litlib.theorem
 Decomposition of the temporal electric field F_{0i} into the time derivative 
 of A_i minus the spatial covariant derivative of A_0.
 -/
-theorem electricFieldDecomposition (A : Fin 4 → SpacetimePoint → SL2C) (x : SpacetimePoint) (i : Fin 3) :
-  (curvatureSl2c A 0 (spatialIdx i) x).val =
-  (partialDerivSl2c 0 (A (spatialIdx i)) x).val -
-  ((partialDerivSl2c (spatialIdx i) (A 0) x).val - 
-   ((A 0 x).val * (A (spatialIdx i) x).val - (A (spatialIdx i) x).val * (A 0 x).val)) := by
-  have h := curvatureSl2c_def A 0 (spatialIdx i) x
+theorem electricFieldDecomposition (A : Sl2cGaugeField) (x : SpacetimePoint) (i : Fin 3) :
+  (curvatureSl2c A.val 0 (spatialIdx i) x).val =
+  (partialDerivSl2c 0 (A.val (spatialIdx i)) x).val -
+  ((partialDerivSl2c (spatialIdx i) (A.val 0) x).val - 
+   ((A.val 0 x).val * (A.val (spatialIdx i) x).val - (A.val (spatialIdx i) x).val * (A.val 0 x).val)) := by
+  have h := curvatureSl2c_def A.val 0 (spatialIdx i) x
   have h_val := congrArg Subtype.val h
   rw [h_val]
-  change (partialDerivSl2c 0 (A (spatialIdx i)) x).val - (partialDerivSl2c (spatialIdx i) (A 0) x).val + ((A 0 x).val * (A (spatialIdx i) x).val - (A (spatialIdx i) x).val * (A 0 x).val) = _
+  change (partialDerivSl2c 0 (A.val (spatialIdx i)) x).val - (partialDerivSl2c (spatialIdx i) (A.val 0) x).val + ((A.val 0 x).val * (A.val (spatialIdx i) x).val - (A.val (spatialIdx i) x).val * (A.val 0 x).val) = _
   ext m n
   simp only [Matrix.sub_apply, Matrix.add_apply]
   ring
@@ -213,11 +214,11 @@ multiplier for the spatial covariant derivative of the conjugate momentum.
 Since there are no local dynamical energy terms, this establishes that 
 the bulk geometry is purely topological (H ≈ 0 on the constraint surface).
 -/
-theorem canonicalHamiltonianVanishes (A : Fin 4 → SpacetimePoint → SL2C) (x : SpacetimePoint) :
+theorem canonicalHamiltonianVanishes (A : Sl2cGaugeField) (x : SpacetimePoint) :
   canonicalHamiltonianDensity A x =
   ∑ i : Fin 3, Matrix.trace (conjugateMomentum A i x *
-    ((partialDerivSl2c (spatialIdx i) (A 0) x).val - 
-     ((A 0 x).val * (A (spatialIdx i) x).val - (A (spatialIdx i) x).val * (A 0 x).val))) := by
+    ((partialDerivSl2c (spatialIdx i) (A.val 0) x).val - 
+     ((A.val 0 x).val * (A.val (spatialIdx i) x).val - (A.val (spatialIdx i) x).val * (A.val 0 x).val))) := by
   rw [canonicalHamiltonianDensity, topologicalActionSpatialExpansion A x]
   rw [← Finset.sum_sub_distrib]
   apply Finset.sum_congr rfl
@@ -232,8 +233,7 @@ Litlib.theorem
 The Gauss constraint algebraically vanishes as an exact identity. 
 The spatial divergence of the conjugate momentum reduces to the spatial Bianchi identity.
 -/
-theorem gaussConstraintVanishes (A : Fin 4 → SpacetimePoint → SL2C) (x : SpacetimePoint)
-  (h_smooth : ∀ mu i j, ContDiff ℝ ⊤ (fun p => (A mu p).val i j)) :
+theorem gaussConstraintVanishes (A : Sl2cGaugeField) (x : SpacetimePoint) :
   gaussConstraintDensity A x = 0 := by
   unfold gaussConstraintDensity
   have sp0 : spatialIdx 0 = 1 := rfl
@@ -245,18 +245,18 @@ theorem gaussConstraintVanishes (A : Fin 4 → SpacetimePoint → SL2C) (x : Spa
              Int.cast_zero, Int.cast_one, Int.cast_neg,
              zero_smul, one_smul, neg_smul, add_zero, zero_add]
              
-  have b1 := bianchiIdentity A h_smooth 1 2 3 x
-  have b2 := bianchiIdentity A h_smooth 1 3 2 x
+  have b1 := bianchiIdentity A 1 2 3 x
+  have b2 := bianchiIdentity A 1 3 2 x
   
-  have b1_eq : (covariantDeriv A 1 2 3 x).val + (covariantDeriv A 2 3 1 x).val + (covariantDeriv A 3 1 2 x).val = 0 := by
-    calc (covariantDeriv A 1 2 3 x).val + (covariantDeriv A 2 3 1 x).val + (covariantDeriv A 3 1 2 x).val
-      _ = (covariantDeriv A 1 2 3 x + covariantDeriv A 2 3 1 x + covariantDeriv A 3 1 2 x).val := rfl
+  have b1_eq : (covariantDeriv A.val 1 2 3 x).val + (covariantDeriv A.val 2 3 1 x).val + (covariantDeriv A.val 3 1 2 x).val = 0 := by
+    calc (covariantDeriv A.val 1 2 3 x).val + (covariantDeriv A.val 2 3 1 x).val + (covariantDeriv A.val 3 1 2 x).val
+      _ = (covariantDeriv A.val 1 2 3 x + covariantDeriv A.val 2 3 1 x + covariantDeriv A.val 3 1 2 x).val := rfl
       _ = (0 : SL2C).val := congrArg Subtype.val b1
       _ = 0 := rfl
       
-  have b2_eq : (covariantDeriv A 1 3 2 x).val + (covariantDeriv A 3 2 1 x).val + (covariantDeriv A 2 1 3 x).val = 0 := by
-    calc (covariantDeriv A 1 3 2 x).val + (covariantDeriv A 3 2 1 x).val + (covariantDeriv A 2 1 3 x).val
-      _ = (covariantDeriv A 1 3 2 x + covariantDeriv A 3 2 1 x + covariantDeriv A 2 1 3 x).val := rfl
+  have b2_eq : (covariantDeriv A.val 1 3 2 x).val + (covariantDeriv A.val 3 2 1 x).val + (covariantDeriv A.val 2 1 3 x).val = 0 := by
+    calc (covariantDeriv A.val 1 3 2 x).val + (covariantDeriv A.val 3 2 1 x).val + (covariantDeriv A.val 2 1 3 x).val
+      _ = (covariantDeriv A.val 1 3 2 x + covariantDeriv A.val 3 2 1 x + covariantDeriv A.val 2 1 3 x).val := rfl
       _ = (0 : SL2C).val := congrArg Subtype.val b2
       _ = 0 := rfl
 
@@ -267,8 +267,8 @@ theorem gaussConstraintVanishes (A : Fin 4 → SpacetimePoint → SL2C) (x : Spa
   simp only [Matrix.add_apply, Matrix.zero_apply, Pi.add_apply, Pi.zero_apply] at h1 h2
   
   calc _ = (4 : ℂ) * (
-        ((covariantDeriv A 1 2 3 x).val i j + (covariantDeriv A 2 3 1 x).val i j + (covariantDeriv A 3 1 2 x).val i j) -
-        ((covariantDeriv A 1 3 2 x).val i j + (covariantDeriv A 3 2 1 x).val i j + (covariantDeriv A 2 1 3 x).val i j) ) := by ring
+        ((covariantDeriv A.val 1 2 3 x).val i j + (covariantDeriv A.val 2 3 1 x).val i j + (covariantDeriv A.val 3 1 2 x).val i j) -
+        ((covariantDeriv A.val 1 3 2 x).val i j + (covariantDeriv A.val 3 2 1 x).val i j + (covariantDeriv A.val 2 1 3 x).val i j) ) := by ring
     _ = (4 : ℂ) * (0 - 0) := by rw [h1, h2]
     _ = 0 := by ring
 
@@ -279,15 +279,15 @@ The momentum constraint generating spatial diffeomorphisms algebraically vanishe
 following from the total antisymmetry of the spatial volume form contracting 
 against the symmetric matrix trace of the field strength components.
 -/
-theorem momentumConstraintVanishes (A : Fin 4 → SpacetimePoint → SL2C) (j : Fin 3) (x : SpacetimePoint) :
+theorem momentumConstraintVanishes (A : Sl2cGaugeField) (j : Fin 3) (x : SpacetimePoint) :
   momentumConstraintDensity A j x = 0 := by
   unfold momentumConstraintDensity conjugateMomentum
   
-  have hF_anti : ∀ μ ν, (curvatureSl2c A μ ν x).val = - (curvatureSl2c A ν μ x).val := by
+  have hF_anti : ∀ μ ν, (curvatureSl2c A.val μ ν x).val = - (curvatureSl2c A.val ν μ x).val := by
     intro μ ν
-    exact congrArg Subtype.val (curvatureSl2c_antisymm A μ ν x)
+    exact congrArg Subtype.val (curvatureSl2c_antisymm A.val μ ν x)
     
-  let F (μ ν : Fin 4) := (curvatureSl2c A μ ν x).val
+  let F (μ ν : Fin 4) := (curvatureSl2c A.val μ ν x).val
   
   have f11_00 : (F 1 1) 0 0 = 0 := skew_zero _ (congrFun (congrFun (hF_anti 1 1) 0) 0)
   have f11_01 : (F 1 1) 0 1 = 0 := skew_zero _ (congrFun (congrFun (hF_anti 1 1) 0) 1)
