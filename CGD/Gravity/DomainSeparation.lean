@@ -19,53 +19,6 @@ def isVacuumRegion (region : Set SpacetimePoint) (u : Universe) (Λ : ℂ) : Pro
     (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
       epsilon4 μ ν ρ σ * Matrix.trace ((curvatureSl2c u.sd_sector μ ν x).val * (curvatureSl2c u.sd_sector ρ σ x).val)) = Λ
 
-Litlib.theorem
-  description "Macroscopic Unimodular Vacuum Emergence"
-/--
-By treating the bulk vacuum as its own topological subspace, we map the global Unimodular CDJ theorem to the exterior region. This proves that the constant macroscopic volume form emerges strictly independently of the defect core.
--/
-theorem macroscopicVacuumEmergence 
-  (F_adj : Fin 4 → Fin 4 → SpacetimePoint → Matrix (Fin 3) (Fin 3) ℂ)
-  (Λ : ℂ)
-  (bulkVacuum : Set SpacetimePoint)
-  (hLambdaNz : Λ ≠ 0)
-  (h_anti : ∀ μ ν x, F_adj μ ν x = - F_adj ν μ x)
-  (h_vacuum : ∀ x ∈ bulkVacuum, 
-      (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
-        epsilon4 μ ν ρ σ * Matrix.trace (F_adj μ ν x * F_adj ρ σ x)) = Λ)
-  [ucdj_vol : Litlib.Y2024.gielen2024unimodular.Eq12 bulkVacuum cgdUnimodularMetricAdapter] :
-  ∃ (c : ℂ), c ≠ 0 ∧ ∀ x y : bulkVacuum, 
-    (cgdUnimodularMetricAdapter (fun m n => F_adj m n x.val)).det = (cgdUnimodularMetricAdapter (fun m n => F_adj m n y.val)).det ∧
-    (cgdUnimodularMetricAdapter (fun m n => F_adj m n x.val)).det = c := by
-  let F_sub := fun (μ ν : Fin 4) (x : bulkVacuum) => F_adj μ ν x.val
-  
-  have h_anti_sub : ∀ μ ν (x : bulkVacuum), F_sub μ ν x = - F_sub ν μ x := by
-    intro μ ν x
-    exact h_anti μ ν x.val
-    
-  have h_cdj_sub : ∀ (x : bulkVacuum),
-    (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
-      epsilon4 μ ν ρ σ * Matrix.trace (F_sub μ ν x * F_sub ρ σ x)) = Λ := by
-    intro x
-    exact h_vacuum x.val x.property
-    
-  have hEpsilonAlt : ∀ α β γ δ, epsilon4 α β γ δ = -epsilon4 β α γ δ ∧ epsilon4 α β γ δ = -epsilon4 α γ β δ ∧ epsilon4 α β γ δ = -epsilon4 α β δ γ := CGD.Gravity.epsilon4_alt
-  
-  have hEpsilonNondeg : epsilon4 0 1 2 3 ≠ 0 := by
-    rw [CGD.Gravity.epsilon4_0123]
-    exact one_ne_zero
-    
-  have h_vol := ucdj_vol.cdjImpliesConstantVolume F_sub epsilon4 Λ hEpsilonAlt hEpsilonNondeg hLambdaNz h_cdj_sub
-  
-  rcases h_vol with ⟨c, hc_neq, hc_eq⟩
-  use c
-  constructor
-  · exact hc_neq
-  · intro x y
-    constructor
-    · rw [hc_eq x, hc_eq y]
-    · exact hc_eq x
-
 lemma partialDeriv_congr_open {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   (f g : SpacetimePoint → E) (U : Set SpacetimePoint) (h_open : IsOpen U)
   (h_eq : ∀ p ∈ U, f p = g p) (x : SpacetimePoint) (hx : x ∈ U) (μ : Fin 4) :
@@ -118,6 +71,80 @@ lemma ricciTensor_congr_open (g1 g2 : SpacetimeIndex → SpacetimeIndex → Spac
   rw [h_chris_eq x hx ρ lam ρ, h_chris_eq x hx lam μ ν, h_chris_eq x hx ρ lam ν, h_chris_eq x hx lam μ ρ]
 
 Litlib.theorem
+  description "Macroscopic Unimodular Vacuum Emergence"
+/--
+By treating the bulk vacuum as its own topological subspace, we map the global Unimodular CDJ theorem to the exterior region. This proves that the constant macroscopic volume form emerges strictly independently of the defect core.
+-/
+theorem macroscopicVacuumEmergence 
+  (A_adj : Fin 4 → SpacetimePoint → Matrix (Fin 3) (Fin 3) ℂ)
+  (F_adj : Fin 4 → Fin 4 → SpacetimePoint → Matrix (Fin 3) (Fin 3) ℂ)
+  (Λ : ℂ)
+  (bulkVacuum : Set SpacetimePoint)
+  (h_open : IsOpen bulkVacuum)
+  (hLambdaNz : Λ ≠ 0)
+  (h_anti : ∀ μ ν x, F_adj μ ν x = - F_adj ν μ x)
+  (h_F_def : ∀ μ ν x i j, F_adj μ ν x i j = 
+      partialDeriv μ (fun p => A_adj ν p i j) x - 
+      partialDeriv ν (fun p => A_adj μ p i j) x + 
+      (A_adj μ x * A_adj ν x - A_adj ν x * A_adj μ x) i j)
+  (h_vacuum : ∀ x ∈ bulkVacuum, 
+      (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
+        epsilon4 μ ν ρ σ * Matrix.trace (F_adj μ ν x * F_adj ρ σ x)) = Λ)
+  [ucdj_vol : Litlib.Y2024.gielen2024unimodular.Eq12 bulkVacuum 
+    (fun μ f x => partialDeriv μ (fun p => if h : p ∈ bulkVacuum then f ⟨p, h⟩ else 0) x.val) 
+    cgdUnimodularMetricAdapter] :
+  ∃ (c : ℂ), c ≠ 0 ∧ ∀ x y : bulkVacuum, 
+    (cgdUnimodularMetricAdapter (fun m n => F_adj m n x.val)).det = (cgdUnimodularMetricAdapter (fun m n => F_adj m n y.val)).det ∧
+    (cgdUnimodularMetricAdapter (fun m n => F_adj m n x.val)).det = c := by
+  let F_sub := fun (μ ν : Fin 4) (x : bulkVacuum) => F_adj μ ν x.val
+  let A_sub := fun (μ : Fin 4) (x : bulkVacuum) => A_adj μ x.val
+  
+  have h_anti_sub : ∀ μ ν (x : bulkVacuum), F_sub μ ν x = - F_sub ν μ x := by
+    intro μ ν x
+    exact h_anti μ ν x.val
+    
+  have h_F_sub_def : ∀ μ ν (x : bulkVacuum) i j, F_sub μ ν x i j = 
+    partialDeriv μ (fun p => if h : p ∈ bulkVacuum then A_sub ν ⟨p, h⟩ i j else 0) x.val - 
+    partialDeriv ν (fun p => if h : p ∈ bulkVacuum then A_sub μ ⟨p, h⟩ i j else 0) x.val + 
+    (A_sub μ x * A_sub ν x - A_sub ν x * A_sub μ x) i j := by
+    intro μ ν x i j
+    have hd1 : partialDeriv μ (fun p => if h : p ∈ bulkVacuum then A_sub ν ⟨p, h⟩ i j else 0) x.val = partialDeriv μ (fun p => A_adj ν p i j) x.val := by
+      apply partialDeriv_congr_open _ _ bulkVacuum h_open
+      · intro p hp
+        exact dif_pos hp
+      · exact x.property
+    have hd2 : partialDeriv ν (fun p => if h : p ∈ bulkVacuum then A_sub μ ⟨p, h⟩ i j else 0) x.val = partialDeriv ν (fun p => A_adj μ p i j) x.val := by
+      apply partialDeriv_congr_open _ _ bulkVacuum h_open
+      · intro p hp
+        exact dif_pos hp
+      · exact x.property
+    rw [hd1, hd2]
+    exact h_F_def μ ν x.val i j
+
+  have h_cdj_sub : ∀ (x : bulkVacuum),
+    (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
+      epsilon4 μ ν ρ σ * Matrix.trace (F_sub μ ν x * F_sub ρ σ x)) = Λ := by
+    intro x
+    exact h_vacuum x.val x.property
+    
+  have hEpsilonAlt : ∀ α β γ δ, epsilon4 α β γ δ = -epsilon4 β α γ δ ∧ epsilon4 α β γ δ = -epsilon4 α γ β δ ∧ epsilon4 α β γ δ = -epsilon4 α β δ γ := CGD.Gravity.epsilon4_alt
+  
+  have hEpsilonNondeg : epsilon4 0 1 2 3 ≠ 0 := by
+    rw [CGD.Gravity.epsilon4_0123]
+    exact one_ne_zero
+    
+  have h_vol := ucdj_vol.cdjImpliesConstantVolume A_sub F_sub epsilon4 Λ hEpsilonAlt hEpsilonNondeg h_F_sub_def hLambdaNz h_cdj_sub
+  
+  rcases h_vol with ⟨c, hc_neq, hc_eq⟩
+  use c
+  constructor
+  · exact hc_neq
+  · intro x y
+    constructor
+    · rw [hc_eq x, hc_eq y]
+    · exact hc_eq x
+
+Litlib.theorem
   description "Macroscopic Ricci-Flat Vacuum Emergence"
 /--
 A parallel theorem for the pure GR vacuum limit ($\Lambda = 0$) evaluated on the open bulk manifold subspace outside a topological defect. Because the domain is open, the mapping is mathematically exact for local derivatives.
@@ -125,9 +152,14 @@ A parallel theorem for the pure GR vacuum limit ($\Lambda = 0$) evaluated on the
 theorem macroscopicRicciFlatEmergence
   (u : Universe)
   (e : TetradField)
+  (A : SpacetimePoint → Fin 4 → Matrix (Fin 2) (Fin 2) ℂ)
   (bulkVacuum : Set SpacetimePoint)
   (h_open : IsOpen bulkVacuum)
   (h_vacuum : isVacuumRegion bulkVacuum u 0)
+  (h_F_def : ∀ x μ ν i j, (curvatureSl2c u.sd_sector μ ν x).val i j = 
+      partialDeriv μ (fun p => A p ν i j) x - 
+      partialDeriv ν (fun p => A p μ i j) x + 
+      (A x μ * A x ν - A x ν * A x μ) i j)
   (h_urbantke : ∀ x ∈ bulkVacuum, ∀ μ ν, metricFromTetrad e μ ν x = urbantkeMetric (fun m n => toSl2c (curvatureSl2c u.sd_sector m n x).val) μ ν)
   (h_nondeg : ∀ x ∈ bulkVacuum, (urbantkeMetric (fun m n => toSl2c (curvatureSl2c u.sd_sector m n x).val)).det ≠ 0)
   [eq2_2c : Litlib.Y1991.capovilla1991pure.Eq2_2c 
@@ -141,7 +173,26 @@ theorem macroscopicRicciFlatEmergence
   intro x μ ν
   
   let F_sub := fun (p : bulkVacuum) (m n : Fin 4) => (curvatureSl2c u.sd_sector m n p.val).val
+  let A_sub := fun (p : bulkVacuum) (μ : Fin 4) => A p.val μ
   
+  have h_F_sub_def : ∀ (x : bulkVacuum) μ ν i j, F_sub x μ ν i j = 
+    partialDeriv μ (fun p => if h : p ∈ bulkVacuum then A_sub ⟨p, h⟩ ν i j else 0) x.val - 
+    partialDeriv ν (fun p => if h : p ∈ bulkVacuum then A_sub ⟨p, h⟩ μ i j else 0) x.val + 
+    (A_sub x μ * A_sub x ν - A_sub x ν * A_sub x μ) i j := by
+    intro x μ ν i j
+    have hd1 : partialDeriv μ (fun p => if h : p ∈ bulkVacuum then A_sub ⟨p, h⟩ ν i j else 0) x.val = partialDeriv μ (fun p => A p ν i j) x.val := by
+      apply partialDeriv_congr_open _ _ bulkVacuum h_open
+      · intro p hp
+        exact dif_pos hp
+      · exact x.property
+    have hd2 : partialDeriv ν (fun p => if h : p ∈ bulkVacuum then A_sub ⟨p, h⟩ μ i j else 0) x.val = partialDeriv ν (fun p => A p μ i j) x.val := by
+      apply partialDeriv_congr_open _ _ bulkVacuum h_open
+      · intro p hp
+        exact dif_pos hp
+      · exact x.property
+    rw [hd1, hd2]
+    exact h_F_def x.val μ ν i j
+
   have hEpsilonAlt : ∀ α β γ δ, epsilon4 α β γ δ = -epsilon4 β α γ δ ∧ epsilon4 α β γ δ = -epsilon4 α γ β δ ∧ epsilon4 α β γ δ = -epsilon4 α β δ γ := CGD.Gravity.epsilon4_alt
   
   have hEpsilonNondeg : epsilon4 0 1 2 3 ≠ 0 := by
@@ -156,7 +207,7 @@ theorem macroscopicRicciFlatEmergence
     intro p
     exact h_vacuum p.val p.property
 
-  have h_axiom_zero := eq2_2c.urbantkeIsRicciFlat F_sub epsilon4 hEpsilonAlt hEpsilonNondeg hNonDeg_sub hPure_sub x μ ν
+  have h_axiom_zero := eq2_2c.urbantkeIsRicciFlat A_sub F_sub epsilon4 hEpsilonAlt hEpsilonNondeg h_F_sub_def hNonDeg_sub hPure_sub x μ ν
   
   let g2 := fun (m n : Fin 4) (p : SpacetimePoint) => if h : p ∈ bulkVacuum then (urbantkeMetric (fun a b => toSl2c (F_sub ⟨p, h⟩ a b)) m n) else 0
 

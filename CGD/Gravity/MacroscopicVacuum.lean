@@ -48,6 +48,11 @@ theorem macroscopicVacuumGR
     ricciTensor] 
   (u : Universe)
   (e : TetradField)
+  (A : SpacetimePoint → Fin 4 → Matrix (Fin 2) (Fin 2) ℂ)
+  (h_F_def : ∀ x μ ν i j, (curvatureSl2c u.sd_sector μ ν x).val i j = 
+      partialDeriv μ (fun p => A p ν i j) x - 
+      partialDeriv ν (fun p => A p μ i j) x + 
+      (A x μ * A x ν - A x ν * A x μ) i j)
   (h_urbantke : ∀ x μ ν, metricFromTetrad e μ ν x = urbantkeMetric (fun m n => toSl2c (curvatureSl2c u.sd_sector m n x).val) μ ν)
   (h_nondeg : ∀ x, (urbantkeMetric (fun m n => toSl2c (curvatureSl2c u.sd_sector m n x).val)).det ≠ 0)
   (h_cdj : satisfiesPureCdjConstraint (fun p m n => (curvatureSl2c u.sd_sector m n p).val)) :
@@ -61,7 +66,7 @@ theorem macroscopicVacuumGR
   have hEpsilonNondeg : epsilon4 0 1 2 3 ≠ 0 := by
     rw [CGD.Gravity.epsilon4_0123]
     exact one_ne_zero
-  exact eq2_2c.urbantkeIsRicciFlat (fun p m n => (curvatureSl2c u.sd_sector m n p).val) epsilon4 hEpsilonAlt hEpsilonNondeg h_nondeg h_cdj x μ ν
+  exact eq2_2c.urbantkeIsRicciFlat A (fun p m n => (curvatureSl2c u.sd_sector m n p).val) epsilon4 hEpsilonAlt hEpsilonNondeg h_F_def h_nondeg h_cdj x μ ν
 
 Litlib.theorem
   description "Unimodular Vacuum Form"
@@ -70,10 +75,15 @@ By mapping the continuous Spin(4,C) connections into the 3x3 Adjoint su(2) repre
 we show that the Unimodular CDJ theorem extracts a strict global volume invariant `c` from the topological CDJ condition.
 -/
 theorem kinematicUnimodularVacuum 
-  [ucdj_vol : Eq12 SpacetimePoint cgdUnimodularMetricAdapter] 
+  [ucdj_vol : Eq12 SpacetimePoint (fun μ f x => partialDeriv μ f x) cgdUnimodularMetricAdapter] 
+  (A_adj : Fin 4 → SpacetimePoint → Matrix (Fin 3) (Fin 3) ℂ)
   (F_adj : Fin 4 → Fin 4 → SpacetimePoint → Matrix (Fin 3) (Fin 3) ℂ)
   (Λ : ℂ)
   (h_anti : ∀ μ ν x, F_adj μ ν x = - F_adj ν μ x)
+  (h_F_def : ∀ μ ν x i j, F_adj μ ν x i j = 
+      partialDeriv μ (fun p => A_adj ν p i j) x - 
+      partialDeriv ν (fun p => A_adj μ p i j) x + 
+      (A_adj μ x * A_adj ν x - A_adj ν x * A_adj μ x) i j)
   (hLambdaNz : Λ ≠ 0)
   (h_cdj : ∀ x, (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * Matrix.trace (F_adj μ ν x * F_adj ρ σ x)) = Λ) :
   ∀ x y, (cgdUnimodularMetricAdapter (fun m n => F_adj m n x)).det = (cgdUnimodularMetricAdapter (fun m n => F_adj m n y)).det ∧ 
@@ -83,7 +93,7 @@ theorem kinematicUnimodularVacuum
   have hEpsilonNondeg : epsilon4 0 1 2 3 ≠ 0 := by
     rw [CGD.Gravity.epsilon4_0123]
     exact one_ne_zero
-  have h_vol := ucdj_vol.cdjImpliesConstantVolume F_adj epsilon4 Λ hEpsilonAlt hEpsilonNondeg hLambdaNz h_cdj
+  have h_vol := ucdj_vol.cdjImpliesConstantVolume A_adj F_adj epsilon4 Λ hEpsilonAlt hEpsilonNondeg h_F_def hLambdaNz h_cdj
   rcases h_vol with ⟨c, hc_neq, hc_eq⟩
   constructor
   · rw [hc_eq x, hc_eq y]
