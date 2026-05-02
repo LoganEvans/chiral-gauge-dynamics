@@ -77,34 +77,40 @@ theorem topologicalChargeConservation
   (h_deriv_commute : ∀ α β (f : SpacetimePoint → ℂ) x, 
     partialDeriv α (fun p => partialDeriv β f p) x = 
     partialDeriv β (fun p => partialDeriv α f p) x)
-  (h_deriv_const_smul : ∀ α (c : ℂ) (f : SpacetimePoint → ℂ) x,
-    partialDeriv α (fun p => c * f p) x = c * partialDeriv α f x)
-  (h_deriv_sum : ∀ α (f : Fin 4 → SpacetimePoint → ℂ) x,
-    partialDeriv α (fun p => ∑ i : Fin 4, f i p) x = ∑ i : Fin 4, partialDeriv α (f i) x) :
+  (h_diff : ∀ ν ρ σ x, DifferentiableAt ℝ (fun p => partialDeriv ν (fun p' => F ρ σ p') p) x) :
   ∀ x : SpacetimePoint, 
     ∑ μ : Fin 4, partialDeriv μ (fun p => emergentElectricCurrent F μ p) x = 0 := by
   intro x
   let S := fun (μ ν : Fin 4) => ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv μ (fun p => partialDeriv ν (fun p' => F ρ σ p') p) x
   
+  have h_diff_smul : ∀ μ ν ρ σ, DifferentiableAt ℝ (fun p => epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x :=
+    fun μ ν ρ σ => diff_const_mul (epsilon4 μ ν ρ σ) (fun p => partialDeriv ν (fun p' => F ρ σ p') p) x (h_diff ν ρ σ x)
+  
+  have h_diff_sum_sigma : ∀ μ ν ρ, DifferentiableAt ℝ (fun p => ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x :=
+    fun μ ν ρ => diff_sum (fun σ p => epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x (fun σ => h_diff_smul μ ν ρ σ)
+  
+  have h_diff_sum_rho : ∀ μ ν, DifferentiableAt ℝ (fun p => ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x :=
+    fun μ ν => diff_sum (fun ρ p => ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x (fun ρ => h_diff_sum_sigma μ ν ρ)
+
   have step1 (μ : Fin 4) :
     partialDeriv μ (fun p => emergentElectricCurrent F μ p) x =
     ∑ ν : Fin 4, partialDeriv μ (fun p => ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x :=
-    h_deriv_sum μ (fun ν p => ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x
+    partialDeriv_sum (fun ν p => ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) μ x (fun ν => h_diff_sum_rho μ ν)
     
   have step2 (μ ν : Fin 4) :
     partialDeriv μ (fun p => ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x =
     ∑ ρ : Fin 4, partialDeriv μ (fun p => ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x :=
-    h_deriv_sum μ (fun ρ p => ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x
+    partialDeriv_sum (fun ρ p => ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) μ x (fun ρ => h_diff_sum_sigma μ ν ρ)
     
   have step3 (μ ν ρ : Fin 4) :
     partialDeriv μ (fun p => ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x =
     ∑ σ : Fin 4, partialDeriv μ (fun p => epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x :=
-    h_deriv_sum μ (fun σ p => epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x
+    partialDeriv_sum (fun σ p => epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) μ x (fun σ => h_diff_smul μ ν ρ σ)
     
   have step4 (μ ν ρ σ : Fin 4) :
     partialDeriv μ (fun p => epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x =
     epsilon4 μ ν ρ σ * partialDeriv μ (fun p => partialDeriv ν (fun p' => F ρ σ p') p) x :=
-    h_deriv_const_smul μ (epsilon4 μ ν ρ σ) (fun p => partialDeriv ν (fun p' => F ρ σ p') p) x
+    partialDeriv_const_smul (epsilon4 μ ν ρ σ) (fun p => partialDeriv ν (fun p' => F ρ σ p') p) μ x (h_diff ν ρ σ x)
 
   have h_sum :
     ∑ μ : Fin 4, partialDeriv μ (fun p => emergentElectricCurrent F μ p) x =

@@ -21,17 +21,6 @@ noncomputable def covariantDeriv (A : Fin 4 → SpacetimePoint → SL2C) (alpha 
   let comm := ⁅A alpha x, curvatureSl2c A beta gamma x⁆
   dF + comm
 
-lemma partialDeriv_sum {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  {ι : Type*} (s : Finset ι) (A : ι → SpacetimePoint → E) (μ : Fin 4) (x : SpacetimePoint)
-  (h : ∀ i ∈ s, DifferentiableAt ℝ (A i) x) :
-  partialDeriv μ (fun p => ∑ i ∈ s, A i p) x = ∑ i ∈ s, partialDeriv μ (A i) x := by
-  unfold partialDeriv
-  have h_eq : (fun p => ∑ i ∈ s, A i p) = ∑ i ∈ s, A i := by
-    ext p
-    rw [Finset.sum_apply]
-  rw [h_eq, fderiv_sum h]
-  exact ContinuousLinearMap.sum_apply _ _ _
-
 lemma partialDerivMat_commutes (f : SpacetimePoint → Matrix (Fin 2) (Fin 2) ℂ) (μ ν : Fin 4) (x : SpacetimePoint)
   (h_smooth : ∀ i j, ContDiff ℝ ⊤ (fun p => f p i j)) :
   partialDerivMat μ (fun p => partialDerivMat ν f p) x = 
@@ -70,7 +59,7 @@ lemma partialDerivMat_trace (f : SpacetimePoint → Matrix (Fin 2) (Fin 2) ℂ) 
   (hf : ∀ i j, DifferentiableAt ℝ (fun p => f p i j) x) :
   Matrix.trace (partialDerivMat μ f x) = partialDeriv μ (fun p => Matrix.trace (f p)) x := by
   unfold partialDerivMat Matrix.trace
-  exact (partialDeriv_sum _ _ μ x (fun i _ => hf i i)).symm
+  exact (partialDeriv_sum (fun i p => f p i i) μ x (fun i => hf i i)).symm
 
 lemma partialDerivSl2c_eq_mat (A : SpacetimePoint → SL2C) (μ : Fin 4) (x : SpacetimePoint)
   (hA : ∀ i j, DifferentiableAt ℝ (fun p => (A p).val i j) x) :
@@ -167,7 +156,7 @@ lemma partialDerivMat_mul (f g : SpacetimePoint → Matrix (Fin 2) (Fin 2) ℂ) 
     have h_swap : (∑ k : Fin 2, f x i k * partialDeriv μ (fun p => g p k j) x) + (∑ k : Fin 2, partialDeriv μ (fun p => f p i k) x * g x k j) =
                   (∑ k : Fin 2, partialDeriv μ (fun p => f p i k) x * g x k j) + (∑ k : Fin 2, f x i k * partialDeriv μ (fun p => g p k j) x) := add_comm _ _
     rw [h_swap]
-  · intro k _
+  · intro k
     exact DifferentiableAt.mul (hf i k) (hg k j)
 
 lemma partialDerivMat_sub (f g : SpacetimePoint → Matrix (Fin 2) (Fin 2) ℂ) (μ : Fin 4) (x : SpacetimePoint)
@@ -187,13 +176,12 @@ lemma diff_matrix_mul (f g : SpacetimePoint → Matrix (Fin 2) (Fin 2) ℂ) (x :
   (hg : ∀ i j, DifferentiableAt ℝ (fun p => g p i j) x) :
   ∀ i j, DifferentiableAt ℝ (fun p => (f p * g p) i j) x := by
   intro i j
-  have h_eq : (fun p => (f p * g p) i j) = ∑ k : Fin 2, (fun p => f p i k * g p k j) := by
+  have h_eq : (fun p => (f p * g p) i j) = fun p => ∑ k : Fin 2, f p i k * g p k j := by
     ext p
-    rw [Finset.sum_apply]
     rfl
   rw [h_eq]
-  apply DifferentiableAt.sum
-  intro k _
+  apply diff_sum
+  intro k
   exact DifferentiableAt.mul (hf i k) (hg k j)
 
 lemma diff_matrix_sub (f g : SpacetimePoint → Matrix (Fin 2) (Fin 2) ℂ) (x : SpacetimePoint)

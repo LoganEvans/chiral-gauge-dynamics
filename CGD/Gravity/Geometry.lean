@@ -125,6 +125,20 @@ noncomputable def urbantkeMetric (F : Fin 4 -> Fin 4 -> SL2C) : Matrix (Fin 4) (
 noncomputable def matrixInv4x4 (M : Matrix (Fin 4) (Fin 4) Complex) : Matrix (Fin 4) (Fin 4) Complex :=
   (1 / M.det) • M.adjugate
 
+lemma matrixInv4x4_right_inv (M : Matrix (Fin 4) (Fin 4) Complex) (h_det : M.det ≠ 0) :
+  M * matrixInv4x4 M = 1 := by
+  unfold matrixInv4x4
+  rw [Matrix.mul_smul, Matrix.mul_adjugate, smul_smul]
+  have h_mul : (1 / M.det) * M.det = 1 := div_mul_cancel₀ 1 h_det
+  rw [h_mul, one_smul]
+
+lemma matrixInv4x4_left_inv (M : Matrix (Fin 4) (Fin 4) Complex) (h_det : M.det ≠ 0) :
+  matrixInv4x4 M * M = 1 := by
+  unfold matrixInv4x4
+  rw [Matrix.smul_mul, Matrix.adjugate_mul, smul_smul]
+  have h_mul : (1 / M.det) * M.det = 1 := div_mul_cancel₀ 1 h_det
+  rw [h_mul, one_smul]
+
 noncomputable def christoffel (g : SpacetimeIndex → SpacetimeIndex → SpacetimePoint → Complex) (rho mu nu : SpacetimeIndex) (x : SpacetimePoint) : Complex :=
   let g_inv := matrixInv4x4 (fun i j => g i j x)
   (1 / 2 : Complex) * ∑ sigma, g_inv rho sigma * (partialDeriv mu (fun p => g sigma nu p) x + partialDeriv nu (fun p => g mu sigma p) x - partialDeriv sigma (fun p => g mu nu p) x)
