@@ -395,7 +395,7 @@ lemma obs_integral_eval (θ : ℝ) :
     _ = (Complex.I * (↑Real.pi / 2)) • obs_M θ := by rw [sub_zero]
 
 noncomputable def gen_A_path (u : Universe) (alpha : ℝ) (s : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
-  ((fun mu p => rotateZ (fun m p => u.sd_sector m p) alpha mu p) 1 (fun i => if i = 1 then s else 0)).val
+  ((fun mu p => rotateYAxis (fun m p => u.sd_sector m p) alpha mu p) 1 (fun i => if i = 1 then s else 0)).val
 
 lemma gen_A_path_eq (u : Universe) (alpha : ℝ) (γ : ℝ → SpacetimePoint) 
   (h_path : ∀ t, γ t 1 = t ∧ γ t 0 = 0 ∧ γ t 2 = 0 ∧ γ t 3 = 0)
@@ -415,12 +415,12 @@ lemma gen_A_path_eq (u : Universe) (alpha : ℝ) (γ : ℝ → SpacetimePoint)
     · simp [h3]
   
   unfold gen_A_path
-  have eq_eval : ((fun mu p => rotateZ (fun m p => u.sd_sector m p) alpha mu p) 1 (fun i => if i = 1 then s else 0)).val = 
-                 ((fun mu p => rotateZ (fun m p => u.sd_sector m p) alpha mu p) 1 (γ s)).val := by
+  have eq_eval : ((fun mu p => rotateYAxis (fun m p => u.sd_sector m p) alpha mu p) 1 (fun i => if i = 1 then s else 0)).val = 
+                 ((fun mu p => rotateYAxis (fun m p => u.sd_sector m p) alpha mu p) 1 (γ s)).val := by
     rw [h_gamma_s]
   rw [eq_eval]
   
-  unfold rotateZ
+  unfold rotateYAxis
   have h11 : (1 : Fin 4) = 1 := rfl
   simp only [h11, ite_true]
   
@@ -524,7 +524,7 @@ lemma eval_obs
   (u : Universe) (alpha : ℝ) (γ : ℝ → SpacetimePoint)
   (h_path : ∀ t, γ t 1 = t ∧ γ t 0 = 0 ∧ γ t 2 = 0 ∧ γ t 3 = 0)
   (h_field : ∀ t, u.sd_sector 1 (γ t) = fluxTubeFrame 1 (γ t)) :
-  macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.sd_sector m p) alpha mu p) 1 (Real.pi / 2) =
+  macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) alpha mu p) 1 (Real.pi / 2) =
   obs_M alpha := by
   
   let L := Real.pi / 2
@@ -596,7 +596,7 @@ lemma eval_obs
   have h_hol_eq4 : holonomy (gen_A_path u alpha) 0 L = Complex.I • obs_M alpha := Eq.trans h_hol_eq3 h_euler_simp
   
   unfold macroscopicObservable
-  have h_A_path : (fun s => ((fun mu p => rotateZ (fun m p => u.sd_sector m p) alpha mu p) 1 (fun i => if i = 1 then s else 0)).val) = gen_A_path u alpha := by rfl
+  have h_A_path : (fun s => ((fun mu p => rotateYAxis (fun m p => u.sd_sector m p) alpha mu p) 1 (fun i => if i = 1 then s else 0)).val) = gen_A_path u alpha := by rfl
   rw [h_A_path]
   rw [h_hol_eq4]
   have h_final : (-Complex.I) • Complex.I • obs_M alpha = obs_M alpha := by
@@ -666,10 +666,10 @@ theorem kinematicHolonomicBellViolation
     D > 0 ∧
     (CGD.Gravity.urbantkeMetric (fun m n => CGD.Foundations.curvatureSl2c u.sd_sector m n x) 1 1).re > D) →
   let L := Real.pi / 2;
-  let A1 := macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.sd_sector m p) 0 mu p) 1 L;
-  let A2 := macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.sd_sector m p) (Real.pi / 2) mu p) 1 L;
-  let B1 := macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.sd_sector m p) (Real.pi / 4) mu p) 1 L;
-  let B2 := macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.sd_sector m p) (- (Real.pi / 4)) mu p) 1 L;
+  let A1 := macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) 0 mu p) 1 L;
+  let A2 := macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (Real.pi / 2) mu p) 1 L;
+  let B1 := macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (Real.pi / 4) mu p) 1 L;
+  let B2 := macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (- (Real.pi / 4)) mu p) 1 L;
   A1^2 = 1 ∧ A2^2 = 1 ∧ B1^2 = 1 ∧ B2^2 = 1 ∧
   (chshSumBell A1 A2 B1 B2)^2 = 8 := by
   intros h_hyp L A1 A2 B1 B2
@@ -677,7 +677,7 @@ theorem kinematicHolonomicBellViolation
   
   have hA1 : A1 = sigma3.val := by
     have heval := eval_obs matrixExp holonomy integral u 0 γ h_path h_field
-    change macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.sd_sector m p) 0 mu p) 1 L = _
+    change macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) 0 mu p) 1 L = _
     unfold obs_M at heval
     have h_cos : Complex.cos ↑(0 : ℝ) = 1 := by simp
     have h_sin : Complex.sin ↑(0 : ℝ) = 0 := by simp
@@ -685,7 +685,7 @@ theorem kinematicHolonomicBellViolation
     
   have hA2 : A2 = sigma1.val := by
     have heval := eval_obs matrixExp holonomy integral u (Real.pi / 2) γ h_path h_field
-    change macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.sd_sector m p) (Real.pi / 2) mu p) 1 L = _
+    change macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (Real.pi / 2) mu p) 1 L = _
     unfold obs_M at heval
     have hcos : Complex.cos ↑(Real.pi / 2 : ℝ) = 0 := by
       have eq : Complex.cos ↑(Real.pi / 2 : ℝ) = ↑(Real.cos (Real.pi / 2)) := (Complex.ofReal_cos _).symm
@@ -718,13 +718,13 @@ theorem kinematicHolonomicBellViolation
 
   have hB1 : B1 = s22 • sigma3.val + s22 • sigma1.val := by
     have heval := eval_obs matrixExp holonomy integral u (Real.pi / 4) γ h_path h_field
-    change macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.sd_sector m p) (Real.pi / 4) mu p) 1 L = _
+    change macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (Real.pi / 4) mu p) 1 L = _
     unfold obs_M at heval
     rw [h_cos_pi4, h_sin_pi4] at heval; exact heval
 
   have hB2 : B2 = s22 • sigma3.val - s22 • sigma1.val := by
     have heval := eval_obs matrixExp holonomy integral u (- (Real.pi / 4)) γ h_path h_field
-    change macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.sd_sector m p) (- (Real.pi / 4)) mu p) 1 L = _
+    change macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (- (Real.pi / 4)) mu p) 1 L = _
     unfold obs_M at heval
     rw [h_cos_neg_pi4, h_sin_neg_pi4] at heval
     have eq_sub : s22 • sigma3.val + (-s22) • sigma1.val = s22 • sigma3.val - s22 • sigma1.val := by
@@ -740,14 +740,14 @@ theorem kinematicHolonomicBellViolation
   have hA2_sq : A2 ^ 2 = 1 := by rw [hA2]; exact pauli_algebra_sigma1_sq
   
   have hB1_sq : B1 ^ 2 = 1 := by
-    change (macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.sd_sector m p) (Real.pi / 4) mu p) 1 L) ^ 2 = 1
+    change (macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (Real.pi / 4) mu p) 1 L) ^ 2 = 1
     rw [eval_obs matrixExp holonomy integral u (Real.pi / 4) γ h_path h_field]
     have h_pow : obs_M (Real.pi / 4) ^ 2 = obs_M (Real.pi / 4) * obs_M (Real.pi / 4) := by rw [pow_two]
     rw [h_pow]
     exact M_sq (Real.pi / 4)
     
   have hB2_sq : B2 ^ 2 = 1 := by
-    change (macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.sd_sector m p) (- (Real.pi / 4)) mu p) 1 L) ^ 2 = 1
+    change (macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (- (Real.pi / 4)) mu p) 1 L) ^ 2 = 1
     rw [eval_obs matrixExp holonomy integral u (- (Real.pi / 4)) γ h_path h_field]
     have h_pow : obs_M (-(Real.pi / 4)) ^ 2 = obs_M (-(Real.pi / 4)) * obs_M (-(Real.pi / 4)) := by rw [pow_two]
     rw [h_pow]
@@ -796,21 +796,21 @@ theorem kinematicHolonomicDegeneracy
       D > 0 ∧
       (CGD.Gravity.urbantkeMetric (fun m n => CGD.Foundations.curvatureSl2c u.sd_sector m n x) 1 1).re > D) →
     let L := Real.pi / 2;
-    let obs_x := macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.sd_sector m p) alpha mu p) 1 L;
-    let obs_y := macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.sd_sector m p) beta mu p) 1 L;
+    let obs_x := macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) alpha mu p) 1 L;
+    let obs_y := macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) beta mu p) 1 L;
     bellCorrelationDeg obs_x (- obs_y)
       = - Complex.cos ((alpha : ℂ) - (beta : ℂ)) := by
   intros alpha beta D h_hyp L obs_x obs_y
   rcases h_hyp with ⟨γ, x, y, h_x, h_y, h_path, h_field, h_D, h_urb⟩
   
   have h_obs_x : obs_x = Complex.cos (alpha : ℂ) • sigma3.val + Complex.sin (alpha : ℂ) • sigma1.val := by
-    change macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.sd_sector m p) alpha mu p) 1 L = _
+    change macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) alpha mu p) 1 L = _
     have h_eval := eval_obs matrixExp holonomy integral u alpha γ h_path h_field
     unfold obs_M at h_eval
     exact h_eval
     
   have h_obs_y : obs_y = Complex.cos (beta : ℂ) • sigma3.val + Complex.sin (beta : ℂ) • sigma1.val := by
-    change macroscopicObservable holonomy (fun mu p => rotateZ (fun m p => u.sd_sector m p) beta mu p) 1 L = _
+    change macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) beta mu p) 1 L = _
     have h_eval := eval_obs matrixExp holonomy integral u beta γ h_path h_field
     unfold obs_M at h_eval
     exact h_eval

@@ -33,7 +33,7 @@ theorem macroscopicVacuumEmergence
   (h_vacuum : ∀ x ∈ bulkVacuum, 
       (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
         epsilon4 μ ν ρ σ * Matrix.trace (F_adj μ ν x * F_adj ρ σ x)) = Λ)
-  [ucdj_vol : Litlib.Y2024.gielen2024unimodular.UnimodularCDJ bulkVacuum cgdUnimodularMetricAdapter] :
+  [ucdj_vol : Litlib.Y2024.gielen2024unimodular.Eq12 bulkVacuum cgdUnimodularMetricAdapter] :
   ∃ (c : ℂ), c ≠ 0 ∧ ∀ x y : bulkVacuum, 
     (cgdUnimodularMetricAdapter (fun m n => F_adj m n x.val)).det = (cgdUnimodularMetricAdapter (fun m n => F_adj m n y.val)).det ∧
     (cgdUnimodularMetricAdapter (fun m n => F_adj m n x.val)).det = c := by

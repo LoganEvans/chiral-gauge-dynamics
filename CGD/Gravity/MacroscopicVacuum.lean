@@ -21,7 +21,7 @@ noncomputable def metricFromTetrad (e : TetradField) : SpacetimeIndex → Spacet
 
 noncomputable def cgdUnimodularMetricAdapter (F_adj : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) : Matrix (Fin 4) (Fin 4) ℂ :=
   urbantkeMetric (fun μ ν => 
-    toSl2c (F_adj μ ν 0 0 • sigma1.val + F_adj μ ν 1 1 • sigma2.val + F_adj μ ν 2 2 • sigma3.val))
+    toSl2c (F_adj μ ν 1 2 • sigma1.val + F_adj μ ν 2 0 • sigma2.val + F_adj μ ν 0 1 • sigma3.val))
 
 def satisfiesPureCdjConstraint (F : SpacetimePoint → Fin 4 → Fin 4 → Matrix (Fin 2) (Fin 2) ℂ) : Prop :=
   ∀ x : SpacetimePoint,
@@ -70,7 +70,7 @@ By mapping the continuous Spin(4,C) connections into the 3x3 Adjoint su(2) repre
 we show that the Unimodular CDJ theorem extracts a strict global volume invariant `c` from the topological CDJ condition.
 -/
 theorem kinematicUnimodularVacuum 
-  [ucdj_vol : UnimodularCDJ SpacetimePoint cgdUnimodularMetricAdapter] 
+  [ucdj_vol : Eq12 SpacetimePoint cgdUnimodularMetricAdapter] 
   (F_adj : Fin 4 → Fin 4 → SpacetimePoint → Matrix (Fin 3) (Fin 3) ℂ)
   (Λ : ℂ)
   (h_anti : ∀ μ ν x, F_adj μ ν x = - F_adj ν μ x)
