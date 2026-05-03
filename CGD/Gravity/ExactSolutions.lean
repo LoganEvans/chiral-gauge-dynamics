@@ -30,6 +30,11 @@ noncomputable def curvature_const (c : ℂ) (beta gamma : Fin 4) : SL2C :=
   else if beta = 2 ∧ gamma = 1 then toSl2c ((-c) • sigmaX)
   else 0
 
+lemma partialDeriv_const {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] (c_val : E) (μ : Fin 4) (x : SpacetimePoint) :
+  partialDeriv μ (fun _ => c_val) x = 0 := by
+  unfold partialDeriv
+  simp [fderiv_const]
+
 lemma partialDeriv_coord_smul {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] 
   (c_idx : Fin 4) (M : E) (k : Fin 4) (x : SpacetimePoint) :
   partialDeriv k (fun p : SpacetimePoint => p c_idx • M) x = if k = c_idx then M else 0 := by
@@ -99,7 +104,19 @@ lemma partialDerivSl2c_exactAbelian (c : ℂ) (k l : Fin 4) (x : SpacetimePoint)
     rw [h_fun_eq]
     have h_false : ¬(k = 1 ∧ l = 2) := fun h => hl h.right
     rw [if_neg h_false]
-    exact partialDerivSl2c_const 0 k x
+    unfold partialDerivSl2c partialDerivMat
+    apply Subtype.ext
+    dsimp
+    ext i j
+    have hzero : partialDeriv k (fun _ => (0 : ℂ)) x = 0 := partialDeriv_const 0 k x
+    rw [hzero]
+    unfold toSl2c
+    dsimp
+    have htr : Matrix.trace (fun (_ _ : Fin 2) => (0 : ℂ)) = 0 := by 
+      unfold Matrix.trace Matrix.diag
+      simp
+    rw [htr]
+    simp
 
 lemma comm_exactAbelian (c : ℂ) (m n : Fin 4) (x : SpacetimePoint) :
   ⁅exactAbelianField c m x, exactAbelianField c n x⁆ = 0 := by
@@ -170,7 +187,7 @@ Provides an exact analytical solution mapping an Abelian plane wave natively int
 -/
 theorem dynamicExactAbelianSolution (c : ℂ) (hc : c ≠ 0) :
   ∃ (u : Universe), 
-    CGD.Gravity.satisfiesPureCdjConstraint (fun p m n => (curvatureSl2c u.sd_sector m n p).val) ∧ 
+    CGD.Gravity.satisfiesPureCdjConstraint (fun p m n => cgdAdjointCurvature u m n p) ∧ 
     (∀ x, curvatureSl2c u.sd_sector 1 2 x = c • toSl2c sigmaX) ∧
     (∃ x, curvatureSl2c u.sd_sector 1 2 x ≠ 0) := by
   let A_sd : Sl2cGaugeField := ⟨exactAbelianField c, by
@@ -213,28 +230,54 @@ theorem dynamicExactAbelianSolution (c : ℂ) (hc : c ≠ 0) :
   constructor
   · intro x
     dsimp [CGD.Gravity.satisfiesPureCdjConstraint]
+    
+    have h_A_const : ∀ (m : Fin 4) (hm : m ≠ 2) (p : SpacetimePoint), cgdAdjointConnection u m p = extractAdjoint 0 := by
+      intro m hm p
+      unfold cgdAdjointConnection
+      have h_sd_val : u.sd_sector m p = exactAbelianField c m p := by rw [h_sd]
+      rw [h_sd_val]
+      unfold exactAbelianField
+      rw [if_neg hm]
+      rfl
+
+    have hF_zero : ∀ (m n : Fin 4) (hm : m ≠ 2) (hn : n ≠ 2), cgdAdjointCurvature u m n x = 0 := by
+      intro m n hm hn
+      ext i j
+      unfold cgdAdjointCurvature
+      have d1 : partialDeriv m (fun p => cgdAdjointConnection u n p i j) x = 0 := by
+        have heq : (fun p => cgdAdjointConnection u n p i j) = fun p => (extractAdjoint 0) i j := by ext p; rw [h_A_const n hn]
+        rw [heq]
+        exact partialDeriv_const _ m x
+      have d2 : partialDeriv n (fun p => cgdAdjointConnection u m p i j) x = 0 := by
+        have heq : (fun p => cgdAdjointConnection u m p i j) = fun p => (extractAdjoint 0) i j := by ext p; rw [h_A_const m hm]
+        rw [heq]
+        exact partialDeriv_const _ n x
+      rw [d1, d2]
+      have hA1 : cgdAdjointConnection u m x = extractAdjoint 0 := h_A_const m hm x
+      have hA2 : cgdAdjointConnection u n x = extractAdjoint 0 := h_A_const n hn x
+      rw [hA1, hA2]
+      simp
+
     apply Finset.sum_eq_zero; intro mu _
     apply Finset.sum_eq_zero; intro nu _
     apply Finset.sum_eq_zero; intro rho _
     apply Finset.sum_eq_zero; intro sigma _
-    have h_zero : CGD.Gravity.epsilon4 mu nu rho sigma = 0 ∨ curvature_const c mu nu = 0 ∨ curvature_const c rho sigma = 0 := by
-      unfold curvature_const CGD.Gravity.epsilon4 CGD.Gravity.epsilon4_int
+
+    have h_or_int : CGD.Gravity.epsilon4_int mu nu rho sigma = 0 ∨ (mu ≠ 2 ∧ nu ≠ 2) ∨ (rho ≠ 2 ∧ sigma ≠ 2) := by
       fin_cases mu <;> fin_cases nu <;> fin_cases rho <;> fin_cases sigma
-      all_goals { simp }
-    rcases h_zero with h_eps | h_mu | h_rho
-    · rw [h_eps, zero_mul]
-    · have hF_zero : (curvatureSl2c u.sd_sector mu nu x).val = 0 := by 
-        have h_eq : curvatureSl2c u.sd_sector mu nu x = 0 := by rw [h_F mu nu x, h_mu]
-        rw [h_eq]; rfl
-      rw [hF_zero, zero_mul]
-      have h_tr_zero : Matrix.trace (0 : Matrix (Fin 2) (Fin 2) ℂ) = 0 := by simp [Matrix.trace]
-      rw [h_tr_zero, mul_zero]
-    · have hF_zero : (curvatureSl2c u.sd_sector rho sigma x).val = 0 := by 
-        have h_eq : curvatureSl2c u.sd_sector rho sigma x = 0 := by rw [h_F rho sigma x, h_rho]
-        rw [h_eq]; rfl
-      rw [hF_zero, mul_zero]
-      have h_tr_zero : Matrix.trace (0 : Matrix (Fin 2) (Fin 2) ℂ) = 0 := by simp [Matrix.trace]
-      rw [h_tr_zero, mul_zero]
+      all_goals { decide }
+
+    rcases h_or_int with he_int | h_mu_nu | h_rho_sigma
+    · have he : CGD.Gravity.epsilon4 mu nu rho sigma = 0 := by
+        unfold CGD.Gravity.epsilon4
+        rw [he_int]
+        exact Int.cast_zero
+      rw [he, zero_smul]
+    · rcases h_mu_nu with ⟨hm, hn⟩
+      rw [hF_zero mu nu hm hn, MulZeroClass.zero_mul, smul_zero]
+    · rcases h_rho_sigma with ⟨hr, hs⟩
+      rw [hF_zero rho sigma hr hs, MulZeroClass.mul_zero, smul_zero]
+
   · constructor
     · intro x
       rw [h_F 1 2 x]

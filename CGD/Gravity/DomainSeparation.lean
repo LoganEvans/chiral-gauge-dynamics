@@ -17,7 +17,7 @@ open Set Complex Matrix BigOperators CGD.Axioms CGD.Foundations Classical
 def isVacuumRegion (region : Set SpacetimePoint) (u : Universe) (Λ : ℂ) : Prop :=
   ∀ x ∈ region, 
     (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
-      epsilon4 μ ν ρ σ * Matrix.trace ((curvatureSl2c u.sd_sector μ ν x).val * (curvatureSl2c u.sd_sector ρ σ x).val)) = Λ
+      epsilon4 μ ν ρ σ • (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)) = Λ • 1
 
 lemma partialDeriv_congr_open {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   (f g : SpacetimePoint → E) (U : Set SpacetimePoint) (h_open : IsOpen U)
@@ -167,6 +167,7 @@ theorem macroscopicRicciFlatEmergence
   
   let F_sub := fun (p : bulkVacuum) (m n : Fin 4) => (curvatureSl2c u.sd_sector m n p.val).val
   let A_sub := fun (p : bulkVacuum) (μ : Fin 4) => (u.sd_sector μ p.val).val
+  let F_adj_sub := fun (p : bulkVacuum) (m n : Fin 4) => cgdAdjointCurvature u m n p.val
   
   have hd_A : ∀ α (p : SpacetimePoint) i j, DifferentiableAt ℝ (fun p' => (u.sd_sector α p').val i j) p := by
     intro α p i j
@@ -200,11 +201,13 @@ theorem macroscopicRicciFlatEmergence
     intro p
     exact h_nondeg p.val p.property
     
-  have hPure_sub : ∀ (p : bulkVacuum), (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * Matrix.trace (F_sub p μ ν * F_sub p ρ σ)) = 0 := by
+  have hPure_sub : ∀ (p : bulkVacuum), (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ • (F_adj_sub p μ ν * F_adj_sub p ρ σ)) = 0 := by
     intro p
-    exact h_vacuum p.val p.property
+    have hv := h_vacuum p.val p.property
+    rw [hv]
+    exact zero_smul _ _
 
-  have h_axiom_zero := eq2_2c.urbantkeIsRicciFlat A_sub F_sub epsilon4 hEpsilonAlt hEpsilonNondeg h_F_sub_def hNonDeg_sub hPure_sub x μ ν
+  have h_axiom_zero := eq2_2c.urbantkeIsRicciFlat A_sub F_sub F_adj_sub epsilon4 hEpsilonAlt hEpsilonNondeg h_F_sub_def hNonDeg_sub hPure_sub x μ ν
   
   let g2 := fun (m n : Fin 4) (p : SpacetimePoint) => if h : p ∈ bulkVacuum then (urbantkeMetric (fun a b => toSl2c (F_sub ⟨p, h⟩ a b)) m n) else 0
 

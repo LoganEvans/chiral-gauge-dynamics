@@ -32,10 +32,10 @@ noncomputable def cgdAdjointCurvature (u : Universe) (μ ν : Fin 4) (x : Spacet
     partialDeriv ν (fun p => cgdAdjointConnection u μ p i j) x +
     (cgdAdjointConnection u μ x * cgdAdjointConnection u ν x - cgdAdjointConnection u ν x * cgdAdjointConnection u μ x) i j
 
-def satisfiesPureCdjConstraint (F : SpacetimePoint → Fin 4 → Fin 4 → Matrix (Fin 2) (Fin 2) ℂ) : Prop :=
+def satisfiesPureCdjConstraint (F_adj : SpacetimePoint → Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) : Prop :=
   ∀ x : SpacetimePoint,
     (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
-      epsilon4 μ ν ρ σ * Matrix.trace (F x μ ν * F x ρ σ)) = 0
+      epsilon4 μ ν ρ σ • (F_adj x μ ν * F_adj x ρ σ)) = 0
 
 -- ==========================================
 -- THEOREMS
@@ -59,7 +59,7 @@ theorem macroscopicVacuumGR
   (e : TetradField)
   (h_urbantke : ∀ x μ ν, metricFromTetrad e μ ν x = urbantkeMetric (fun m n => toSl2c (curvatureSl2c u.sd_sector m n x).val) μ ν)
   (h_nondeg : ∀ x, (urbantkeMetric (fun m n => toSl2c (curvatureSl2c u.sd_sector m n x).val)).det ≠ 0)
-  (h_cdj : satisfiesPureCdjConstraint (fun p m n => (curvatureSl2c u.sd_sector m n p).val)) :
+  (h_cdj : satisfiesPureCdjConstraint (fun p m n => cgdAdjointCurvature u m n p)) :
   ∀ x μ ν, ricciTensor (metricFromTetrad e) μ ν x = 0 := by
   intro x μ ν
   have h_eq : metricFromTetrad e = fun a b p => urbantkeMetric (fun m n => toSl2c (curvatureSl2c u.sd_sector m n p).val) a b := by
@@ -82,7 +82,7 @@ theorem macroscopicVacuumGR
     intro p μ ν i j
     exact curvatureSl2c_val_eq u.sd_sector μ ν p (hd_A μ p) (hd_A ν p) i j
     
-  exact eq2_2c.urbantkeIsRicciFlat (fun p μ => (u.sd_sector μ p).val) (fun p m n => (curvatureSl2c u.sd_sector m n p).val) epsilon4 hEpsilonAlt hEpsilonNondeg h_F_def h_nondeg h_cdj x μ ν
+  exact eq2_2c.urbantkeIsRicciFlat (fun p μ => (u.sd_sector μ p).val) (fun p m n => (curvatureSl2c u.sd_sector m n p).val) (fun p m n => cgdAdjointCurvature u m n p) epsilon4 hEpsilonAlt hEpsilonNondeg h_F_def h_nondeg h_cdj x μ ν
 
 Litlib.theorem
   description "Unimodular Vacuum Form"
