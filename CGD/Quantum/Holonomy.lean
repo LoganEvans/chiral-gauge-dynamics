@@ -26,6 +26,16 @@ open Litlib.Y2000.hall2000elementary
 
 namespace CGD.Quantum
 
+def straightLinePath (t : ℝ) : SpacetimePoint := fun i => if i = 1 then t else 0
+
+lemma straightLinePath_prop (t : ℝ) : straightLinePath t 1 = t ∧ straightLinePath t 0 = 0 ∧ straightLinePath t 2 = 0 ∧ straightLinePath t 3 = 0 := by
+  unfold straightLinePath
+  have h0 : (0 : Fin 4) ≠ 1 := by decide
+  have h1 : (1 : Fin 4) = 1 := rfl
+  have h2 : (2 : Fin 4) ≠ 1 := by decide
+  have h3 : (3 : Fin 4) ≠ 1 := by decide
+  simp [h0, h1, h2, h3]
+
 lemma sigma1_val_eq_mat : sigma1.val = Matrix.of ![![0, 1], ![1, 0]] := by rw [val_sigma1]; rfl
 lemma sigma3_val_eq_mat : sigma3.val = Matrix.of ![![1, 0], ![0, -1]] := by rw [val_sigma3]; rfl
 
@@ -659,12 +669,9 @@ theorem kinematicHolonomicBellViolation
   (holonomy integral : (ℝ → Matrix (Fin 2) (Fin 2) ℂ) → ℝ → ℝ → Matrix (Fin 2) (Fin 2) ℂ)
   [mc : MatrixCalculus (Fin 2) matrixExp holonomy integral] 
   (u : Universe) (D : ℝ) :
-  (∃ (γ : ℝ → SpacetimePoint) (x y : SpacetimePoint),
-    γ 0 = x ∧ γ (Real.pi / 2) = y ∧
-    (∀ t, γ t 1 = t ∧ γ t 0 = 0 ∧ γ t 2 = 0 ∧ γ t 3 = 0) ∧
-    (∀ t, u.sd_sector 1 (γ t) = fluxTubeFrame 1 (γ t)) ∧
-    D > 0 ∧
-    (CGD.Gravity.urbantkeMetric (fun m n => CGD.Foundations.curvatureSl2c u.sd_sector m n x) 1 1).re > D) →
+  (∀ t, u.sd_sector 1 (straightLinePath t) = fluxTubeFrame 1 (straightLinePath t)) →
+  D > 0 →
+  (CGD.Gravity.urbantkeMetric (fun m n => CGD.Foundations.curvatureSl2c u.sd_sector m n (straightLinePath 0)) 1 1).re > D →
   let L := Real.pi / 2;
   let A1 := macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) 0 mu p) 1 L;
   let A2 := macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (Real.pi / 2) mu p) 1 L;
@@ -672,11 +679,12 @@ theorem kinematicHolonomicBellViolation
   let B2 := macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (- (Real.pi / 4)) mu p) 1 L;
   A1^2 = 1 ∧ A2^2 = 1 ∧ B1^2 = 1 ∧ B2^2 = 1 ∧
   (chshSumBell A1 A2 B1 B2)^2 = 8 := by
-  intros h_hyp L A1 A2 B1 B2
-  rcases h_hyp with ⟨γ, x, y, h_x, h_y, h_path, h_field, h_D, h_urb⟩
+  intros h_field h_D h_urb L A1 A2 B1 B2
   
+  have h_path : ∀ t, straightLinePath t 1 = t ∧ straightLinePath t 0 = 0 ∧ straightLinePath t 2 = 0 ∧ straightLinePath t 3 = 0 := straightLinePath_prop
+
   have hA1 : A1 = sigma3.val := by
-    have heval := eval_obs matrixExp holonomy integral u 0 γ h_path h_field
+    have heval := eval_obs matrixExp holonomy integral u 0 straightLinePath h_path h_field
     change macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) 0 mu p) 1 L = _
     unfold obs_M at heval
     have h_cos : Complex.cos ↑(0 : ℝ) = 1 := by simp
@@ -684,7 +692,7 @@ theorem kinematicHolonomicBellViolation
     rw [h_cos, h_sin] at heval; simp at heval; exact heval
     
   have hA2 : A2 = sigma1.val := by
-    have heval := eval_obs matrixExp holonomy integral u (Real.pi / 2) γ h_path h_field
+    have heval := eval_obs matrixExp holonomy integral u (Real.pi / 2) straightLinePath h_path h_field
     change macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (Real.pi / 2) mu p) 1 L = _
     unfold obs_M at heval
     have hcos : Complex.cos ↑(Real.pi / 2 : ℝ) = 0 := by
@@ -717,13 +725,13 @@ theorem kinematicHolonomicBellViolation
     rfl
 
   have hB1 : B1 = s22 • sigma3.val + s22 • sigma1.val := by
-    have heval := eval_obs matrixExp holonomy integral u (Real.pi / 4) γ h_path h_field
+    have heval := eval_obs matrixExp holonomy integral u (Real.pi / 4) straightLinePath h_path h_field
     change macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (Real.pi / 4) mu p) 1 L = _
     unfold obs_M at heval
     rw [h_cos_pi4, h_sin_pi4] at heval; exact heval
 
   have hB2 : B2 = s22 • sigma3.val - s22 • sigma1.val := by
-    have heval := eval_obs matrixExp holonomy integral u (- (Real.pi / 4)) γ h_path h_field
+    have heval := eval_obs matrixExp holonomy integral u (- (Real.pi / 4)) straightLinePath h_path h_field
     change macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (- (Real.pi / 4)) mu p) 1 L = _
     unfold obs_M at heval
     rw [h_cos_neg_pi4, h_sin_neg_pi4] at heval
@@ -741,14 +749,14 @@ theorem kinematicHolonomicBellViolation
   
   have hB1_sq : B1 ^ 2 = 1 := by
     change (macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (Real.pi / 4) mu p) 1 L) ^ 2 = 1
-    rw [eval_obs matrixExp holonomy integral u (Real.pi / 4) γ h_path h_field]
+    rw [eval_obs matrixExp holonomy integral u (Real.pi / 4) straightLinePath h_path h_field]
     have h_pow : obs_M (Real.pi / 4) ^ 2 = obs_M (Real.pi / 4) * obs_M (Real.pi / 4) := by rw [pow_two]
     rw [h_pow]
     exact M_sq (Real.pi / 4)
     
   have hB2_sq : B2 ^ 2 = 1 := by
     change (macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (- (Real.pi / 4)) mu p) 1 L) ^ 2 = 1
-    rw [eval_obs matrixExp holonomy integral u (- (Real.pi / 4)) γ h_path h_field]
+    rw [eval_obs matrixExp holonomy integral u (- (Real.pi / 4)) straightLinePath h_path h_field]
     have h_pow : obs_M (-(Real.pi / 4)) ^ 2 = obs_M (-(Real.pi / 4)) * obs_M (-(Real.pi / 4)) := by rw [pow_two]
     rw [h_pow]
     exact M_sq (- (Real.pi / 4))
@@ -789,29 +797,27 @@ theorem kinematicHolonomicDegeneracy
   [mc : MatrixCalculus (Fin 2) matrixExp holonomy integral] 
   (u : Universe) :
   ∀ (alpha beta D : ℝ),
-    (∃ (γ : ℝ → SpacetimePoint) (x y : SpacetimePoint),
-      γ 0 = x ∧ γ (Real.pi / 2) = y ∧
-      (∀ t, γ t 1 = t ∧ γ t 0 = 0 ∧ γ t 2 = 0 ∧ γ t 3 = 0) ∧
-      (∀ t, u.sd_sector 1 (γ t) = fluxTubeFrame 1 (γ t)) ∧
-      D > 0 ∧
-      (CGD.Gravity.urbantkeMetric (fun m n => CGD.Foundations.curvatureSl2c u.sd_sector m n x) 1 1).re > D) →
+    (∀ t, u.sd_sector 1 (straightLinePath t) = fluxTubeFrame 1 (straightLinePath t)) →
+    D > 0 →
+    (CGD.Gravity.urbantkeMetric (fun m n => CGD.Foundations.curvatureSl2c u.sd_sector m n (straightLinePath 0)) 1 1).re > D →
     let L := Real.pi / 2;
     let obs_x := macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) alpha mu p) 1 L;
     let obs_y := macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) beta mu p) 1 L;
     bellCorrelationDeg obs_x (- obs_y)
       = - Complex.cos ((alpha : ℂ) - (beta : ℂ)) := by
-  intros alpha beta D h_hyp L obs_x obs_y
-  rcases h_hyp with ⟨γ, x, y, h_x, h_y, h_path, h_field, h_D, h_urb⟩
+  intros alpha beta D h_field h_D h_urb L obs_x obs_y
+  
+  have h_path : ∀ t, straightLinePath t 1 = t ∧ straightLinePath t 0 = 0 ∧ straightLinePath t 2 = 0 ∧ straightLinePath t 3 = 0 := straightLinePath_prop
   
   have h_obs_x : obs_x = Complex.cos (alpha : ℂ) • sigma3.val + Complex.sin (alpha : ℂ) • sigma1.val := by
     change macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) alpha mu p) 1 L = _
-    have h_eval := eval_obs matrixExp holonomy integral u alpha γ h_path h_field
+    have h_eval := eval_obs matrixExp holonomy integral u alpha straightLinePath h_path h_field
     unfold obs_M at h_eval
     exact h_eval
     
   have h_obs_y : obs_y = Complex.cos (beta : ℂ) • sigma3.val + Complex.sin (beta : ℂ) • sigma1.val := by
     change macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) beta mu p) 1 L = _
-    have h_eval := eval_obs matrixExp holonomy integral u beta γ h_path h_field
+    have h_eval := eval_obs matrixExp holonomy integral u beta straightLinePath h_path h_field
     unfold obs_M at h_eval
     exact h_eval
 

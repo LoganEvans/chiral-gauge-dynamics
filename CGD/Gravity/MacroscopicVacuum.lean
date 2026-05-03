@@ -23,6 +23,15 @@ noncomputable def cgdUnimodularMetricAdapter (F_adj : Fin 4 → Fin 4 → Matrix
   urbantkeMetric (fun μ ν => 
     toSl2c (F_adj μ ν 1 2 • sigma1.val + F_adj μ ν 2 0 • sigma2.val + F_adj μ ν 0 1 • sigma3.val))
 
+noncomputable def cgdAdjointConnection (u : Universe) (μ : Fin 4) (x : SpacetimePoint) : Matrix (Fin 3) (Fin 3) ℂ :=
+  extractAdjoint (u.sd_sector μ x).val
+
+noncomputable def cgdAdjointCurvature (u : Universe) (μ ν : Fin 4) (x : SpacetimePoint) : Matrix (Fin 3) (Fin 3) ℂ :=
+  fun i j => 
+    partialDeriv μ (fun p => cgdAdjointConnection u ν p i j) x -
+    partialDeriv ν (fun p => cgdAdjointConnection u μ p i j) x +
+    (cgdAdjointConnection u μ x * cgdAdjointConnection u ν x - cgdAdjointConnection u ν x * cgdAdjointConnection u μ x) i j
+
 def satisfiesPureCdjConstraint (F : SpacetimePoint → Fin 4 → Fin 4 → Matrix (Fin 2) (Fin 2) ℂ) : Prop :=
   ∀ x : SpacetimePoint,
     (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
@@ -83,23 +92,35 @@ we show that the Unimodular CDJ theorem extracts a strict global volume invarian
 -/
 theorem kinematicUnimodularVacuum 
   [ucdj_vol : Eq12 SpacetimePoint (fun μ f x => partialDeriv μ f x) cgdUnimodularMetricAdapter] 
-  (A_adj : Fin 4 → SpacetimePoint → Matrix (Fin 3) (Fin 3) ℂ)
-  (F_adj : Fin 4 → Fin 4 → SpacetimePoint → Matrix (Fin 3) (Fin 3) ℂ)
+  (u : Universe)
   (Λ : ℂ)
-  (h_anti : ∀ μ ν x, F_adj μ ν x = - F_adj ν μ x)
-  (h_F_def : ∀ μ ν x i j, F_adj μ ν x i j = 
-      partialDeriv μ (fun p => A_adj ν p i j) x - 
-      partialDeriv ν (fun p => A_adj μ p i j) x + 
-      (A_adj μ x * A_adj ν x - A_adj ν x * A_adj μ x) i j)
   (hLambdaNz : Λ ≠ 0)
-  (h_cdj : ∀ x, (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * Matrix.trace (F_adj μ ν x * F_adj ρ σ x)) = Λ) :
-  ∀ x y, (cgdUnimodularMetricAdapter (fun m n => F_adj m n x)).det = (cgdUnimodularMetricAdapter (fun m n => F_adj m n y)).det ∧ 
-         (cgdUnimodularMetricAdapter (fun m n => F_adj m n x)).det ≠ 0 := by
+  (h_cdj : ∀ x, (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * Matrix.trace (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)) = Λ) :
+  ∀ x y, (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x)).det = (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n y)).det ∧ 
+         (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x)).det ≠ 0 := by
   intro x y
   have hEpsilonAlt : ∀ α β γ δ, epsilon4 α β γ δ = -epsilon4 β α γ δ ∧ epsilon4 α β γ δ = -epsilon4 α γ β δ ∧ epsilon4 α β γ δ = -epsilon4 α β δ γ := CGD.Gravity.epsilon4_alt
   have hEpsilonNondeg : epsilon4 0 1 2 3 ≠ 0 := by
     rw [CGD.Gravity.epsilon4_0123]
     exact one_ne_zero
+
+  let A_adj := fun μ p => cgdAdjointConnection u μ p
+  let F_adj := fun μ ν p => cgdAdjointCurvature u μ ν p
+
+  have h_anti : ∀ μ ν p, F_adj μ ν p = - F_adj ν μ p := by
+    intro μ ν p
+    ext i j
+    unfold F_adj cgdAdjointCurvature
+    simp only [Matrix.neg_apply, Matrix.sub_apply]
+    ring
+
+  have h_F_def : ∀ μ ν p i j, F_adj μ ν p i j = 
+    partialDeriv μ (fun p' => A_adj ν p' i j) p - 
+    partialDeriv ν (fun p' => A_adj μ p' i j) p + 
+    (A_adj μ p * A_adj ν p - A_adj ν p * A_adj μ p) i j := by
+    intro μ ν p i j
+    rfl
+
   have h_vol := ucdj_vol.cdjImpliesConstantVolume A_adj F_adj epsilon4 Λ hEpsilonAlt hEpsilonNondeg h_F_def hLambdaNz h_cdj
   rcases h_vol with ⟨c, hc_neq, hc_eq⟩
   constructor

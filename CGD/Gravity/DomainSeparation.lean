@@ -76,50 +76,48 @@ Litlib.theorem
 By treating the bulk vacuum as its own topological subspace, we map the global Unimodular CDJ theorem to the exterior region. This proves that the constant macroscopic volume form emerges strictly independently of the defect core.
 -/
 theorem macroscopicVacuumEmergence 
-  (A_adj : Fin 4 → SpacetimePoint → Matrix (Fin 3) (Fin 3) ℂ)
-  (F_adj : Fin 4 → Fin 4 → SpacetimePoint → Matrix (Fin 3) (Fin 3) ℂ)
+  (u : Universe)
   (Λ : ℂ)
   (bulkVacuum : Set SpacetimePoint)
   (h_open : IsOpen bulkVacuum)
   (hLambdaNz : Λ ≠ 0)
-  (h_anti : ∀ μ ν x, F_adj μ ν x = - F_adj ν μ x)
-  (h_F_def : ∀ μ ν x i j, F_adj μ ν x i j = 
-      partialDeriv μ (fun p => A_adj ν p i j) x - 
-      partialDeriv ν (fun p => A_adj μ p i j) x + 
-      (A_adj μ x * A_adj ν x - A_adj ν x * A_adj μ x) i j)
   (h_vacuum : ∀ x ∈ bulkVacuum, 
       (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
-        epsilon4 μ ν ρ σ * Matrix.trace (F_adj μ ν x * F_adj ρ σ x)) = Λ)
+        epsilon4 μ ν ρ σ * Matrix.trace (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)) = Λ)
   [ucdj_vol : Litlib.Y2024.gielen2024unimodular.Eq12 bulkVacuum 
     (fun μ f x => partialDeriv μ (fun p => if h : p ∈ bulkVacuum then f ⟨p, h⟩ else 0) x.val) 
     cgdUnimodularMetricAdapter] :
   ∃ (c : ℂ), c ≠ 0 ∧ ∀ x y : bulkVacuum, 
-    (cgdUnimodularMetricAdapter (fun m n => F_adj m n x.val)).det = (cgdUnimodularMetricAdapter (fun m n => F_adj m n y.val)).det ∧
-    (cgdUnimodularMetricAdapter (fun m n => F_adj m n x.val)).det = c := by
-  let F_sub := fun (μ ν : Fin 4) (x : bulkVacuum) => F_adj μ ν x.val
-  let A_sub := fun (μ : Fin 4) (x : bulkVacuum) => A_adj μ x.val
+    (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x.val)).det = (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n y.val)).det ∧
+    (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x.val)).det = c := by
+  
+  let F_sub := fun (μ ν : Fin 4) (x : bulkVacuum) => cgdAdjointCurvature u μ ν x.val
+  let A_sub := fun (μ : Fin 4) (x : bulkVacuum) => cgdAdjointConnection u μ x.val
   
   have h_anti_sub : ∀ μ ν (x : bulkVacuum), F_sub μ ν x = - F_sub ν μ x := by
     intro μ ν x
-    exact h_anti μ ν x.val
+    ext i j
+    unfold F_sub cgdAdjointCurvature
+    simp only [Matrix.neg_apply, Matrix.sub_apply]
+    ring
     
   have h_F_sub_def : ∀ μ ν (x : bulkVacuum) i j, F_sub μ ν x i j = 
     partialDeriv μ (fun p => if h : p ∈ bulkVacuum then A_sub ν ⟨p, h⟩ i j else 0) x.val - 
     partialDeriv ν (fun p => if h : p ∈ bulkVacuum then A_sub μ ⟨p, h⟩ i j else 0) x.val + 
     (A_sub μ x * A_sub ν x - A_sub ν x * A_sub μ x) i j := by
     intro μ ν x i j
-    have hd1 : partialDeriv μ (fun p => if h : p ∈ bulkVacuum then A_sub ν ⟨p, h⟩ i j else 0) x.val = partialDeriv μ (fun p => A_adj ν p i j) x.val := by
+    have hd1 : partialDeriv μ (fun p => if h : p ∈ bulkVacuum then A_sub ν ⟨p, h⟩ i j else 0) x.val = partialDeriv μ (fun p => cgdAdjointConnection u ν p i j) x.val := by
       apply partialDeriv_congr_open _ _ bulkVacuum h_open
       · intro p hp
         exact dif_pos hp
       · exact x.property
-    have hd2 : partialDeriv ν (fun p => if h : p ∈ bulkVacuum then A_sub μ ⟨p, h⟩ i j else 0) x.val = partialDeriv ν (fun p => A_adj μ p i j) x.val := by
+    have hd2 : partialDeriv ν (fun p => if h : p ∈ bulkVacuum then A_sub μ ⟨p, h⟩ i j else 0) x.val = partialDeriv ν (fun p => cgdAdjointConnection u μ p i j) x.val := by
       apply partialDeriv_congr_open _ _ bulkVacuum h_open
       · intro p hp
         exact dif_pos hp
       · exact x.property
     rw [hd1, hd2]
-    exact h_F_def μ ν x.val i j
+    rfl
 
   have h_cdj_sub : ∀ (x : bulkVacuum),
     (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,

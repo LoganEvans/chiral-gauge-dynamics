@@ -68,6 +68,12 @@ lemma val_sigma1 : sigma1.val = sigmaX := toSl2c_val_eq sigmaX trace_sigmaX
 lemma val_sigma2 : sigma2.val = sigmaY := toSl2c_val_eq sigmaY trace_sigmaY
 lemma val_sigma3 : sigma3.val = sigmaZ := toSl2c_val_eq sigmaZ trace_sigmaZ
 
+noncomputable def extractAdjoint (M : Matrix (Fin 2) (Fin 2) ℂ) : Matrix (Fin 3) (Fin 3) ℂ :=
+  let c1 := (1 / 2 : ℂ) * Matrix.trace (M * sigma1.val)
+  let c2 := (1 / 2 : ℂ) * Matrix.trace (M * sigma2.val)
+  let c3 := (1 / 2 : ℂ) * Matrix.trace (M * sigma3.val)
+  Matrix.of ![![0, c3, -c2], ![-c3, 0, c1], ![c2, -c1, 0]]
+
 def chiralIsoTo (x : Fin 2 ⊕ Fin 2) : Fin 4 :=
   match x with | Sum.inl i => if i.val = 0 then 0 else 1 | Sum.inr i => if i.val = 0 then 2 else 3
 
