@@ -83,7 +83,7 @@ theorem macroscopicVacuumEmergence
   (hLambdaNz : Λ ≠ 0)
   (h_vacuum : ∀ x ∈ bulkVacuum, 
       (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
-        epsilon4 μ ν ρ σ * Matrix.trace (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)) = Λ)
+        epsilon4 μ ν ρ σ • (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)) = Λ • 1)
   [ucdj_vol : Litlib.Y2024.gielen2024unimodular.Eq12 bulkVacuum 
     (fun μ f x => partialDeriv μ (fun p => if h : p ∈ bulkVacuum then f ⟨p, h⟩ else 0) x.val) 
     cgdUnimodularMetricAdapter] :
@@ -121,7 +121,7 @@ theorem macroscopicVacuumEmergence
 
   have h_cdj_sub : ∀ (x : bulkVacuum),
     (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
-      epsilon4 μ ν ρ σ * Matrix.trace (F_sub μ ν x * F_sub ρ σ x)) = Λ := by
+      epsilon4 μ ν ρ σ • (F_sub μ ν x * F_sub ρ σ x)) = Λ • 1 := by
     intro x
     exact h_vacuum x.val x.property
     

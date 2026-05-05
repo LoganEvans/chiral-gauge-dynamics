@@ -95,7 +95,7 @@ theorem kinematicUnimodularVacuum
   (u : Universe)
   (Λ : ℂ)
   (hLambdaNz : Λ ≠ 0)
-  (h_cdj : ∀ x, (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * Matrix.trace (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)) = Λ) :
+  (h_cdj : ∀ x, (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ • (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)) = Λ • 1) :
   ∀ x y, (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x)).det = (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n y)).det ∧ 
          (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x)).det ≠ 0 := by
   intro x y
