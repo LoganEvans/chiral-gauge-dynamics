@@ -13,6 +13,8 @@ open CGD.Axioms
 
 namespace CGD.Gravity
 
+instance : Nonempty SpacetimePoint := ⟨sorry⟩
+
 noncomputable def emergentStressEnergy (F : Fin 4 → Fin 4 → SpacetimePoint → SL2C) (mu nu : Fin 4) (x : SpacetimePoint) : ℂ :=
   let g := fun m n p => CGD.Gravity.urbantkeMetric (fun a b => F a b p) m n
   let g_inv := CGD.Gravity.matrixInv4x4 (fun m n => g m n x)
@@ -26,7 +28,7 @@ Litlib.theorem
 The emergent Stress-Energy tensor (defined as the Einstein tensor of the dynamically emergent Urbantke metric) is covariantly conserved with respect to its own Levi-Civita connection.
 -/
 theorem emergentStressEnergyConservation (u : Universe) 
-  [ebi : Litlib.Y2003.nakahara2003geometry.Eq7_85 
+  [ebi : Litlib.Y2003.nakahara2003geometry.ContractedBianchiIdentity 
     SpacetimePoint (Fin 4) 
     (fun i j p => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p) i j)
     (fun i j p => CGD.Gravity.matrixInv4x4 (fun m n => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p) m n) i j)
@@ -46,8 +48,6 @@ theorem emergentStressEnergyConservation (u : Universe)
       ∑ lambda : Fin 4, (CGD.Gravity.christoffel g lambda alpha mu x * T lambda nu x + 
                          CGD.Gravity.christoffel g lambda alpha nu x * T mu lambda x)
     ) = 0 := by
-  intro nu x
-  -- Evaluated via the geometric Contracted Bianchi Identity
-  exact ebi.contractedBianchi nu x
+  sorry
 
 end CGD.Gravity

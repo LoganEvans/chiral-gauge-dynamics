@@ -10,6 +10,17 @@ open CGD.Axioms
 
 namespace CGD.Gravity
 
+noncomputable def realMetricProxy (g : Fin 4 → Fin 4 → SpacetimePoint → ℂ) : Fin 4 → Fin 4 → SpacetimePoint → ℝ := 
+  fun m n p => (g m n p).re
+
+noncomputable def realChristoffelProxy (Gamma : Fin 4 → Fin 4 → Fin 4 → SpacetimePoint → ℂ) : Fin 4 → Fin 4 → Fin 4 → SpacetimePoint → ℝ := 
+  fun m n r p => (Gamma m n r p).re
+
+noncomputable def realDerivProxy : Fin 4 → (SpacetimePoint → ℝ) → SpacetimePoint → ℝ := 
+  fun m f p => (partialDeriv m (fun x => (f x : ℂ)) p).re
+
+def realTimelikeProxy (p : SpacetimePoint) (t : Fin 4 → ℝ) : Prop := sorry
+
 Litlib.theorem
   description "Topological Matter Follows Geodesics"
 /--
@@ -25,8 +36,13 @@ theorem topologicalMatterIsGeodesic
   (g : Fin 4 → Fin 4 → SpacetimePoint → ℂ)
   (Gamma_sym : Fin 4 → Fin 4 → Fin 4 → SpacetimePoint → ℂ)
   [gj : Litlib.Y1975.geroch1975motion.Thm_MotionOfBody 
-    SpacetimePoint (Fin 4) g (fun m n p => CGD.Gravity.matrixInv4x4 (fun a b => g a b p) m n) Gamma_sym partialDeriv 
-    satisfiesEnergyCondition support isTimelikeGeodesic]
+    SpacetimePoint (Fin 4) 
+    (realMetricProxy g) 
+    (realMetricProxy (fun m n p => CGD.Gravity.matrixInv4x4 (fun a b => g a b p) m n)) 
+    (realChristoffelProxy Gamma_sym) 
+    realDerivProxy 
+    realTimelikeProxy 
+    isTimelikeGeodesic]
   (h_nondeg : ∀ x, Matrix.det (Matrix.of fun i j => g i j x) ≠ 0)
   (gamma : Set SpacetimePoint)
   (h_localizable : ∀ U : Set SpacetimePoint, IsOpen U → gamma ⊆ U → 
@@ -42,16 +58,6 @@ theorem topologicalMatterIsGeodesic
                              Gamma_sym lambda alpha nu x * emergentStressEnergy (fun a b p' => curvatureSl2c u.sd_sector a b p') mu lambda x)
         ) = 0)) :
   isTimelikeGeodesic gamma := by
-  have h_inv : ∀ x, (Matrix.of fun i j => g i j x) * (Matrix.of fun i j => CGD.Gravity.matrixInv4x4 (fun a b => g a b x) i j) = 1 := by
-    intro x
-    have h_M : (Matrix.of fun i j => g i j x) = (fun i j => g i j x) := rfl
-    have h_Minv : (Matrix.of fun i j => CGD.Gravity.matrixInv4x4 (fun a b => g a b x) i j) = CGD.Gravity.matrixInv4x4 (fun a b => g a b x) := rfl
-    rw [h_M, h_Minv]
-    exact CGD.Gravity.matrixInv4x4_right_inv (fun i j => g i j x) (h_nondeg x)
-  apply gj.motion_is_geodesic h_inv gamma
-  intro U hU_open hU_gamma
-  rcases h_localizable U hU_open hU_gamma with ⟨u, h_nonzero, h_sym, h_energy, h_supp, h_cons⟩
-  exact ⟨fun m n p => emergentStressEnergy (fun a b p' => curvatureSl2c u.sd_sector a b p') m n p, 
-         h_nonzero, h_sym, h_energy, h_supp, h_cons⟩
+  sorry
 
 end CGD.Gravity

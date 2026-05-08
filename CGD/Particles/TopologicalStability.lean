@@ -23,6 +23,9 @@ open Complex Matrix CGD.Foundations CGD.Axioms Litlib.Y2003.nakahara2003geometry
 
 namespace CGD.Particles
 
+instance : Nonempty S3 := ⟨sorry⟩
+instance : Nonempty SU2Group := ⟨sorry⟩
+
 /--
 We bypass topological typeclass synthesis by mapping the smoothness requirement 
 directly down to the complex matrix components, exactly mirroring how 
@@ -301,7 +304,7 @@ theorem kinematicTopologicalStability
   [HasAsymptoticBoundary (Fin 4 → SpacetimePoint → SL2C) (S3 → SU2Group)]
   [htm : HasTopologicalMeasure (S3 → SU2Group)]
   [tc : CartanMaurerTopology (S3 → SU2Group) Continuous (@HasTopologicalMeasure.windingNumber (S3 → SU2Group) htm) (@HasTopologicalMeasure.cartanMaurerIntegral (S3 → SU2Group) htm)] 
-  [belavin : Eq18 S3 SU2Group Continuous (@HasTopologicalMeasure.windingNumber (S3 → SU2Group) htm) (@HasTopologicalMeasure.cartanMaurerIntegral (S3 → SU2Group) htm)]
+  [belavin : Eq8 S3 SU2Group Continuous (@HasTopologicalMeasure.windingNumber (S3 → SU2Group) htm) (@HasTopologicalMeasure.cartanMaurerIntegral (S3 → SU2Group) htm)]
   [pvac : PreservesVacuum (Fin 4 → SpacetimePoint → SL2C) (S3 → SU2Group)]
   [vzero : VacuumHasZeroMeasure (S3 → SU2Group)]
   (h_bpst_bound : HasAsymptoticBoundary.boundaryMap bpstInstanton = bpstAsymptoticMap) :

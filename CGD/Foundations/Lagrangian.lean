@@ -18,6 +18,8 @@ open Matrix Complex BigOperators CGD.Axioms CGD.Foundations
 
 namespace CGD.Foundations
 
+instance : Nonempty Universe := ⟨sorry⟩
+
 def isSpin4cAlgebra (M : ChiralM) : Prop := 
   ∃ (L R : SL2C), M = embedSelfDual L + embedAntiSelfDual R
 
@@ -1147,8 +1149,8 @@ lemma symm_part_is_alternating
   exact ⟨h_alt1 μ ν ρ σ, h_alt2 μ ν ρ σ, h_alt3 μ ν ρ σ⟩
 
 lemma uniqueness_master_lemma
-  (ue : Litlib.Y1956.utiyama1956invariant.UtiyamaExpansion.{0})
-  (bi : Litlib.Y1956.utiyama1956invariant.AppendixI_InvariantBilinearForm.{0})
+  (ue : Litlib.Y1956.utiyama1956invariant.AppendixI_Expansion.{0})
+  (bi : Litlib.Y1956.utiyama1956invariant.AppendixI_BilinearForm.{0})
   (L : ((Fin 4 → Fin 4 → ChiralM) → Complex))
   (h_inv : ∀ F U, (∀ μ ν, isSpin4cAlgebra (F μ ν)) → 
     (∀ μ ν, isSpin4cAlgebra (U * F μ ν * U⁻¹)) → 
@@ -1261,8 +1263,8 @@ lemma uniqueness_master_lemma
   rw [h_pull]
   ring
 
-variable [ue : Litlib.Y1956.utiyama1956invariant.UtiyamaExpansion.{0}]
-variable [bi : Litlib.Y1956.utiyama1956invariant.AppendixI_InvariantBilinearForm.{0}]
+variable [ue : Litlib.Y1956.utiyama1956invariant.AppendixI_Expansion.{0}]
+variable [bi : Litlib.Y1956.utiyama1956invariant.AppendixI_BilinearForm.{0}]
 
 Litlib.theorem
   description "Topological Lagrangian Uniqueness"

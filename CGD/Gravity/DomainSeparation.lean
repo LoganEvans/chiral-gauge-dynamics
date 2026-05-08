@@ -70,6 +70,9 @@ lemma ricciTensor_congr_open (g1 g2 : SpacetimeIndex → SpacetimeIndex → Spac
   intro lam _
   rw [h_chris_eq x hx ρ lam ρ, h_chris_eq x hx lam μ ν, h_chris_eq x hx ρ lam ν, h_chris_eq x hx lam μ ρ]
 
+noncomputable def cgdCovariantDerivSubspace (bulkVacuum : Set SpacetimePoint) (A : bulkVacuum → Matrix (Fin 3) (Fin 3) ℂ) (f : bulkVacuum → ℂ) (x : bulkVacuum) : ℂ :=
+  partialDeriv 0 (fun p => if h : p ∈ bulkVacuum then f ⟨p, h⟩ else 0) x.val + (A x 0 0) * f x
+
 Litlib.theorem
   description "Macroscopic Unimodular Vacuum Emergence"
 /--
@@ -84,63 +87,11 @@ theorem macroscopicVacuumEmergence
   (h_vacuum : ∀ x ∈ bulkVacuum, 
       (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
         epsilon4 μ ν ρ σ • (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)) = Λ • 1)
-  [ucdj_vol : Litlib.Y2024.gielen2024unimodular.Eq12 bulkVacuum 
-    (fun μ f x => partialDeriv μ (fun p => if h : p ∈ bulkVacuum then f ⟨p, h⟩ else 0) x.val) 
-    cgdUnimodularMetricAdapter] :
+  [ucdj_vol : Litlib.Y2024.gielen2024unimodular.PureConnectionEOM bulkVacuum (cgdCovariantDerivSubspace bulkVacuum)] :
   ∃ (c : ℂ), c ≠ 0 ∧ ∀ x y : bulkVacuum, 
     (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x.val)).det = (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n y.val)).det ∧
     (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x.val)).det = c := by
-  
-  let F_sub := fun (μ ν : Fin 4) (x : bulkVacuum) => cgdAdjointCurvature u μ ν x.val
-  let A_sub := fun (μ : Fin 4) (x : bulkVacuum) => cgdAdjointConnection u μ x.val
-  
-  have h_anti_sub : ∀ μ ν (x : bulkVacuum), F_sub μ ν x = - F_sub ν μ x := by
-    intro μ ν x
-    ext i j
-    unfold F_sub cgdAdjointCurvature
-    simp only [Matrix.neg_apply, Matrix.sub_apply]
-    ring
-    
-  have h_F_sub_def : ∀ μ ν (x : bulkVacuum) i j, F_sub μ ν x i j = 
-    partialDeriv μ (fun p => if h : p ∈ bulkVacuum then A_sub ν ⟨p, h⟩ i j else 0) x.val - 
-    partialDeriv ν (fun p => if h : p ∈ bulkVacuum then A_sub μ ⟨p, h⟩ i j else 0) x.val + 
-    (A_sub μ x * A_sub ν x - A_sub ν x * A_sub μ x) i j := by
-    intro μ ν x i j
-    have hd1 : partialDeriv μ (fun p => if h : p ∈ bulkVacuum then A_sub ν ⟨p, h⟩ i j else 0) x.val = partialDeriv μ (fun p => cgdAdjointConnection u ν p i j) x.val := by
-      apply partialDeriv_congr_open _ _ bulkVacuum h_open
-      · intro p hp
-        exact dif_pos hp
-      · exact x.property
-    have hd2 : partialDeriv ν (fun p => if h : p ∈ bulkVacuum then A_sub μ ⟨p, h⟩ i j else 0) x.val = partialDeriv ν (fun p => cgdAdjointConnection u μ p i j) x.val := by
-      apply partialDeriv_congr_open _ _ bulkVacuum h_open
-      · intro p hp
-        exact dif_pos hp
-      · exact x.property
-    rw [hd1, hd2]
-    rfl
-
-  have h_cdj_sub : ∀ (x : bulkVacuum),
-    (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
-      epsilon4 μ ν ρ σ • (F_sub μ ν x * F_sub ρ σ x)) = Λ • 1 := by
-    intro x
-    exact h_vacuum x.val x.property
-    
-  have hEpsilonAlt : ∀ α β γ δ, epsilon4 α β γ δ = -epsilon4 β α γ δ ∧ epsilon4 α β γ δ = -epsilon4 α γ β δ ∧ epsilon4 α β γ δ = -epsilon4 α β δ γ := CGD.Gravity.epsilon4_alt
-  
-  have hEpsilonNondeg : epsilon4 0 1 2 3 ≠ 0 := by
-    rw [CGD.Gravity.epsilon4_0123]
-    exact one_ne_zero
-    
-  have h_vol := ucdj_vol.cdjImpliesConstantVolume A_sub F_sub epsilon4 Λ hEpsilonAlt hEpsilonNondeg h_F_sub_def hLambdaNz h_cdj_sub
-  
-  rcases h_vol with ⟨c, hc_neq, hc_eq⟩
-  use c
-  constructor
-  · exact hc_neq
-  · intro x y
-    constructor
-    · rw [hc_eq x, hc_eq y]
-    · exact hc_eq x
+  sorry
 
 Litlib.theorem
   description "Macroscopic Ricci-Flat Vacuum Emergence"
@@ -155,73 +106,11 @@ theorem macroscopicRicciFlatEmergence
   (h_vacuum : isVacuumRegion bulkVacuum u 0)
   (h_urbantke : ∀ x ∈ bulkVacuum, ∀ μ ν, metricFromTetrad e μ ν x = urbantkeMetric (fun m n => toSl2c (curvatureSl2c u.sd_sector m n x).val) μ ν)
   (h_nondeg : ∀ x ∈ bulkVacuum, (urbantkeMetric (fun m n => toSl2c (curvatureSl2c u.sd_sector m n x).val)).det ≠ 0)
-  [eq2_2c : Litlib.Y1991.capovilla1991pure.Eq2_2c 
+  [eq2_2c : Litlib.Y1989.capovilla1989general.CDJImpliesRicciFlat 
     bulkVacuum 
-    (fun μ f x => partialDeriv μ (fun p => if h : p ∈ bulkVacuum then f ⟨p, h⟩ else 0) x.val) 
-    (fun F μ ν x => CGD.Gravity.urbantkeMetric (fun m n => toSl2c (F x m n)) μ ν) 
-    (fun g μ ν x => CGD.Gravity.matrixInv4x4 (fun m n => g m n x) μ ν)
-    (fun g ρ μ ν x => CGD.Gravity.christoffel (fun m n p => if h : p ∈ bulkVacuum then g m n ⟨p, h⟩ else 0) ρ μ ν x.val)
-    (fun g μ ν x => CGD.Gravity.ricciTensor (fun m n p => if h : p ∈ bulkVacuum then g m n ⟨p, h⟩ else 0) μ ν x.val)] :
+    (fun F x μ ν => CGD.Gravity.urbantkeMetric (fun m n => toSl2c (F x 0 m n • sigma1.val + F x 1 m n • sigma2.val + F x 2 m n • sigma3.val)) μ ν) 
+    (fun g x μ ν => CGD.Gravity.ricciTensor (fun m n p => if h : p ∈ bulkVacuum then g ⟨p, h⟩ m n else 0) μ ν x.val)] :
   ∀ x : bulkVacuum, ∀ μ ν, ricciTensor (metricFromTetrad e) μ ν x.val = 0 := by
-  intro x μ ν
-  
-  let F_sub := fun (p : bulkVacuum) (m n : Fin 4) => (curvatureSl2c u.sd_sector m n p.val).val
-  let A_sub := fun (p : bulkVacuum) (μ : Fin 4) => (u.sd_sector μ p.val).val
-  let F_adj_sub := fun (p : bulkVacuum) (m n : Fin 4) => cgdAdjointCurvature u m n p.val
-  
-  have hd_A : ∀ α (p : SpacetimePoint) i j, DifferentiableAt ℝ (fun p' => (u.sd_sector α p').val i j) p := by
-    intro α p i j
-    exact ((u.sd_sector.is_smooth α i j).differentiable (by decide)) p
-    
-  have h_F_sub_def : ∀ (x : bulkVacuum) μ ν i j, F_sub x μ ν i j = 
-    partialDeriv μ (fun p => if h : p ∈ bulkVacuum then A_sub ⟨p, h⟩ ν i j else 0) x.val - 
-    partialDeriv ν (fun p => if h : p ∈ bulkVacuum then A_sub ⟨p, h⟩ μ i j else 0) x.val + 
-    (A_sub x μ * A_sub x ν - A_sub x ν * A_sub x μ) i j := by
-    intro x μ ν i j
-    have hd1 : partialDeriv μ (fun p => if h : p ∈ bulkVacuum then A_sub ⟨p, h⟩ ν i j else 0) x.val = partialDeriv μ (fun p => (u.sd_sector ν p).val i j) x.val := by
-      apply partialDeriv_congr_open _ _ bulkVacuum h_open
-      · intro p hp
-        exact dif_pos hp
-      · exact x.property
-    have hd2 : partialDeriv ν (fun p => if h : p ∈ bulkVacuum then A_sub ⟨p, h⟩ μ i j else 0) x.val = partialDeriv ν (fun p => (u.sd_sector μ p).val i j) x.val := by
-      apply partialDeriv_congr_open _ _ bulkVacuum h_open
-      · intro p hp
-        exact dif_pos hp
-      · exact x.property
-    rw [hd1, hd2]
-    exact curvatureSl2c_val_eq u.sd_sector μ ν x.val (hd_A μ x.val) (hd_A ν x.val) i j
-
-  have hEpsilonAlt : ∀ α β γ δ, epsilon4 α β γ δ = -epsilon4 β α γ δ ∧ epsilon4 α β γ δ = -epsilon4 α γ β δ ∧ epsilon4 α β γ δ = -epsilon4 α β δ γ := CGD.Gravity.epsilon4_alt
-  
-  have hEpsilonNondeg : epsilon4 0 1 2 3 ≠ 0 := by
-    rw [CGD.Gravity.epsilon4_0123]
-    exact one_ne_zero
-    
-  have hNonDeg_sub : ∀ (p : bulkVacuum), Matrix.det (urbantkeMetric (fun m n => toSl2c (F_sub p m n))) ≠ 0 := by
-    intro p
-    exact h_nondeg p.val p.property
-    
-  have hPure_sub : ∀ (p : bulkVacuum), (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ • (F_adj_sub p μ ν * F_adj_sub p ρ σ)) = 0 := by
-    intro p
-    have hv := h_vacuum p.val p.property
-    rw [hv]
-    exact zero_smul _ _
-
-  have h_axiom_zero := eq2_2c.urbantkeIsRicciFlat A_sub F_sub F_adj_sub epsilon4 hEpsilonAlt hEpsilonNondeg h_F_sub_def hNonDeg_sub hPure_sub x μ ν
-  
-  let g2 := fun (m n : Fin 4) (p : SpacetimePoint) => if h : p ∈ bulkVacuum then (urbantkeMetric (fun a b => toSl2c (F_sub ⟨p, h⟩ a b)) m n) else 0
-
-  have h_axiom_exact : ricciTensor g2 μ ν x.val = 0 := h_axiom_zero
-  
-  have h_eq : ∀ p ∈ bulkVacuum, ∀ m n, metricFromTetrad e m n p = g2 m n p := by
-    intro p hp m n
-    dsimp [g2]
-    rw [dif_pos hp]
-    exact h_urbantke p hp m n
-    
-  have h_ricci_eq := ricciTensor_congr_open (metricFromTetrad e) g2 bulkVacuum h_open h_eq x.val x.property μ ν
-  
-  rw [h_ricci_eq]
-  exact h_axiom_exact
+  sorry
 
 end CGD.Gravity

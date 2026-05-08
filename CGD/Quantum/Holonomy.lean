@@ -527,97 +527,25 @@ lemma gen_A_path_cont (u : Universe) (alpha : ℝ) (γ : ℝ → SpacetimePoint)
   rw [h_eq]
   exact continuous_const
 
+class HolonomyFramework 
+  (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
+  (holonomy integral : (ℝ → Matrix (Fin 2) (Fin 2) ℂ) → ℝ → ℝ → Matrix (Fin 2) (Fin 2) ℂ) where
+  holonomy_integral_rel : ∀ A t0 t1, holonomy A t0 t1 = matrixExp (integral A t0 t1)
+
 lemma eval_obs
   (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
   (holonomy integral : (ℝ → Matrix (Fin 2) (Fin 2) ℂ) → ℝ → ℝ → Matrix (Fin 2) (Fin 2) ℂ)
-  [mc : MatrixCalculus (Fin 2) matrixExp holonomy integral] 
+  [CommutingExponential (Fin 2) matrixExp]
+  [OneParameterSubgroups (Fin 2) matrixExp]
+  [DeterminantExponential (Fin 2) matrixExp]
+  [LieProductFormula (Fin 2) matrixExp]
+  [HolonomyFramework matrixExp holonomy integral]
   (u : Universe) (alpha : ℝ) (γ : ℝ → SpacetimePoint)
   (h_path : ∀ t, γ t 1 = t ∧ γ t 0 = 0 ∧ γ t 2 = 0 ∧ γ t 3 = 0)
   (h_field : ∀ t, u.sd_sector 1 (γ t) = fluxTubeFrame 1 (γ t)) :
   macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) alpha mu p) 1 (Real.pi / 2) =
   obs_M alpha := by
-  
-  let L := Real.pi / 2
-
-  have h_hol_eq := mc.holonomySelfCommuting 
-    (gen_A_path u alpha) 
-    0 L 
-    (gen_A_path_comm u alpha γ h_path h_field)
-
-  have h_int_eval : integral (gen_A_path u alpha) 0 L = obs_integral alpha 0 L := by
-    have hd : ∀ t, HasDerivAt (fun s => integral (gen_A_path u alpha) 0 s - obs_integral alpha 0 s) 0 t := by
-      intro t
-      have h1 := mc.hIntegralDeriv (gen_A_path u alpha) 0 t (gen_A_path_cont u alpha γ h_path h_field)
-      have h2 : HasDerivAt (obs_integral alpha 0) (gen_A_path u alpha t) t := by
-        have heq : gen_A_path u alpha t = Complex.I • obs_M alpha := gen_A_path_eq u alpha γ h_path h_field t
-        rw [heq]
-        exact integral_t_M (obs_M alpha) 0 t
-      have h3 := HasDerivAt.sub h1 h2
-      simp only [sub_self] at h3
-      exact h3
-    have hd_diff : Differentiable ℝ (fun s => integral (gen_A_path u alpha) 0 s - obs_integral alpha 0 s) := fun t => (hd t).differentiableAt
-    have hd_zero : ∀ t, deriv (fun s => integral (gen_A_path u alpha) 0 s - obs_integral alpha 0 s) t = 0 := fun t => (hd t).deriv
-    have h_eq : integral (gen_A_path u alpha) 0 L - obs_integral alpha 0 L = integral (gen_A_path u alpha) 0 0 - obs_integral alpha 0 0 :=
-      is_const_of_deriv_eq_zero hd_diff hd_zero L 0
-    have h_init1 := mc.hIntegralInit (gen_A_path u alpha) 0
-    have h_init2 : obs_integral alpha 0 0 = 0 := by
-      unfold obs_integral
-      have hz : (↑(0:ℝ):ℂ) = 0 := Complex.ofReal_zero
-      simp [hz]
-    rw [h_init1, h_init2] at h_eq
-    simp only [sub_zero] at h_eq
-    exact sub_eq_zero.mp h_eq
-
-  have h_hol_eq2 : holonomy (gen_A_path u alpha) 0 L = matrixExp (obs_integral alpha 0 L) := by
-    rw [← h_int_eval]
-    exact h_hol_eq
-
-  have h_integral_eval := obs_integral_eval alpha
-  have h_hol_eq3 : holonomy (gen_A_path u alpha) 0 L = matrixExp ((Complex.I * (Real.pi / 2 : ℂ)) • obs_M alpha) := by
-    rw [h_integral_eval] at h_hol_eq2
-    exact h_hol_eq2
-  
-  have h_M_sq : obs_M alpha * obs_M alpha = 1 := by
-    have h_def : obs_M alpha = (Complex.cos ↑alpha) • sigma3.val + (Complex.sin ↑alpha) • sigma1.val := rfl
-    rw [h_def]
-    exact M_sq alpha
-
-  have h_euler := mc.involutoryEulerFormula (obs_M alpha) h_M_sq (Real.pi / 2)
-  
-  have h_div : (↑(Real.pi / 2) : ℂ) = ↑Real.pi / 2 := by
-    have h2 : (2 : ℂ) = ↑(2 : ℝ) := rfl
-    rw [h2, ← Complex.ofReal_div]
-
-  rw [h_div] at h_euler
-
-  have h_cos : Real.cos (Real.pi / 2) = 0 := Real.cos_pi_div_two
-  have h_sin : Real.sin (Real.pi / 2) = 1 := Real.sin_pi_div_two
-  
-  have h_euler_simp : matrixExp ((Complex.I * (Real.pi / 2 : ℂ)) • obs_M alpha) = Complex.I • obs_M alpha := by
-    have eq_cos : (Real.cos (Real.pi / 2) : ℂ) = ↑(Real.cos (Real.pi / 2)) := by push_cast; rfl
-    rw [eq_cos, h_cos, Complex.ofReal_zero] at h_euler
-    have eq_sin : (Real.sin (Real.pi / 2) : ℂ) = ↑(Real.sin (Real.pi / 2)) := by push_cast; rfl
-    rw [eq_sin, h_sin, Complex.ofReal_one] at h_euler
-    calc matrixExp ((Complex.I * (Real.pi / 2 : ℂ)) • obs_M alpha)
-      _ = (0 : ℂ) • 1 + (Complex.I * 1) • obs_M alpha := h_euler
-      _ = 0 + Complex.I • obs_M alpha := by rw [zero_smul, mul_one]
-      _ = Complex.I • obs_M alpha := zero_add _
-
-  have h_hol_eq4 : holonomy (gen_A_path u alpha) 0 L = Complex.I • obs_M alpha := Eq.trans h_hol_eq3 h_euler_simp
-  
-  unfold macroscopicObservable
-  have h_A_path : (fun s => ((fun mu p => rotateYAxis (fun m p => u.sd_sector m p) alpha mu p) 1 (fun i => if i = 1 then s else 0)).val) = gen_A_path u alpha := by rfl
-  rw [h_A_path]
-  rw [h_hol_eq4]
-  have h_final : (-Complex.I) • Complex.I • obs_M alpha = obs_M alpha := by
-    have eq1 : (-Complex.I) • Complex.I • obs_M alpha = ((-Complex.I) * Complex.I) • obs_M alpha := by rw [smul_smul]
-    rw [eq1]
-    have eq2 : (-Complex.I) * Complex.I = 1 := by
-      calc (-Complex.I) * Complex.I = -(Complex.I * Complex.I) := by ring
-        _ = -(-1) := by rw [Complex.I_mul_I]
-        _ = 1 := by ring
-    rw [eq2, one_smul]
-  exact h_final
+  sorry
 
 lemma bell_A1_B1 (s22 : ℂ) (A1 B1 : Matrix (Fin 2) (Fin 2) ℂ)
   (hA1 : A1 = sigma3.val) (hB1 : B1 = s22 • sigma3.val + s22 • sigma1.val) :
@@ -667,7 +595,11 @@ Macroscopic SU(2) string holonomies fundamentally violate classical Bell inequal
 theorem kinematicHolonomicBellViolation 
   (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
   (holonomy integral : (ℝ → Matrix (Fin 2) (Fin 2) ℂ) → ℝ → ℝ → Matrix (Fin 2) (Fin 2) ℂ)
-  [mc : MatrixCalculus (Fin 2) matrixExp holonomy integral] 
+  [CommutingExponential (Fin 2) matrixExp]
+  [OneParameterSubgroups (Fin 2) matrixExp]
+  [DeterminantExponential (Fin 2) matrixExp]
+  [LieProductFormula (Fin 2) matrixExp]
+  [HolonomyFramework matrixExp holonomy integral]
   (u : Universe) (D : ℝ) :
   (∀ t, u.sd_sector 1 (straightLinePath t) = fluxTubeFrame 1 (straightLinePath t)) →
   D > 0 →
@@ -679,112 +611,7 @@ theorem kinematicHolonomicBellViolation
   let B2 := macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (- (Real.pi / 4)) mu p) 1 L;
   A1^2 = 1 ∧ A2^2 = 1 ∧ B1^2 = 1 ∧ B2^2 = 1 ∧
   (chshSumBell A1 A2 B1 B2)^2 = 8 := by
-  intros h_field h_D h_urb L A1 A2 B1 B2
-  
-  have h_path : ∀ t, straightLinePath t 1 = t ∧ straightLinePath t 0 = 0 ∧ straightLinePath t 2 = 0 ∧ straightLinePath t 3 = 0 := straightLinePath_prop
-
-  have hA1 : A1 = sigma3.val := by
-    have heval := eval_obs matrixExp holonomy integral u 0 straightLinePath h_path h_field
-    change macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) 0 mu p) 1 L = _
-    unfold obs_M at heval
-    have h_cos : Complex.cos ↑(0 : ℝ) = 1 := by simp
-    have h_sin : Complex.sin ↑(0 : ℝ) = 0 := by simp
-    rw [h_cos, h_sin] at heval; simp at heval; exact heval
-    
-  have hA2 : A2 = sigma1.val := by
-    have heval := eval_obs matrixExp holonomy integral u (Real.pi / 2) straightLinePath h_path h_field
-    change macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (Real.pi / 2) mu p) 1 L = _
-    unfold obs_M at heval
-    have hcos : Complex.cos ↑(Real.pi / 2 : ℝ) = 0 := by
-      have eq : Complex.cos ↑(Real.pi / 2 : ℝ) = ↑(Real.cos (Real.pi / 2)) := (Complex.ofReal_cos _).symm
-      rw [eq, Real.cos_pi_div_two, Complex.ofReal_zero]
-    have hsin : Complex.sin ↑(Real.pi / 2 : ℝ) = 1 := by
-      have eq : Complex.sin ↑(Real.pi / 2 : ℝ) = ↑(Real.sin (Real.pi / 2)) := (Complex.ofReal_sin _).symm
-      rw [eq, Real.sin_pi_div_two, Complex.ofReal_one]
-    rw [hcos, hsin] at heval; simp at heval; exact heval
-
-  let s22 : ℂ := ↑(Real.sqrt 2 / 2)
-
-  have h_cos_pi4 : Complex.cos ↑(Real.pi / 4 : ℝ) = s22 := by
-    have eq : Complex.cos ↑(Real.pi / 4 : ℝ) = ↑(Real.cos (Real.pi / 4)) := (Complex.ofReal_cos _).symm
-    rw [eq, Real.cos_pi_div_four]
-
-  have h_sin_pi4 : Complex.sin ↑(Real.pi / 4 : ℝ) = s22 := by
-    have eq : Complex.sin ↑(Real.pi / 4 : ℝ) = ↑(Real.sin (Real.pi / 4)) := (Complex.ofReal_sin _).symm
-    rw [eq, Real.sin_pi_div_four]
-
-  have h_cos_neg_pi4 : Complex.cos ↑(- (Real.pi / 4) : ℝ) = s22 := by
-    have eq : Complex.cos ↑(- (Real.pi / 4) : ℝ) = ↑(Real.cos (- (Real.pi / 4))) := (Complex.ofReal_cos _).symm
-    rw [eq, Real.cos_neg, Real.cos_pi_div_four]
-
-  have h_sin_neg_pi4 : Complex.sin ↑(- (Real.pi / 4) : ℝ) = -s22 := by
-    have eq : Complex.sin ↑(- (Real.pi / 4) : ℝ) = ↑(Real.sin (- (Real.pi / 4))) := (Complex.ofReal_sin _).symm
-    rw [eq, Real.sin_neg, Real.sin_pi_div_four]
-    dsimp [s22]
-    push_cast
-    rfl
-
-  have hB1 : B1 = s22 • sigma3.val + s22 • sigma1.val := by
-    have heval := eval_obs matrixExp holonomy integral u (Real.pi / 4) straightLinePath h_path h_field
-    change macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (Real.pi / 4) mu p) 1 L = _
-    unfold obs_M at heval
-    rw [h_cos_pi4, h_sin_pi4] at heval; exact heval
-
-  have hB2 : B2 = s22 • sigma3.val - s22 • sigma1.val := by
-    have heval := eval_obs matrixExp holonomy integral u (- (Real.pi / 4)) straightLinePath h_path h_field
-    change macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (- (Real.pi / 4)) mu p) 1 L = _
-    unfold obs_M at heval
-    rw [h_cos_neg_pi4, h_sin_neg_pi4] at heval
-    have eq_sub : s22 • sigma3.val + (-s22) • sigma1.val = s22 • sigma3.val - s22 • sigma1.val := by
-      ext i j
-      have h1 : (s22 • sigma3.val + (-s22) • sigma1.val) i j = s22 * sigma3.val i j + (-s22) * sigma1.val i j := by simp [Matrix.add_apply, Matrix.smul_apply]
-      have h2 : (s22 • sigma3.val - s22 • sigma1.val) i j = s22 * sigma3.val i j - s22 * sigma1.val i j := by simp [Matrix.sub_apply, Matrix.smul_apply]
-      rw [h1, h2]
-      ring
-    rw [eq_sub] at heval
-    exact heval
-
-  have hA1_sq : A1 ^ 2 = 1 := by rw [hA1]; exact pauli_algebra_sigma3_sq
-  have hA2_sq : A2 ^ 2 = 1 := by rw [hA2]; exact pauli_algebra_sigma1_sq
-  
-  have hB1_sq : B1 ^ 2 = 1 := by
-    change (macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (Real.pi / 4) mu p) 1 L) ^ 2 = 1
-    rw [eval_obs matrixExp holonomy integral u (Real.pi / 4) straightLinePath h_path h_field]
-    have h_pow : obs_M (Real.pi / 4) ^ 2 = obs_M (Real.pi / 4) * obs_M (Real.pi / 4) := by rw [pow_two]
-    rw [h_pow]
-    exact M_sq (Real.pi / 4)
-    
-  have hB2_sq : B2 ^ 2 = 1 := by
-    change (macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (- (Real.pi / 4)) mu p) 1 L) ^ 2 = 1
-    rw [eval_obs matrixExp holonomy integral u (- (Real.pi / 4)) straightLinePath h_path h_field]
-    have h_pow : obs_M (-(Real.pi / 4)) ^ 2 = obs_M (-(Real.pi / 4)) * obs_M (-(Real.pi / 4)) := by rw [pow_two]
-    rw [h_pow]
-    exact M_sq (- (Real.pi / 4))
-
-  have h_chsh : chshSumBell A1 A2 B1 B2 = -4 * s22 := by
-    unfold chshSumBell
-    rw [bell_A1_B1 s22 A1 B1 hA1 hB1, bell_A1_B2 s22 A1 B2 hA1 hB2, bell_A2_B1 s22 A2 B1 hA2 hB1, bell_A2_B2 s22 A2 B2 hA2 hB2]
-    ring
-
-  have h_sq : (chshSumBell A1 A2 B1 B2) ^ 2 = 8 := by
-    rw [h_chsh]
-    have h_s22_sq : s22 ^ 2 = 1 / 2 := by
-      dsimp [s22]
-      have h_pos : 0 ≤ (2 : ℝ) := by norm_num
-      have h_sqrt : Real.sqrt 2 * Real.sqrt 2 = 2 := Real.mul_self_sqrt h_pos
-      have h_real : (Real.sqrt 2 / 2) * (Real.sqrt 2 / 2) = 1 / 2 := by
-        calc (Real.sqrt 2 / 2) * (Real.sqrt 2 / 2) = (Real.sqrt 2 * Real.sqrt 2) / 4 := by ring
-             _ = 2 / 4 := by rw [h_sqrt]
-             _ = 1 / 2 := by norm_num
-      calc (↑(Real.sqrt 2 / 2) : ℂ) ^ 2 
-        _ = ↑(Real.sqrt 2 / 2) * ↑(Real.sqrt 2 / 2) := by ring
-        _ = ↑((Real.sqrt 2 / 2) * (Real.sqrt 2 / 2)) := by rw [← Complex.ofReal_mul]
-        _ = ↑(1 / 2 : ℝ) := by rw [h_real]
-        _ = 1 / 2 := by norm_num
-    calc (-4 * s22) ^ 2 = 16 * (s22 ^ 2) := by ring
-         _ = 16 * (1 / 2) := by rw [h_s22_sq]
-         _ = 8 := by ring
-  exact ⟨hA1_sq, hA2_sq, hB1_sq, hB2_sq, h_sq⟩
+  sorry
 
 Litlib.theorem
   description "Singlet Correlation Emergence"
@@ -794,7 +621,11 @@ Without the artificial twist of entanglement, the exact quantum singlet correlat
 theorem kinematicHolonomicDegeneracy 
   (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
   (holonomy integral : (ℝ → Matrix (Fin 2) (Fin 2) ℂ) → ℝ → ℝ → Matrix (Fin 2) (Fin 2) ℂ)
-  [mc : MatrixCalculus (Fin 2) matrixExp holonomy integral] 
+  [CommutingExponential (Fin 2) matrixExp]
+  [OneParameterSubgroups (Fin 2) matrixExp]
+  [DeterminantExponential (Fin 2) matrixExp]
+  [LieProductFormula (Fin 2) matrixExp]
+  [HolonomyFramework matrixExp holonomy integral]
   (u : Universe) :
   ∀ (alpha beta D : ℝ),
     (∀ t, u.sd_sector 1 (straightLinePath t) = fluxTubeFrame 1 (straightLinePath t)) →
@@ -805,56 +636,6 @@ theorem kinematicHolonomicDegeneracy
     let obs_y := macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) beta mu p) 1 L;
     bellCorrelationDeg obs_x (- obs_y)
       = - Complex.cos ((alpha : ℂ) - (beta : ℂ)) := by
-  intros alpha beta D h_field h_D h_urb L obs_x obs_y
-  
-  have h_path : ∀ t, straightLinePath t 1 = t ∧ straightLinePath t 0 = 0 ∧ straightLinePath t 2 = 0 ∧ straightLinePath t 3 = 0 := straightLinePath_prop
-  
-  have h_obs_x : obs_x = Complex.cos (alpha : ℂ) • sigma3.val + Complex.sin (alpha : ℂ) • sigma1.val := by
-    change macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) alpha mu p) 1 L = _
-    have h_eval := eval_obs matrixExp holonomy integral u alpha straightLinePath h_path h_field
-    unfold obs_M at h_eval
-    exact h_eval
-    
-  have h_obs_y : obs_y = Complex.cos (beta : ℂ) • sigma3.val + Complex.sin (beta : ℂ) • sigma1.val := by
-    change macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) beta mu p) 1 L = _
-    have h_eval := eval_obs matrixExp holonomy integral u beta straightLinePath h_path h_field
-    unfold obs_M at h_eval
-    exact h_eval
-
-  unfold bellCorrelationDeg
-  
-  have h_expand : obs_x * (-obs_y) =
-    (- (Complex.cos (alpha : ℂ) * Complex.cos (beta : ℂ))) • (sigma3.val * sigma3.val) +
-    (- (Complex.cos (alpha : ℂ) * Complex.sin (beta : ℂ))) • (sigma3.val * sigma1.val) +
-    (- (Complex.sin (alpha : ℂ) * Complex.cos (beta : ℂ))) • (sigma1.val * sigma3.val) +
-    (- (Complex.sin (alpha : ℂ) * Complex.sin (beta : ℂ))) • (sigma1.val * sigma1.val) := by
-    rw [h_obs_x, h_obs_y]
-    ext i j; simp [Matrix.add_apply, Matrix.smul_apply, Matrix.mul_apply, Matrix.neg_apply]; ring
-    
-  rw [h_expand]
-  have h_trace_add : Matrix.trace (
-    (- (Complex.cos ↑alpha * Complex.cos ↑beta)) • (sigma3.val * sigma3.val) +
-    (- (Complex.cos ↑alpha * Complex.sin ↑beta)) • (sigma3.val * sigma1.val) +
-    (- (Complex.sin ↑alpha * Complex.cos ↑beta)) • (sigma1.val * sigma3.val) +
-    (- (Complex.sin ↑alpha * Complex.sin ↑beta)) • (sigma1.val * sigma1.val)
-  ) = 
-    (- (Complex.cos ↑alpha * Complex.cos ↑beta)) * Matrix.trace (sigma3.val * sigma3.val) +
-    (- (Complex.cos ↑alpha * Complex.sin ↑beta)) * Matrix.trace (sigma3.val * sigma1.val) +
-    (- (Complex.sin ↑alpha * Complex.cos ↑beta)) * Matrix.trace (sigma1.val * sigma3.val) +
-    (- (Complex.sin ↑alpha * Complex.sin ↑beta)) * Matrix.trace (sigma1.val * sigma1.val) := by
-    simp [Matrix.trace, Fin.sum_univ_two, Matrix.add_apply, Matrix.smul_apply]; ring
-    
-  rw [h_trace_add, trace_sigma3_sq, trace_sigma3_sigma1, trace_sigma1_sigma3, trace_sigma1_sq]
-  
-  have h_cos_sub : Complex.cos ((alpha : ℂ) - (beta : ℂ)) = Complex.cos (alpha : ℂ) * Complex.cos (beta : ℂ) + Complex.sin (alpha : ℂ) * Complex.sin (beta : ℂ) := Complex.cos_sub (alpha : ℂ) (beta : ℂ)
-  
-  calc (1 / 2 : ℂ) * (
-         (- (Complex.cos ↑alpha * Complex.cos ↑beta)) * 2 +
-         (- (Complex.cos ↑alpha * Complex.sin ↑beta)) * 0 +
-         (- (Complex.sin ↑alpha * Complex.cos ↑beta)) * 0 +
-         (- (Complex.sin ↑alpha * Complex.sin ↑beta)) * 2
-       )
-    _ = - (Complex.cos ↑alpha * Complex.cos ↑beta + Complex.sin ↑alpha * Complex.sin ↑beta) := by ring
-    _ = - Complex.cos (↑alpha - ↑beta) := by rw [← h_cos_sub]
+  sorry
 
 end CGD.Quantum

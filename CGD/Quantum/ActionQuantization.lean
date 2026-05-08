@@ -25,11 +25,11 @@ Litlib.theorem
 If a physical connection yields an asymptotic boundary map that is a topological homeomorphism to the gauge group, its Cartan-Maurer topological charge strictly evaluates to an integer quantization bound (±1).
 -/
 theorem kinematicActionQuantization
-  {BoundaryManifold : Type*} [TopologicalSpace BoundaryManifold]
+  {BoundaryManifold : Type*} [TopologicalSpace BoundaryManifold] [Nonempty BoundaryManifold]
   [HasAsymptoticBoundary (Fin 4 → SpacetimePoint → SL2C) (BoundaryManifold → SU2Group)]
   [htm : HasTopologicalMeasure (BoundaryManifold → SU2Group)]
-  [tc : CartanMaurerTopology (BoundaryManifold → SU2Group) Continuous HasTopologicalMeasure.windingNumber HasTopologicalMeasure.cartanMaurerIntegral]
-  [belavin : Eq18 BoundaryManifold SU2Group Continuous HasTopologicalMeasure.windingNumber HasTopologicalMeasure.cartanMaurerIntegral]
+  [tc : CartanMaurerTopology (BoundaryManifold → SU2Group) (Continuous : (BoundaryManifold → SU2Group) → Prop) HasTopologicalMeasure.windingNumber HasTopologicalMeasure.cartanMaurerIntegral]
+  [belavin : Eq8 BoundaryManifold SU2Group (Continuous : (BoundaryManifold → SU2Group) → Prop) HasTopologicalMeasure.windingNumber HasTopologicalMeasure.cartanMaurerIntegral]
   (u : Universe)
   (h_homeo : IsHomeomorphism (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SU2Group)) :
   HasTopologicalMeasure.cartanMaurerIntegral (HasAsymptoticBoundary.boundaryMap u.sd_sector.val : BoundaryManifold → SU2Group) = 1 ∨ 

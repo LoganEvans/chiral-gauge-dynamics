@@ -29,11 +29,13 @@ Litlib.theorem
 /-- 
 Based on the Litlib macroscopic flux tube bounds, if the spatial distance exceeds the ratio of the static mass to the string tension, the classical intact string geometry ceases to be the state of minimum energy.
 -/
-theorem kinematicHamiltonianCrossover {sigma M : ℝ} [eb : FluxTubeEnergyBounds (Fin 4 → SpacetimePoint → SL2C) spatialEnergy intactFluxTube snappedFluxTube sigma M]
+theorem kinematicHamiltonianCrossover {sigma M : ℝ} [eb : FluxTubeStringBreaking (Fin 4 → SpacetimePoint → SL2C) spatialEnergy intactFluxTube snappedFluxTube sigma M]
   (L : ℝ) (h_sigma : sigma > 0) (h_L : L > (2 * M) / sigma) :
   spatialEnergy (intactFluxTube L) > spatialEnergy (snappedFluxTube L) := by
   have h_L_pos : L > 0 := by
-    have h_M_nonneg : 2 * M ≥ 0 := mul_nonneg (by norm_num) eb.h_M_nonneg
+    have h_M_nonneg : 2 * M ≥ 0 := by
+      have hM : M > 0 := eb.h_M_pos
+      linarith
     have h_div_nonneg : (2 * M) / sigma ≥ 0 := div_nonneg h_M_nonneg (le_of_lt h_sigma)
     exact lt_of_le_of_lt h_div_nonneg h_L
   have h_intact := eb.intactEnergy L h_L_pos
@@ -50,7 +52,7 @@ Litlib.theorem
 /--
 When the distance exceeds the crossover bound, the intact flux tube holding the entangled pair drops out of the global minimum.
 -/
-theorem dynamicEntanglementDecay {sigma M : ℝ} [eb : FluxTubeEnergyBounds (Fin 4 → SpacetimePoint → SL2C) spatialEnergy intactFluxTube snappedFluxTube sigma M]
+theorem dynamicEntanglementDecay {sigma M : ℝ} [eb : FluxTubeStringBreaking (Fin 4 → SpacetimePoint → SL2C) spatialEnergy intactFluxTube snappedFluxTube sigma M]
   (L : ℝ) (h_sigma : sigma > 0) (h_L : L > (2 * M) / sigma) :
   ¬ isGlobalMinimum spatialEnergy (intactFluxTube L) := by
   intro h_min
