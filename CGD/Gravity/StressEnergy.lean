@@ -28,6 +28,7 @@ Litlib.theorem
 The emergent Stress-Energy tensor (defined as the Einstein tensor of the dynamically emergent Urbantke metric) is covariantly conserved with respect to its own Levi-Civita connection.
 -/
 theorem emergentStressEnergyConservation (u : Universe) 
+  (h_curved : ∃ mu nu p, emergentStressEnergy (fun a b p' => curvatureSl2c u.sd_sector a b p') mu nu p ≠ 0)
   [ebi : Litlib.Y2003.nakahara2003geometry.ContractedBianchiIdentity 
     SpacetimePoint (Fin 4) 
     (fun i j p => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p) i j)

@@ -13,11 +13,18 @@ namespace CGD.Gravity
 noncomputable def realMetricProxy (g : Fin 4 → Fin 4 → SpacetimePoint → ℂ) : Fin 4 → Fin 4 → SpacetimePoint → ℝ := 
   fun m n p => (g m n p).re
 
-noncomputable def realChristoffelProxy (Gamma : Fin 4 → Fin 4 → Fin 4 → SpacetimePoint → ℂ) : Fin 4 → Fin 4 → Fin 4 → SpacetimePoint → ℝ := 
-  fun m n r p => (Gamma m n r p).re
+noncomputable def realMetricInvProxy (g : Fin 4 → Fin 4 → SpacetimePoint → ℂ) : Fin 4 → Fin 4 → SpacetimePoint → ℝ := 
+  fun m n p => (CGD.Gravity.matrixInv4x4 (fun a b => g a b p) m n).re
 
 noncomputable def realDerivProxy : Fin 4 → (SpacetimePoint → ℝ) → SpacetimePoint → ℝ := 
   fun m f p => (partialDeriv m (fun x => (f x : ℂ)) p).re
+
+noncomputable def realChristoffelProxy (g : Fin 4 → Fin 4 → SpacetimePoint → ℂ) : Fin 4 → Fin 4 → Fin 4 → SpacetimePoint → ℝ := 
+  fun lam mu nu x => (1 / 2 : ℝ) * ∑ rho : Fin 4, realMetricInvProxy g lam rho x * (
+    realDerivProxy mu (fun p => realMetricProxy g rho nu p) x +
+    realDerivProxy nu (fun p => realMetricProxy g rho mu p) x -
+    realDerivProxy rho (fun p => realMetricProxy g mu nu p) x
+  )
 
 def realTimelikeProxy (p : SpacetimePoint) (t : Fin 4 → ℝ) : Prop := sorry
 
@@ -38,8 +45,8 @@ theorem topologicalMatterIsGeodesic
   [gj : Litlib.Y1975.geroch1975motion.Thm_MotionOfBody 
     SpacetimePoint (Fin 4) 
     (realMetricProxy g) 
-    (realMetricProxy (fun m n p => CGD.Gravity.matrixInv4x4 (fun a b => g a b p) m n)) 
-    (realChristoffelProxy Gamma_sym) 
+    (realMetricInvProxy g) 
+    (realChristoffelProxy g) 
     realDerivProxy 
     realTimelikeProxy 
     isTimelikeGeodesic]
