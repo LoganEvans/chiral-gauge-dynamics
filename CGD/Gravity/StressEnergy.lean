@@ -13,7 +13,7 @@ open CGD.Axioms
 
 namespace CGD.Gravity
 
-instance : Nonempty SpacetimePoint := ⟨sorry⟩
+instance : Nonempty SpacetimePoint := ⟨fun _ => 0⟩
 
 noncomputable def emergentStressEnergy (F : Fin 4 → Fin 4 → SpacetimePoint → SL2C) (mu nu : Fin 4) (x : SpacetimePoint) : ℂ :=
   let g := fun m n p => CGD.Gravity.urbantkeMetric (fun a b => F a b p) m n
@@ -49,6 +49,7 @@ theorem emergentStressEnergyConservation (u : Universe)
       ∑ lambda : Fin 4, (CGD.Gravity.christoffel g lambda alpha mu x * T lambda nu x + 
                          CGD.Gravity.christoffel g lambda alpha nu x * T mu lambda x)
     ) = 0 := by
-  sorry
+  intro nu x
+  exact ebi.contractedBianchi nu x
 
 end CGD.Gravity
