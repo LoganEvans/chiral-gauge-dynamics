@@ -4,6 +4,7 @@ import Litlib.Core
 import CGD.Gravity.StressEnergy
 import CGD.Foundations.Calculus
 import CGD.Axioms.Phenomenology
+import Mathlib.Topology.Basic
 import Litlib.Y1975.geroch1975motion.Signature
 
 open Complex Matrix CGD.Foundations BigOperators Classical
@@ -30,6 +31,9 @@ noncomputable def realChristoffelProxy (g : Fin 4 → Fin 4 → SpacetimePoint �
 def realTimelikeProxy (g : Fin 4 → Fin 4 → SpacetimePoint → ℂ) (p : SpacetimePoint) (t : Fin 4 → ℝ) : Prop :=
   (∑ m : Fin 4, ∑ n : Fin 4, realMetricProxy g m n p * t m * t n) < 0
 
+def realFutureTimelikeProxy (g : Fin 4 → Fin 4 → SpacetimePoint → ℂ) (p : SpacetimePoint) (t : Fin 4 → ℝ) : Prop :=
+  realTimelikeProxy g p t ∧ t 0 > 0
+
 Litlib.theorem
   description "Topological Matter Follows Geodesics"
 /--
@@ -41,8 +45,6 @@ theorem topologicalMatterIsGeodesic
   [TopologicalSpace SpacetimePoint]
   (u : Universe) (bulk : Set SpacetimePoint) [TopologicalSpace bulk]
   [vol : CGD.Axioms.MacroscopicVolume u bulk]
-  (satisfiesEnergyCondition : (Fin 4 → Fin 4 → bulk → ℂ) → Prop)
-  (support : (Fin 4 → Fin 4 → bulk → ℂ) → Set bulk)
   (isTimelikeGeodesic : Set bulk → Prop)
   (Gamma_sym : Fin 4 → Fin 4 → Fin 4 → SpacetimePoint → ℂ)
   [gj : Litlib.Y1975.geroch1975motion.Thm_MotionOfBody 
@@ -51,20 +53,23 @@ theorem topologicalMatterIsGeodesic
     (fun (m n : Fin 4) (p : bulk) => realMetricInvProxy (fun a b p' => CGD.Gravity.urbantkeMetric (fun c d => curvatureSl2c u.sd_sector c d p') a b) m n (p : SpacetimePoint)) 
     (fun (lam m n : Fin 4) (p : bulk) => realChristoffelProxy (fun a b p' => CGD.Gravity.urbantkeMetric (fun c d => curvatureSl2c u.sd_sector c d p') a b) lam m n (p : SpacetimePoint)) 
     (fun (m : Fin 4) (f : bulk → ℝ) (p : bulk) => realDerivProxy m (fun (p' : SpacetimePoint) => if h : p' ∈ bulk then f (Subtype.mk p' h) else 0) (p : SpacetimePoint)) 
-    (fun (p : bulk) (t : Fin 4 → ℝ) => realTimelikeProxy (fun a b p' => CGD.Gravity.urbantkeMetric (fun c d => curvatureSl2c u.sd_sector c d p') a b) (p : SpacetimePoint) t) 
+    (fun (p : bulk) (t : Fin 4 → ℝ) => realFutureTimelikeProxy (fun a b p' => CGD.Gravity.urbantkeMetric (fun c d => curvatureSl2c u.sd_sector c d p') a b) (p : SpacetimePoint) t) 
     isTimelikeGeodesic]
   (gamma : Set bulk)
   (h_localizable : ∀ U : Set bulk, IsOpen U → gamma ⊆ U → 
     ∃ u_defect : Universe, 
-      (fun (m n : Fin 4) (p : bulk) => emergentStressEnergy (fun a b p' => curvatureSl2c u_defect.sd_sector a b p') m n (p : SpacetimePoint)) ≠ 0 ∧
-      (∀ mu nu (x : bulk), emergentStressEnergy (fun a b p' => curvatureSl2c u_defect.sd_sector a b p') mu nu (x : SpacetimePoint) = emergentStressEnergy (fun a b p' => curvatureSl2c u_defect.sd_sector a b p') nu mu (x : SpacetimePoint)) ∧
-      satisfiesEnergyCondition (fun (m n : Fin 4) (p : bulk) => emergentStressEnergy (fun a b p' => curvatureSl2c u_defect.sd_sector a b p') m n (p : SpacetimePoint)) ∧
-      support (fun (m n : Fin 4) (p : bulk) => emergentStressEnergy (fun a b p' => curvatureSl2c u_defect.sd_sector a b p') m n (p : SpacetimePoint)) ⊆ U ∧
+      (fun (m n : Fin 4) (p : bulk) => (emergentStressEnergy (fun a b p' => curvatureSl2c u_defect.sd_sector a b p') m n (p : SpacetimePoint)).re) ≠ 0 ∧
+      (∀ mu nu (x : bulk), (emergentStressEnergy (fun a b p' => curvatureSl2c u_defect.sd_sector a b p') mu nu (x : SpacetimePoint)).re = (emergentStressEnergy (fun a b p' => curvatureSl2c u_defect.sd_sector a b p') nu mu (x : SpacetimePoint)).re) ∧
+      (∀ (x : bulk), (∃ mu nu, (emergentStressEnergy (fun a b p' => curvatureSl2c u_defect.sd_sector a b p') mu nu (x : SpacetimePoint)).re ≠ 0) →
+        ∀ t t', realFutureTimelikeProxy (fun a b p' => CGD.Gravity.urbantkeMetric (fun c d => curvatureSl2c u.sd_sector c d p') a b) (x : SpacetimePoint) t → 
+                realFutureTimelikeProxy (fun a b p' => CGD.Gravity.urbantkeMetric (fun c d => curvatureSl2c u.sd_sector c d p') a b) (x : SpacetimePoint) t' →
+          ∑ a : Fin 4, ∑ b : Fin 4, (emergentStressEnergy (fun m n p' => curvatureSl2c u_defect.sd_sector m n p') a b (x : SpacetimePoint)).re * t a * t' b > 0) ∧
+      (closure {x : bulk | ∃ mu nu, (emergentStressEnergy (fun a b p' => curvatureSl2c u_defect.sd_sector a b p') mu nu (x : SpacetimePoint)).re ≠ 0} ⊆ U) ∧
       (∀ nu (x : bulk),
-        ∑ mu : Fin 4, ∑ alpha : Fin 4, (CGD.Gravity.matrixInv4x4 (fun a b => CGD.Gravity.urbantkeMetric (fun c d => curvatureSl2c u.sd_sector c d (x : SpacetimePoint)) a b) mu alpha) * (
-          partialDeriv alpha (fun (p' : SpacetimePoint) => if p' ∈ bulk then emergentStressEnergy (fun a b p_inner => curvatureSl2c u_defect.sd_sector a b p_inner) mu nu p' else 0) (x : SpacetimePoint) -
-          ∑ lambda : Fin 4, (Gamma_sym lambda alpha mu (x : SpacetimePoint) * emergentStressEnergy (fun a b p' => curvatureSl2c u_defect.sd_sector a b p') lambda nu (x : SpacetimePoint) + 
-                             Gamma_sym lambda alpha nu (x : SpacetimePoint) * emergentStressEnergy (fun a b p' => curvatureSl2c u_defect.sd_sector a b p') mu lambda (x : SpacetimePoint))
+        ∑ mu : Fin 4, ∑ alpha : Fin 4, (CGD.Gravity.matrixInv4x4 (fun a b => CGD.Gravity.urbantkeMetric (fun c d => curvatureSl2c u.sd_sector c d (x : SpacetimePoint)) a b) mu alpha).re * (
+          realDerivProxy alpha (fun (p' : SpacetimePoint) => if p' ∈ bulk then (emergentStressEnergy (fun a b p_inner => curvatureSl2c u_defect.sd_sector a b p_inner) mu nu p').re else 0) (x : SpacetimePoint) -
+          ∑ lambda : Fin 4, (realChristoffelProxy (fun a b p' => CGD.Gravity.urbantkeMetric (fun c d => curvatureSl2c u.sd_sector c d p') a b) lambda alpha mu (x : SpacetimePoint) * (emergentStressEnergy (fun a b p' => curvatureSl2c u_defect.sd_sector a b p') lambda nu (x : SpacetimePoint)).re + 
+                             realChristoffelProxy (fun a b p' => CGD.Gravity.urbantkeMetric (fun c d => curvatureSl2c u.sd_sector c d p') a b) lambda alpha nu (x : SpacetimePoint) * (emergentStressEnergy (fun a b p' => curvatureSl2c u_defect.sd_sector a b p') mu lambda (x : SpacetimePoint)).re)
         ) = 0)) :
   isTimelikeGeodesic gamma := by
   sorry
