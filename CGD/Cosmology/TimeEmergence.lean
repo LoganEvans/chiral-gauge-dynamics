@@ -9,6 +9,7 @@ import Mathlib.Tactic.Ring
 import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.Linarith
 import CGD.Axioms.Ontology
+import CGD.Axioms.Phenomenology
 
 set_option maxHeartbeats 4000000
 set_option linter.unusedVariables false
@@ -511,13 +512,12 @@ Litlib.theorem
 /--
 A fully 4D symmetric field tensor naturally yields a metric with a Euclidean or degenerate signature, forbidding the unique odd-sign axis required for a Lorentzian signature. Therefore, the Lorentzian time dimension emerges geometrically only when the gauge field spontaneously breaks 4D Euclidean (SO(4)) symmetry.
 -/
-theorem kinematicTimeEmergence (u : Universe)
-  (h_tic : ∀ x, x 0 = 0 → isFully4DSymmetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x)) :
-  ∀ (x : SpacetimePoint),
-    x 0 = 0 →
+theorem kinematicTimeEmergence (u : Universe) (phaseRegion : Set SpacetimePoint)
+  (h_symm : ∀ x ∈ phaseRegion, isFully4DSymmetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x)) :
+  ∀ x ∈ phaseRegion,
     ¬ isLorentzian (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x)) := by
   intro x hx
-  have h_symm := h_tic x hx
-  exact math_TimeIsChiralPhase_det (fun mu nu => curvatureSl2c u.sd_sector mu nu x) h_symm
+  have h_tic := h_symm x hx
+  exact math_TimeIsChiralPhase_det (fun mu nu => curvatureSl2c u.sd_sector mu nu x) h_tic
 
 end CGD.Cosmology

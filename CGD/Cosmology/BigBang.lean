@@ -8,6 +8,7 @@ import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
 import CGD.Axioms.Ontology
+import CGD.Axioms.Phenomenology
 
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
@@ -22,20 +23,29 @@ Litlib.theorem
 /--
 By enforcing a topological initial condition, the Big Bang manifests as a pure Euclidean SO(4) instanton rather than a mathematical singularity. Provided the bouncing instanton is topologically non-degenerate (metric determinant is non-zero), it forms a strictly non-zero, macroscopic Euclidean scale state.
 -/
-theorem kinematicBigBang (u : Universe)
-  (h_tic : ∀ x, x 0 = 0 → isFully4DSymmetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x))
-  (h_non_degenerate : ∀ x, x 0 = 0 → urbantkeMetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x) ≠ 0) :
-  ∀ x, x 0 = 0 → ∃ c : Complex, c ≠ 0 ∧ urbantkeMetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x) = c • 1 := by
+theorem kinematicBigBang (u : Universe) (phaseRegion : Set SpacetimePoint)
+  [vol : CGD.Axioms.MacroscopicVolume u phaseRegion]
+  (h_symm : ∀ x ∈ phaseRegion, isFully4DSymmetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x)) :
+  ∀ x ∈ phaseRegion, ∃ c : Complex, c ≠ 0 ∧ urbantkeMetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x) = c • 1 := by
   intro x hx
-  have h_symm := h_tic x hx
-  have h_g := urbantke_eq_smul_id_of_self_dual (fun mu nu => curvatureSl2c u.sd_sector mu nu x) h_symm
+  have h_tic := h_symm x hx
+  have h_g := urbantke_eq_smul_id_of_self_dual (fun mu nu => curvatureSl2c u.sd_sector mu nu x) h_tic
   rcases h_g with ⟨c, hc⟩
   use c
   constructor
   · intro hc_zero
     rw [hc_zero, zero_smul] at hc
-    have h_nd := h_non_degenerate x hx
-    exact h_nd hc
+    have h_nd := vol.volume_exists x hx
+    rw [hc] at h_nd
+    have h_det_zero : (0 : Matrix (Fin 4) (Fin 4) Complex).det = 0 := by
+      rw [Matrix.det_apply]
+      apply Finset.sum_eq_zero
+      intro σ _
+      have h_prod : (∏ i : Fin 4, (0 : Matrix (Fin 4) (Fin 4) Complex) (σ i) i) = 0 := by
+        apply Finset.prod_eq_zero (Finset.mem_univ (0 : Fin 4))
+        rfl
+      rw [h_prod, smul_zero]
+    exact h_nd h_det_zero
   · exact hc
 
 lemma math_Static_Electric_Zero_term (F : Fin 4 → Fin 4 → SL2C)
