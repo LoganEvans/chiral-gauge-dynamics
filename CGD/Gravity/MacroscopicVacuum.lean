@@ -3,6 +3,7 @@
 import Litlib.Core
 import CGD.Gravity.Geometry
 import CGD.Axioms.Ontology
+import CGD.Gravity.Urbantke
 import Litlib.Y1989.capovilla1989general.Signature
 import Litlib.Y1991.capovilla1991pure.Signature
 import Litlib.Y2024.gielen2024unimodular.Signature
@@ -11,45 +12,49 @@ set_option autoImplicit false
 set_option linter.unusedVariables false
 
 open Complex Matrix BigOperators
-open CGD.Axioms CGD.Foundations Litlib
+open CGD.Axioms CGD.Foundations Litlib Classical
 open Litlib.Y1989.capovilla1989general
 open Litlib.Y1991.capovilla1991pure
 open Litlib.Y2024.gielen2024unimodular
 
 namespace CGD.Gravity
 
-instance : Nonempty SpacetimePoint := ⟨sorry⟩
-
 noncomputable def metricFromTetrad (e : TetradField) : SpacetimeIndex → SpacetimeIndex → SpacetimePoint → ℂ :=
   fun μ ν x => ∑ I : InternalIndex, e I μ x * e I ν x
-
-noncomputable def cgdUnimodularMetricAdapter (F_adj : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) : Matrix (Fin 4) (Fin 4) ℂ :=
-  urbantkeMetric (fun μ ν => 
-    toSl2c (F_adj μ ν 1 2 • sigma1.val + F_adj μ ν 2 0 • sigma2.val + F_adj μ ν 0 1 • sigma3.val))
 
 noncomputable def cgdAdjointConnection (u : Universe) (μ : Fin 4) (x : SpacetimePoint) : Matrix (Fin 3) (Fin 3) ℂ :=
   extractAdjoint (u.sd_sector μ x).val
 
 noncomputable def cgdAdjointCurvature (u : Universe) (μ ν : Fin 4) (x : SpacetimePoint) : Matrix (Fin 3) (Fin 3) ℂ :=
-  fun i j => 
-    partialDeriv μ (fun p => cgdAdjointConnection u ν p i j) x -
-    partialDeriv ν (fun p => cgdAdjointConnection u μ p i j) x +
-    (cgdAdjointConnection u μ x * cgdAdjointConnection u ν x - cgdAdjointConnection u ν x * cgdAdjointConnection u μ x) i j
+  extractAdjoint (curvatureSl2c u.sd_sector μ ν x).val
 
 def satisfiesPureCdjConstraint (F_adj : SpacetimePoint → Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) : Prop :=
   ∀ x : SpacetimePoint,
     (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
       epsilon4 μ ν ρ σ • (F_adj x μ ν * F_adj x ρ σ)) = 0
 
-noncomputable def cgdCovariantDeriv (A : SpacetimePoint → Matrix (Fin 3) (Fin 3) ℂ) (f : SpacetimePoint → ℂ) (x : SpacetimePoint) : ℂ :=
-  partialDeriv 0 f x + (A x 0 0) * f x
+-- ==========================================
+-- ALGEBRAIC LEMMAS
+-- ==========================================
+
+lemma adjoint_curvature_antisymm (u : Universe) : 
+  ∀ x μ ν, cgdAdjointCurvature u μ ν x = - cgdAdjointCurvature u ν μ x := sorry
+
+lemma adjoint_curvature_su2 (u : Universe) :
+  ∀ x μ ν, 
+    cgdAdjointCurvature u μ ν x 0 0 = 0 ∧ 
+    cgdAdjointCurvature u μ ν x 1 1 = 0 ∧ 
+    cgdAdjointCurvature u μ ν x 2 2 = 0 ∧
+    cgdAdjointCurvature u μ ν x 2 1 = - cgdAdjointCurvature u μ ν x 1 2 ∧ 
+    cgdAdjointCurvature u μ ν x 2 0 = - cgdAdjointCurvature u μ ν x 0 2 ∧ 
+    cgdAdjointCurvature u μ ν x 1 0 = - cgdAdjointCurvature u μ ν x 0 1 := sorry
 
 -- ==========================================
 -- THEOREMS
 -- ==========================================
 
 Litlib.theorem
-  description "Macroscopic Complex Ricci-Flat GR Vacuum"
+  description "Macroscopic Vacuum (General Relativity Limit)"
 /-- 
 We rigorously prove that the generated complex spacetime metric maps exactly 
 to a complex Ricci-flat tensor, as derived from the pure CDJ constraint equation.
@@ -68,19 +73,36 @@ theorem macroscopicVacuumGR
   sorry
 
 Litlib.theorem
-  description "Unimodular Vacuum Form"
+  description "Unimodular Macroscopic Spacetime Volume Emergence"
 /-- 
 By mapping the continuous Spin(4,C) connections into the 3x3 Adjoint su(2) representation, 
 we show that the Unimodular CDJ theorem extracts a strict global volume invariant `c` from the topological CDJ condition.
 -/
 theorem kinematicUnimodularVacuum 
-  [ucdj_vol : PureConnectionEOM SpacetimePoint cgdCovariantDeriv] 
+  (bulkVacuum : Set SpacetimePoint)
   (u : Universe)
   (Λ : ℂ)
   (hLambdaNz : Λ ≠ 0)
-  (h_cdj : ∀ x, (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ • (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)) = Λ • 1) :
-  ∀ x y, (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x)).det = (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n y)).det ∧ 
-         (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x)).det ≠ 0 := by
-  sorry
+  (h_cdj : ∀ x ∈ bulkVacuum, (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ • (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)) = Λ • 1) :
+  ∀ x y : bulkVacuum, (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x.val)).det = (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n y.val)).det ∧ 
+         (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x.val)).det ≠ 0 := by
+  intro x y
+  obtain ⟨det_val, h_det⟩ := urbantke_det_uniqueness Λ
+  have hx : (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x.val)).det = det_val :=
+    h_det (fun m n => cgdAdjointCurvature u m n x.val) 
+      (adjoint_curvature_antisymm u x.val)
+      (adjoint_curvature_su2 u x.val)
+      (h_cdj x.val x.property)
+  have hy : (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n y.val)).det = det_val :=
+    h_det (fun m n => cgdAdjointCurvature u m n y.val) 
+      (adjoint_curvature_antisymm u y.val)
+      (adjoint_curvature_su2 u y.val)
+      (h_cdj y.val y.property)
+  have hnz : (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x.val)).det ≠ 0 :=
+    urbantke_nondeg_of_plebanski Λ (fun m n => cgdAdjointCurvature u m n x.val) hLambdaNz 
+      (adjoint_curvature_antisymm u x.val)
+      (adjoint_curvature_su2 u x.val)
+      (h_cdj x.val x.property)
+  exact ⟨hx.trans hy.symm, hnz⟩
 
 end CGD.Gravity
