@@ -23,8 +23,16 @@ open Complex Matrix CGD.Foundations CGD.Axioms Litlib.Y2003.nakahara2003geometry
 
 namespace CGD.Particles
 
-instance : Nonempty S3 := ⟨sorry⟩
-instance : Nonempty SU2Group := ⟨sorry⟩
+instance : Nonempty S3 := ⟨⟨fun i => if i = 0 then (1:ℝ) else 0, by
+  have h0 : (fun (i : Fin 4) => if i = 0 then (1:ℝ) else 0) 0 = 1 := rfl
+  have h1 : (fun (i : Fin 4) => if i = 0 then (1:ℝ) else 0) 1 = 0 := rfl
+  have h2 : (fun (i : Fin 4) => if i = 0 then (1:ℝ) else 0) 2 = 0 := rfl
+  have h3 : (fun (i : Fin 4) => if i = 0 then (1:ℝ) else 0) 3 = 0 := rfl
+  rw [h0, h1, h2, h3]
+  norm_num
+⟩⟩
+
+instance : Nonempty SU2Group := ⟨1⟩
 
 /--
 We bypass topological typeclass synthesis by mapping the smoothness requirement 
