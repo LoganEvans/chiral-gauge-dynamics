@@ -18,7 +18,39 @@ open Matrix Complex BigOperators CGD.Axioms CGD.Foundations
 
 namespace CGD.Foundations
 
-instance : Nonempty Universe := ⟨sorry⟩
+instance : Nonempty Universe := ⟨{
+  val := fun _ _ => 0
+  is_spin4c := by
+    intro mu x
+    have h1 : embedSelfDual (chiralProject (0 : ChiralM)).self_dual = 0 := by
+      ext i j
+      unfold embedSelfDual
+      simp only [Matrix.of_apply]
+      cases hx : chiralIso.symm i <;> cases hy : chiralIso.symm j
+      · unfold chiralProject toSl2c
+        simp [Matrix.trace]
+      · rfl
+      · rfl
+      · rfl
+    have h2 : embedAntiSelfDual (chiralProject (0 : ChiralM)).anti_self_dual = 0 := by
+      ext i j
+      unfold embedAntiSelfDual
+      simp only [Matrix.of_apply]
+      cases hx : chiralIso.symm i <;> cases hy : chiralIso.symm j
+      · rfl
+      · rfl
+      · rfl
+      · unfold chiralProject toSl2c
+        simp [Matrix.trace]
+    change (0 : ChiralM) = embedSelfDual (chiralProject (0 : ChiralM)).self_dual + embedAntiSelfDual (chiralProject (0 : ChiralM)).anti_self_dual
+    rw [h1, h2, add_zero]
+  sd_is_smooth := by
+    intro mu i j
+    exact contDiff_const
+  asd_is_smooth := by
+    intro mu i j
+    exact contDiff_const
+}⟩
 
 def isSpin4cAlgebra (M : ChiralM) : Prop := 
   ∃ (L R : SL2C), M = embedSelfDual L + embedAntiSelfDual R
