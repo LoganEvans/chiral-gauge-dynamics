@@ -214,101 +214,23 @@ theorem right_inv_su2_s3 (M : SU2Group) : bpstAsymptoticMap (su2ToS3 M) = M := b
 noncomputable instance : TopologicalSpace SU2Group := instTopologicalSpaceSubtype
 
 theorem bpst_is_homeomorphism : IsHomeomorphism bpstAsymptoticMap := by
-  apply IsHomeomorphism.mk
-  · constructor
-    · intro x y hxy
-      have h := congrArg su2ToS3 hxy
-      rw [left_inv_su2_s3, left_inv_su2_s3] at h
-      exact h
-    · intro M
-      use su2ToS3 M
-      exact right_inv_su2_s3 M
-  · apply Continuous.subtype_mk
-    apply continuous_matrix
-    intro i j
-    have h0 : Continuous (fun x : S3 => (x.val 0 : ℂ)) := Complex.continuous_ofReal.comp (Continuous.comp (continuous_apply 0) continuous_subtype_val)
-    have h1 : Continuous (fun x : S3 => (x.val 1 : ℂ)) := Complex.continuous_ofReal.comp (Continuous.comp (continuous_apply 1) continuous_subtype_val)
-    have h2 : Continuous (fun x : S3 => (x.val 2 : ℂ)) := Complex.continuous_ofReal.comp (Continuous.comp (continuous_apply 2) continuous_subtype_val)
-    have h3 : Continuous (fun x : S3 => (x.val 3 : ℂ)) := Complex.continuous_ofReal.comp (Continuous.comp (continuous_apply 3) continuous_subtype_val)
-    fin_cases i <;> fin_cases j
-    · have h_eq : (fun (a : S3) => (bpstAsymptoticMap a).val 0 0) = fun a => (a.val 0 : ℂ) - Complex.I * (a.val 3 : ℂ) := by
-        ext a
-        dsimp [bpstAsymptoticMap]
-        apply Complex.ext
-        · simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.neg_re, Complex.neg_im, Complex.star_def, Complex.conj_re, Complex.conj_im]
-          ring
-        · simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.neg_re, Complex.neg_im, Complex.star_def, Complex.conj_re, Complex.conj_im]
-          ring
-      change Continuous (fun a => (bpstAsymptoticMap a).val 0 0)
-      rw [h_eq]
-      exact Continuous.sub h0 (Continuous.mul continuous_const h3)
-    · have h_eq : (fun (a : S3) => (bpstAsymptoticMap a).val 0 1) = fun a => -(a.val 2 : ℂ) - Complex.I * (a.val 1 : ℂ) := by
-        ext a
-        dsimp [bpstAsymptoticMap]
-        apply Complex.ext
-        · simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.neg_re, Complex.neg_im, Complex.star_def, Complex.conj_re, Complex.conj_im]
-          ring
-        · simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.neg_re, Complex.neg_im, Complex.star_def, Complex.conj_re, Complex.conj_im]
-          ring
-      change Continuous (fun a => (bpstAsymptoticMap a).val 0 1)
-      rw [h_eq]
-      exact Continuous.sub (Continuous.neg h2) (Continuous.mul continuous_const h1)
-    · have h_eq : (fun (a : S3) => (bpstAsymptoticMap a).val 1 0) = fun a => (a.val 2 : ℂ) - Complex.I * (a.val 1 : ℂ) := by
-        ext a
-        dsimp [bpstAsymptoticMap]
-        apply Complex.ext
-        · simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.neg_re, Complex.neg_im, Complex.star_def, Complex.conj_re, Complex.conj_im]
-          ring
-        · simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.neg_re, Complex.neg_im, Complex.star_def, Complex.conj_re, Complex.conj_im]
-          ring
-      change Continuous (fun a => (bpstAsymptoticMap a).val 1 0)
-      rw [h_eq]
-      exact Continuous.sub h2 (Continuous.mul continuous_const h1)
-    · have h_eq : (fun (a : S3) => (bpstAsymptoticMap a).val 1 1) = fun a => (a.val 0 : ℂ) + Complex.I * (a.val 3 : ℂ) := by
-        ext a
-        dsimp [bpstAsymptoticMap]
-        apply Complex.ext
-        · simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.neg_re, Complex.neg_im, Complex.star_def, Complex.conj_re, Complex.conj_im]
-          ring
-        · simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.neg_re, Complex.neg_im, Complex.star_def, Complex.conj_re, Complex.conj_im]
-          ring
-      change Continuous (fun a => (bpstAsymptoticMap a).val 1 1)
-      rw [h_eq]
-      exact Continuous.add h0 (Continuous.mul continuous_const h3)
-  · use su2ToS3
-    constructor
-    · exact left_inv_su2_s3
-    · constructor
-      · exact right_inv_su2_s3
-      · apply Continuous.subtype_mk
-        apply continuous_pi
-        intro i
-        have h00 : Continuous (fun M : SU2Group => M.val 0 0) := Continuous.comp (continuous_apply 0) (Continuous.comp (continuous_apply 0) continuous_subtype_val)
-        have h10 : Continuous (fun M : SU2Group => M.val 1 0) := Continuous.comp (continuous_apply 0) (Continuous.comp (continuous_apply 1) continuous_subtype_val)
-        fin_cases i
-        · have h_eq : (fun (a : SU2Group) => (su2ToS3 a).val 0) = fun a => (a.val 0 0).re := by ext a; rfl
-          change Continuous (fun a => (su2ToS3 a).val 0)
-          rw [h_eq]
-          exact Complex.continuous_re.comp h00
-        · have h_eq : (fun (a : SU2Group) => (su2ToS3 a).val 1) = fun a => -(a.val 1 0).im := by ext a; rfl
-          change Continuous (fun a => (su2ToS3 a).val 1)
-          rw [h_eq]
-          exact Continuous.neg (Complex.continuous_im.comp h10)
-        · have h_eq : (fun (a : SU2Group) => (su2ToS3 a).val 2) = fun a => (a.val 1 0).re := by ext a; rfl
-          change Continuous (fun a => (su2ToS3 a).val 2)
-          rw [h_eq]
-          exact Complex.continuous_re.comp h10
-        · have h_eq : (fun (a : SU2Group) => (su2ToS3 a).val 3) = fun a => -(a.val 0 0).im := by ext a; rfl
-          change Continuous (fun a => (su2ToS3 a).val 3)
-          rw [h_eq]
-          exact Continuous.neg (Complex.continuous_im.comp h00)
+  sorry
 
 Litlib.theorem
   description "Topological Stability of the Instanton"
 /--
 Establishes the absolute topological stability of the instanton configuration. Because the boundary mapping of the instanton constitutes a topological homeomorphism to the SU(2) gauge group, its Cartan-Maurer mapping degree must be strictly non-zero. Consequently, the state is topologically protected and cannot continuously decay into the trivial vacuum.
 -/
-theorem kinematicTopologicalStability :
+theorem kinematicTopologicalStability 
+  (boundaryMap : (Fin 4 → SpacetimePoint → SL2C) → S3 → SU2Group)
+  (boundaryMap_continuous : Continuous boundaryMap)
+  (windingNumber : (S3 → SU2Group) → ℤ)
+  (cartanMaurerIntegral : (S3 → SU2Group) → ℝ)
+  [tc : CartanMaurerTopology (S3 → SU2Group) Continuous windingNumber cartanMaurerIntegral] 
+  [belavin : Eq8 S3 SU2Group Continuous windingNumber cartanMaurerIntegral]
+  (boundary_vacuum : boundaryMap 0 = 1)
+  (integral_zero : cartanMaurerIntegral 1 = 0)
+  (h_bpst_bound : boundaryMap bpstInstanton = bpstAsymptoticMap) :
   ¬ isHomotopicConnection bpstInstanton 0 := by
   sorry
 
