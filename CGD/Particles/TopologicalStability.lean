@@ -310,7 +310,9 @@ Establishes the absolute topological stability of the instanton configuration. B
 -/
 theorem kinematicTopologicalStability 
   (boundaryMap : (Fin 4 → SpacetimePoint → SL2C) → S3 → SU2Group)
-  (boundaryMap_continuous : Continuous boundaryMap)
+  (boundaryMap_path_continuous : ∀ (H : ℝ → Fin 4 → SpacetimePoint → SL2C),
+    (∀ mu i j, ContDiff ℝ ⊤ (fun (tx : ℝ × SpacetimePoint) => (H tx.1 mu tx.2).val i j)) →
+    Continuous (fun t => boundaryMap (H t)))
   (windingNumber : (S3 → SU2Group) → ℤ)
   (cartanMaurerIntegral : (S3 → SU2Group) → ℝ)
   [tc : CartanMaurerTopology (S3 → SU2Group) Continuous windingNumber cartanMaurerIntegral] 
@@ -322,9 +324,7 @@ theorem kinematicTopologicalStability
   intro h_homotopy
   rcases h_homotopy with ⟨H, hH0, hH1, hHCont⟩
   
-  -- Gap 1: Requires establishing the proper function space topology (e.g., compact-open or Sobolev)
-  -- bounding the asymptotic limits, as pointwise convergence (continuous_pi) is physically insufficient.
-  have h_bound_cont : Continuous (fun t => boundaryMap (H t)) := by sorry
+  have h_bound_cont : Continuous (fun t => boundaryMap (H t)) := boundaryMap_path_continuous H hHCont
   
   have h_wind_eq := tc.homotopyInvariance (fun t => boundaryMap (H t)) h_bound_cont 0 1
   
