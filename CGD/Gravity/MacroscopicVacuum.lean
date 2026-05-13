@@ -79,6 +79,7 @@ By mapping the continuous Spin(4,C) connections into the 3x3 Adjoint su(2) repre
 we show that the Unimodular CDJ theorem extracts a strict global volume invariant `c` from the topological CDJ condition.
 -/
 theorem kinematicUnimodularVacuum 
+  [udi : Litlib.Y1991.capovilla1991pure.UrbantkeDeterminantIdentity Unit CGD.Gravity.epsilon4 CGD.Gravity.eps2 CGD.Gravity.eps2_up]
   (bulkVacuum : Set SpacetimePoint)
   (u : Universe)
   (Λ : ℂ)

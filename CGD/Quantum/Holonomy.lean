@@ -527,11 +527,6 @@ lemma gen_A_path_cont (u : Universe) (alpha : ℝ) (γ : ℝ → SpacetimePoint)
   rw [h_eq]
   exact continuous_const
 
-class CommutativeHolonomyIntegration 
-  (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
-  (holonomy integral : (ℝ → Matrix (Fin 2) (Fin 2) ℂ) → ℝ → ℝ → Matrix (Fin 2) (Fin 2) ℂ) where
-  eval_of_comm : ∀ A t0 t1, (∀ s t, A s * A t = A t * A s) → holonomy A t0 t1 = matrixExp (integral A t0 t1)
-
 lemma eval_obs
   (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
   (holonomy integral : (ℝ → Matrix (Fin 2) (Fin 2) ℂ) → ℝ → ℝ → Matrix (Fin 2) (Fin 2) ℂ)
@@ -539,7 +534,6 @@ lemma eval_obs
   [OneParameterSubgroups (Fin 2) matrixExp]
   [DeterminantExponential (Fin 2) matrixExp]
   [LieProductFormula (Fin 2) matrixExp]
-  [CommutativeHolonomyIntegration matrixExp holonomy integral]
   (u : Universe) (alpha : ℝ) (γ : ℝ → SpacetimePoint)
   (h_path : ∀ t, γ t 1 = t ∧ γ t 0 = 0 ∧ γ t 2 = 0 ∧ γ t 3 = 0)
   (h_field : ∀ t, u.sd_sector 1 (γ t) = fluxTubeFrame 1 (γ t)) :
@@ -599,7 +593,6 @@ theorem kinematicHolonomicBellViolation
   [OneParameterSubgroups (Fin 2) matrixExp]
   [DeterminantExponential (Fin 2) matrixExp]
   [LieProductFormula (Fin 2) matrixExp]
-  [CommutativeHolonomyIntegration matrixExp holonomy integral]
   (u : Universe) (D : ℝ) :
   (∀ t, u.sd_sector 1 (straightLinePath t) = fluxTubeFrame 1 (straightLinePath t)) →
   D > 0 →
@@ -625,7 +618,6 @@ theorem kinematicHolonomicDegeneracy
   [OneParameterSubgroups (Fin 2) matrixExp]
   [DeterminantExponential (Fin 2) matrixExp]
   [LieProductFormula (Fin 2) matrixExp]
-  [CommutativeHolonomyIntegration matrixExp holonomy integral]
   (u : Universe) :
   ∀ (alpha beta D : ℝ),
     (∀ t, u.sd_sector 1 (straightLinePath t) = fluxTubeFrame 1 (straightLinePath t)) →
