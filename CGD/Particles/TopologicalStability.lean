@@ -213,6 +213,9 @@ theorem right_inv_su2_s3 (M : SU2Group) : bpstAsymptoticMap (su2ToS3 M) = M := b
 
 noncomputable instance : TopologicalSpace SU2Group := instTopologicalSpaceSubtype
 
+/--
+Gap 2: Requires explicit point-set continuity proofs for the rational matrix component projections.
+-/
 theorem bpst_is_homeomorphism : IsHomeomorphism bpstAsymptoticMap := by
   sorry
 
@@ -232,6 +235,39 @@ theorem kinematicTopologicalStability
   (integral_zero : cartanMaurerIntegral 1 = 0)
   (h_bpst_bound : boundaryMap bpstInstanton = bpstAsymptoticMap) :
   ¬ isHomotopicConnection bpstInstanton 0 := by
-  sorry
+  intro h_homotopy
+  rcases h_homotopy with ⟨H, hH0, hH1, hHCont⟩
+  
+  -- Gap 1: Requires establishing the Fréchet mapping topology bridging the homotopy to the boundary evaluation.
+  have h_bound_cont : Continuous (fun t => boundaryMap (H t)) := by sorry
+  
+  have h_wind_eq := tc.homotopyInvariance (fun t => boundaryMap (H t)) h_bound_cont 0 1
+  
+  have h0_eq : H 0 = bpstInstanton := by funext mu x; exact hH0 mu x
+  have h1_eq : H 1 = 0 := by funext mu x; exact hH1 mu x
+  
+  have h_wind_0 : windingNumber (boundaryMap (H 0)) = windingNumber bpstAsymptoticMap := by
+    rw [h0_eq, h_bpst_bound]
+    
+  have h_wind_1 : windingNumber (boundaryMap (H 1)) = 0 := by
+    rw [h1_eq, boundary_vacuum]
+    have h_const_cont : Continuous (1 : S3 → SU2Group) := continuous_const
+    have h_thm := tc.degreeTheorem 1 h_const_cont
+    rw [integral_zero] at h_thm
+    exact_mod_cast h_thm.symm
+    
+  rw [h_wind_0, h_wind_1] at h_wind_eq
+  
+  have h_deg := belavin.degree_of_homeomorph bpstAsymptoticMap bpst_is_homeomorphism
+  
+  cases h_deg with
+  | inl h_pos => 
+    rw [h_pos] at h_wind_eq
+    have h_false : (1 : ℤ) = 0 := h_wind_eq
+    norm_num at h_false
+  | inr h_neg => 
+    rw [h_neg] at h_wind_eq
+    have h_false : (-1 : ℤ) = 0 := h_wind_eq
+    norm_num at h_false
 
 end CGD.Particles
