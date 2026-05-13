@@ -23,6 +23,8 @@ Litlib.theorem
   description "Topological Action Quantization"
 /-- 
 If a physical connection yields an asymptotic boundary map that is a topological homeomorphism to the gauge group, its Cartan-Maurer topological charge strictly evaluates to an integer quantization bound (±1).
+
+Here we explicitly invoke the Nakahara (2003) Cartan-Maurer degree theorem and the Belavin (1975) topological bounds.
 -/
 theorem kinematicActionQuantization
   {BoundaryManifold : Type*} [TopologicalSpace BoundaryManifold] [Nonempty BoundaryManifold]
@@ -35,6 +37,27 @@ theorem kinematicActionQuantization
   (h_homeo : IsHomeomorphism (boundaryMap u.sd_sector.val)) :
   cartanMaurerIntegral (boundaryMap u.sd_sector.val) = 1 ∨ 
   cartanMaurerIntegral (boundaryMap u.sd_sector.val) = -1 := by
-  sorry
+  
+  -- Step 1: Belavin 1975 gives us that the winding number of a homeomorphism is ±1.
+  have h_deg := belavin.degree_of_homeomorph (boundaryMap u.sd_sector.val) h_homeo
+  
+  -- Step 2: Extract the continuity property from the homeomorphism structure.
+  have h_cont : Continuous (boundaryMap u.sd_sector.val) := h_homeo.cont
+  
+  -- Step 3: Nakahara 2003 degree theorem equates the integral to the winding number.
+  have h_thm := tc.degreeTheorem (boundaryMap u.sd_sector.val) h_cont
+  
+  -- Step 4: Destructure the Belavin bound and apply the Nakahara equality to prove the goal.
+  cases h_deg with
+  | inl h_pos => 
+    left
+    have h_eval : (windingNumber (boundaryMap u.sd_sector.val) : ℝ) = 1 := by exact_mod_cast h_pos
+    rw [←h_thm] at h_eval
+    exact h_eval
+  | inr h_neg => 
+    right
+    have h_eval : (windingNumber (boundaryMap u.sd_sector.val) : ℝ) = -1 := by exact_mod_cast h_neg
+    rw [←h_thm] at h_eval
+    exact h_eval
 
 end CGD.Quantum
