@@ -34,10 +34,9 @@ theorem kinematicHolonomicBellViolation
   [OneParameterSubgroups (Fin 2) matrixExp]
   [DeterminantExponential (Fin 2) matrixExp]
   [LieProductFormula (Fin 2) matrixExp]
-  (u : Universe) (D : ℝ) :
+  (u : Universe) :
   (∀ t, u.sd_sector 1 (straightLinePath t) = fluxTubeFrame 1 (straightLinePath t)) →
-  D > 0 →
-  (CGD.Gravity.urbantkeMetric (fun m n => CGD.Foundations.curvatureSl2c u.sd_sector m n (straightLinePath 0)) 1 1).re > D →
+  (CGD.Gravity.urbantkeMetric (fun m n => CGD.Foundations.curvatureSl2c u.sd_sector m n (straightLinePath 0)) 1 1).re > 0 →
   let L := Real.pi / 2;
   let A1 := macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) 0 mu p) 1 L;
   let A2 := macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (Real.pi / 2) mu p) 1 L;
@@ -45,7 +44,7 @@ theorem kinematicHolonomicBellViolation
   let B2 := macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) (- (Real.pi / 4)) mu p) 1 L;
   A1^2 = 1 ∧ A2^2 = 1 ∧ B1^2 = 1 ∧ B2^2 = 1 ∧
   (chshSumBell A1 A2 B1 B2)^2 = 8 := by
-  intro h_field hD_pos hD_bound
+  intro h_field h_metric_pos
 
   let γ := straightLinePath
   have h_path : ∀ t, γ t 1 = t ∧ γ t 0 = 0 ∧ γ t 2 = 0 ∧ γ t 3 = 0 := straightLinePath_prop
@@ -96,16 +95,15 @@ theorem kinematicHolonomicDegeneracy
   [DeterminantExponential (Fin 2) matrixExp]
   [LieProductFormula (Fin 2) matrixExp]
   (u : Universe) :
-  ∀ (alpha beta D : ℝ),
+  ∀ (alpha beta : ℝ),
     (∀ t, u.sd_sector 1 (straightLinePath t) = fluxTubeFrame 1 (straightLinePath t)) →
-    D > 0 →
-    (CGD.Gravity.urbantkeMetric (fun m n => CGD.Foundations.curvatureSl2c u.sd_sector m n (straightLinePath 0)) 1 1).re > D →
+    (CGD.Gravity.urbantkeMetric (fun m n => CGD.Foundations.curvatureSl2c u.sd_sector m n (straightLinePath 0)) 1 1).re > 0 →
     let L := Real.pi / 2;
     let obs_x := macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) alpha mu p) 1 L;
     let obs_y := macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) beta mu p) 1 L;
     bellCorrelationDeg obs_x (- obs_y)
       = - Complex.cos ((alpha : ℂ) - (beta : ℂ)) := by
-  intro alpha beta D h_field hD_pos hD_bound
+  intro alpha beta h_field h_metric_pos
   
   let γ := straightLinePath
   have h_path : ∀ t, γ t 1 = t ∧ γ t 0 = 0 ∧ γ t 2 = 0 ∧ γ t 3 = 0 := straightLinePath_prop
