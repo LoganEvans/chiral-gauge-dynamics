@@ -49,27 +49,23 @@ lemma trace_parallelogram (X Y : Matrix n n ℂ) :
   simp[trace_add', trace_sub']
   ring
 
-Litlib.theorem
-  description "Pure Axial Volume Generation"
 /-- 
 The parity-even topological density (which generates the macroscopic Unimodular volume) 
 is sustained exactly by the sum of the Vector and Axial kinetic traces. 
 If the Vector field is identically zero, the metric volume is generated entirely by the Axial background.
 -/
-theorem algebraicAxialVolumeGeneration (V A : Matrix (Fin 2) (Fin 2) ℂ) :
+lemma algebraicAxialVolumeGeneration (V A : Matrix (Fin 2) (Fin 2) ℂ) :
   let L := V + A
   let R := V - A
   Matrix.trace (L * L) + Matrix.trace (R * R) = 2 * Matrix.trace (V * V) + 2 * Matrix.trace (A * A) := by
   exact trace_parallelogram V A
 
-Litlib.theorem
-  description "Topological Parity Violation is Vector-Axial Interference"
 /-- 
 The chiral topological difference (L^2 - R^2), which geometrically drives 
 matter/antimatter asymmetry, algebraically reduces strictly to the cross-term 
 of the Vector and Axial fields. 
 -/
-theorem algebraicTopologicalInterference (V A : Matrix (Fin 2) (Fin 2) ℂ) :
+lemma algebraicTopologicalInterference (V A : Matrix (Fin 2) (Fin 2) ℂ) :
   let L := V + A
   let R := V - A
   Matrix.trace (L * L) - Matrix.trace (R * R) = 4 * Matrix.trace (V * A) := by
@@ -92,12 +88,10 @@ theorem algebraicTopologicalInterference (V A : Matrix (Fin 2) (Fin 2) ℂ) :
   rw [tr_comm]
   ring
 
-Litlib.theorem
-  description "Weinberg Decomposition Identity"
 /-- 
 The vector-axial kinetic tracing identity algebraically separates the total chiral structure into pure kinetic vector terms and vector-axial coupled terms. 
 -/
-theorem algebraicWeinbergDecomposition (_u : Universe) (_x : SpacetimePoint) (_mu _nu : Fin 4) :
+lemma algebraicWeinbergDecomposition (_u : Universe) (_x : SpacetimePoint) (_mu _nu : Fin 4) :
   ∀ (dV dA V1 V2 A1 A2 : Matrix (Fin 2) (Fin 2) Complex),
     Matrix.trace (fMode (dV + dA) (V1 + A1) (V2 + A2) * fMode (dV + dA) (V1 + A1) (V2 + A2)) +
     Matrix.trace (fMode (dV - dA) (V1 - A1) (V2 - A2) * fMode (dV - dA) (V1 - A1) (V2 - A2)) =
@@ -123,12 +117,10 @@ theorem algebraicWeinbergDecomposition (_u : Universe) (_x : SpacetimePoint) (_m
   rw[h1, h2]
   exact trace_parallelogram X Y
 
-Litlib.theorem
-  description "Weinberg Sum Splitting"
 /-- 
 If Chiral symmetry is broken (L ≠ R), the Axial vector part A cannot be identically zero. 
 -/
-theorem algebraicWeinbergSumSplitting (V1 A1 : Matrix (Fin 2) (Fin 2) ℂ) :
+lemma algebraicWeinbergSumSplitting (V1 A1 : Matrix (Fin 2) (Fin 2) ℂ) :
   let L := V1 + A1;
   let R := V1 - A1;
   L ≠ R → A1 ≠ 0 := by
@@ -137,12 +129,10 @@ theorem algebraicWeinbergSumSplitting (V1 A1 : Matrix (Fin 2) (Fin 2) ℂ) :
   change V1 + A1 = V1 - A1
   rw [h_eq, add_zero, sub_zero]
 
-Litlib.theorem
-  description "Axial Truncation Error"
 /-- 
 Enforcing Pure Vector Dominance manually truncates out exactly 2A^2 from the chiral dynamics. 
 -/
-theorem algebraicAxialTruncationError (V A : Matrix (Fin 2) (Fin 2) ℂ) :
+lemma algebraicAxialTruncationError (V A : Matrix (Fin 2) (Fin 2) ℂ) :
   2 * Matrix.trace (V * V) + 2 * Matrix.trace (A * A) - 2 * Matrix.trace (V * V) = 2 * Matrix.trace (A * A) := by
   ring
 
