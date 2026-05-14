@@ -4,6 +4,9 @@ import Litlib.Core
 import CGD.Foundations.Spacetime
 import CGD.Foundations.Calculus
 import CGD.Gravity.Geometry
+import Mathlib.Topology.Basic
+import Mathlib.Analysis.Calculus.ContDiff.Basic
+import Litlib.Y1976.rudin1976principles.Chapter09.Sec08_DerivativesOfHigherOrder
 
 open CGD.Foundations CGD.Gravity
 open BigOperators Complex
@@ -65,19 +68,109 @@ lemma sum_antisymm_zero (S : Fin 4 → Fin 4 → ℂ) (h : ∀ i j, S i j = - S 
     _ = (1 / 2 : ℂ) * 0 := by rw [h2]
     _ = 0 := by ring
 
+lemma partialDeriv_re (f : SpacetimePoint → ℂ) (μ : Fin 4) (x : SpacetimePoint)
+  (hf : DifferentiableAt ℝ f x) :
+  (partialDeriv μ f x).re = partialDeriv μ (fun p => (f p).re) x := by
+  unfold partialDeriv
+  let L : ℂ →L[ℝ] ℝ := {
+    toFun := Complex.re
+    map_add' := Complex.add_re
+    map_smul' := fun r c => by simp
+    cont := continuous_re
+  }
+  have hg : HasFDerivAt L L (f x) := L.hasFDerivAt
+  have hf_has : HasFDerivAt f (fderiv ℝ f x) x := hf.hasFDerivAt
+  have hc : HasFDerivAt (L ∘ f) (L.comp (fderiv ℝ f x)) x := hg.comp x hf_has
+  have h_fderiv : fderiv ℝ (fun p => (f p).re) x = L.comp (fderiv ℝ f x) := hc.fderiv
+  rw [h_fderiv]
+  rfl
+
+lemma partialDeriv_im (f : SpacetimePoint → ℂ) (μ : Fin 4) (x : SpacetimePoint)
+  (hf : DifferentiableAt ℝ f x) :
+  (partialDeriv μ f x).im = partialDeriv μ (fun p => (f p).im) x := by
+  unfold partialDeriv
+  let L : ℂ →L[ℝ] ℝ := {
+    toFun := Complex.im
+    map_add' := Complex.add_im
+    map_smul' := fun r c => by simp
+    cont := continuous_im
+  }
+  have hg : HasFDerivAt L L (f x) := L.hasFDerivAt
+  have hf_has : HasFDerivAt f (fderiv ℝ f x) x := hf.hasFDerivAt
+  have hc : HasFDerivAt (L ∘ f) (L.comp (fderiv ℝ f x)) x := hg.comp x hf_has
+  have h_fderiv : fderiv ℝ (fun p => (f p).im) x = L.comp (fderiv ℝ f x) := hc.fderiv
+  rw [h_fderiv]
+  rfl
+
+lemma partialDeriv_comm_real
+  [clairaut : Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional]
+  (f : SpacetimePoint → ℝ)
+  (h_smooth : ContDiffOn ℝ 2 f Set.univ)
+  (μ ν : Fin 4) (x : SpacetimePoint) 
+  (h_diff_fderiv : DifferentiableAt ℝ (fderiv ℝ f) x) :
+  partialDeriv μ (fun p => partialDeriv ν f p) x = partialDeriv ν (fun p => partialDeriv μ f p) x := by
+  let u : Fin 4 → ℝ := (Pi.single ν (1:ℝ) : Fin 4 → ℝ)
+  let w : Fin 4 → ℝ := (Pi.single μ (1:ℝ) : Fin 4 → ℝ)
+  
+  let L_u : ((Fin 4 → ℝ) →L[ℝ] ℝ) →L[ℝ] ℝ := ContinuousLinearMap.apply ℝ ℝ u
+  have hg1 : HasFDerivAt L_u L_u (fderiv ℝ f x) := L_u.hasFDerivAt
+  have hf1 : HasFDerivAt (fderiv ℝ f) (fderiv ℝ (fderiv ℝ f) x) x := h_diff_fderiv.hasFDerivAt
+  have hc1 : HasFDerivAt (L_u ∘ (fderiv ℝ f)) (L_u.comp (fderiv ℝ (fderiv ℝ f) x)) x := hg1.comp x hf1
+  have hc1_fderiv : fderiv ℝ (L_u ∘ (fderiv ℝ f)) x = L_u.comp (fderiv ℝ (fderiv ℝ f) x) := hc1.fderiv
+  
+  have h_eval1 : partialDeriv μ (fun p => partialDeriv ν f p) x = fderiv ℝ (fderiv ℝ f) x w u := by
+    unfold partialDeriv
+    have heq : (fun p => fderiv ℝ f p u) = L_u ∘ (fderiv ℝ f) := rfl
+    rw [heq, hc1_fderiv]
+    rfl
+    
+  let L_w : ((Fin 4 → ℝ) →L[ℝ] ℝ) →L[ℝ] ℝ := ContinuousLinearMap.apply ℝ ℝ w
+  have hg2 : HasFDerivAt L_w L_w (fderiv ℝ f x) := L_w.hasFDerivAt
+  have hc2 : HasFDerivAt (L_w ∘ (fderiv ℝ f)) (L_w.comp (fderiv ℝ (fderiv ℝ f) x)) x := hg2.comp x hf1
+  have hc2_fderiv : fderiv ℝ (L_w ∘ (fderiv ℝ f)) x = L_w.comp (fderiv ℝ (fderiv ℝ f) x) := hc2.fderiv
+  
+  have h_eval2 : partialDeriv ν (fun p => partialDeriv μ f p) x = fderiv ℝ (fderiv ℝ f) x u w := by
+    unfold partialDeriv
+    have heq : (fun p => fderiv ℝ f p w) = L_w ∘ (fderiv ℝ f) := rfl
+    rw [heq, hc2_fderiv]
+    rfl
+    
+  rw [h_eval1, h_eval2]
+  
+  let v : Fin 2 → (Fin 4 → ℝ) := fun i => if i = 0 then u else w
+  let sig : Equiv.Perm (Fin 2) := Equiv.swap 0 1
+  
+  have hc_clairaut := clairaut.symmetry_of_higher_partials 4 2 Set.univ isOpen_univ f h_smooth x (Set.mem_univ x) v sig
+  
+  have hr1 : iteratedFDeriv ℝ 2 f x v = fderiv ℝ (fderiv ℝ f) x u w := by
+    have h : iteratedFDeriv ℝ 2 f x v = fderiv ℝ (fderiv ℝ f) x (v 0) (v 1) := iteratedFDeriv_two_apply f x v
+    rw [h]
+    rfl
+    
+  have hr2 : iteratedFDeriv ℝ 2 f x (fun i => v (sig i)) = fderiv ℝ (fderiv ℝ f) x w u := by
+    have h : iteratedFDeriv ℝ 2 f x (fun i => v (sig i)) = fderiv ℝ (fderiv ℝ f) x (v (sig 0)) (v (sig 1)) := iteratedFDeriv_two_apply f x (fun i => v (sig i))
+    rw [h]
+    rfl
+    
+  rw [hr2, hr1] at hc_clairaut
+  exact hc_clairaut
+
 Litlib.theorem
   description "Topological Charge Conservation"
 /--
 Because the emergent current is purely topological (defined via the Levi-Civita symbol),
 its divergence strictly vanishes due to the commutativity of partial derivatives,
-independent of any dynamical equations of motion.
+justified natively via n-dimensional Clairaut theorem on the Abelian field strength.
 -/
 theorem topologicalChargeConservation 
+  [clairaut : Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional]
   (F : Fin 4 → Fin 4 → SpacetimePoint → ℂ)
-  (h_deriv_commute : ∀ α β (f : SpacetimePoint → ℂ) x, 
-    partialDeriv α (fun p => partialDeriv β f p) x = 
-    partialDeriv β (fun p => partialDeriv α f p) x)
-  (h_diff : ∀ ν ρ σ x, DifferentiableAt ℝ (fun p => partialDeriv ν (fun p' => F ρ σ p') p) x) :
+  (h_smooth_re : ∀ ρ σ, ContDiffOn ℝ 2 (fun p => (F ρ σ p).re) Set.univ)
+  (h_smooth_im : ∀ ρ σ, ContDiffOn ℝ 2 (fun p => (F ρ σ p).im) Set.univ)
+  (h_diff_F : ∀ ρ σ x, DifferentiableAt ℝ (fun p => F ρ σ p) x)
+  (h_diff : ∀ ν ρ σ x, DifferentiableAt ℝ (fun p => partialDeriv ν (fun p' => F ρ σ p') p) x)
+  (h_diff_fderiv_re : ∀ ρ σ x, DifferentiableAt ℝ (fderiv ℝ (fun p => (F ρ σ p).re)) x)
+  (h_diff_fderiv_im : ∀ ρ σ x, DifferentiableAt ℝ (fderiv ℝ (fun p => (F ρ σ p).im)) x) :
   ∀ x : SpacetimePoint, 
     ∑ μ : Fin 4, partialDeriv μ (fun p => emergentElectricCurrent F μ p) x = 0 := by
   intro x
@@ -138,7 +231,41 @@ theorem topologicalChargeConservation
         apply Finset.sum_congr rfl
         intro σ _
         have h_eps : epsilon4 μ ν ρ σ = - epsilon4 ν μ ρ σ := (epsilon4_alt μ ν ρ σ).1
-        have h_comm : partialDeriv μ (fun p => partialDeriv ν (fun p' => F ρ σ p') p) x = partialDeriv ν (fun p => partialDeriv μ (fun p' => F ρ σ p') p) x := h_deriv_commute μ ν (fun p' => F ρ σ p') x
+        
+        have h_comm : partialDeriv μ (fun p => partialDeriv ν (fun p' => F ρ σ p') p) x = partialDeriv ν (fun p => partialDeriv μ (fun p' => F ρ σ p') p) x := by
+          apply Complex.ext
+          · have hr1 := partialDeriv_re (fun p => partialDeriv ν (fun p' => F ρ σ p') p) μ x (h_diff ν ρ σ x)
+            have h_inner_re : (fun p => (partialDeriv ν (fun p' => F ρ σ p') p).re) = fun p => partialDeriv ν (fun p' => (F ρ σ p').re) p := by
+              ext p
+              exact partialDeriv_re (fun p' => F ρ σ p') ν p (h_diff_F ρ σ p)
+            rw [h_inner_re] at hr1
+            rw [hr1]
+            
+            have hr2 := partialDeriv_re (fun p => partialDeriv μ (fun p' => F ρ σ p') p) ν x (h_diff μ ρ σ x)
+            have h_inner_re2 : (fun p => (partialDeriv μ (fun p' => F ρ σ p') p).re) = fun p => partialDeriv μ (fun p' => (F ρ σ p').re) p := by
+              ext p
+              exact partialDeriv_re (fun p' => F ρ σ p') μ p (h_diff_F ρ σ p)
+            rw [h_inner_re2] at hr2
+            rw [hr2]
+            
+            exact partialDeriv_comm_real (fun p => (F ρ σ p).re) (h_smooth_re ρ σ) μ ν x (h_diff_fderiv_re ρ σ x)
+            
+          · have hi1 := partialDeriv_im (fun p => partialDeriv ν (fun p' => F ρ σ p') p) μ x (h_diff ν ρ σ x)
+            have h_inner_im : (fun p => (partialDeriv ν (fun p' => F ρ σ p') p).im) = fun p => partialDeriv ν (fun p' => (F ρ σ p').im) p := by
+              ext p
+              exact partialDeriv_im (fun p' => F ρ σ p') ν p (h_diff_F ρ σ p)
+            rw [h_inner_im] at hi1
+            rw [hi1]
+            
+            have hi2 := partialDeriv_im (fun p => partialDeriv μ (fun p' => F ρ σ p') p) ν x (h_diff μ ρ σ x)
+            have h_inner_im2 : (fun p => (partialDeriv μ (fun p' => F ρ σ p') p).im) = fun p => partialDeriv μ (fun p' => (F ρ σ p').im) p := by
+              ext p
+              exact partialDeriv_im (fun p' => F ρ σ p') μ p (h_diff_F ρ σ p)
+            rw [h_inner_im2] at hi2
+            rw [hi2]
+            
+            exact partialDeriv_comm_real (fun p => (F ρ σ p).im) (h_smooth_im ρ σ) μ ν x (h_diff_fderiv_im ρ σ x)
+
         rw [h_eps, h_comm]
       _ = ∑ ρ : Fin 4, ∑ σ : Fin 4, - (epsilon4 ν μ ρ σ * partialDeriv ν (fun p => partialDeriv μ (fun p' => F ρ σ p') p) x) := by
         apply Finset.sum_congr rfl
