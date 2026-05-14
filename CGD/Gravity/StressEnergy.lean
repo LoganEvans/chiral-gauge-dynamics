@@ -31,7 +31,6 @@ The emergent Stress-Energy tensor (defined as the Einstein tensor of the dynamic
 theorem emergentStressEnergyConservation (u : Universe) (bulk : Set SpacetimePoint)
   [Nonempty bulk]
   [vol : CGD.Axioms.MacroscopicVolume u bulk]
-  (h_curved : ∃ (mu nu : Fin 4) (p : bulk), emergentStressEnergy (fun a b p' => curvatureSl2c u.sd_sector a b p') mu nu p.val ≠ 0)
   [ebi : Litlib.Y2003.nakahara2003geometry.ContractedBianchiIdentity 
     bulk (Fin 4) 
     (fun i j p => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p.val) i j)
