@@ -87,8 +87,6 @@ lemma topological_action_identity_matrix (F : Fin 4 → Fin 4 → Matrix (Fin 2)
              f32_00, f32_01, f32_10, f32_11]
   ring
 
-Litlib.theorem
-  description "Spatial Expansion of Topological Action"
 /-- 
 The 4D topological action reduces to Tr(Π^i F_{0i}) on the spatial slice.
 This isolates the permutations that contain a temporal electric field component.
@@ -112,8 +110,6 @@ theorem topologicalActionSpatialExpansion (A : Sl2cGaugeField) (x : SpacetimePoi
   rw [h_rhs]
   exact topological_action_identity_matrix (fun μ ν => (curvatureSl2c A.val μ ν x).val) hF_anti
 
-Litlib.theorem
-  description "Electric Field Decomposition"
 /-- 
 Decomposition of the temporal electric field F_{0i} into the time derivative 
 of A_i minus the spatial covariant derivative of A_0.

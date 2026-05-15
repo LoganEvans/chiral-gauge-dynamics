@@ -14,8 +14,6 @@ open CGD.Axioms Litlib.Y2001.bali2001qcd
 
 namespace CGD.Quantum
 
-Litlib.theorem
-  description "Entanglement Hamiltonian Crossover"
 /-- 
 In the CGD framework, entanglement between two points is physically mediated by a topological 
 SU(2) wormhole (a twisted flux tube). This theorem proves that if the Euclidean spatial 

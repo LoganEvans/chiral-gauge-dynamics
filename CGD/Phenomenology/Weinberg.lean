@@ -49,6 +49,8 @@ lemma trace_parallelogram (X Y : Matrix n n ℂ) :
   simp[trace_add', trace_sub']
   ring
 
+Litlib.theorem
+  description "Axial Macroscopic Volume Generation"
 /-- 
 The parity-even topological density (which generates the macroscopic Unimodular volume) 
 is sustained exactly by the sum of the Vector and Axial kinetic traces. 
@@ -60,6 +62,8 @@ lemma algebraicAxialVolumeGeneration (V A : Matrix (Fin 2) (Fin 2) ℂ) :
   Matrix.trace (L * L) + Matrix.trace (R * R) = 2 * Matrix.trace (V * V) + 2 * Matrix.trace (A * A) := by
   exact trace_parallelogram V A
 
+Litlib.theorem
+  description "Chiral Topological Interference"
 /-- 
 The chiral topological difference (L^2 - R^2), which geometrically drives 
 matter/antimatter asymmetry, algebraically reduces strictly to the cross-term 
@@ -88,6 +92,8 @@ lemma algebraicTopologicalInterference (V A : Matrix (Fin 2) (Fin 2) ℂ) :
   rw [tr_comm]
   ring
 
+Litlib.theorem
+  description "Weinberg Vector-Axial Decomposition"
 /-- 
 The vector-axial kinetic tracing identity algebraically separates the total chiral structure into pure kinetic vector terms and vector-axial coupled terms. 
 -/
@@ -117,6 +123,8 @@ lemma algebraicWeinbergDecomposition (_u : Universe) (_x : SpacetimePoint) (_mu 
   rw[h1, h2]
   exact trace_parallelogram X Y
 
+Litlib.theorem
+  description "Axial Condensate Requirement for Symmetry Breaking"
 /-- 
 If Chiral symmetry is broken (L ≠ R), the Axial vector part A cannot be identically zero. 
 -/
@@ -129,6 +137,8 @@ lemma algebraicWeinbergSumSplitting (V1 A1 : Matrix (Fin 2) (Fin 2) ℂ) :
   change V1 + A1 = V1 - A1
   rw [h_eq, add_zero, sub_zero]
 
+Litlib.theorem
+  description "Vector Dominance Truncation Error"
 /-- 
 Enforcing Pure Vector Dominance manually truncates out exactly 2A^2 from the chiral dynamics. 
 -/
