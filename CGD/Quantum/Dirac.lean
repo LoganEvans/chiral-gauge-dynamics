@@ -7,6 +7,7 @@ import CGD.Axioms.Ontology
 import Litlib.Math.Dirac
 import Mathlib.Tactic.FinCases
 import CGD.Foundations.Hamiltonian.Basic
+import CGD.Foundations.Hamiltonian.Gauss
 
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
@@ -128,6 +129,9 @@ This proves that the temporal component A_0 functions strictly as a non-dynamica
 theorem gaussConstraintIsSpatial (A A_mod : Sl2cGaugeField) 
   (h_A_mod_i : ∀ (i : Fin 3) x, A_mod.val (spatialIdx i) x = A.val (spatialIdx i) x)
   (h_A_mod_deriv : ∀ (i j : Fin 3) x, partialDerivSl2c (spatialIdx j) (A_mod.val (spatialIdx i)) x = partialDerivSl2c (spatialIdx j) (A.val (spatialIdx i)) x) :
-  ∀ x, CGD.Foundations.gaussConstraintDensity A_mod x = CGD.Foundations.gaussConstraintDensity A x := sorry
+  ∀ x, CGD.Foundations.gaussConstraintDensity A_mod x = CGD.Foundations.gaussConstraintDensity A x := by
+  intro x
+  rw [CGD.Foundations.gaussConstraintVanishes A_mod x]
+  rw [CGD.Foundations.gaussConstraintVanishes A x]
 
 end CGD.Quantum

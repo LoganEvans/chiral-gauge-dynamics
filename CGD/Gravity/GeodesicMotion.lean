@@ -8,6 +8,7 @@ import CGD.Foundations.GaugeGroup
 import CGD.Axioms.Phenomenology
 import Mathlib.Topology.Basic
 import CGD.Gravity.MacroscopicVacuum.Basic
+import CGD.Gravity.MacroscopicVacuum.GR
 import Litlib.Y1949.infeld1949motion.Signature
 import Litlib.Y1989.capovilla1989general.Signature
 
@@ -76,6 +77,17 @@ theorem machianTopologicalDefectMotion
   (γ : ℝ → SpacetimePoint)
   (h_lorentzian : isLorentzian g)
   (h_test_particle : isTestParticleWorldline g γ) :
-  isGeodesic g γ := sorry
+  isGeodesic g γ := by
+  apply is_thm.test_particle_motion_is_geodesic g γ
+  · exact h_lorentzian
+  · intros x μ ν
+    have h_cdj := h_exact.1
+    have h_vac := macroscopicVacuumGR u e h_urbantke h_nondeg h_cdj
+    have h_g_eq_fun : g = metricFromTetrad e := by
+      ext m n p
+      exact h_g_eq p m n
+    rw [h_g_eq_fun]
+    exact h_vac x μ ν
+  · exact h_test_particle
 
 end CGD.Gravity
