@@ -96,11 +96,11 @@ lemma isOdd_smul (c : Complex) (M : Matrix (Fin 4) (Fin 4) Complex) (hM : isOdd 
   rw [Matrix.smul_apply, hM i j hij, smul_zero]
 
 Litlib.theorem
-  description "Geometric Dirac Equation Structure"
+  description "Geometric Dirac Operator Grading"
 /--
-The Dirac equation geometrically emerges as an evaluation of the temporal gauge connection acting on the 4D Spin(4,C) multiplet, natively preserving the odd/even grading of the spinor operator.
+The Dirac operator geometrically emerges as an evaluation of the temporal gauge connection acting on the 4D Spin(4,C) multiplet, natively preserving the odd/even grading of the spinor operator.
 -/
-theorem kinematicDiracEquation (u : Universe) :
+theorem kinematicDiracOperatorGrading (u : Universe) :
   ∀ (m : Complex) (x : SpacetimePoint),
     isOdd (diracOperatorCore (fun mu p => extractSpinorDeriv u p mu) x) ∧ 
     isOdd (m • (extractSpinorMode u x * gamma0)) := by
