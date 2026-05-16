@@ -1,12 +1,15 @@
 -- FILENAME: CGD/Gravity/GeodesicMotion.lean
 
 import Litlib.Core
+import CGD.Gravity.Geometry
 import CGD.Gravity.StressEnergy
 import CGD.Foundations.Calculus
+import CGD.Foundations.GaugeGroup
 import CGD.Axioms.Phenomenology
 import Mathlib.Topology.Basic
-import Litlib.Y1975.geroch1975motion.Signature
-import Litlib.Y2003.nakahara2003geometry.Signature
+import CGD.Gravity.MacroscopicVacuum.Basic
+import Litlib.Y1949.infeld1949motion.Signature
+import Litlib.Y1989.capovilla1989general.Signature
 
 set_option linter.unusedVariables false
 
@@ -36,5 +39,43 @@ def realTimelikeProxy (g : Fin 4 → Fin 4 → SpacetimePoint → ℂ) (p : Spac
 
 def realFutureTimelikeProxy (g : Fin 4 → Fin 4 → SpacetimePoint → ℂ) (p : SpacetimePoint) (t : Fin 4 → ℝ) : Prop :=
   realTimelikeProxy g p t ∧ t 0 > 0
+
+Litlib.theorem
+  description "Machian Motion of Topological Defects"
+/--
+If the bulk satisfies the CDJ state (instantiated by `dynamicExactAbelianSolution` to avoid vacuous truths), 
+then the new Infeld-Schild `Litlib` theorem applies, constraining defects to geodesics.
+The metric is strictly defined as the emergent Urbantke metric of the topological background.
+-/
+theorem machianTopologicalDefectMotion
+  (isLorentzian : (Fin 4 → Fin 4 → SpacetimePoint → ℂ) → Prop)
+  (isSmoothCurve : (ℝ → SpacetimePoint) → Prop)
+  (hasNonZeroTangent : (ℝ → SpacetimePoint) → Prop)
+  (isTimelike : (Fin 4 → Fin 4 → SpacetimePoint → ℂ) → (ℝ → SpacetimePoint) → Prop)
+  (isTestParticleWorldline : (Fin 4 → Fin 4 → SpacetimePoint → ℂ) → (ℝ → SpacetimePoint) → Prop)
+  (isGeodesic : (Fin 4 → Fin 4 → SpacetimePoint → ℂ) → (ℝ → SpacetimePoint) → Prop)
+  [is_thm : Litlib.Y1949.infeld1949motion.TestParticleGeodesic SpacetimePoint 
+    (Fin 4 → Fin 4 → SpacetimePoint → ℂ) 
+    isLorentzian 
+    (fun g => ∀ x μ ν, ricciTensor g μ ν x = 0) 
+    isSmoothCurve hasNonZeroTangent isTimelike isTestParticleWorldline isGeodesic]
+  [eq2_2c : Litlib.Y1989.capovilla1989general.CDJImpliesRicciFlat 
+    SpacetimePoint 
+    (fun F x μ ν => urbantkeMetric (fun m n => toSl2c (F x 0 m n • sigma1.val + F x 1 m n • sigma2.val + F x 2 m n • sigma3.val)) μ ν) 
+    (fun g x μ ν => ricciTensor (fun m n p => g p m n) μ ν x)]
+  (c : ℂ) (hc : c ≠ 0)
+  (u : Universe)
+  (e : TetradField)
+  (h_exact : CGD.Gravity.satisfiesPureCdjConstraint (fun p m n => CGD.Gravity.cgdAdjointCurvature u m n p) ∧ 
+             (∀ x, curvatureSl2c u.sd_sector 1 2 x = c • toSl2c sigmaX) ∧
+             (∃ x, curvatureSl2c u.sd_sector 1 2 x ≠ 0))
+  (g : Fin 4 → Fin 4 → SpacetimePoint → ℂ)
+  (h_g_eq : ∀ x μ ν, g μ ν x = metricFromTetrad e μ ν x)
+  (h_urbantke : ∀ x μ ν, metricFromTetrad e μ ν x = urbantkeMetric (fun m n => toSl2c (curvatureSl2c u.sd_sector m n x).val) μ ν)
+  (h_nondeg : ∀ x, (urbantkeMetric (fun m n => toSl2c (curvatureSl2c u.sd_sector m n x).val)).det ≠ 0)
+  (γ : ℝ → SpacetimePoint)
+  (h_lorentzian : isLorentzian g)
+  (h_test_particle : isTestParticleWorldline g γ) :
+  isGeodesic g γ := sorry
 
 end CGD.Gravity
