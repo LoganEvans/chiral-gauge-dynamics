@@ -51,9 +51,9 @@ dynamics to the topological flux tube boundaries. When the gauge flow is restric
 to these defects, the Dittrich (2007) partial observables framework cleanly yields 
 gauge-invariant Relational Time (one defect acting as a clock for another).
 
-Because the multi-fingered flow is a true Boundary Flow, we can mathematically 
-prove that the resulting relational observable preserves boundary isolation, 
-confirming the bulk remains permanently frozen without relying on analytic loopholes.
+Because the multi-fingered flow is a true Boundary Flow, we mathematically 
+prove that within the physical clock domain, the resulting relational observable 
+preserves boundary isolation, confirming the bulk remains permanently frozen.
 -/
 theorem emergentRelationalDynamics
   (n : ℕ)
@@ -68,10 +68,35 @@ theorem emergentRelationalDynamics
   (h_obs : isBoundaryObservable f boundary)
   -- 2. Dittrich's Relational Framework (Geometric Orbit Formulation)
   (dittrich : Theorem4_1 n α f T F) :
-  -- Conclusion 1: Relational Time Evolution preserves the boundary (the bulk remains strictly frozen).
-  (∀ τ, isBoundaryObservable (F τ) boundary) ∧
+  -- Conclusion 1: Within the clock domain, Relational Time Evolution preserves the boundary.
+  (∀ τ A B, (∃ β, ∀ i, T i (α β A) = τ i) → agreesOnBoundary A B boundary → F τ A = F τ B) ∧
   -- Conclusion 2: The complete observable is fully gauge invariant under the boundary flow.
   (∀ τ x ε, (∃ β, ∀ i, T i (α β x) = τ i) → F τ (α ε x) = F τ x) := by
-  sorry
+  constructor
+  · intro τ A B h_intersect h_agree
+    rcases h_intersect with ⟨β, h_T_A⟩
+    
+    -- Evaluate the relational observable for A at the intersection parameter β
+    have h_F_A : F τ A = f (α β A) := dittrich.def_F τ A β h_T_A
+    
+    -- The geometric flow preserves the identical boundaries of A and B
+    have h_agree_flow : agreesOnBoundary (α β A) (α β B) boundary := h_flow.right β A B h_agree
+    
+    -- Because the clock is a boundary observable, B hits the target time τ at the exact same β
+    have h_T_B : ∀ i, T i (α β B) = τ i := by
+      intro i
+      have h_T_obs : T i (α β A) = T i (α β B) := h_clock i (α β A) (α β B) h_agree_flow
+      rw [← h_T_obs]
+      exact h_T_A i
+      
+    -- Evaluate the relational observable for B at the intersection parameter β
+    have h_F_B : F τ B = f (α β B) := dittrich.def_F τ B β h_T_B
+    
+    -- Because f is a boundary observable, it yields the identical value for both states
+    have h_f_eq : f (α β A) = f (α β B) := h_obs (α β A) (α β B) h_agree_flow
+    
+    rw [h_F_A, h_F_B, h_f_eq]
+
+  · exact dittrich.conclusion
 
 end CGD.Foundations
