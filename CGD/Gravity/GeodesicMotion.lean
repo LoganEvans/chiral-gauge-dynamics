@@ -10,7 +10,7 @@ import Mathlib.Topology.Basic
 import CGD.Gravity.MacroscopicVacuum.Basic
 import CGD.Gravity.MacroscopicVacuum.GR
 import Litlib.Y1949.infeld1949motion.Signature
-import Litlib.Y1989.capovilla1989general.Signature
+import Litlib.Y1991.capovilla1991pure.Signature
 
 set_option linter.unusedVariables false
 
@@ -60,20 +60,20 @@ theorem machianTopologicalDefectMotion
     isLorentzian 
     (fun g => ∀ x μ ν, ricciTensor g μ ν x = 0) 
     isSmoothCurve hasNonZeroTangent isTimelike isTestParticleWorldline isGeodesic]
-  [eq2_2c : Litlib.Y1989.capovilla1989general.CDJImpliesRicciFlat 
-    SpacetimePoint 
-    (fun F x μ ν => urbantkeMetric (fun m n => toSl2c (F x 0 m n • sigma1.val + F x 1 m n • sigma2.val + F x 2 m n • sigma3.val)) μ ν) 
-    (fun g x μ ν => ricciTensor (fun m n p => g p m n) μ ν x)]
   (c : ℂ) (hc : c ≠ 0)
   (u : Universe)
   (e : TetradField)
+  (theta : SpacetimePoint → Fin 4 → Fin 2 → Fin 2 → ℂ)
+  (Sigma : SpacetimePoint → Fin 4 → Fin 4 → Fin 2 → Fin 2 → ℂ)
+  (Psi : SpacetimePoint → Fin 2 → Fin 2 → Fin 2 → Fin 2 → ℂ)
+  (eps2_down eps2_bar_down : Fin 2 → Fin 2 → ℂ)
+  [th_ricci : Litlib.Y1991.capovilla1991pure.Theorem_Eq2_2c_RicciFlat SpacetimePoint theta (fun x μ ν => metricFromTetrad e μ ν x) eps2_down eps2_bar_down (cgd_R u) Psi Sigma (fun g => ∀ x μ ν, ricciTensor (fun m n p => g p m n) μ ν x = 0)]
+  (h_eq2_2c : ∀ x μ ν A B, cgd_R u x μ ν A B = ∑ C, ∑ D, Psi x A B C D * Sigma x μ ν C D)
   (h_exact : CGD.Gravity.satisfiesPureCdjConstraint (fun p m n => CGD.Gravity.cgdAdjointCurvature u m n p) ∧ 
              (∀ x, curvatureSl2c u.sd_sector 1 2 x = c • toSl2c sigmaX) ∧
              (∃ x, curvatureSl2c u.sd_sector 1 2 x ≠ 0))
   (g : Fin 4 → Fin 4 → SpacetimePoint → ℂ)
   (h_g_eq : ∀ x μ ν, g μ ν x = metricFromTetrad e μ ν x)
-  (h_urbantke : ∀ x μ ν, metricFromTetrad e μ ν x = urbantkeMetric (fun m n => toSl2c (curvatureSl2c u.sd_sector m n x).val) μ ν)
-  (h_nondeg : ∀ x, (urbantkeMetric (fun m n => toSl2c (curvatureSl2c u.sd_sector m n x).val)).det ≠ 0)
   (γ : ℝ → SpacetimePoint)
   (h_lorentzian : isLorentzian g)
   (h_test_particle : isTestParticleWorldline g γ) :
@@ -81,8 +81,7 @@ theorem machianTopologicalDefectMotion
   apply is_thm.test_particle_motion_is_geodesic g γ
   · exact h_lorentzian
   · intros x μ ν
-    have h_cdj := h_exact.1
-    have h_vac := macroscopicVacuumGR u e h_urbantke h_nondeg h_cdj
+    have h_vac := macroscopicVacuumGR u e theta Sigma Psi eps2_down eps2_bar_down h_eq2_2c
     have h_g_eq_fun : g = metricFromTetrad e := by
       ext m n p
       exact h_g_eq p m n
