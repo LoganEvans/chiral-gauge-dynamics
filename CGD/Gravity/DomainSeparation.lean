@@ -193,58 +193,70 @@ A parallel theorem for the pure GR vacuum limit ($\Lambda = 0$) evaluated on the
 -/
 theorem macroscopicRicciFlatEmergence
   (u : Universe)
-  (e : TetradField)
+  [vac : IsClassicalVacuum u]
   (bulkVacuum : Set SpacetimePoint)
   (hOpen : IsOpen bulkVacuum)
-  (theta : SpacetimePoint → Fin 4 → Fin 2 → Fin 2 → ℂ)
-  (Sigma : SpacetimePoint → Fin 4 → Fin 4 → Fin 2 → Fin 2 → ℂ)
-  (Psi : SpacetimePoint → Fin 2 → Fin 2 → Fin 2 → Fin 2 → ℂ)
-  (eps2_down eps2_bar_down eps2_right eps2_up : Fin 2 → Fin 2 → ℂ)
-  (dSigma : SpacetimePoint → Fin 4 → Fin 4 → Fin 4 → Fin 2 → Fin 2 → ℂ)
-  (omega : SpacetimePoint → Fin 4 → Fin 2 → Fin 2 → ℂ)
   [th_ricci : Theorem_Eq2_2c_RicciFlat 
     (Spacetime := bulkVacuum)
-    (theta := fun (x : bulkVacuum) => theta x.val) 
-    (g := fun (x : bulkVacuum) m n => metricFromTetrad e m n x.val) 
-    (eps2_down := eps2_down)
-    (eps2_bar_down := eps2_bar_down)
-    (eps2_right := eps2_right)
-    (eps2_up := eps2_up)
+    (theta := fun (x : bulkVacuum) => cgd_theta vac.urbantke_tetrad x.val) 
+    (g := fun (x : bulkVacuum) m n => metricFromTetrad vac.urbantke_tetrad m n x.val) 
+    (eps2_down := cgd_eps2_down)
+    (eps2_bar_down := cgd_eps2_bar_down)
+    (eps2_right := cgd_eps2_bar_down)
+    (eps2_up := cgd_eps2_up)
     (R := fun (x : bulkVacuum) => cgd_R u x.val) 
-    (Psi := fun (x : bulkVacuum) => Psi x.val) 
-    (Sigma := fun (x : bulkVacuum) => Sigma x.val) 
-    (dSigma := fun (x : bulkVacuum) => dSigma x.val)
-    (omega := fun (x : bulkVacuum) => omega x.val)
-    (isRicciFlat := fun (g : bulkVacuum → Fin 4 → Fin 4 → ℂ) => ∀ (x : bulkVacuum) μ ν, CGD.Gravity.ricciTensor (extendMetric bulkVacuum g) μ ν x.val = 0)]
-  (h_Sigma_def : ∀ (x : bulkVacuum) μ ν A B, Sigma x.val μ ν A B = 1 / 2 * Litlib.Y1991.capovilla1991pure.sumFin2 fun A' => Litlib.Y1991.capovilla1991pure.sumFin2 fun B' => eps2_right A' B' * (theta x.val μ A A' * theta x.val ν B B' - theta x.val ν A A' * theta x.val μ B B'))
-  (h_DSigma_eq_zero : ∀ (x : bulkVacuum) (μ ν ρ : Fin 4) (A B : Fin 2),
-    let omega_up := fun lam A' C' => Litlib.Y1991.capovilla1991pure.sumFin2 fun E => eps2_up A' E * omega x.val lam E C';
-    let term := fun m n r =>
-      dSigma x.val m n r A B + Litlib.Y1991.capovilla1991pure.sumFin2 fun C => omega_up m A C * Sigma x.val n r B C + omega_up m B C * Sigma x.val n r A C;
-    term μ ν ρ + term ν ρ μ + term ρ μ ν - term ν μ ρ - term μ ρ ν - term ρ ν μ = 0)
-  (h_eq2_2c : ∀ x : bulkVacuum, ∀ μ ν A B, cgd_R u x.val μ ν A B = Litlib.Y1991.capovilla1991pure.sumFin2 fun C => Litlib.Y1991.capovilla1991pure.sumFin2 fun D => Psi x.val A B C D * Sigma x.val μ ν C D) :
-  ∀ x ∈ bulkVacuum, ∀ μ ν, ricciTensor (metricFromTetrad e) μ ν x = 0 := by
+    (Psi := fun (x : bulkVacuum) => (vac.non_degenerate x.val).Psi) 
+    (Sigma := fun (x : bulkVacuum) => cgd_Sigma vac.urbantke_tetrad x.val) 
+    (dSigma := fun (x : bulkVacuum) => cgd_dSigma vac.urbantke_tetrad x.val)
+    (omega := fun (x : bulkVacuum) => cgd_omega u x.val)
+    (isRicciFlat := fun (g : bulkVacuum → Fin 4 → Fin 4 → ℂ) => ∀ (x : bulkVacuum) μ ν, CGD.Gravity.ricciTensor (extendMetric bulkVacuum g) μ ν x.val = 0)] :
+  ∀ x ∈ bulkVacuum, ∀ μ ν, ricciTensor (fun m n p => urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p) m n) μ ν x = 0 := by
   intro x hx μ ν
   let x_sub : bulkVacuum := ⟨x, hx⟩
-  have h_r := th_ricci.eq2_2c_implies_ricci_flat h_Sigma_def h_DSigma_eq_zero h_eq2_2c x_sub μ ν
+  have h_r := th_ricci.eq2_2c_implies_ricci_flat ?h_Sigma_def ?h_DSigma_eq_zero ?h_eq2_2c x_sub μ ν
   
-  let g_local : bulkVacuum → Fin 4 → Fin 4 → ℂ := fun y m n => metricFromTetrad e m n y.val
+  let g_local : bulkVacuum → Fin 4 → Fin 4 → ℂ := fun y m n => metricFromTetrad vac.urbantke_tetrad m n y.val
   
-  have h_match : ∀ y : bulkVacuum, ∀ m n, metricFromTetrad e m n y.val = g_local y m n := by
+  have h_match : ∀ y : bulkVacuum, ∀ m n, metricFromTetrad vac.urbantke_tetrad m n y.val = g_local y m n := by
     intro y m n; rfl
 
   have h_ext_eq : ∀ y : bulkVacuum, ∀ m n, extendMetric bulkVacuum g_local m n y.val = g_local y m n :=
-    extendMetric_spec bulkVacuum g_local (metricFromTetrad e) h_match
+    extendMetric_spec bulkVacuum g_local (metricFromTetrad vac.urbantke_tetrad) h_match
 
-  have h_metrics_match_on_U : ∀ p ∈ bulkVacuum, ∀ m n, metricFromTetrad e m n p = extendMetric bulkVacuum g_local m n p := by
+  have h_metrics_match_on_U : ∀ p ∈ bulkVacuum, ∀ m n, metricFromTetrad vac.urbantke_tetrad m n p = extendMetric bulkVacuum g_local m n p := by
     intro p hp m n
     let y : bulkVacuum := ⟨p, hp⟩
-    calc metricFromTetrad e m n p = g_local y m n := rfl
+    calc metricFromTetrad vac.urbantke_tetrad m n p = g_local y m n := rfl
       _ = extendMetric bulkVacuum g_local m n p := (h_ext_eq y m n).symm
 
-  have h_ricci_match := ricci_locality_open (metricFromTetrad e) (extendMetric bulkVacuum g_local) bulkVacuum hOpen h_metrics_match_on_U x hx μ ν
+  have h_ricci_match := ricci_locality_open (metricFromTetrad vac.urbantke_tetrad) (extendMetric bulkVacuum g_local) bulkVacuum hOpen h_metrics_match_on_U x hx μ ν
 
+  have h_metric_eq : (fun m n p => metricFromTetrad vac.urbantke_tetrad m n p) = 
+                     (fun m n p => urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p) m n) := by
+    funext m n p
+    exact vac.metric_compat p m n
+  
+  rw [← h_metric_eq]
   rw [h_ricci_match]
   exact h_r
+  
+  case h_Sigma_def =>
+    intros p m n A B
+    unfold cgd_Sigma
+    have h_litlib_sum : ∀ f, Litlib.Y1991.capovilla1991pure.sumFin2 f = ∑ x : Fin 2, f x := fun f => rfl
+    simp only [cgd_sumFin2_eq_sum, h_litlib_sum]
+
+  case h_DSigma_eq_zero =>
+    intros p m n r A B
+    have h_cgd := vac.h_DSigma_eq_zero p.val m n r A B
+    unfold cgd_D_Sigma_wedge cgd_covariant_deriv_Sigma_term cgd_omega_up at h_cgd
+    have h_litlib_sum : ∀ f, Litlib.Y1991.capovilla1991pure.sumFin2 f = ∑ x : Fin 2, f x := fun f => rfl
+    simp only [cgd_sumFin2_eq_sum] at h_cgd
+    simp only [h_litlib_sum]
+    exact h_cgd
+    
+  case h_eq2_2c =>
+    intros p m n A B
+    exact macroscopicVacuumGR_bridge u p.val m n A B
 
 end CGD.Gravity
