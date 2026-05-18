@@ -199,21 +199,34 @@ theorem macroscopicRicciFlatEmergence
   (theta : SpacetimePoint → Fin 4 → Fin 2 → Fin 2 → ℂ)
   (Sigma : SpacetimePoint → Fin 4 → Fin 4 → Fin 2 → Fin 2 → ℂ)
   (Psi : SpacetimePoint → Fin 2 → Fin 2 → Fin 2 → Fin 2 → ℂ)
-  (eps2_down eps2_bar_down : Fin 2 → Fin 2 → ℂ)
+  (eps2_down eps2_bar_down eps2_right eps2_up : Fin 2 → Fin 2 → ℂ)
+  (dSigma : SpacetimePoint → Fin 4 → Fin 4 → Fin 4 → Fin 2 → Fin 2 → ℂ)
+  (omega : SpacetimePoint → Fin 4 → Fin 2 → Fin 2 → ℂ)
   [th_ricci : Theorem_Eq2_2c_RicciFlat 
-    bulkVacuum 
-    (fun (x : bulkVacuum) => theta x.val) 
-    (fun (x : bulkVacuum) m n => metricFromTetrad e m n x.val) 
-    eps2_down eps2_bar_down 
-    (fun (x : bulkVacuum) => cgd_R u x.val) 
-    (fun (x : bulkVacuum) => Psi x.val) 
-    (fun (x : bulkVacuum) => Sigma x.val) 
-    (fun (g : bulkVacuum → Fin 4 → Fin 4 → ℂ) => ∀ (x : bulkVacuum) μ ν, CGD.Gravity.ricciTensor (extendMetric bulkVacuum g) μ ν x.val = 0)]
-  (h_eq2_2c : ∀ x : bulkVacuum, ∀ μ ν A B, cgd_R u x.val μ ν A B = ∑ C, ∑ D, Psi x.val A B C D * Sigma x.val μ ν C D) :
+    (Spacetime := bulkVacuum)
+    (theta := fun (x : bulkVacuum) => theta x.val) 
+    (g := fun (x : bulkVacuum) m n => metricFromTetrad e m n x.val) 
+    (eps2_down := eps2_down)
+    (eps2_bar_down := eps2_bar_down)
+    (eps2_right := eps2_right)
+    (eps2_up := eps2_up)
+    (R := fun (x : bulkVacuum) => cgd_R u x.val) 
+    (Psi := fun (x : bulkVacuum) => Psi x.val) 
+    (Sigma := fun (x : bulkVacuum) => Sigma x.val) 
+    (dSigma := fun (x : bulkVacuum) => dSigma x.val)
+    (omega := fun (x : bulkVacuum) => omega x.val)
+    (isRicciFlat := fun (g : bulkVacuum → Fin 4 → Fin 4 → ℂ) => ∀ (x : bulkVacuum) μ ν, CGD.Gravity.ricciTensor (extendMetric bulkVacuum g) μ ν x.val = 0)]
+  (h_Sigma_def : ∀ (x : bulkVacuum) μ ν A B, Sigma x.val μ ν A B = 1 / 2 * Litlib.Y1991.capovilla1991pure.sumFin2 fun A' => Litlib.Y1991.capovilla1991pure.sumFin2 fun B' => eps2_right A' B' * (theta x.val μ A A' * theta x.val ν B B' - theta x.val ν A A' * theta x.val μ B B'))
+  (h_DSigma_eq_zero : ∀ (x : bulkVacuum) (μ ν ρ : Fin 4) (A B : Fin 2),
+    let omega_up := fun lam A' C' => Litlib.Y1991.capovilla1991pure.sumFin2 fun E => eps2_up A' E * omega x.val lam E C';
+    let term := fun m n r =>
+      dSigma x.val m n r A B + Litlib.Y1991.capovilla1991pure.sumFin2 fun C => omega_up m A C * Sigma x.val n r B C + omega_up m B C * Sigma x.val n r A C;
+    term μ ν ρ + term ν ρ μ + term ρ μ ν - term ν μ ρ - term μ ρ ν - term ρ ν μ = 0)
+  (h_eq2_2c : ∀ x : bulkVacuum, ∀ μ ν A B, cgd_R u x.val μ ν A B = Litlib.Y1991.capovilla1991pure.sumFin2 fun C => Litlib.Y1991.capovilla1991pure.sumFin2 fun D => Psi x.val A B C D * Sigma x.val μ ν C D) :
   ∀ x ∈ bulkVacuum, ∀ μ ν, ricciTensor (metricFromTetrad e) μ ν x = 0 := by
   intro x hx μ ν
   let x_sub : bulkVacuum := ⟨x, hx⟩
-  have h_r := th_ricci.eq2_2c_implies_ricci_flat h_eq2_2c x_sub μ ν
+  have h_r := th_ricci.eq2_2c_implies_ricci_flat h_Sigma_def h_DSigma_eq_zero h_eq2_2c x_sub μ ν
   
   let g_local : bulkVacuum → Fin 4 → Fin 4 → ℂ := fun y m n => metricFromTetrad e m n y.val
   
