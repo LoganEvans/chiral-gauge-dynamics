@@ -18,8 +18,6 @@ variable {n : Type*}[Fintype n]
 noncomputable def computeConnection (g_inv : n → n → ℝ) (d_g : n → n → n → ℝ) (k i j : n) : ℝ :=
   (1 / 2 : ℝ) * ∑ m, g_inv k m * (d_g i m j + d_g j i m - d_g m i j)
 
-Litlib.theorem
-  description "Parity Rectification of the Connection"
 /--
 Demonstrates macroscopic consistency under parity inversion: if the physical metric tensor is inverted ($g \to -g$), the resulting Levi-Civita connection (Christoffel symbols) remains strictly invariant.
 -/

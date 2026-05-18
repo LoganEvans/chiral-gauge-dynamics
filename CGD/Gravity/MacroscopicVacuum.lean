@@ -3,4 +3,3 @@
 import CGD.Gravity.MacroscopicVacuum.Basic
 import CGD.Gravity.MacroscopicVacuum.WMatrix
 import CGD.Gravity.MacroscopicVacuum.GR
-import CGD.Gravity.MacroscopicVacuum.Unimodular

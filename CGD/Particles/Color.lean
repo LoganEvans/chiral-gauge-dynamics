@@ -257,8 +257,6 @@ theorem kinematicSingleColorDegeneracy (_u : Universe) :
   rw[h_zero]
   exact Matrix.det_zero ⟨0⟩
 
-Litlib.theorem
-  description "Non-Abelian Volume Requirement"
 /--
 Demonstrates that a non-zero macroscopic spacetime volume strictly requires non-Abelian fields.
 -/
