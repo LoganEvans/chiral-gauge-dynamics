@@ -62,39 +62,26 @@ theorem machianTopologicalDefectMotion
     isSmoothCurve hasNonZeroTangent isTimelike isTestParticleWorldline isGeodesic]
   (c : ℂ) (hc : c ≠ 0)
   (u : Universe)
-  (e : TetradField)
-  (theta : SpacetimePoint → Fin 4 → Fin 2 → Fin 2 → ℂ)
-  (Sigma : SpacetimePoint → Fin 4 → Fin 4 → Fin 2 → Fin 2 → ℂ)
-  (Psi : SpacetimePoint → Fin 2 → Fin 2 → Fin 2 → Fin 2 → ℂ)
-  (eps2_down eps2_bar_down eps2_right eps2_up : Fin 2 → Fin 2 → ℂ)
-  (dSigma : SpacetimePoint → Fin 4 → Fin 4 → Fin 4 → Fin 2 → Fin 2 → ℂ)
-  (omega : SpacetimePoint → Fin 4 → Fin 2 → Fin 2 → ℂ)
-  [th_ricci : Litlib.Y1991.capovilla1991pure.Theorem_Eq2_2c_RicciFlat 
+  [vac : IsClassicalVacuum u]
+  [th_ricci : Theorem_Eq2_2c_RicciFlat 
     (Spacetime := SpacetimePoint)
-    (theta := theta) 
-    (g := fun x μ ν => metricFromTetrad e μ ν x) 
-    (eps2_down := eps2_down) 
-    (eps2_bar_down := eps2_bar_down) 
-    (eps2_right := eps2_right)
-    (eps2_up := eps2_up)
+    (theta := fun x => cgd_theta vac.urbantke_tetrad x) 
+    (g := fun x μ ν => metricFromTetrad vac.urbantke_tetrad μ ν x) 
+    (eps2_down := cgd_eps2_down) 
+    (eps2_bar_down := cgd_eps2_bar_down) 
+    (eps2_right := cgd_eps2_bar_down)
+    (eps2_up := cgd_eps2_up)
     (R := cgd_R u) 
-    (Psi := Psi) 
-    (Sigma := Sigma) 
-    (dSigma := dSigma)
-    (omega := omega)
+    (Psi := fun x => (vac.non_degenerate x).Psi) 
+    (Sigma := fun x => cgd_Sigma vac.urbantke_tetrad x) 
+    (dSigma := fun x => cgd_dSigma vac.urbantke_tetrad x)
+    (omega := fun x => cgd_omega u x)
     (isRicciFlat := fun g => ∀ x μ ν, ricciTensor (fun m n p => g p m n) μ ν x = 0)]
-  (h_Sigma_def : ∀ x μ ν A B, Sigma x μ ν A B = 1 / 2 * Litlib.Y1991.capovilla1991pure.sumFin2 fun A' => Litlib.Y1991.capovilla1991pure.sumFin2 fun B' => eps2_right A' B' * (theta x μ A A' * theta x ν B B' - theta x ν A A' * theta x μ B B'))
-  (h_DSigma_eq_zero : ∀ (x : SpacetimePoint) (μ ν ρ : Fin 4) (A B : Fin 2),
-    let omega_up := fun lam A' C' => Litlib.Y1991.capovilla1991pure.sumFin2 fun E => eps2_up A' E * omega x lam E C';
-    let term := fun m n r =>
-      dSigma x m n r A B + Litlib.Y1991.capovilla1991pure.sumFin2 fun C => omega_up m A C * Sigma x n r B C + omega_up m B C * Sigma x n r A C;
-    term μ ν ρ + term ν ρ μ + term ρ μ ν - term ν μ ρ - term μ ρ ν - term ρ ν μ = 0)
-  (h_eq2_2c : ∀ x μ ν A B, cgd_R u x μ ν A B = Litlib.Y1991.capovilla1991pure.sumFin2 fun C => Litlib.Y1991.capovilla1991pure.sumFin2 fun D => Psi x A B C D * Sigma x μ ν C D)
   (h_exact : CGD.Gravity.satisfiesPureCdjConstraint (fun p m n => CGD.Gravity.cgdAdjointCurvature u m n p) ∧ 
              (∀ x, curvatureSl2c u.sd_sector 1 2 x = c • toSl2c sigmaX) ∧
              (∃ x, curvatureSl2c u.sd_sector 1 2 x ≠ 0))
   (g : Fin 4 → Fin 4 → SpacetimePoint → ℂ)
-  (h_g_eq : ∀ x μ ν, g μ ν x = metricFromTetrad e μ ν x)
+  (h_g_eq : ∀ x μ ν, g μ ν x = urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b x) μ ν)
   (γ : ℝ → SpacetimePoint)
   (h_lorentzian : isLorentzian g)
   (h_test_particle : isTestParticleWorldline g γ) :
@@ -102,12 +89,11 @@ theorem machianTopologicalDefectMotion
   apply is_thm.test_particle_motion_is_geodesic g γ
   · exact h_lorentzian
   · intros x μ ν
-    have h_vac := macroscopicVacuumGR u e theta Sigma Psi eps2_down eps2_bar_down eps2_right eps2_up dSigma omega h_Sigma_def h_DSigma_eq_zero h_eq2_2c
-    have h_g_eq_fun : g = metricFromTetrad e := by
+    have h_g_eq_fun : g = fun m n p => urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p) m n := by
       ext m n p
       exact h_g_eq p m n
     rw [h_g_eq_fun]
-    exact h_vac x μ ν
+    exact macroscopicVacuumGR u x μ ν
   · exact h_test_particle
 
 end CGD.Gravity
