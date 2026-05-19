@@ -59,7 +59,7 @@ down into the symmetric Capovilla spinor representation.
 noncomputable def cgd_D_R_wedge 
   (u : CGD.Axioms.Universe) (x : CGD.Foundations.SpacetimePoint) 
   (μ ν ρ : Fin 4) (A B : Fin 2) : ℂ :=
-  let D_F := fun m n r => CGD.Foundations.covariantDerivSl2c (fun i p => u.sd_sector i p) m (fun p => CGD.Foundations.curvatureSl2c u.sd_sector n r p) x;
+  let D_F := fun m n r => CGD.Foundations.covariantDeriv (fun i p => u.sd_sector i p) m n r x;
   sumFin2 fun C => (D_F ρ μ ν + D_F μ ν ρ + D_F ν ρ μ).val A C * cgd_eps2_down C B
 
 /--
@@ -95,15 +95,15 @@ theorem cgd_bianchi_identity_R
     
   have h_val_zero : (0 : CGD.Foundations.SL2C).val = 0 := rfl
   
-  have h_bianchi_val : (CGD.Foundations.covariantDerivSl2c (fun i p => u.sd_sector i p) ρ (fun p => CGD.Foundations.curvatureSl2c u.sd_sector μ ν p) x +
-      CGD.Foundations.covariantDerivSl2c (fun i p => u.sd_sector i p) μ (fun p => CGD.Foundations.curvatureSl2c u.sd_sector ν ρ p) x +
-      CGD.Foundations.covariantDerivSl2c (fun i p => u.sd_sector i p) ν (fun p => CGD.Foundations.curvatureSl2c u.sd_sector ρ μ p) x).val = 0 := by
+  have h_bianchi_val : (CGD.Foundations.covariantDeriv (fun i p => u.sd_sector i p) ρ μ ν x +
+      CGD.Foundations.covariantDeriv (fun i p => u.sd_sector i p) μ ν ρ x +
+      CGD.Foundations.covariantDeriv (fun i p => u.sd_sector i p) ν ρ μ x).val = 0 := by
     rw [h_bianchi]
     rfl
     
-  have h_inner : (fun C => (CGD.Foundations.covariantDerivSl2c (fun i p => u.sd_sector i p) ρ (fun p => CGD.Foundations.curvatureSl2c u.sd_sector μ ν p) x +
-      CGD.Foundations.covariantDerivSl2c (fun i p => u.sd_sector i p) μ (fun p => CGD.Foundations.curvatureSl2c u.sd_sector ν ρ p) x +
-      CGD.Foundations.covariantDerivSl2c (fun i p => u.sd_sector i p) ν (fun p => CGD.Foundations.curvatureSl2c u.sd_sector ρ μ p) x).val A C * cgd_eps2_down C B) = fun C => 0 := by
+  have h_inner : (fun C => (CGD.Foundations.covariantDeriv (fun i p => u.sd_sector i p) ρ μ ν x +
+      CGD.Foundations.covariantDeriv (fun i p => u.sd_sector i p) μ ν ρ x +
+      CGD.Foundations.covariantDeriv (fun i p => u.sd_sector i p) ν ρ μ x).val A C * cgd_eps2_down C B) = fun C => 0 := by
     ext C
     rw [h_bianchi_val]
     simp
