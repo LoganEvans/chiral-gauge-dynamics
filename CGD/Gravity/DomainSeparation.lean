@@ -193,21 +193,26 @@ A parallel theorem for the pure GR vacuum limit ($\Lambda = 0$) evaluated on the
 -/
 theorem macroscopicRicciFlatEmergence
   (u : Universe)
-  [vac : IsClassicalVacuum u]
+  (urbantke_tetrad : TetradField)
+  (metric_compat : ∀ x μ ν, metricFromTetrad urbantke_tetrad μ ν x = 
+                           CGD.Gravity.urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x) μ ν)
+  (Psi : SpacetimePoint → Fin 2 → Fin 2 → Fin 2 → Fin 2 → ℂ)
+  [eq2_2b : Eq2_2b SpacetimePoint (cgd_dSigma urbantke_tetrad) (cgd_omega u) (cgd_Sigma urbantke_tetrad) cgd_eps2_up]
+  [eq2_2c : Eq2_2c SpacetimePoint (cgd_R u) Psi (cgd_Sigma urbantke_tetrad)]
   (bulkVacuum : Set SpacetimePoint)
   (hOpen : IsOpen bulkVacuum)
   [th_ricci : Theorem_Eq2_2c_RicciFlat 
     (Spacetime := bulkVacuum)
-    (theta := fun (x : bulkVacuum) => cgd_theta vac.urbantke_tetrad x.val) 
-    (g := fun (x : bulkVacuum) m n => metricFromTetrad vac.urbantke_tetrad m n x.val) 
+    (theta := fun (x : bulkVacuum) => cgd_theta urbantke_tetrad x.val) 
+    (g := fun (x : bulkVacuum) m n => metricFromTetrad urbantke_tetrad m n x.val) 
     (eps2_down := cgd_eps2_down)
     (eps2_bar_down := cgd_eps2_bar_down)
     (eps2_right := cgd_eps2_bar_down)
     (eps2_up := cgd_eps2_up)
     (R := fun (x : bulkVacuum) => cgd_R u x.val) 
-    (Psi := fun (x : bulkVacuum) => (vac.non_degenerate x.val).Psi) 
-    (Sigma := fun (x : bulkVacuum) => cgd_Sigma vac.urbantke_tetrad x.val) 
-    (dSigma := fun (x : bulkVacuum) => cgd_dSigma vac.urbantke_tetrad x.val)
+    (Psi := fun (x : bulkVacuum) => Psi x.val) 
+    (Sigma := fun (x : bulkVacuum) => cgd_Sigma urbantke_tetrad x.val) 
+    (dSigma := fun (x : bulkVacuum) => cgd_dSigma urbantke_tetrad x.val)
     (omega := fun (x : bulkVacuum) => cgd_omega u x.val)
     (isRicciFlat := fun (g : bulkVacuum → Fin 4 → Fin 4 → ℂ) => ∀ (x : bulkVacuum) μ ν, CGD.Gravity.ricciTensor (extendMetric bulkVacuum g) μ ν x.val = 0)] :
   ∀ x ∈ bulkVacuum, ∀ μ ν, ricciTensor (fun m n p => urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p) m n) μ ν x = 0 := by
@@ -215,26 +220,26 @@ theorem macroscopicRicciFlatEmergence
   let x_sub : bulkVacuum := ⟨x, hx⟩
   have h_r := th_ricci.eq2_2c_implies_ricci_flat ?h_Sigma_def ?h_DSigma_eq_zero ?h_eq2_2c x_sub μ ν
   
-  let g_local : bulkVacuum → Fin 4 → Fin 4 → ℂ := fun y m n => metricFromTetrad vac.urbantke_tetrad m n y.val
+  let g_local : bulkVacuum → Fin 4 → Fin 4 → ℂ := fun y m n => metricFromTetrad urbantke_tetrad m n y.val
   
-  have h_match : ∀ y : bulkVacuum, ∀ m n, metricFromTetrad vac.urbantke_tetrad m n y.val = g_local y m n := by
+  have h_match : ∀ y : bulkVacuum, ∀ m n, metricFromTetrad urbantke_tetrad m n y.val = g_local y m n := by
     intro y m n; rfl
 
   have h_ext_eq : ∀ y : bulkVacuum, ∀ m n, extendMetric bulkVacuum g_local m n y.val = g_local y m n :=
-    extendMetric_spec bulkVacuum g_local (metricFromTetrad vac.urbantke_tetrad) h_match
+    extendMetric_spec bulkVacuum g_local (metricFromTetrad urbantke_tetrad) h_match
 
-  have h_metrics_match_on_U : ∀ p ∈ bulkVacuum, ∀ m n, metricFromTetrad vac.urbantke_tetrad m n p = extendMetric bulkVacuum g_local m n p := by
+  have h_metrics_match_on_U : ∀ p ∈ bulkVacuum, ∀ m n, metricFromTetrad urbantke_tetrad m n p = extendMetric bulkVacuum g_local m n p := by
     intro p hp m n
     let y : bulkVacuum := ⟨p, hp⟩
-    calc metricFromTetrad vac.urbantke_tetrad m n p = g_local y m n := rfl
+    calc metricFromTetrad urbantke_tetrad m n p = g_local y m n := rfl
       _ = extendMetric bulkVacuum g_local m n p := (h_ext_eq y m n).symm
 
-  have h_ricci_match := ricci_locality_open (metricFromTetrad vac.urbantke_tetrad) (extendMetric bulkVacuum g_local) bulkVacuum hOpen h_metrics_match_on_U x hx μ ν
+  have h_ricci_match := ricci_locality_open (metricFromTetrad urbantke_tetrad) (extendMetric bulkVacuum g_local) bulkVacuum hOpen h_metrics_match_on_U x hx μ ν
 
-  have h_metric_eq : (fun m n p => metricFromTetrad vac.urbantke_tetrad m n p) = 
+  have h_metric_eq : (fun m n p => metricFromTetrad urbantke_tetrad m n p) = 
                      (fun m n p => urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p) m n) := by
     funext m n p
-    exact vac.metric_compat p m n
+    exact metric_compat p m n
   
   rw [← h_metric_eq]
   rw [h_ricci_match]
@@ -248,15 +253,10 @@ theorem macroscopicRicciFlatEmergence
 
   case h_DSigma_eq_zero =>
     intros p m n r A B
-    have h_cgd := vac.h_DSigma_eq_zero p.val m n r A B
-    unfold cgd_D_Sigma_wedge cgd_covariant_deriv_Sigma_term cgd_omega_up at h_cgd
-    have h_litlib_sum : ∀ f, Litlib.Y1991.capovilla1991pure.sumFin2 f = ∑ x : Fin 2, f x := fun f => rfl
-    simp only [cgd_sumFin2_eq_sum] at h_cgd
-    simp only [h_litlib_sum]
-    exact h_cgd
+    exact eq2_2b.eq2_2b_iff p.val m n r A B
     
   case h_eq2_2c =>
     intros p m n A B
-    exact macroscopicVacuumGR_bridge u p.val m n A B
+    exact eq2_2c.eq2_2c_iff p.val m n A B
 
 end CGD.Gravity

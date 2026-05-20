@@ -112,32 +112,4 @@ theorem cgd_bianchi_identity_R
   unfold sumFin2
   ring
 
--- ==========================================
--- PART 4: THE CLASSICAL ON-SHELL VACUUM
--- ==========================================
-
-/-- 
-The physical, on-shell geometric vacuum state.
-
-Asserts that the Universe dynamically satisfies the Yang-Mills topological field 
-equations (DΣ = 0) and admits an exact factorization of the emergent Urbantke metric 
-into tetrads that strictly satisfy the Capovilla soldering factorization.
--/
-class IsClassicalVacuum (u : CGD.Axioms.Universe) where
-  urbantke_tetrad : TetradField
-  
-  /-- The tetrad natively generates the exact Urbantke metric of the gauge field. -/
-  metric_compat : ∀ x μ ν, metricFromTetrad urbantke_tetrad μ ν x = 
-                           CGD.Gravity.urbantkeMetric (fun m n => CGD.Foundations.curvatureSl2c u.sd_sector m n x) μ ν
-                           
-  /-- The spacetime possesses a macroscopic non-degenerate volume. -/
-  non_degenerate : ∀ x, CapovillaNonDegenerate u x
-  
-  /-- The tetrad-derived Sigma exactly equals the dynamically derived Weyl-curvature Sigma. -/
-  sigma_compat : ∀ x μ ν A B, cgd_Sigma urbantke_tetrad x μ ν A B = 
-                              @cgd_Sigma_derived u x (non_degenerate x) μ ν A B
-                              
-  /-- The Yang-Mills field equations are dynamically satisfied. -/
-  h_DSigma_eq_zero : ∀ x μ ν ρ A B, cgd_D_Sigma_wedge u urbantke_tetrad x μ ν ρ A B = 0
-
 end CGD.Gravity

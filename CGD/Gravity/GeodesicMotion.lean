@@ -62,19 +62,24 @@ theorem machianTopologicalDefectMotion
     isSmoothCurve hasNonZeroTangent isTimelike isTestParticleWorldline isGeodesic]
   (c : ℂ) (hc : c ≠ 0)
   (u : Universe)
-  [vac : IsClassicalVacuum u]
+  (urbantke_tetrad : TetradField)
+  (metric_compat : ∀ x μ ν, metricFromTetrad urbantke_tetrad μ ν x = 
+                           CGD.Gravity.urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x) μ ν)
+  (Psi : SpacetimePoint → Fin 2 → Fin 2 → Fin 2 → Fin 2 → ℂ)
+  [eq2_2b : Eq2_2b SpacetimePoint (cgd_dSigma urbantke_tetrad) (cgd_omega u) (cgd_Sigma urbantke_tetrad) cgd_eps2_up]
+  [eq2_2c : Eq2_2c SpacetimePoint (cgd_R u) Psi (cgd_Sigma urbantke_tetrad)]
   [th_ricci : Theorem_Eq2_2c_RicciFlat 
     (Spacetime := SpacetimePoint)
-    (theta := fun x => cgd_theta vac.urbantke_tetrad x) 
-    (g := fun x μ ν => metricFromTetrad vac.urbantke_tetrad μ ν x) 
+    (theta := fun x => cgd_theta urbantke_tetrad x) 
+    (g := fun x μ ν => metricFromTetrad urbantke_tetrad μ ν x) 
     (eps2_down := cgd_eps2_down) 
     (eps2_bar_down := cgd_eps2_bar_down) 
     (eps2_right := cgd_eps2_bar_down)
     (eps2_up := cgd_eps2_up)
     (R := cgd_R u) 
-    (Psi := fun x => (vac.non_degenerate x).Psi) 
-    (Sigma := fun x => cgd_Sigma vac.urbantke_tetrad x) 
-    (dSigma := fun x => cgd_dSigma vac.urbantke_tetrad x)
+    (Psi := fun x => Psi x) 
+    (Sigma := fun x => cgd_Sigma urbantke_tetrad x) 
+    (dSigma := fun x => cgd_dSigma urbantke_tetrad x)
     (omega := fun x => cgd_omega u x)
     (isRicciFlat := fun g => ∀ x μ ν, ricciTensor (fun m n p => g p m n) μ ν x = 0)]
   (h_exact : CGD.Gravity.satisfiesPureCdjConstraint (fun p m n => CGD.Gravity.cgdAdjointCurvature u m n p) ∧ 
@@ -93,7 +98,7 @@ theorem machianTopologicalDefectMotion
       ext m n p
       exact h_g_eq p m n
     rw [h_g_eq_fun]
-    exact macroscopicVacuumGR u x μ ν
+    exact macroscopicVacuumGR u urbantke_tetrad metric_compat Psi x μ ν
   · exact h_test_particle
 
 end CGD.Gravity
