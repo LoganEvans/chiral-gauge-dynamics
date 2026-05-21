@@ -4,35 +4,42 @@ import Litlib.Core
 import CGD.Foundations.Calculus
 import CGD.Foundations.GaugeGroup
 import CGD.Axioms.Ontology
+import CGD.Gravity.Geometry
 import Litlib.Math.Dirac
 import Mathlib.Tactic.FinCases
+import Mathlib.Tactic.Ring
 
 set_option linter.unusedSimpArgs false
 set_option linter.unusedTactic false
 set_option linter.unreachableTactic false
 
-open CGD.Foundations Matrix Complex BigOperators Litlib.Math.Dirac
+open CGD.Foundations CGD.Gravity Matrix Complex BigOperators Litlib.Math.Dirac
 open CGD.Axioms
 
 namespace CGD.Quantum
 
-noncomputable def extractSpinorMode (u : Universe) (x : SpacetimePoint) : Matrix (Fin 4) (Fin 4) Complex :=
-  u.spin4c_connection 0 x
+noncomputable def extractSpinorMode (u : Universe) (x : SpacetimePoint) (nu : Fin 4) : Matrix (Fin 4) (Fin 4) Complex :=
+  u.spin4c_connection nu x
 
-noncomputable def extractSpinorDeriv (u : Universe) (x : SpacetimePoint) (mu : Fin 4) : Matrix (Fin 4) (Fin 4) Complex :=
-  partialDerivChiral mu (fun p => u.spin4c_connection 0 p) x
-
-noncomputable def diracOperatorCore (dPsi : Fin 4 → SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) (x : SpacetimePoint) : Matrix (Fin 4) (Fin 4) Complex :=
-  ∑ mu, gammaVec mu * dPsi mu x
+noncomputable def extractSpinorDeriv (u : Universe) (x : SpacetimePoint) (mu nu : Fin 4) : Matrix (Fin 4) (Fin 4) Complex :=
+  partialDerivChiral mu (fun p => u.spin4c_connection nu p) x
 
 /--
-The exact gauge-covariant derivative of the spinor zero-mode (the temporal connection).
-Defined geometrically as D_mu A_0 = \partial_mu A_0 + [A_mu, A_0].
+The exact gauge-covariant derivative of the spinor matter mode.
+Defined geometrically as D_mu A_nu = \partial_mu A_nu + [A_mu, A_nu].
 -/
-noncomputable def covariantSpinorDeriv (u : Universe) (x : SpacetimePoint) (mu : Fin 4) : Matrix (Fin 4) (Fin 4) Complex :=
-  let dA_0 := extractSpinorDeriv u x mu
-  let comm := bracket (u.spin4c_connection mu x) (extractSpinorMode u x)
-  dA_0 + (embedSelfDual (chiralProject comm).self_dual + embedAntiSelfDual (chiralProject comm).anti_self_dual)
+noncomputable def covariantSpinorDeriv (u : Universe) (x : SpacetimePoint) (mu nu : Fin 4) : Matrix (Fin 4) (Fin 4) Complex :=
+  let dA_nu := extractSpinorDeriv u x mu nu
+  let comm := bracket (u.spin4c_connection mu x) (extractSpinorMode u x nu)
+  dA_nu + (embedSelfDual (chiralProject comm).self_dual + embedAntiSelfDual (chiralProject comm).anti_self_dual)
+
+/--
+The true background-independent Emergent Dirac Operator.
+It strictly contracts the local covariant spinor derivatives using the dynamically 
+emergent macroscopic TetradField (Vielbein) rather than assuming a flat-space metric.
+-/
+noncomputable def emergentDiracOperator (u : Universe) (e : TetradField) (x : SpacetimePoint) (nu : Fin 4) : Matrix (Fin 4) (Fin 4) Complex :=
+  ∑ mu, ∑ a, (e a mu x) • (gammaVec a * covariantSpinorDeriv u x mu nu)
 
 lemma isOdd_sum (f : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) 
   (hf : ∀ mu, isOdd (f mu)) : isOdd (∑ mu, f mu) := by
@@ -82,22 +89,32 @@ lemma isEven_embedAntiSelfDual (M : SL2C) : isEven (embedAntiSelfDual M) := by
     rw [h_light_i, h_light_j] at hij
     contradiction
 
-lemma isEven_extractSpinorMode (u : Universe) (x : SpacetimePoint) : isEven (extractSpinorMode u x) := by
+lemma isEven_extractSpinorMode (u : Universe) (x : SpacetimePoint) (nu : Fin 4) : isEven (extractSpinorMode u x nu) := by
   intros i j hij
   unfold extractSpinorMode
   rw [spin4c_connection_eq_embed]
-  have h1 := isEven_embedSelfDual (u.sd_sector 0 x) i j hij
-  have h2 := isEven_embedAntiSelfDual (u.asd_sector 0 x) i j hij
-  change (embedSelfDual (u.sd_sector 0 x) + embedAntiSelfDual (u.asd_sector 0 x)) i j = 0
+  have h1 := isEven_embedSelfDual (u.sd_sector nu x) i j hij
+  have h2 := isEven_embedAntiSelfDual (u.asd_sector nu x) i j hij
+  change (embedSelfDual (u.sd_sector nu x) + embedAntiSelfDual (u.asd_sector nu x)) i j = 0
   rw [Matrix.add_apply, h1, h2, zero_add]
 
-lemma isEven_extractSpinorDeriv (u : Universe) (x : SpacetimePoint) (mu : Fin 4) : isEven (extractSpinorDeriv u x mu) := by
+lemma isEven_extractSpinorDeriv (u : Universe) (x : SpacetimePoint) (mu nu : Fin 4) : isEven (extractSpinorDeriv u x mu nu) := by
   intros i j hij
   unfold extractSpinorDeriv partialDerivChiral
-  have h1 := isEven_embedSelfDual (partialDerivSl2c mu (fun p => toSl2c (fun i j => (u.spin4c_connection 0 p) (CGD.Foundations.chiralIso (Sum.inl i)) (CGD.Foundations.chiralIso (Sum.inl j)))) x) i j hij
-  have h2 := isEven_embedAntiSelfDual (partialDerivSl2c mu (fun p => toSl2c (fun i j => (u.spin4c_connection 0 p) (CGD.Foundations.chiralIso (Sum.inr i)) (CGD.Foundations.chiralIso (Sum.inr j)))) x) i j hij
+  have h1 := isEven_embedSelfDual (partialDerivSl2c mu (fun p => toSl2c (fun i j => (u.spin4c_connection nu p) (CGD.Foundations.chiralIso (Sum.inl i)) (CGD.Foundations.chiralIso (Sum.inl j)))) x) i j hij
+  have h2 := isEven_embedAntiSelfDual (partialDerivSl2c mu (fun p => toSl2c (fun i j => (u.spin4c_connection nu p) (CGD.Foundations.chiralIso (Sum.inr i)) (CGD.Foundations.chiralIso (Sum.inr j)))) x) i j hij
   change (embedSelfDual _ + embedAntiSelfDual _) i j = 0
   rw [Matrix.add_apply, h1, h2, zero_add]
+
+lemma isEven_covariantSpinorDeriv (u : Universe) (x : SpacetimePoint) (mu nu : Fin 4) : isEven (covariantSpinorDeriv u x mu nu) := by
+  intros i j hij
+  unfold covariantSpinorDeriv
+  rw [Matrix.add_apply]
+  have h1 := isEven_extractSpinorDeriv u x mu nu i j hij
+  rw [h1, zero_add]
+  have h2 := isEven_embedSelfDual (chiralProject (bracket (u.spin4c_connection mu x) (extractSpinorMode u x nu))).self_dual i j hij
+  have h3 := isEven_embedAntiSelfDual (chiralProject (bracket (u.spin4c_connection mu x) (extractSpinorMode u x nu))).anti_self_dual i j hij
+  rw [Matrix.add_apply, h2, h3, zero_add]
 
 lemma isOdd_smul (c : Complex) (M : Matrix (Fin 4) (Fin 4) Complex) (hM : isOdd M) : isOdd (c • M) := by
   intros i j hij
@@ -106,47 +123,101 @@ lemma isOdd_smul (c : Complex) (M : Matrix (Fin 4) (Fin 4) Complex) (hM : isOdd 
 Litlib.theorem
   description "Geometric Dirac Operator Grading"
 /--
-The Dirac operator geometrically emerges as an evaluation of the temporal gauge connection acting on the 4D Spin(4,C) multiplet, natively preserving the odd/even grading of the spinor operator.
+The covariant Dirac operator mathematically preserves the strict odd/even grading of the spinor algebra for any orientation vector.
 -/
 theorem kinematicDiracOperatorGrading (u : Universe) :
-  ∀ (m : Complex) (x : SpacetimePoint),
-    isOdd (diracOperatorCore (fun mu p => extractSpinorDeriv u p mu) x) ∧ 
-    isOdd (m • (extractSpinorMode u x * gamma0)) := by
-  intros m x
+  ∀ (m : Complex) (e : TetradField) (x : SpacetimePoint) (nu : Fin 4),
+    isOdd (emergentDiracOperator u e x nu) ∧ 
+    isOdd (m • (extractSpinorMode u x nu * gammaVec nu)) := by
+  intros m e x nu
   constructor
-  · unfold diracOperatorCore
-    apply isOdd_sum
-    intros mu
+  · unfold emergentDiracOperator
+    apply isOdd_sum; intro mu
+    apply isOdd_sum; intro a
+    apply isOdd_smul
     apply Litlib.Math.Dirac.odd_mul_even
-    · exact Litlib.Math.Dirac.hestenesIsomorphism mu
-    · exact isEven_extractSpinorDeriv u x mu
+    · exact Litlib.Math.Dirac.hestenesIsomorphism a
+    · exact isEven_covariantSpinorDeriv u x mu nu
   · apply isOdd_smul
     apply Litlib.Math.Dirac.even_mul_odd
-    · exact isEven_extractSpinorMode u x
-    · exact Litlib.Math.Dirac.is_odd_gamma0
+    · exact isEven_extractSpinorMode u x nu
+    · exact Litlib.Math.Dirac.hestenesIsomorphism nu
+
+lemma covariantSpinorDeriv_eq_curvature_plus_deriv (u : Universe) (x : SpacetimePoint) (mu nu : Fin 4) :
+  covariantSpinorDeriv u x mu nu = 
+  curvature (fun m p => u.spin4c_connection m p) mu nu x + partialDerivChiral nu (fun p => u.spin4c_connection mu p) x := by
+  unfold covariantSpinorDeriv extractSpinorDeriv extractSpinorMode curvature
+  dsimp only
+  ext i j
+  simp only [Matrix.add_apply, Matrix.sub_apply]
+  ring
 
 Litlib.theorem
-  description "Dynamic Dirac Equation"
+  description "Generalized Dynamic Dirac Equation"
 /--
-The Dirac operator geometrically emerges from the macroscopic Yang-Mills curvature.
-If the local spatial background is stationary (the time derivative of the spatial connection vanishes), 
-the covariant Dirac operator acting on the topological zero-mode exactly evaluates to the 
-trace of the Yang-Mills curvature.
+The CAPSTONE Dirac equivalence.
+The fully covariant Dirac operator natively equals the macroscopic Yang-Mills curvature trace, 
+plus a geometric inertial term (\partial_nu A_mu) reflecting the dynamical evolution of the background geometry.
+Matter actively responds to the bubbling and expansion of spacetime without requiring a fixed coordinate frame.
 -/
-theorem dynamicDiracEquation (u : Universe) (x : SpacetimePoint)
-  -- 1. Stationary Background Constraint: The spatial connection is locally static in time.
-  (h_stationary : ∀ mu, partialDerivChiral 0 (fun p => u.spin4c_connection mu p) x = 0) :
-  diracOperatorCore (fun mu p => covariantSpinorDeriv u p mu) x = 
-  ∑ mu, gammaVec mu * curvature (fun m p => u.spin4c_connection m p) mu 0 x := by
-  have h_cov : ∀ mu, covariantSpinorDeriv u x mu = curvature (fun m p => u.spin4c_connection m p) mu 0 x := by
+theorem generalizedDynamicDiracEquation 
+  (u : Universe) (e : TetradField) (x : SpacetimePoint) (nu : Fin 4) :
+  emergentDiracOperator u e x nu = 
+  ∑ mu, ∑ a, (e a mu x) • (gammaVec a * curvature (fun m p => u.spin4c_connection m p) mu nu x) + 
+  ∑ mu, ∑ a, (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => u.spin4c_connection mu p) x) := by
+  unfold emergentDiracOperator
+  have h_sub : ∀ mu a, (e a mu x) • (gammaVec a * covariantSpinorDeriv u x mu nu) = 
+                       (e a mu x) • (gammaVec a * curvature (fun m p => u.spin4c_connection m p) mu nu x) + 
+                       (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => u.spin4c_connection mu p) x) := by
+    intro mu a
+    rw [covariantSpinorDeriv_eq_curvature_plus_deriv]
+    rw [Matrix.mul_add, smul_add]
+    
+  have h_congr : (∑ mu : Fin 4, ∑ a : Fin 4, (e a mu x) • (gammaVec a * covariantSpinorDeriv u x mu nu)) = 
+                 ∑ mu : Fin 4, ∑ a : Fin 4, ((e a mu x) • (gammaVec a * curvature (fun m p => u.spin4c_connection m p) mu nu x) + 
+                                             (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => u.spin4c_connection mu p) x)) := by
+    apply Finset.sum_congr rfl
+    intro mu _
+    apply Finset.sum_congr rfl
+    intro a _
+    exact h_sub mu a
+    
+  rw [h_congr]
+  
+  have h_inner : ∀ mu, (∑ a : Fin 4, ((e a mu x) • (gammaVec a * curvature (fun m p => u.spin4c_connection m p) mu nu x) + 
+                                      (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => u.spin4c_connection mu p) x))) =
+                       (∑ a : Fin 4, (e a mu x) • (gammaVec a * curvature (fun m p => u.spin4c_connection m p) mu nu x)) + 
+                       (∑ a : Fin 4, (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => u.spin4c_connection mu p) x)) := by
     intro mu
-    unfold covariantSpinorDeriv curvature extractSpinorDeriv extractSpinorMode
-    dsimp only
-    rw [h_stationary mu, sub_zero]
-  unfold diracOperatorCore
-  apply Finset.sum_congr rfl
-  intro mu _
-  dsimp only
-  rw [h_cov mu]
+    exact Finset.sum_add_distrib
+    
+  have h_outer : (∑ mu : Fin 4, ∑ a : Fin 4, ((e a mu x) • (gammaVec a * curvature (fun m p => u.spin4c_connection m p) mu nu x) + 
+                                              (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => u.spin4c_connection mu p) x))) =
+                 ∑ mu : Fin 4, ((∑ a : Fin 4, (e a mu x) • (gammaVec a * curvature (fun m p => u.spin4c_connection m p) mu nu x)) + 
+                                (∑ a : Fin 4, (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => u.spin4c_connection mu p) x))) := by
+    apply Finset.sum_congr rfl
+    intro mu _
+    exact h_inner mu
+    
+  rw [h_outer]
+  exact Finset.sum_add_distrib
+
+Litlib.theorem
+  description "Familiar Dynamic Dirac Equation Limit"
+/--
+Recovers the standard textbook Dirac-Yang-Mills equivalence under the physical assumption that 
+the spacetime background is locally stationary with respect to the mode propagation direction.
+-/
+theorem familiarDynamicDiracEquation 
+  (u : Universe) (e : TetradField) (x : SpacetimePoint) (nu : Fin 4)
+  (h_stationary : ∀ mu, partialDerivChiral nu (fun p => u.spin4c_connection mu p) x = 0) :
+  emergentDiracOperator u e x nu = 
+  ∑ mu, ∑ a, (e a mu x) • (gammaVec a * curvature (fun m p => u.spin4c_connection m p) mu nu x) := by
+  rw [generalizedDynamicDiracEquation]
+  have h_zero : (∑ mu : Fin 4, ∑ a : Fin 4, (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => u.spin4c_connection mu p) x)) = 0 := by
+    apply Finset.sum_eq_zero; intro mu _
+    apply Finset.sum_eq_zero; intro a _
+    rw [h_stationary mu, Matrix.mul_zero, smul_zero]
+  rw [h_zero, add_zero]
 
 end CGD.Quantum

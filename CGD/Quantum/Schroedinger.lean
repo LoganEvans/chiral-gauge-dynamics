@@ -23,6 +23,13 @@ noncomputable def modulatedTemporalDeriv (dPsi0 Psi : Matrix (Fin 4) (Fin 4) Com
 noncomputable def spatialDiracOp (dPsi : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) : Matrix (Fin 4) (Fin 4) Complex :=
   gammaVec 1 * dPsi 1 + gammaVec 2 * dPsi 2 + gammaVec 3 * dPsi 3
 
+/-- 
+The core Dirac operator evaluated in the local tangent space frame (using tangent space index 'a' 
+instead of coordinate index 'mu'). In curved space, dP represents the tetrad-contracted derivative.
+-/
+noncomputable def localDiracOp (dP : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) : Matrix (Fin 4) (Fin 4) Complex :=
+  ∑ a, gammaVec a * dP a
+
 lemma sum_fin_4_matrix (f : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) : ∑ i : Fin 4, f i = f 0 + f 1 + f 2 + f 3 := by
   rw [Fin.sum_univ_castSucc, Fin.sum_univ_castSucc, Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]
   simp [add_assoc]
@@ -127,9 +134,9 @@ lemma P_minus_gammaVec (j : Fin 4) (hj : j ≠ 0) : P_minus * gammaVec j = gamma
   simp [Matrix.add_apply, Matrix.sub_apply, Matrix.neg_apply]
   try ring
 
-lemma diracOperatorCore_expand (dPsi : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) :
-  (∑ mu, gammaVec mu * dPsi mu) = gamma0 * dPsi 0 + spatialDiracOp dPsi := by
-  dsimp [spatialDiracOp]
+lemma localDiracOp_expand (dP : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) :
+  localDiracOp dP = gamma0 * dP 0 + spatialDiracOp dP := by
+  dsimp [localDiracOp, spatialDiracOp]
   rw [sum_fin_4_matrix]
   have h0 : gammaVec 0 = gamma0 := rfl
   rw [h0]
@@ -174,21 +181,20 @@ into a coupled system for the large and small components.
 -/
 theorem algebraicDiracChiralSplit (dPsi : Fin 4 → SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) 
   (Psi : SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) (m : Complex) (x : SpacetimePoint) :
-  CGD.Quantum.diracOperatorCore dPsi x = m • Psi x →
+  localDiracOp (fun a => dPsi a x) = m • Psi x →
   let D0_mod := modulatedTemporalDeriv (dPsi 0 x) (Psi x) m
   let D_space := spatialDiracOp (fun mu => dPsi mu x)
   (P_plus * D0_mod + P_plus * gamma0 * D_space = 2 • m • (P_plus * Psi x)) ∧
   (P_minus * D0_mod + P_minus * gamma0 * D_space = 0) := by
   intro h
-  let dP := fun mu => dPsi mu x
+  let dP := fun a => dPsi a x
   let Px := Psi x
   let D0_mod := modulatedTemporalDeriv (dP 0) Px m
   let D_space := spatialDiracOp dP
   
   have h_expand : gamma0 * dP 0 + D_space = m • Px := by
-    have h_sum := diracOperatorCore_expand dP
-    change (∑ mu, gammaVec mu * dP mu) = m • Px at h
-    rw [h_sum] at h
+    have h_sum := localDiracOp_expand dP
+    rw [← h_sum]
     exact h
     
   have h_rearrange : dP 0 + gamma0 * D_space = m • (gamma0 * Px) := by
@@ -236,7 +242,7 @@ yields the non-relativistic 1/2m Hamiltonian structure.
 -/
 theorem exactSchroedingerReduction (dPsi : Fin 4 → SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) 
   (Psi : SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) (m : Complex) (x : SpacetimePoint) :
-  CGD.Quantum.diracOperatorCore dPsi x = m • Psi x →
+  localDiracOp (fun a => dPsi a x) = m • Psi x →
   let D0_mod := modulatedTemporalDeriv (dPsi 0 x) (Psi x) m
   let Psi_small := P_plus * Psi x
   (2 • m • Psi_small = P_plus * D0_mod + gammaVec 1 * (P_minus * dPsi 1 x) + gammaVec 2 * (P_minus * dPsi 2 x) + gammaVec 3 * (P_minus * dPsi 3 x)) ∧
@@ -245,7 +251,7 @@ theorem exactSchroedingerReduction (dPsi : Fin 4 → SpacetimePoint → Matrix (
   have h_split := algebraicDiracChiralSplit dPsi Psi m x h
   rcases h_split with ⟨h_plus, h_minus⟩
   
-  let dP := fun mu => dPsi mu x
+  let dP := fun a => dPsi a x
   let D_space := spatialDiracOp dP
   let D0_mod := modulatedTemporalDeriv (dPsi 0 x) (Psi x) m
   
