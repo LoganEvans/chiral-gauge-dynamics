@@ -7,7 +7,6 @@ import CGD.Axioms.Ontology
 import CGD.Axioms.Phenomenology
 import Litlib.Y2003.nakahara2003geometry.Signature
 
-set_option linter.unusedVariables false
 
 open Complex Matrix CGD.Foundations BigOperators Classical
 open CGD.Axioms
@@ -30,7 +29,6 @@ The emergent Stress-Energy tensor (defined as the Einstein tensor of the dynamic
 -/
 theorem emergentStressEnergyConservation (u : Universe) (bulk : Set SpacetimePoint)
   [Nonempty bulk]
-  [vol : CGD.Axioms.MacroscopicVolume u bulk]
   [ebi : Litlib.Y2003.nakahara2003geometry.ContractedBianchiIdentity 
     bulk (Fin 4) 
     (fun i j p => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p.val) i j)
@@ -39,14 +37,14 @@ theorem emergentStressEnergyConservation (u : Universe) (bulk : Set SpacetimePoi
     (fun mu nu p => CGD.Gravity.ricciTensor (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p') m n) mu nu p.val)
     (fun p => ∑ alpha : Fin 4, ∑ beta : Fin 4, CGD.Gravity.matrixInv4x4 (fun m n => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p.val) m n) alpha beta * CGD.Gravity.ricciTensor (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p') m n) alpha beta p.val)
     (fun mu nu p => emergentStressEnergy (fun a b p' => curvatureSl2c u.sd_sector a b p') mu nu p.val)
-    (fun mu f p => partialDeriv mu (fun p' => if h : p' ∈ bulk then f ⟨p', h⟩ else 0) p.val)] :
+    (fun mu f p => partialDeriv mu (fun p' => if _h : p' ∈ bulk then f ⟨p', _h⟩ else 0) p.val)] :
   ∀ nu (x : bulk),
     let g := fun m n p => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p) m n
     let g_inv := CGD.Gravity.matrixInv4x4 (fun m n => g m n x.val)
     let T := fun m n p => emergentStressEnergy (fun a b p' => curvatureSl2c u.sd_sector a b p') m n p
     -- g^{mu alpha} \nabla_{alpha} T_{mu nu} = 0
     ∑ mu : Fin 4, ∑ alpha : Fin 4, g_inv mu alpha * (
-      partialDeriv alpha (fun p => if h : p ∈ bulk then T mu nu p else 0) x.val -
+      partialDeriv alpha (fun p => if _h : p ∈ bulk then T mu nu p else 0) x.val -
       ∑ lambda : Fin 4, (CGD.Gravity.christoffel g lambda alpha mu x.val * T lambda nu x.val + 
                          CGD.Gravity.christoffel g lambda alpha nu x.val * T mu lambda x.val)
     ) = 0 := by

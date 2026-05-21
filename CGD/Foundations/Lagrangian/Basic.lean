@@ -7,7 +7,6 @@ import CGD.Gravity.Geometry
 import CGD.Foundations.GaugeGroup
 
 set_option linter.unusedSimpArgs false
-set_option linter.unusedVariables false
 set_option linter.unusedSectionVars false
 
 open Matrix Complex BigOperators CGD.Axioms CGD.Foundations

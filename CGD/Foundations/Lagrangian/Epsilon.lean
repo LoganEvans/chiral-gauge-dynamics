@@ -4,7 +4,6 @@ import CGD.Foundations.Lagrangian.Basic
 import Mathlib.GroupTheory.Perm.Sign
 
 set_option linter.unusedSimpArgs false
-set_option linter.unusedVariables false
 set_option linter.unusedSectionVars false
 
 open Matrix Complex BigOperators CGD.Axioms CGD.Foundations

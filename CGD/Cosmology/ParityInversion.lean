@@ -7,7 +7,6 @@ import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.Ring
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 
-set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
 open CGD.Gravity Matrix Complex BigOperators

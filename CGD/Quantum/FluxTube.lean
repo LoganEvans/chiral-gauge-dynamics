@@ -22,7 +22,6 @@ import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.Ring
 import Litlib.Core
 
-set_option linter.unusedVariables false
 
 open CGD.Foundations CGD.Gravity Matrix Complex BigOperators
 open CGD.Axioms Litlib.Y1973.nielsen1973vortex

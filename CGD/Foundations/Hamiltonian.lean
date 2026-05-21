@@ -4,7 +4,6 @@ import Litlib.Core
 import CGD.Axioms.Ontology
 import Litlib.Y2007.dittrich2007partial.Signature
 
-set_option linter.unusedVariables false
 
 open CGD.Axioms CGD.Foundations Litlib.Y2007.dittrich2007partial
 

@@ -11,7 +11,6 @@ import CGD.Gravity.MacroscopicVacuum.Spinors
 import CGD.Gravity.MacroscopicVacuum.Differential
 
 set_option autoImplicit false
-set_option linter.unusedVariables false
 
 open Complex Matrix BigOperators
 open CGD.Axioms CGD.Foundations Litlib Classical

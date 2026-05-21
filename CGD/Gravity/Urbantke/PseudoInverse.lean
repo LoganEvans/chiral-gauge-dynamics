@@ -3,14 +3,12 @@
 import CGD.Gravity.Urbantke.PlebanskiComponents2
 
 set_option linter.unusedSimpArgs false
-set_option linter.unusedVariables false
 
 namespace CGD.Gravity
 
 open Complex Matrix BigOperators CGD.Foundations Litlib.Y1991.capovilla1991pure
 
 lemma capovilla_invPsi_eq (F : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) (Λ : ℂ)
-  (h_anti : ∀ μ ν, F μ ν = - F ν μ)
   (h_su2 : ∀ μ ν, 
     F μ ν 0 0 = 0 ∧ F μ ν 1 1 = 0 ∧ F μ ν 2 2 = 0 ∧
     F μ ν 2 1 = - F μ ν 1 2 ∧ F μ ν 2 0 = - F μ ν 0 2 ∧ F μ ν 1 0 = - F μ ν 0 1)

@@ -9,7 +9,6 @@ import Mathlib.Data.Matrix.Basic
 import Mathlib.LinearAlgebra.Matrix.Trace
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Complex
 
-set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 set_option maxHeartbeats 4000000
 

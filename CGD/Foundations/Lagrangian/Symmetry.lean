@@ -4,7 +4,6 @@ import CGD.Foundations.Lagrangian.Parity
 import CGD.Foundations.Lagrangian.Permutation
 
 set_option linter.unusedSimpArgs false
-set_option linter.unusedVariables false
 set_option linter.unusedSectionVars false
 
 open Matrix Complex BigOperators CGD.Axioms CGD.Foundations

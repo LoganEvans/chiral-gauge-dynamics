@@ -8,7 +8,6 @@ import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import Mathlib.Analysis.Calculus.FDeriv.Add
 import Mathlib.Analysis.Calculus.FDeriv.Mul
 
-set_option linter.unusedVariables false
 
 open Matrix Complex BigOperators Litlib.Y2003.nakahara2003geometry
 

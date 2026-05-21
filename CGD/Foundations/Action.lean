@@ -9,7 +9,6 @@ import Mathlib.LinearAlgebra.Matrix.Trace
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 
-set_option linter.unusedVariables false
 
 open BigOperators Complex Matrix CGD.Axioms
 

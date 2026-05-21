@@ -7,7 +7,6 @@ import Mathlib.LinearAlgebra.Matrix.Trace
 import Mathlib.Analysis.Calculus.ContDiff.Basic
 import Mathlib.Algebra.Lie.Classical
 
-set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
 open Matrix Complex BigOperators Litlib.Y2003.nakahara2003geometry

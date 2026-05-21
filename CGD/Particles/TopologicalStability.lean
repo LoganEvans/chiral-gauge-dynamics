@@ -15,7 +15,6 @@ import Mathlib.Tactic.Ring
 import Litlib.Core
 
 set_option autoImplicit false
-set_option linter.unusedVariables false
 set_option linter.unusedSectionVars false
 set_option linter.unusedSimpArgs false
 

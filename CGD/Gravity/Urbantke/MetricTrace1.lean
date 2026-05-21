@@ -3,7 +3,6 @@
 import CGD.Gravity.Urbantke.Basic
 
 set_option linter.unusedSimpArgs false
-set_option linter.unusedVariables false
 
 namespace CGD.Gravity
 

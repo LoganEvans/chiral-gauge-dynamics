@@ -4,7 +4,6 @@ import Litlib.Y2003.nakahara2003geometry.Signature
 import CGD.Foundations.Lagrangian.Basic
 
 set_option linter.unusedSimpArgs false
-set_option linter.unusedVariables false
 set_option linter.unusedSectionVars false
 
 open Matrix Complex BigOperators CGD.Axioms CGD.Foundations

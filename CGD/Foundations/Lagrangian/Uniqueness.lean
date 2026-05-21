@@ -4,7 +4,6 @@ import CGD.Foundations.Lagrangian.Symmetry
 import Litlib.Y1956.utiyama1956invariant.Signature
 
 set_option linter.unusedSimpArgs false
-set_option linter.unusedVariables false
 set_option linter.unusedSectionVars false
 
 open Matrix Complex BigOperators CGD.Axioms CGD.Foundations

@@ -3,7 +3,6 @@
 import CGD.Cosmology.TimeEmergence.ProjectComponents
 
 set_option maxHeartbeats 4000000
-set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
 open CGD.Foundations CGD.Gravity Matrix Complex BigOperators

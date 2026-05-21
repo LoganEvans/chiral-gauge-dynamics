@@ -5,7 +5,6 @@ import Mathlib.GroupTheory.Perm.Sign
 import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
 set_option linter.unusedSimpArgs false
-set_option linter.unusedVariables false
 set_option linter.unusedSectionVars false
 
 open Matrix Complex BigOperators CGD.Axioms CGD.Foundations

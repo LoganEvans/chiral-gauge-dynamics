@@ -3,7 +3,6 @@
 import CGD.Gravity.Urbantke.Determinant1
 
 set_option linter.unusedSimpArgs false
-set_option linter.unusedVariables false
 set_option linter.unreachableTactic false
 set_option linter.unusedTactic false
 

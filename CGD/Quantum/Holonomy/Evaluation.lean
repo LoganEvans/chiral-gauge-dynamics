@@ -5,7 +5,6 @@ import CGD.Quantum.Holonomy.Euler
 import CGD.Quantum.Definitions
 import Litlib.Y2000.hall2000elementary.Signature
 
-set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
 namespace CGD.Quantum

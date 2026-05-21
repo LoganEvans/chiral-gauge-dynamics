@@ -8,7 +8,6 @@ import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.Ring
 
 set_option linter.unusedSimpArgs false
-set_option linter.unusedVariables false
 
 namespace CGD.Gravity
 

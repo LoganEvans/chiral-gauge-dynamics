@@ -5,7 +5,6 @@ import CGD.Gravity.Geometry
 import CGD.Axioms.Ontology
 
 set_option autoImplicit false
-set_option linter.unusedVariables false
 
 open Complex Matrix BigOperators
 open CGD.Axioms CGD.Foundations Litlib Classical

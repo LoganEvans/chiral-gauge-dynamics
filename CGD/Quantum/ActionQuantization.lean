@@ -11,7 +11,6 @@ import Mathlib.Topology.Constructions
 import CGD.Particles.TopologicalStability
 
 set_option autoImplicit false
-set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
 open CGD.Foundations CGD.Particles Matrix Complex BigOperators

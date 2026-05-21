@@ -7,7 +7,6 @@ import CGD.Axioms.Ontology
 import Mathlib.Data.Complex.Basic
 import Mathlib.Data.Matrix.Basic
 
-set_option linter.unusedVariables false
 
 open CGD.Axioms CGD.Foundations Matrix Complex
 
@@ -16,7 +15,7 @@ namespace CGD.Quantum
 /-- 
 The baseline unbroken topology of a 1D string defect along the z-axis.
 -/
-noncomputable def fluxTubeFrame (mu : Fin 4) (x : SpacetimePoint) : SL2C :=
+noncomputable def fluxTubeFrame (mu : Fin 4) (_x : SpacetimePoint) : SL2C :=
   toSl2c (if mu = 0 then 0 else if mu = 1 then (Complex.I:ℂ) • sigma3.val else if mu = 2 then (Complex.I:ℂ) • sigma1.val else (Complex.I:ℂ) • sigma2.val)
 
 /-- 

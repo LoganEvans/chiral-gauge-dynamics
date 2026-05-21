@@ -6,7 +6,6 @@ import Mathlib.Data.Complex.Basic
 import Mathlib.Tactic.Abel
 import Mathlib.Tactic.Ring
 
-set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
 open Matrix Complex BigOperators

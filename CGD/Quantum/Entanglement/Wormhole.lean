@@ -5,7 +5,6 @@ import CGD.Quantum.Entanglement.Basic
 import CGD.Quantum.Definitions
 import CGD.Axioms.Ontology
 
-set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
 open CGD.Foundations CGD.Gravity Matrix Complex BigOperators

@@ -8,7 +8,6 @@ import CGD.Axioms.Phenomenology
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Add
 
-set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
 open CGD.Foundations CGD.Gravity CGD.Axioms Matrix Complex

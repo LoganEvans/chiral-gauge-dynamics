@@ -10,7 +10,6 @@ import Litlib.Y1991.capovilla1991pure.Signature
 import Mathlib.Topology.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 
-set_option linter.unusedVariables false
 
 namespace CGD.Gravity
 
@@ -160,7 +159,6 @@ theorem macroscopicVacuumEmergence
       (h_detPsi x0.val x0.property)
       (h_eq2_21 x0.val x0.property)
     have h_nz := urbantke_nondeg_of_plebanski Λ (fun m n => cgdAdjointCurvature u m n x0.val) hLambdaNz 
-      h_antisymm h_su2 h_pleb
       (sqrt_g x0.val) (detPsi x0.val)
       (h_sqrt_g x0.val x0.property)
       (h_detPsi x0.val x0.property)

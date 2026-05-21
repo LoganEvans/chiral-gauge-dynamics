@@ -8,7 +8,6 @@ import Mathlib.Data.Complex.Basic
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.FinCases
 
-set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 set_option linter.unusedTactic false
 set_option linter.unreachableTactic false
@@ -23,7 +22,7 @@ Litlib.theorem
 /--
 Evaluates the chaotic non-linear self-interaction of the homogenous gauge field ansatz.
 -/
-theorem kinematicYangMillsChaos (u : Universe) :
+theorem kinematicYangMillsChaos :
   ∀ (x : SpacetimePoint),
     Matrix.trace (⁅homogeneousChaosAnsatz 1 x, homogeneousChaosAnsatz 2 x⁆.val *
                   ⁅homogeneousChaosAnsatz 1 x, homogeneousChaosAnsatz 2 x⁆.val) =

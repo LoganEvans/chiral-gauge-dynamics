@@ -9,7 +9,6 @@ import Mathlib.Data.Complex.Basic
 import Mathlib.Data.Matrix.Basic
 import CGD.Gravity.Geometry
 
-set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
 open CGD.Foundations CGD.Gravity Matrix Complex BigOperators

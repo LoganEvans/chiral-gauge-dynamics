@@ -6,7 +6,6 @@ import CGD.Gravity.Urbantke.MetricTrace6
 import CGD.Gravity.Urbantke.MetricTrace7
 
 set_option linter.unusedSimpArgs false
-set_option linter.unusedVariables false
 
 namespace CGD.Gravity
 

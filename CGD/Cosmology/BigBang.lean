@@ -10,7 +10,6 @@ import Mathlib.Tactic.Linarith
 import CGD.Axioms.Ontology
 import CGD.Axioms.Phenomenology
 
-set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
 open CGD.Gravity Matrix Complex BigOperators

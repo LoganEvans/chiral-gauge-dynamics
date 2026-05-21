@@ -7,7 +7,6 @@ import CGD.Foundations.ChiralDecomposition
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import CGD.Axioms.Ontology
 
-set_option linter.unusedVariables false
 
 open CGD.Foundations Matrix BigOperators
 open CGD.Axioms

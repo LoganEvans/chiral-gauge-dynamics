@@ -8,7 +8,6 @@ import Mathlib.LinearAlgebra.Matrix.Trace
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Litlib.Core
 
-set_option linter.unusedVariables false
 
 open Complex Matrix CGD.Foundations BigOperators
 open CGD.Axioms

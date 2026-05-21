@@ -12,7 +12,6 @@ import CGD.Gravity.MacroscopicVacuum.GR
 import Litlib.Y1949.infeld1949motion.Signature
 import Litlib.Y1991.capovilla1991pure.Signature
 
-set_option linter.unusedVariables false
 
 open Complex Matrix CGD.Foundations BigOperators Classical
 open CGD.Axioms Litlib.Y1991.capovilla1991pure
@@ -60,7 +59,6 @@ theorem machianTopologicalDefectMotion
     isLorentzian 
     (fun g => ∀ x μ ν, ricciTensor g μ ν x = 0) 
     isSmoothCurve hasNonZeroTangent isTimelike isTestParticleWorldline isGeodesic]
-  (c : ℂ) (hc : c ≠ 0)
   (u : Universe)
   (urbantke_tetrad : TetradField)
   (metric_compat : ∀ x μ ν, metricFromTetrad urbantke_tetrad μ ν x = 
@@ -82,9 +80,6 @@ theorem machianTopologicalDefectMotion
     (dSigma := fun x => cgd_dSigma urbantke_tetrad x)
     (omega := fun x => cgd_omega u x)
     (isRicciFlat := fun g => ∀ x μ ν, ricciTensor (fun m n p => g p m n) μ ν x = 0)]
-  (h_exact : CGD.Gravity.satisfiesPureCdjConstraint (fun p m n => CGD.Gravity.cgdAdjointCurvature u m n p) ∧ 
-             (∀ x, curvatureSl2c u.sd_sector 1 2 x = c • toSl2c sigmaX) ∧
-             (∃ x, curvatureSl2c u.sd_sector 1 2 x ≠ 0))
   (g : Fin 4 → Fin 4 → SpacetimePoint → ℂ)
   (h_g_eq : ∀ x μ ν, g μ ν x = urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b x) μ ν)
   (γ : ℝ → SpacetimePoint)

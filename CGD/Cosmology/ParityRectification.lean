@@ -9,7 +9,6 @@ import CGD.Axioms.Ontology
 
 open CGD.Axioms
 
-set_option linter.unusedVariables false
 
 namespace CGD.Cosmology
 
@@ -21,7 +20,7 @@ noncomputable def computeConnection (g_inv : n → n → ℝ) (d_g : n → n →
 /--
 Demonstrates macroscopic consistency under parity inversion: if the physical metric tensor is inverted ($g \to -g$), the resulting Levi-Civita connection (Christoffel symbols) remains strictly invariant.
 -/
-theorem kinematicParityRectification (u : Universe) (g_inv : n → n → ℝ) (d_g : n → n → n → ℝ) :
+theorem kinematicParityRectification (g_inv : n → n → ℝ) (d_g : n → n → n → ℝ) :
   computeConnection (fun i j => - g_inv i j) (fun i j k => - d_g i j k) = computeConnection g_inv d_g := by
   ext k i j
   unfold computeConnection

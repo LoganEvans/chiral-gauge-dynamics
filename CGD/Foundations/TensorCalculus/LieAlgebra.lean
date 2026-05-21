@@ -4,7 +4,6 @@ import CGD.Foundations.Calculus
 import CGD.Foundations.GaugeGroup
 import Mathlib.Tactic.NoncommRing
 
-set_option linter.unusedVariables false
 
 open Matrix Complex BigOperators
 

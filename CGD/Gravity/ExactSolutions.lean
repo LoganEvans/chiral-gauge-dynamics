@@ -9,7 +9,6 @@ import Mathlib.Data.Complex.Basic
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.FinCases
 
-set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 set_option linter.unusedTactic false
 set_option linter.unreachableTactic false

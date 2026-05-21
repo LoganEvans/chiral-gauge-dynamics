@@ -7,7 +7,6 @@ import Mathlib.Data.Complex.Basic
 import Litlib.Core
 import CGD.Axioms.Ontology
 
-set_option linter.unusedVariables false
 
 open CGD.Axioms CGD.Foundations Matrix Complex
 

@@ -14,7 +14,6 @@ import Mathlib.Analysis.Complex.RealDeriv
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.ComplexDeriv
 
 set_option maxHeartbeats 4000000
-set_option linter.unusedVariables false
 
 namespace CGD.Quantum
 
@@ -189,8 +188,8 @@ lemma hd_G0 (M : Matrix (Fin 2) (Fin 2) ℂ) (h_sq : M * M = 1) (t : ℝ) :
 noncomputable def mat_eval (i j : Fin 2) : Matrix (Fin 2) (Fin 2) ℂ →L[ℝ] ℂ :=
   LinearMap.toContinuousLinearMap {
     toFun := fun A => A i j
-    map_add' := fun A B => rfl
-    map_smul' := fun c A => rfl
+    map_add' := fun _A _B => rfl
+    map_smul' := fun _c _A => rfl
   }
 
 lemma hd_F_comp (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
