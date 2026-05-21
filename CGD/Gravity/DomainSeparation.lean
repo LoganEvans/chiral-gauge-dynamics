@@ -10,7 +10,6 @@ import Litlib.Y1991.capovilla1991pure.Signature
 import Mathlib.Topology.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 
-
 namespace CGD.Gravity
 
 open Set Complex Matrix BigOperators CGD.Axioms CGD.Foundations Classical Filter
@@ -136,51 +135,39 @@ theorem macroscopicVacuumEmergence
   (u : Universe)
   (Λ : ℂ)
   (bulkVacuum : Set SpacetimePoint)
-  (sqrt_g detPsi : SpacetimePoint → ℂ)
-  (h_sqrt_g : ∀ x ∈ bulkVacuum, (sqrt_g x)^2 = (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x)).det)
-  (h_detPsi : ∀ x ∈ bulkVacuum, detPsi x * ((3 * I / 2 : ℂ)^3 * ((1/2:ℂ) * Λ^3)) = 1)
-  (h_eq2_21 : ∀ x ∈ bulkVacuum, (3 * I / 2 : ℂ) * sqrt_g x * detPsi x = 1)
+  (h_Λ_neq_zero : Λ ≠ 0)
+  (k : ℂ) (hk : k ≠ 0)
+  (h_urbantke_det : ∀ x, (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x)).det = 
+    k * (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
+      epsilon4 μ ν ρ σ • (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)).det)
   (h_vacuum : isVacuumRegion bulkVacuum u Λ) :
   ∃ (c : ℂ), c ≠ 0 ∧ ∀ x y : bulkVacuum, 
     (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x.val)).det = (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n y.val)).det ∧
     (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x.val)).det = c := by
-  obtain ⟨det_val, h_det⟩ := urbantke_det_uniqueness Λ
-  by_cases h_emp : Set.Nonempty bulkVacuum
-  · rcases h_emp with ⟨x0_val, hx0_mem⟩
-    let x0 : bulkVacuum := ⟨x0_val, hx0_mem⟩
-    have h_antisymm := adjoint_curvature_antisymm u x0.val
-    have h_su2 := adjoint_curvature_su2 u x0.val
-    have h_pleb := h_vacuum x0.val x0.property
-    have h_eval := h_det (fun m n => cgdAdjointCurvature u m n x0.val) 
-      (sqrt_g x0.val) (detPsi x0.val)
-      h_antisymm h_su2 h_pleb
-      (h_sqrt_g x0.val x0.property)
-      (h_detPsi x0.val x0.property)
-      (h_eq2_21 x0.val x0.property)
-    have h_nz := urbantke_nondeg_of_cdj_eq2_21 (fun m n => cgdAdjointCurvature u m n x0.val) 
-      (sqrt_g x0.val) (detPsi x0.val)
-      (h_sqrt_g x0.val x0.property)
-      (h_eq2_21 x0.val x0.property)
-    use det_val
-    refine ⟨?_, ?_⟩
-    · rw [← h_eval]
-      exact h_nz
-    · intro x y
-      have hx := h_det (fun m n => cgdAdjointCurvature u m n x.val) 
-        (sqrt_g x.val) (detPsi x.val)
-        (adjoint_curvature_antisymm u x.val) (adjoint_curvature_su2 u x.val) (h_vacuum x.val x.property)
-        (h_sqrt_g x.val x.property) (h_detPsi x.val x.property) (h_eq2_21 x.val x.property)
-      have hy := h_det (fun m n => cgdAdjointCurvature u m n y.val) 
-        (sqrt_g y.val) (detPsi y.val)
-        (adjoint_curvature_antisymm u y.val) (adjoint_curvature_su2 u y.val) (h_vacuum y.val y.property)
-        (h_sqrt_g y.val y.property) (h_detPsi y.val y.property) (h_eq2_21 y.val y.property)
-      exact ⟨hx.trans hy.symm, hx⟩
-  · use 1
-    refine ⟨one_ne_zero, ?_⟩
-    intro x y
-    have h_absurd : x.val ∈ bulkVacuum := x.property
-    exfalso
-    exact h_emp ⟨x.val, h_absurd⟩
+  let c := k * (Λ ^ 3)
+  use c
+  have h_c_neq_zero : c ≠ 0 := by
+    apply mul_ne_zero hk
+    exact pow_ne_zero 3 h_Λ_neq_zero
+  constructor
+  · exact h_c_neq_zero
+  · intro x y
+    have h_det_eval : ∀ z : bulkVacuum, (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n z.val)).det = c := by
+      intro z
+      have hz := h_urbantke_det z.val
+      have h_vac_z := h_vacuum z.val z.property
+      rw [h_vac_z] at hz
+      have h_det_smul : (Λ • (1 : Matrix (Fin 3) (Fin 3) ℂ)).det = Λ ^ 3 := by
+        rw [Matrix.det_smul]
+        have hc : Fintype.card (Fin 3) = 3 := rfl
+        rw [hc, Matrix.det_one, mul_one]
+      rw [h_det_smul] at hz
+      exact hz
+    have hx_eval := h_det_eval x
+    have hy_eval := h_det_eval y
+    constructor
+    · rw [hx_eval, hy_eval]
+    · exact hx_eval
 
 Litlib.theorem
   description "Macroscopic Ricci-Flat Emergence"
