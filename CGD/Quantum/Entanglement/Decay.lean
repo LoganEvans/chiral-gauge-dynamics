@@ -6,7 +6,6 @@ import CGD.Axioms.Ontology
 import CGD.Quantum.Definitions
 import Litlib.Y2001.bali2001qcd.Signature
 
-set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
 open CGD.Foundations CGD.Gravity Matrix Complex BigOperators
@@ -15,23 +14,19 @@ open CGD.Axioms Litlib.Y2001.bali2001qcd
 namespace CGD.Quantum
 
 /-- 
-In the CGD framework, entanglement between two points is physically mediated by a topological 
-SU(2) wormhole (a twisted flux tube). This theorem proves that if the Euclidean spatial 
-distance between the entangled particles exceeds the QCD string-breaking threshold (2M/sigma), 
-the energy of the intact entangled wormhole strictly exceeds the energy of the snapped 
-(decohered) state. 
+This theorem proves that if the Euclidean spatial distance of a macroscopic topological flux tube 
+exceeds the QCD string-breaking threshold (2M/sigma), the energy of the intact flux tube 
+strictly exceeds the energy of the snapped state.
 
 By binding `u.sd_sector` to the `intactState` parameter of the `FluxTubeStringBreaking` axiom, 
-this signature rigorously prevents free-variable exploits and enforces the ER=EPR decay limit.
+this signature rigorously prevents free-variable exploits and enforces the physical decay limit.
 -/
-theorem kinematicHamiltonianCrossover
+theorem kinematicFluxTubeCrossover
   (energyFunc : (Fin 4 → SpacetimePoint → SL2C) → ℝ)
   (intactState snappedState : ℝ → Fin 4 → SpacetimePoint → SL2C)
   {sigma M : ℝ} [eb : FluxTubeStringBreaking (Fin 4 → SpacetimePoint → SL2C) energyFunc intactState snappedState sigma M]
   (u : Universe)
-  (x y : SpacetimePoint) (theta L : ℝ)
-  (h_entangled : areEntangled u.sd_sector x y theta)
-  (h_dist : L^2 = (x 1 - y 1)^2 + (x 2 - y 2)^2 + (x 3 - y 3)^2)
+  (L : ℝ)
   (h_L_pos : L > 0)
   (h_intact : u.sd_sector = intactState L)
   (h_sigma : sigma > 0)
@@ -56,37 +51,35 @@ theorem kinematicHamiltonianCrossover
   exact h_mul
 
 Litlib.theorem
-  description "Entanglement Decay"
+  description "Flux Tube Breaking Limit"
 /--
 A direct consequence of the Hamiltonian crossover: when the spatial distance exceeds the 
-crossover bound, the intact flux tube holding the entangled pair drops out of the global minimum. 
-This establishes a deterministic, geometrical mechanism for macroscopic quantum decoherence.
+crossover bound, the intact flux tube drops out of the global minimum. 
+This establishes a deterministic, geometrical mechanism for macroscopic string breaking.
 -/
-theorem dynamicEntanglementDecay
+theorem dynamicFluxTubeBreakingLimit
   (energyFunc : (Fin 4 → SpacetimePoint → SL2C) → ℝ)
   (intactState snappedState : ℝ → Fin 4 → SpacetimePoint → SL2C)
   {sigma M : ℝ} [eb : FluxTubeStringBreaking (Fin 4 → SpacetimePoint → SL2C) energyFunc intactState snappedState sigma M]
   (u : Universe)
-  (x y : SpacetimePoint) (theta L : ℝ)
-  (h_entangled : areEntangled u.sd_sector x y theta)
-  (h_dist : L^2 = (x 1 - y 1)^2 + (x 2 - y 2)^2 + (x 3 - y 3)^2)
+  (L : ℝ)
   (h_L_pos : L > 0)
   (h_intact : u.sd_sector = intactState L)
   (h_sigma : sigma > 0)
   (h_L_crossover : L > (2 * M) / sigma) :
   ¬ isGlobalMinimum energyFunc u.sd_sector := by
   
-  -- Step 1: Assume for contradiction that the intact wormhole is the global minimum
+  -- Step 1: Assume for contradiction that the intact string is the global minimum
   intro h_min
   unfold isGlobalMinimum at h_min
   
   -- Step 2: Extract the actual crossover inequality from the previous theorem
-  have h_crossover := kinematicHamiltonianCrossover energyFunc intactState snappedState u x y theta L h_entangled h_dist h_L_pos h_intact h_sigma h_L_crossover
+  have h_crossover := kinematicFluxTubeCrossover energyFunc intactState snappedState u L h_L_pos h_intact h_sigma h_L_crossover
   
   -- Step 3: Apply the minimum bound to the specific alternative of the snapped flux tube
   have h_le := h_min (snappedState L)
   
-  -- Step 4: The contradiction (A ≤ B and A > B) logically forbids the infinite survival of the entanglement
+  -- Step 4: The contradiction (A ≤ B and A > B) logically forbids the infinite survival of the string
   linarith
 
 end CGD.Quantum
