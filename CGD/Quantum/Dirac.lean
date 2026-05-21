@@ -128,30 +128,25 @@ theorem kinematicDiracOperatorGrading (u : Universe) :
 Litlib.theorem
   description "Dynamic Dirac Equation"
 /--
-The first-order Dirac equation dynamically emerges from the macroscopic Yang-Mills curvature.
+The Dirac operator geometrically emerges from the macroscopic Yang-Mills curvature.
 If the local spatial background is stationary (the time derivative of the spatial connection vanishes), 
 the covariant Dirac operator acting on the topological zero-mode exactly evaluates to the 
-curvature coupling, which phenomenologically manifests as the effective axial mass term.
+trace of the Yang-Mills curvature.
 -/
-theorem dynamicDiracEquation (u : Universe) (m : Complex) (x : SpacetimePoint)
+theorem dynamicDiracEquation (u : Universe) (x : SpacetimePoint)
   -- 1. Stationary Background Constraint: The spatial connection is locally static in time.
-  (h_stationary : ∀ mu, partialDerivChiral 0 (fun p => u.spin4c_connection mu p) x = 0)
-  -- 2. Yang-Mills Mass Coupling: The gamma-traced temporal curvature generates the effective mass.
-  (h_ym_axial : ∑ mu, gammaVec mu * curvature (fun m p => u.spin4c_connection m p) mu 0 x = m • extractSpinorMode u x) :
-  diracOperatorCore (fun mu p => covariantSpinorDeriv u p mu) x = m • extractSpinorMode u x := by
+  (h_stationary : ∀ mu, partialDerivChiral 0 (fun p => u.spin4c_connection mu p) x = 0) :
+  diracOperatorCore (fun mu p => covariantSpinorDeriv u p mu) x = 
+  ∑ mu, gammaVec mu * curvature (fun m p => u.spin4c_connection m p) mu 0 x := by
   have h_cov : ∀ mu, covariantSpinorDeriv u x mu = curvature (fun m p => u.spin4c_connection m p) mu 0 x := by
     intro mu
     unfold covariantSpinorDeriv curvature extractSpinorDeriv extractSpinorMode
     dsimp only
     rw [h_stationary mu, sub_zero]
-  calc diracOperatorCore (fun mu p => covariantSpinorDeriv u p mu) x
-    _ = ∑ mu, gammaVec mu * covariantSpinorDeriv u x mu := by
-      unfold diracOperatorCore
-      rfl
-    _ = ∑ mu, gammaVec mu * curvature (fun m p => u.spin4c_connection m p) mu 0 x := by
-      apply Finset.sum_congr rfl
-      intro mu _
-      rw [h_cov mu]
-    _ = m • extractSpinorMode u x := h_ym_axial
+  unfold diracOperatorCore
+  apply Finset.sum_congr rfl
+  intro mu _
+  dsimp only
+  rw [h_cov mu]
 
 end CGD.Quantum
