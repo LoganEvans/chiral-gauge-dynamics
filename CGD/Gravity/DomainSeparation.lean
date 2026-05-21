@@ -136,7 +136,6 @@ theorem macroscopicVacuumEmergence
   (u : Universe)
   (Λ : ℂ)
   (bulkVacuum : Set SpacetimePoint)
-  (hLambdaNz : Λ ≠ 0)
   (sqrt_g detPsi : SpacetimePoint → ℂ)
   (h_sqrt_g : ∀ x ∈ bulkVacuum, (sqrt_g x)^2 = (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x)).det)
   (h_detPsi : ∀ x ∈ bulkVacuum, detPsi x * ((3 * I / 2 : ℂ)^3 * ((1/2:ℂ) * Λ^3)) = 1)
@@ -158,10 +157,9 @@ theorem macroscopicVacuumEmergence
       (h_sqrt_g x0.val x0.property)
       (h_detPsi x0.val x0.property)
       (h_eq2_21 x0.val x0.property)
-    have h_nz := urbantke_nondeg_of_plebanski Λ (fun m n => cgdAdjointCurvature u m n x0.val) hLambdaNz 
+    have h_nz := urbantke_nondeg_of_cdj_eq2_21 (fun m n => cgdAdjointCurvature u m n x0.val) 
       (sqrt_g x0.val) (detPsi x0.val)
       (h_sqrt_g x0.val x0.property)
-      (h_detPsi x0.val x0.property)
       (h_eq2_21 x0.val x0.property)
     use det_val
     refine ⟨?_, ?_⟩
