@@ -3,6 +3,7 @@
 import Litlib.Core
 import CGD.Gravity.Geometry
 import CGD.Axioms.Ontology
+import CGD.Axioms.Phenomenology
 import CGD.Gravity.Urbantke
 import Litlib.Y1991.capovilla1991pure.Signature
 import CGD.Gravity.MacroscopicVacuum.Basic
@@ -36,28 +37,30 @@ and Ricci flatness is derived purely from the internal SU(2) Yang-Mills field eq
 -/
 theorem macroscopicVacuumGR 
   (u : Universe)
+  (bulk : Set SpacetimePoint)
+  [_vol : CGD.Axioms.MacroscopicVolume u bulk]
   (urbantke_tetrad : TetradField)
-  (metric_compat : ∀ x μ ν, metricFromTetrad urbantke_tetrad μ ν x = 
-                           CGD.Gravity.urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x) μ ν)
+  (metric_compat : ∀ y μ ν, metricFromTetrad urbantke_tetrad μ ν y = 
+                           CGD.Gravity.urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n y) μ ν)
   (Psi : SpacetimePoint → Fin 2 → Fin 2 → Fin 2 → Fin 2 → ℂ)
   [eq2_2b : Eq2_2b SpacetimePoint (cgd_dSigma urbantke_tetrad) (cgd_omega u) (cgd_Sigma urbantke_tetrad) cgd_eps2_up]
   [eq2_2c : Eq2_2c SpacetimePoint (cgd_R u) Psi (cgd_Sigma urbantke_tetrad)]
   [th_ricci : Theorem_Eq2_2c_RicciFlat 
     (Spacetime := SpacetimePoint)
-    (theta := fun x => cgd_theta urbantke_tetrad x) 
-    (g := fun x μ ν => metricFromTetrad urbantke_tetrad μ ν x) 
+    (theta := fun y => cgd_theta urbantke_tetrad y) 
+    (g := fun y μ ν => metricFromTetrad urbantke_tetrad μ ν y) 
     (eps2_down := cgd_eps2_down) 
     (eps2_bar_down := cgd_eps2_bar_down) 
     (eps2_right := cgd_eps2_bar_down) -- In complex CDJ, right is bar down
     (eps2_up := cgd_eps2_up)
     (R := cgd_R u) 
-    (Psi := fun x => Psi x) 
-    (Sigma := fun x => cgd_Sigma urbantke_tetrad x) 
-    (dSigma := fun x => cgd_dSigma urbantke_tetrad x)
-    (omega := fun x => cgd_omega u x)
-    (isRicciFlat := fun g => ∀ x μ ν, ricciTensor (fun m n p => g p m n) μ ν x = 0)] :
-  ∀ x μ ν, ricciTensor (fun m n p => urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p) m n) μ ν x = 0 := by
-  intro x μ ν
+    (Psi := fun y => Psi y) 
+    (Sigma := fun y => cgd_Sigma urbantke_tetrad y) 
+    (dSigma := fun y => cgd_dSigma urbantke_tetrad y)
+    (omega := fun y => cgd_omega u y)
+    (isRicciFlat := fun g => ∀ y μ ν, ricciTensor (fun m n p => g p m n) μ ν y = 0)] :
+  ∀ x ∈ bulk, ∀ μ ν, ricciTensor (fun m n p => urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p) m n) μ ν x = 0 := by
+  intro x _hx μ ν
   have h_ricci_tetrad := th_ricci.eq2_2c_implies_ricci_flat ?h_Sigma_def ?h_DSigma_eq_zero ?h_eq2_2c x μ ν
   
   -- Step 1: Prove the Ricci flatness of the exact Urbantke Metric natively using metric compatibility

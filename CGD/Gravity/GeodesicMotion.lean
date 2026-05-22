@@ -53,12 +53,14 @@ theorem machianTopologicalDefectMotion
   (isTimelike : (Fin 4 → Fin 4 → SpacetimePoint → ℂ) → (ℝ → SpacetimePoint) → Prop)
   (isTestParticleWorldline : (Fin 4 → Fin 4 → SpacetimePoint → ℂ) → (ℝ → SpacetimePoint) → Prop)
   (isGeodesic : (Fin 4 → Fin 4 → SpacetimePoint → ℂ) → (ℝ → SpacetimePoint) → Prop)
+  (bulk : Set SpacetimePoint)
   [is_thm : Litlib.Y1949.infeld1949motion.TestParticleGeodesic SpacetimePoint 
     (Fin 4 → Fin 4 → SpacetimePoint → ℂ) 
-    (fun g => ∀ p, isLorentzian (fun m n => g m n p))
-    (fun g => ∀ x μ ν, ricciTensor g μ ν x = 0) 
+    (fun g => ∀ p ∈ bulk, isLorentzian (fun m n => g m n p))
+    (fun g => ∀ x ∈ bulk, ∀ μ ν, ricciTensor g μ ν x = 0) 
     isSmoothCurve hasNonZeroTangent isTimelike isTestParticleWorldline isGeodesic]
   (u : Universe)
+  [_vol : CGD.Axioms.MacroscopicVolume u bulk]
   (urbantke_tetrad : TetradField)
   (metric_compat : ∀ x μ ν, metricFromTetrad urbantke_tetrad μ ν x = 
                            CGD.Gravity.urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x) μ ν)
@@ -82,17 +84,18 @@ theorem machianTopologicalDefectMotion
   (g : Fin 4 → Fin 4 → SpacetimePoint → ℂ)
   (h_g_eq : ∀ x μ ν, g μ ν x = urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b x) μ ν)
   (γ : ℝ → SpacetimePoint)
-  (h_lorentzian : ∀ p, isLorentzian (fun m n => g m n p))
+  (_h_gamma_bulk : ∀ t, γ t ∈ bulk)
+  (h_lorentzian : ∀ p ∈ bulk, isLorentzian (fun m n => g m n p))
   (h_test_particle : isTestParticleWorldline g γ) :
   isGeodesic g γ := by
   apply is_thm.test_particle_motion_is_geodesic g γ
   · exact h_lorentzian
-  · intros x μ ν
+  · intros x hx μ ν
     have h_g_eq_fun : g = fun m n p => urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p) m n := by
       ext m n p
       exact h_g_eq p m n
     rw [h_g_eq_fun]
-    exact macroscopicVacuumGR u urbantke_tetrad metric_compat Psi x μ ν
+    exact macroscopicVacuumGR u bulk urbantke_tetrad metric_compat Psi x hx μ ν
   · exact h_test_particle
 
 end CGD.Gravity
