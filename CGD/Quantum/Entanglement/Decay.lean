@@ -29,7 +29,6 @@ theorem kinematicFluxTubeCrossover
   (L : ℝ)
   (h_L_pos : L > 0)
   (h_intact : u.sd_sector = intactState L)
-  (h_sigma : sigma > 0)
   (h_L_crossover : L > (2 * M) / sigma) :
   energyFunc (u.sd_sector) > energyFunc (snappedState L) := by
   
@@ -41,10 +40,10 @@ theorem kinematicFluxTubeCrossover
   rw [eb.snappedEnergy L h_L_pos]
   
   -- Step 3: Multiply the crossover distance bound by the strictly positive string tension
-  have h_mul : sigma * L > sigma * ((2 * M) / sigma) := mul_lt_mul_of_pos_left h_L_crossover h_sigma
+  have h_mul : sigma * L > sigma * ((2 * M) / sigma) := mul_lt_mul_of_pos_left h_L_crossover eb.h_sigma_pos
   
   -- Step 4: Cancel the string tension to yield the raw mass threshold
-  have h_cancel : sigma * ((2 * M) / sigma) = 2 * M := mul_div_cancel₀ _ (ne_of_gt h_sigma)
+  have h_cancel : sigma * ((2 * M) / sigma) = 2 * M := mul_div_cancel₀ _ (ne_of_gt eb.h_sigma_pos)
   rw [h_cancel] at h_mul
   
   -- Step 5: Conclude the strict energy inequality
@@ -65,7 +64,6 @@ theorem dynamicFluxTubeBreakingLimit
   (L : ℝ)
   (h_L_pos : L > 0)
   (h_intact : u.sd_sector = intactState L)
-  (h_sigma : sigma > 0)
   (h_L_crossover : L > (2 * M) / sigma) :
   ¬ isGlobalMinimum energyFunc u.sd_sector := by
   
@@ -74,7 +72,7 @@ theorem dynamicFluxTubeBreakingLimit
   unfold isGlobalMinimum at h_min
   
   -- Step 2: Extract the actual crossover inequality from the previous theorem
-  have h_crossover := kinematicFluxTubeCrossover energyFunc intactState snappedState u L h_L_pos h_intact h_sigma h_L_crossover
+  have h_crossover := kinematicFluxTubeCrossover energyFunc intactState snappedState u L h_L_pos h_intact h_L_crossover
   
   -- Step 3: Apply the minimum bound to the specific alternative of the snapped flux tube
   have h_le := h_min (snappedState L)

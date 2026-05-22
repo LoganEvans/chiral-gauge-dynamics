@@ -248,7 +248,7 @@ Litlib.theorem
 /--
 Demonstrates that the Urbantke metric determinant fundamentally requires non-commuting Lie algebra generators. For an Abelian (single-color) field, the Lie bracket vanishes, algebraically forcing the macroscopic spacetime volume to zero. Physical spacetime geometries therefore require non-Abelian fields (such as multi-color hadrons) to expand into stable configurations, geometrically manifesting color confinement.
 -/
-theorem kinematicSingleColorDegeneracy (_u : Universe) :
+theorem kinematicSingleColorDegeneracy :
   ∀ (F : Fin 4 → Fin 4 → SL2C),
     isSingleColor F →
     (urbantkeMetric F).det = 0 := by
@@ -260,12 +260,12 @@ theorem kinematicSingleColorDegeneracy (_u : Universe) :
 /--
 Demonstrates that a non-zero macroscopic spacetime volume strictly requires non-Abelian fields.
 -/
-theorem kinematicMultiColorRequirement (_u : Universe) :
+theorem kinematicMultiColorRequirement :
   ∀ (F : Fin 4 → Fin 4 → SL2C),
     (urbantkeMetric F).det ≠ 0 →
     ¬ isSingleColor F := by
   intro F h_vol h_single
-  have h_zero := kinematicSingleColorDegeneracy _u F h_single
+  have h_zero := kinematicSingleColorDegeneracy F h_single
   exact h_vol h_zero
 
 end CGD.Particles

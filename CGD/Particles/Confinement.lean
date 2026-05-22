@@ -22,12 +22,12 @@ Litlib.theorem
 /--
 Establishes that when the continuous electric field geometrically collapses into a 1D string aligned along an arbitrary axis, the 3D densitized Hamiltonian precisely reduces to the exact 1D confinement Hamiltonian.
 -/
-theorem kinematicStringConfinement (_u : Universe) :
-  ∀ (_x : SpacetimePoint) (E B : Matrix (Fin 3) (Fin 3) ℂ) (E_z : ℂ),
+theorem kinematicStringConfinement :
+  ∀ (E B : Matrix (Fin 3) (Fin 3) ℂ) (E_z : ℂ),
     isCrushedString E E_z →
     ∃ (v : Fin 3 → ℂ), (∑ i : Fin 3, v i * v i = 1) ∧
       densitizedHamiltonian E B = (1 / 2 : ℂ) * E_z^2 + (1 / 2 : ℂ) * ∑ a : Fin 3, ∑ b : Fin 3, B a b * B a b := by
-  intro _x E B E_z h_crushed
+  intro E B E_z h_crushed
   rcases h_crushed with ⟨v, h_E, h_v2⟩
   use v
   have h_sum_v : (∑ i : Fin 3, v i * v i) = 1 := by
