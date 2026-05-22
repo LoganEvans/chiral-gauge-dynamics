@@ -17,10 +17,16 @@ noncomputable def metricFromTetrad (e : TetradField) : SpacetimeIndex → Spacet
 noncomputable def cgdAdjointCurvature (u : Universe) (μ ν : Fin 4) (x : SpacetimePoint) : Matrix (Fin 3) (Fin 3) ℂ :=
   extractAdjoint (curvatureSl2c u.sd_sector μ ν x).val
 
+/--
+The Pure CDJ Vacuum Constraint (Capovilla, Dell, Jacobson 1991).
+Enforces that the symmetric tensor Σ^{ab} = ε^{μνρσ} F^a_{μν} F^b_{ρσ} is purely trace-free.
+Σ^{ab} - (1/3) δ^{ab} Tr(Σ) = 0
+-/
 def satisfiesPureCdjConstraint (F_adj : SpacetimePoint → Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) : Prop :=
   ∀ x : SpacetimePoint,
-    (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
-      epsilon4 μ ν ρ σ • (F_adj x μ ν * F_adj x ρ σ)) = 0
+    let Sigma := ∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
+      epsilon4 μ ν ρ σ • (F_adj x μ ν * F_adj x ρ σ)
+    Sigma = (Matrix.trace Sigma / 3) • (1 : Matrix (Fin 3) (Fin 3) ℂ)
 
 noncomputable def F_CGD (u : Universe) (x : SpacetimePoint) (a : Fin 3) (μ ν : Fin 4) : ℂ :=
   if a = 0 then cgdAdjointCurvature u μ ν x 1 2

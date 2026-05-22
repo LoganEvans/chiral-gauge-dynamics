@@ -4,7 +4,7 @@ import Litlib.Core
 import CGD.Foundations.Calculus
 import CGD.Foundations.GaugeGroup
 import CGD.Axioms.Ontology
-import CGD.Gravity.MacroscopicVacuum
+import CGD.Gravity.MacroscopicVacuum.Basic
 import Mathlib.Data.Complex.Basic
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.FinCases
@@ -254,47 +254,54 @@ theorem dynamicExactAbelianSolution (c : ℂ) (hc : c ≠ 0) :
   constructor
   · unfold satisfiesPureCdjConstraint cgdAdjointCurvature
     intro x
-    have h_term_zero : ∀ μ ν ρ σ, epsilon4 μ ν ρ σ • (extractAdjoint (curvatureSl2c u.sd_sector μ ν x).val * extractAdjoint (curvatureSl2c u.sd_sector ρ σ x).val) = 0 := by
-      intro μ ν ρ σ
-      have h_curv_mu : curvatureSl2c u.sd_sector μ ν x = curvature_const c μ ν := by
-        have h_sd_curv : curvatureSl2c u.sd_sector μ ν x = curvatureSl2c A_L μ ν x := by
-          have h_sec : u.sd_sector = A_L := by
-            have h_u_eq : universeEquiv u = (A_L, A_R) := Equiv.right_inv universeEquiv (A_L, A_R)
-            exact congrArg Prod.fst h_u_eq
-          rw [h_sec]
-        rw [h_sd_curv]
-        exact curvature_exactAbelian c μ ν x
-      have h_curv_rho : curvatureSl2c u.sd_sector ρ σ x = curvature_const c ρ σ := by
-        have h_sd_curv : curvatureSl2c u.sd_sector ρ σ x = curvatureSl2c A_L ρ σ x := by
-          have h_sec : u.sd_sector = A_L := by
-            have h_u_eq : universeEquiv u = (A_L, A_R) := Equiv.right_inv universeEquiv (A_L, A_R)
-            exact congrArg Prod.fst h_u_eq
-          rw [h_sec]
-        rw [h_sd_curv]
-        exact curvature_exactAbelian c ρ σ x
-      rw [h_curv_mu, h_curv_rho]
-      
-      have h_supp1 := curvature_const_supp c μ ν
-      have h_supp2 := curvature_const_supp c ρ σ
-      rcases h_supp1 with h1 | h1
-      · rw [h1, sl2c_zero_val, extractAdjoint_zero, Matrix.zero_mul, smul_zero]
-      · rcases h_supp2 with h2 | h2
-        · rw [h2, sl2c_zero_val, extractAdjoint_zero, Matrix.mul_zero, smul_zero]
-        · have h_eps : epsilon4 μ ν ρ σ = 0 := by
-            rcases h1 with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
-            · rcases h2 with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
-              · exact epsilon4_1212
-              · exact epsilon4_1221
-            · rcases h2 with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
-              · exact epsilon4_2112
-              · exact epsilon4_2121
-          rw [h_eps, zero_smul]
+    
+    have h_Sigma_zero : (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
+      epsilon4 μ ν ρ σ • (extractAdjoint (curvatureSl2c u.sd_sector μ ν x).val * extractAdjoint (curvatureSl2c u.sd_sector ρ σ x).val)) = 0 := by
+      have h_term_zero : ∀ μ ν ρ σ, epsilon4 μ ν ρ σ • (extractAdjoint (curvatureSl2c u.sd_sector μ ν x).val * extractAdjoint (curvatureSl2c u.sd_sector ρ σ x).val) = 0 := by
+        intro μ ν ρ σ
+        have h_curv_mu : curvatureSl2c u.sd_sector μ ν x = curvature_const c μ ν := by
+          have h_sd_curv : curvatureSl2c u.sd_sector μ ν x = curvatureSl2c A_L μ ν x := by
+            have h_sec : u.sd_sector = A_L := by
+              have h_u_eq : universeEquiv u = (A_L, A_R) := Equiv.right_inv universeEquiv (A_L, A_R)
+              exact congrArg Prod.fst h_u_eq
+            rw [h_sec]
+          rw [h_sd_curv]
+          exact curvature_exactAbelian c μ ν x
+        have h_curv_rho : curvatureSl2c u.sd_sector ρ σ x = curvature_const c ρ σ := by
+          have h_sd_curv : curvatureSl2c u.sd_sector ρ σ x = curvatureSl2c A_L ρ σ x := by
+            have h_sec : u.sd_sector = A_L := by
+              have h_u_eq : universeEquiv u = (A_L, A_R) := Equiv.right_inv universeEquiv (A_L, A_R)
+              exact congrArg Prod.fst h_u_eq
+            rw [h_sec]
+          rw [h_sd_curv]
+          exact curvature_exactAbelian c ρ σ x
+        rw [h_curv_mu, h_curv_rho]
+        
+        have h_supp1 := curvature_const_supp c μ ν
+        have h_supp2 := curvature_const_supp c ρ σ
+        rcases h_supp1 with h1 | h1
+        · rw [h1, sl2c_zero_val, extractAdjoint_zero, Matrix.zero_mul, smul_zero]
+        · rcases h_supp2 with h2 | h2
+          · rw [h2, sl2c_zero_val, extractAdjoint_zero, Matrix.mul_zero, smul_zero]
+          · have h_eps : epsilon4 μ ν ρ σ = 0 := by
+              rcases h1 with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+              · rcases h2 with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+                · exact epsilon4_1212
+                · exact epsilon4_1221
+              · rcases h2 with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+                · exact epsilon4_2112
+                · exact epsilon4_2121
+            rw [h_eps, zero_smul]
 
-    apply Finset.sum_eq_zero; intro μ _
-    apply Finset.sum_eq_zero; intro ν _
-    apply Finset.sum_eq_zero; intro ρ _
-    apply Finset.sum_eq_zero; intro σ _
-    exact h_term_zero μ ν ρ σ
+      apply Finset.sum_eq_zero; intro μ _
+      apply Finset.sum_eq_zero; intro ν _
+      apply Finset.sum_eq_zero; intro ρ _
+      apply Finset.sum_eq_zero; intro σ _
+      exact h_term_zero μ ν ρ σ
+
+    rw [h_Sigma_zero]
+    dsimp only
+    simp
 
   constructor
   · intro x
