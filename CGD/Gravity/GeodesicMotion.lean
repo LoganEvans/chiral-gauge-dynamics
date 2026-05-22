@@ -48,7 +48,6 @@ then the new Infeld-Schild `Litlib` theorem applies, constraining defects to geo
 The metric is strictly defined as the emergent Urbantke metric of the topological background.
 -/
 theorem machianTopologicalDefectMotion
-  (isLorentzian : (Fin 4 → Fin 4 → SpacetimePoint → ℂ) → Prop)
   (isSmoothCurve : (ℝ → SpacetimePoint) → Prop)
   (hasNonZeroTangent : (ℝ → SpacetimePoint) → Prop)
   (isTimelike : (Fin 4 → Fin 4 → SpacetimePoint → ℂ) → (ℝ → SpacetimePoint) → Prop)
@@ -56,7 +55,7 @@ theorem machianTopologicalDefectMotion
   (isGeodesic : (Fin 4 → Fin 4 → SpacetimePoint → ℂ) → (ℝ → SpacetimePoint) → Prop)
   [is_thm : Litlib.Y1949.infeld1949motion.TestParticleGeodesic SpacetimePoint 
     (Fin 4 → Fin 4 → SpacetimePoint → ℂ) 
-    isLorentzian 
+    (fun g => ∀ p, isLorentzian (fun m n => g m n p))
     (fun g => ∀ x μ ν, ricciTensor g μ ν x = 0) 
     isSmoothCurve hasNonZeroTangent isTimelike isTestParticleWorldline isGeodesic]
   (u : Universe)
@@ -83,7 +82,7 @@ theorem machianTopologicalDefectMotion
   (g : Fin 4 → Fin 4 → SpacetimePoint → ℂ)
   (h_g_eq : ∀ x μ ν, g μ ν x = urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b x) μ ν)
   (γ : ℝ → SpacetimePoint)
-  (h_lorentzian : isLorentzian g)
+  (h_lorentzian : ∀ p, isLorentzian (fun m n => g m n p))
   (h_test_particle : isTestParticleWorldline g γ) :
   isGeodesic g γ := by
   apply is_thm.test_particle_motion_is_geodesic g γ
