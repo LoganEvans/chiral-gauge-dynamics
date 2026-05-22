@@ -213,7 +213,12 @@ lemma epsilon4_2121 : epsilon4 2 1 2 1 = 0 := by
 Litlib.theorem
   description "Exact Abelian Macroscopic Solution"
 /--
-Provides an exact analytical solution mapping an Abelian plane wave natively into the macroscopic pure CDJ volume constraint.
+Provides an exact analytical solution for an Abelian plane wave satisfying the pure CDJ 
+constraint equation (F ∧ F = 0).
+
+NOTE: As proven in `kinematicSingleColorDegeneracy`, this strictly Abelian configuration 
+yields a degenerate metric (det g = 0). Therefore, it represents a topological boundary 
+state (a collapsed spacetime geometry), NOT a macroscopic Lorentzian spacetime volume.
 -/
 theorem dynamicExactAbelianSolution (c : ℂ) (hc : c ≠ 0) :
   ∃ (u : Universe), 
