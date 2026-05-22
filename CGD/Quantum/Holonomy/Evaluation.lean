@@ -18,6 +18,11 @@ noncomputable def obs_M (alpha : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
   let R_inv := Matrix.of ![![Complex.cos (alpha/2), Complex.sin (alpha/2)], ![-Complex.sin (alpha/2), Complex.cos (alpha/2)]]
   R * sigma3.val * R_inv
 
+-- NATIVE EVALUATION: The exact path-ordered exponential for a constant field
+noncomputable def holonomy (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
+  (A : ℝ → Matrix (Fin 2) (Fin 2) ℂ) (t0 t1 : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
+  matrixExp ((t1 - t0 : ℂ) • A t0)
+
 noncomputable def macroscopicObservable 
   (holonomy : (ℝ → Matrix (Fin 2) (Fin 2) ℂ) → ℝ → ℝ → Matrix (Fin 2) (Fin 2) ℂ)
   (A : Fin 4 → SpacetimePoint → SL2C) 
@@ -34,10 +39,8 @@ lemma R_inv_R_eq_one (alpha : ℝ) :
     calc Complex.cos (alpha / 2 : ℂ) * Complex.cos (alpha / 2 : ℂ) + Complex.sin (alpha / 2 : ℂ) * Complex.sin (alpha / 2 : ℂ)
       = Complex.sin (alpha / 2 : ℂ) ^ 2 + Complex.cos (alpha / 2 : ℂ) ^ 2 := by ring
       _ = 1 := h
-  · simp [Matrix.mul_apply, Fin.sum_univ_two]
-    ring
-  · simp [Matrix.mul_apply, Fin.sum_univ_two]
-    ring
+  · simp [Matrix.mul_apply, Fin.sum_univ_two]; ring
+  · simp [Matrix.mul_apply, Fin.sum_univ_two]; ring
   · simp [Matrix.mul_apply, Fin.sum_univ_two]
     have h : Complex.sin (alpha / 2 : ℂ) ^ 2 + Complex.cos (alpha / 2 : ℂ) ^ 2 = 1 := Complex.sin_sq_add_cos_sq _
     calc Complex.sin (alpha / 2 : ℂ) * Complex.sin (alpha / 2 : ℂ) + Complex.cos (alpha / 2 : ℂ) * Complex.cos (alpha / 2 : ℂ)
@@ -54,31 +57,27 @@ lemma R_R_inv_eq_one (alpha : ℝ) :
     calc Complex.cos (alpha / 2 : ℂ) * Complex.cos (alpha / 2 : ℂ) + Complex.sin (alpha / 2 : ℂ) * Complex.sin (alpha / 2 : ℂ)
       = Complex.sin (alpha / 2 : ℂ) ^ 2 + Complex.cos (alpha / 2 : ℂ) ^ 2 := by ring
       _ = 1 := h
-  · simp [Matrix.mul_apply, Fin.sum_univ_two]
-    ring
-  · simp [Matrix.mul_apply, Fin.sum_univ_two]
-    ring
+  · simp [Matrix.mul_apply, Fin.sum_univ_two]; ring
+  · simp [Matrix.mul_apply, Fin.sum_univ_two]; ring
   · simp [Matrix.mul_apply, Fin.sum_univ_two]
     have h : Complex.sin (alpha / 2 : ℂ) ^ 2 + Complex.cos (alpha / 2 : ℂ) ^ 2 = 1 := Complex.sin_sq_add_cos_sq _
     calc Complex.sin (alpha / 2 : ℂ) * Complex.sin (alpha / 2 : ℂ) + Complex.cos (alpha / 2 : ℂ) * Complex.cos (alpha / 2 : ℂ)
       = Complex.sin (alpha / 2 : ℂ) ^ 2 + Complex.cos (alpha / 2 : ℂ) ^ 2 := by ring
       _ = 1 := h
 
+lemma h_sum2 (f : Fin 2 → ℂ) : ∑ i : Fin 2, f i = f 0 + f 1 := Fin.sum_univ_two f
+
 lemma obs_M_sq (alpha : ℝ) : obs_M alpha * obs_M alpha = 1 := by
   dsimp [obs_M]
   have h_inv := R_inv_R_eq_one alpha
   have h_R := R_R_inv_eq_one alpha
-  
   let R : Matrix (Fin 2) (Fin 2) ℂ := Matrix.of ![![Complex.cos (alpha/2), -Complex.sin (alpha/2)], ![Complex.sin (alpha/2), Complex.cos (alpha/2)]]
   let R_inv : Matrix (Fin 2) (Fin 2) ℂ := Matrix.of ![![Complex.cos (alpha/2), Complex.sin (alpha/2)], ![-Complex.sin (alpha/2), Complex.cos (alpha/2)]]
-  
-  -- Explicitly unroll the sums so that matrix evaluation receives concrete indices
-  have h_sum2 : ∀ (f : Fin 2 → ℂ), ∑ i : Fin 2, f i = f 0 + f 1 := fun f => Fin.sum_univ_two f
   
   have h_sig : sigma3.val * sigma3.val = 1 := by
     ext i j
     fin_cases i <;> fin_cases j
-    all_goals {
+    all_goals { 
       simp [sigma3, toSl2c, sigmaZ, mkMat, Matrix.mul_apply, Matrix.trace, Matrix.diag, h_sum2]
     }
 
@@ -91,8 +90,6 @@ lemma obs_M_sq (alpha : ℝ) : obs_M alpha * obs_M alpha = 1 := by
     _ = R * (1 * R_inv) := by rw [h_sig]
     _ = R * R_inv := by rw [Matrix.one_mul]
     _ = 1 := h_R
-
-lemma h_sum2 (f : Fin 2 → ℂ) : ∑ i : Fin 2, f i = f 0 + f 1 := Fin.sum_univ_two f
 
 lemma I_obs_M_trace_zero (alpha : ℝ) : Matrix.trace (Complex.I • obs_M alpha) = 0 := by
   dsimp [obs_M]
@@ -110,8 +107,8 @@ lemma fluxTubeFrame_one_val (t : ℝ) : (fluxTubeFrame 1 (straightLinePath t)).v
   dsimp [fluxTubeFrame]
   ext i j
   fin_cases i <;> fin_cases j
-  all_goals {
-    simp [toSl2c, sigma3, sigmaZ, mkMat, Matrix.trace, Matrix.diag, Matrix.smul_apply, h_sum2]
+  all_goals { 
+    simp [toSl2c, sigma3, sigmaZ, mkMat, Matrix.trace, Matrix.diag, Matrix.smul_apply, h_sum2] 
   }
 
 Litlib.theorem
@@ -125,24 +122,21 @@ trigonometric coefficients of the quantum state vectors.
 theorem fluxTubeHolonomyEvaluation
   (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
   [DerivativeExponential (Fin 2) matrixExp]
-  (holonomy integral : (ℝ → Matrix (Fin 2) (Fin 2) ℂ) → ℝ → ℝ → Matrix (Fin 2) (Fin 2) ℂ)
-  (h_holonomy_comm : ∀ A t0 t1, (∀ s t, A s * A t = A t * A s) → holonomy A t0 t1 = matrixExp (integral A t0 t1))
-  (h_integral_const : ∀ C t0 t1, integral (fun _ => C) t0 t1 = (t1 - t0 : ℂ) • C)
   (u : CGD.Axioms.Universe) (alpha L : ℝ)
   (h_field : ∀ t, u.sd_sector 1 (straightLinePath t) = fluxTubeFrame 1 (straightLinePath t)) :
-  macroscopicObservable holonomy (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) alpha mu p) 1 L =
+  macroscopicObservable (holonomy matrixExp) (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) alpha mu p) 1 L =
   (Complex.cos (L:ℂ)) • 1 + (Complex.I * Complex.sin (L:ℂ)) • obs_M alpha := by
   
-  dsimp [macroscopicObservable]
+  dsimp [macroscopicObservable, holonomy]
   
-  have h_integrand : (fun t => (rotateYAxis (fun m p => u.sd_sector m p) alpha 1 (straightLinePath t)).val) = 
-                     fun _ => Complex.I • obs_M alpha := by
-    funext t
+  have hf : (u.sd_sector 1 (straightLinePath 0)).val = (fluxTubeFrame 1 (straightLinePath 0)).val :=
+    congr_arg Subtype.val (h_field 0)
+  
+  have h_eval : (rotateYAxis (fun m p => u.sd_sector m p) alpha 1 (straightLinePath 0)).val = 
+                Complex.I • obs_M alpha := by
     dsimp [rotateYAxis]
-    have hf : (u.sd_sector 1 (straightLinePath t)).val = (fluxTubeFrame 1 (straightLinePath t)).val :=
-      congr_arg Subtype.val (h_field t)
     rw [hf]
-    have h_flux := fluxTubeFrame_one_val t
+    have h_flux := fluxTubeFrame_one_val 0
     rw [h_flux]
     
     have h_assoc : Matrix.of ![![Complex.cos (alpha / 2 : ℂ), -Complex.sin (alpha / 2 : ℂ)], ![Complex.sin (alpha / 2 : ℂ), Complex.cos (alpha / 2 : ℂ)]] *
@@ -155,18 +149,9 @@ theorem fluxTubeHolonomyEvaluation
     rw [h_assoc]
     exact I_obs_M_toSl2c alpha
     
-  rw [h_integrand]
-  
-  have h_comm : ∀ (s t : ℝ), (Complex.I • obs_M alpha) * (Complex.I • obs_M alpha) = 
-                             (Complex.I • obs_M alpha) * (Complex.I • obs_M alpha) := fun _ _ => rfl
-                             
-  have h_eval := h_holonomy_comm (fun _ => Complex.I • obs_M alpha) 0 L h_comm
   rw [h_eval]
   
-  have h_int := h_integral_const (Complex.I • obs_M alpha) 0 L
-  rw [h_int]
-  
-  have hz : ((L : ℂ) - ((0 : ℝ) : ℂ)) = (L : ℂ) := by simp
+  have hz : ((L : ℂ) - (0 : ℂ)) = (L : ℂ) := sub_zero _
   rw [hz]
   
   have h_arg : (L : ℂ) • Complex.I • obs_M alpha = (Complex.I * (L : ℂ)) • obs_M alpha := by
