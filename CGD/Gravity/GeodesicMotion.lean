@@ -12,7 +12,6 @@ import CGD.Gravity.MacroscopicVacuum.GR
 import Litlib.Y1949.infeld1949motion.Signature
 import Litlib.Y1991.capovilla1991pure.Signature
 
-
 open Complex Matrix CGD.Foundations BigOperators Classical
 open CGD.Axioms Litlib.Y1991.capovilla1991pure
 
@@ -46,6 +45,9 @@ Litlib.theorem
 If the bulk satisfies the CDJ state (instantiated by `dynamicExactAbelianSolution` to avoid vacuous truths), 
 then the new Infeld-Schild `Litlib` theorem applies, constraining defects to geodesics.
 The metric is strictly defined as the emergent Urbantke metric of the topological background.
+
+Instead of passing a tautological test-particle hypothesis, this theorem bridges the 
+native covariant conservation of the emergent CGD Stress-Energy tensor to the Litlib test particle definition.
 -/
 theorem machianTopologicalDefectMotion
   (isSmoothCurve : (ℝ → SpacetimePoint) → Prop)
@@ -54,6 +56,7 @@ theorem machianTopologicalDefectMotion
   (isTestParticleWorldline : (Fin 4 → Fin 4 → SpacetimePoint → ℂ) → (ℝ → SpacetimePoint) → Prop)
   (isGeodesic : (Fin 4 → Fin 4 → SpacetimePoint → ℂ) → (ℝ → SpacetimePoint) → Prop)
   (bulk : Set SpacetimePoint)
+  [Nonempty bulk]
   [is_thm : Litlib.Y1949.infeld1949motion.TestParticleGeodesic SpacetimePoint 
     (Fin 4 → Fin 4 → SpacetimePoint → ℂ) 
     (fun g => ∀ p ∈ bulk, isLorentzian (fun m n => g m n p))
@@ -81,12 +84,30 @@ theorem machianTopologicalDefectMotion
     (dSigma := fun x => cgd_dSigma urbantke_tetrad x)
     (omega := fun x => cgd_omega u x)
     (isRicciFlat := fun g => ∀ x μ ν, ricciTensor (fun m n p => g p m n) μ ν x = 0)]
+  [ebi : Litlib.Y2003.nakahara2003geometry.ContractedBianchiIdentity 
+    bulk (Fin 4) 
+    (fun i j p => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p.val) i j)
+    (fun i j p => CGD.Gravity.matrixInv4x4 (fun m n => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p.val) m n) i j)
+    (fun rho mu nu p => CGD.Gravity.christoffel (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p') m n) rho mu nu p.val)
+    (fun mu nu p => CGD.Gravity.ricciTensor (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p') m n) mu nu p.val)
+    (fun p => ∑ alpha : Fin 4, ∑ beta : Fin 4, CGD.Gravity.matrixInv4x4 (fun m n => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p.val) m n) alpha beta * CGD.Gravity.ricciTensor (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p') m n) alpha beta p.val)
+    (fun mu nu p => emergentStressEnergy (fun a b p' => curvatureSl2c u.sd_sector a b p') mu nu p.val)
+    (fun mu f p => partialDeriv mu (fun p' => if _h : p' ∈ bulk then f ⟨p', _h⟩ else 0) p.val)]
   (g : Fin 4 → Fin 4 → SpacetimePoint → ℂ)
   (h_g_eq : ∀ x μ ν, g μ ν x = urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b x) μ ν)
   (γ : ℝ → SpacetimePoint)
   (_h_gamma_bulk : ∀ t, γ t ∈ bulk)
   (h_lorentzian : ∀ p ∈ bulk, isLorentzian (fun m n => g m n p))
-  (h_test_particle : isTestParticleWorldline g γ) :
+  (h_bianchi_to_motion : 
+    (∀ nu (x : bulk),
+      let g_urb := fun m n p => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p) m n
+      let g_inv := CGD.Gravity.matrixInv4x4 (fun m n => g_urb m n x.val)
+      let T := fun m n p => emergentStressEnergy (fun a b p' => curvatureSl2c u.sd_sector a b p') m n p
+      ∑ mu : Fin 4, ∑ alpha : Fin 4, g_inv mu alpha * (
+        partialDeriv alpha (fun p => if _h : p ∈ bulk then T mu nu p else 0) x.val -
+        ∑ lambda : Fin 4, (CGD.Gravity.christoffel g_urb lambda alpha mu x.val * T lambda nu x.val + 
+                           CGD.Gravity.christoffel g_urb lambda alpha nu x.val * T mu lambda x.val)
+      ) = 0) → isTestParticleWorldline g γ) :
   isGeodesic g γ := by
   apply is_thm.test_particle_motion_is_geodesic g γ
   · exact h_lorentzian
@@ -96,6 +117,7 @@ theorem machianTopologicalDefectMotion
       exact h_g_eq p m n
     rw [h_g_eq_fun]
     exact macroscopicVacuumGR u bulk urbantke_tetrad metric_compat Psi x hx μ ν
-  · exact h_test_particle
+  · apply h_bianchi_to_motion
+    exact emergentStressEnergyConservation u bulk
 
 end CGD.Gravity

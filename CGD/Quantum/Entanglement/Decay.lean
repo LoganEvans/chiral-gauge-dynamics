@@ -14,14 +14,12 @@ open CGD.Axioms Litlib.Y2001.bali2001qcd
 namespace CGD.Quantum
 
 /-- 
-This theorem proves that if the Euclidean spatial distance of a macroscopic topological flux tube 
-exceeds the QCD string-breaking threshold (2M/sigma), the energy of the intact flux tube 
-strictly exceeds the energy of the snapped state.
-
-By binding `u.sd_sector` to the `intactState` parameter of the `FluxTubeStringBreaking` axiom, 
-this signature rigorously prevents free-variable exploits and enforces the physical decay limit.
+This is an ALGEBRAIC PHENOMENOLOGICAL mapping, not a first-principles derivation.
+It demonstrates that IF a system's energy function perfectly obeys the standard 
+QCD Cornell potential bounds (axiomatized via `FluxTubeStringBreaking`), the algebra 
+forces a crossover. It does NOT derive the decay natively from the gauge field Hamiltonian.
 -/
-theorem kinematicFluxTubeCrossover
+theorem algebraicStringBreakingCrossover
   (energyFunc : (Fin 4 → SpacetimePoint → SL2C) → ℝ)
   (intactState snappedState : ℝ → Fin 4 → SpacetimePoint → SL2C)
   {sigma M : ℝ} [eb : FluxTubeStringBreaking (Fin 4 → SpacetimePoint → SL2C) energyFunc intactState snappedState sigma M]
@@ -50,13 +48,12 @@ theorem kinematicFluxTubeCrossover
   exact h_mul
 
 Litlib.theorem
-  description "Flux Tube Breaking Limit"
+  description "Algebraic String Breaking Limit"
 /--
-A direct consequence of the Hamiltonian crossover: when the spatial distance exceeds the 
+A direct consequence of the algebraic crossover mapping: when the spatial distance exceeds the 
 crossover bound, the intact flux tube drops out of the global minimum. 
-This establishes a deterministic, geometrical mechanism for macroscopic string breaking.
 -/
-theorem dynamicFluxTubeBreakingLimit
+theorem algebraicStringBreakingLimit
   (energyFunc : (Fin 4 → SpacetimePoint → SL2C) → ℝ)
   (intactState snappedState : ℝ → Fin 4 → SpacetimePoint → SL2C)
   {sigma M : ℝ} [eb : FluxTubeStringBreaking (Fin 4 → SpacetimePoint → SL2C) energyFunc intactState snappedState sigma M]
@@ -72,7 +69,7 @@ theorem dynamicFluxTubeBreakingLimit
   unfold isGlobalMinimum at h_min
   
   -- Step 2: Extract the actual crossover inequality from the previous theorem
-  have h_crossover := kinematicFluxTubeCrossover energyFunc intactState snappedState u L h_L_pos h_intact h_L_crossover
+  have h_crossover := algebraicStringBreakingCrossover energyFunc intactState snappedState u L h_L_pos h_intact h_L_crossover
   
   -- Step 3: Apply the minimum bound to the specific alternative of the snapped flux tube
   have h_le := h_min (snappedState L)
