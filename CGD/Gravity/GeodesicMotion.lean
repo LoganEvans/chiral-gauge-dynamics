@@ -84,15 +84,16 @@ theorem machianTopologicalDefectMotion
     (dSigma := fun x => cgd_dSigma urbantke_tetrad x)
     (omega := fun x => cgd_omega u x)
     (isRicciFlat := fun g => ∀ x μ ν, ricciTensor (fun m n p => g p m n) μ ν x = 0)]
-  [ebi : Litlib.Y2003.nakahara2003geometry.ContractedBianchiIdentity 
-    bulk (Fin 4) 
-    (fun i j p => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p.val) i j)
-    (fun i j p => CGD.Gravity.matrixInv4x4 (fun m n => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p.val) m n) i j)
-    (fun rho mu nu p => CGD.Gravity.christoffel (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p') m n) rho mu nu p.val)
-    (fun mu nu p => CGD.Gravity.ricciTensor (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p') m n) mu nu p.val)
-    (fun p => ∑ alpha : Fin 4, ∑ beta : Fin 4, CGD.Gravity.matrixInv4x4 (fun m n => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p.val) m n) alpha beta * CGD.Gravity.ricciTensor (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p') m n) alpha beta p.val)
-    (fun mu nu p => emergentStressEnergy (fun a b p' => curvatureSl2c u.sd_sector a b p') mu nu p.val)
-    (fun mu f p => partialDeriv mu (fun p' => if _h : p' ∈ bulk then f ⟨p', _h⟩ else 0) p.val)]
+  (isSmooth : (bulk → ℂ) → Prop)
+  [general_bianchi : Litlib.Y2003.nakahara2003geometry.Theorem_ContractedBianchi 
+    bulk (Fin 4) isSmooth (fun mu f p => partialDeriv mu (fun p' => if _h : p' ∈ bulk then f ⟨p', _h⟩ else 0) p.val)]
+  (h_symm : ∀ x : bulk, ∀ i j, CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b x.val) i j = CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b x.val) j i)
+  (h_inv_symm : ∀ x : bulk, ∀ i j, CGD.Gravity.matrixInv4x4 (fun m n => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b x.val) m n) i j = CGD.Gravity.matrixInv4x4 (fun m n => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b x.val) m n) j i)
+  (h_chris_eq : ∀ (x : bulk) (rho mu nu : Fin 4), CGD.Gravity.christoffel (fun m n p => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p) m n) rho mu nu x.val = (1 / 2 : ℂ) * ∑ sigma : Fin 4, CGD.Gravity.matrixInv4x4 (fun m n => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b x.val) m n) rho sigma * (partialDeriv mu (fun p' => if _h : p' ∈ bulk then CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p') sigma nu else 0) x.val + partialDeriv nu (fun p' => if _h : p' ∈ bulk then CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p') mu sigma else 0) x.val - partialDeriv sigma (fun p' => if _h : p' ∈ bulk then CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p') mu nu else 0) x.val))
+  (h_ricci_eq : ∀ (x : bulk) (mu nu : Fin 4), CGD.Gravity.ricciTensor (fun m n p => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p) m n) mu nu x.val = ∑ rho : Fin 4, (partialDeriv rho (fun p' => if _h : p' ∈ bulk then CGD.Gravity.christoffel (fun m n p'' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p'') m n) rho mu nu p' else 0) x.val - partialDeriv nu (fun p' => if _h : p' ∈ bulk then CGD.Gravity.christoffel (fun m n p'' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p'') m n) rho mu rho p' else 0) x.val + ∑ lambda : Fin 4, (CGD.Gravity.christoffel (fun m n p'' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p'') m n) rho lambda rho x.val * CGD.Gravity.christoffel (fun m n p'' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p'') m n) lambda mu nu x.val - CGD.Gravity.christoffel (fun m n p'' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p'') m n) rho lambda nu x.val * CGD.Gravity.christoffel (fun m n p'' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p'') m n) lambda mu rho x.val)))
+  (h_smooth_g : ∀ i j, isSmooth (fun p : bulk => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p.val) i j))
+  (h_smooth_g_inv : ∀ i j, isSmooth (fun p : bulk => CGD.Gravity.matrixInv4x4 (fun m n => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p.val) m n) i j))
+  (h_smooth_chris : ∀ rho mu nu, isSmooth (fun p : bulk => CGD.Gravity.christoffel (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p') m n) rho mu nu p.val))
   (g : Fin 4 → Fin 4 → SpacetimePoint → ℂ)
   (h_g_eq : ∀ x μ ν, g μ ν x = urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b x) μ ν)
   (γ : ℝ → SpacetimePoint)
@@ -118,6 +119,6 @@ theorem machianTopologicalDefectMotion
     rw [h_g_eq_fun]
     exact macroscopicVacuumGR u bulk urbantke_tetrad metric_compat Psi x hx μ ν
   · apply h_bianchi_to_motion
-    exact emergentStressEnergyConservation u bulk
+    exact emergentStressEnergyConservation u bulk isSmooth h_symm h_inv_symm h_chris_eq h_ricci_eq h_smooth_g h_smooth_g_inv h_smooth_chris
 
 end CGD.Gravity
