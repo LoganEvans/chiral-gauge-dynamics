@@ -4,8 +4,9 @@ import CGD.Axioms.Ontology
 import CGD.Foundations.Spacetime
 import CGD.Gravity.Geometry
 import CGD.Gravity.Urbantke
-import CGD.Gravity.MacroscopicVacuum
-import CGD.Gravity.MacroscopicVacuum.GR
+import CGD.Gravity.MacroscopicVacuum.Basic
+import CGD.Gravity.MacroscopicVacuum.Spinors
+import CGD.Gravity.MacroscopicVacuum.Differential
 import Litlib.Y1991.capovilla1991pure.Signature
 import Mathlib.Topology.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Basic
@@ -49,6 +50,11 @@ lemma curvature_iso_lemma (u : Universe) (region : Set SpacetimePoint) :
     rw [h05]
   · change (0.5 : ℂ) * Matrix.trace ((curvatureSl2c u.sd_sector μ ν x).val * sigma3.val) = (1 / 2 : ℂ) * Matrix.trace ((curvatureSl2c u.sd_sector μ ν x).val * sigma3.val)
     rw [h05]
+
+lemma cgd_sumFin2_eq_sum (f : Fin 2 → ℂ) :
+  CGD.Gravity.sumFin2 f = ∑ x : Fin 2, f x := by
+  unfold CGD.Gravity.sumFin2
+  rw [Fin.sum_univ_two]
 
 noncomputable def extendMetric (U : Set SpacetimePoint) (g : U → Fin 4 → Fin 4 → ℂ) : Fin 4 → Fin 4 → SpacetimePoint → ℂ :=
   Classical.epsilon (fun (g_ext : Fin 4 → Fin 4 → SpacetimePoint → ℂ) => ∀ y : U, ∀ m n, g_ext m n y.val = g y m n)
