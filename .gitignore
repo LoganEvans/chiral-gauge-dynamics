@@ -7,4 +7,5 @@ result-*
 
 quarantine/
 .lake/
+.elan/
 /TODO.md

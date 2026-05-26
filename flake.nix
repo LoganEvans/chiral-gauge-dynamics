@@ -5,9 +5,8 @@
     # 1. Add litlib4 as a Flake input (assumes litlib4 has a flake.nix).
     litlib4.url = "git+ssh://git@github.com/LoganEvans/litlib4.git";
 
-    # 2. Sync the Lean 4 compiler! 
-    # By forcing our nixpkgs to follow litlib4's nixpkgs, we guarantee that 
-    # we use the exact same `pkgs.lean4` compiler version used by litlib4.
+    # We sync system dependencies to litlib4. The Lean compiler 
+    # itself is now managed dynamically via Elan reading lean-toolchain.
     nixpkgs.follows = "litlib4/nixpkgs";
 
     flake-utils.url = "github:numtide/flake-utils";
@@ -84,7 +83,8 @@
             pkgs.zathura
             pkgs.git
             pkgs.curl
-            pkgs.lean4
+            pkgs.zstd # Required to decompress Mathlib cache (.tar.zst)
+            pkgs.elan # Elan reads lean-toolchain automatically
           ];
 
           packages = [
@@ -95,23 +95,27 @@
             export BROWSER=wslview
             export PYTHONPATH="$PWD:$PYTHONPATH"
 
-            # Tell Lake to NEVER look for Elan
-            export LAKE_NO_ELAN=1
+            # Force Elan to install toolchains locally in the repository
+            export ELAN_HOME="$PWD/.elan"
 
             # ----------------------------------------------------------------
             # AUTOMATED FIRST-TIME SETUP
             # ----------------------------------------------------------------
             if [ ! -d ".lake/packages/mathlib" ]; then
               echo "======================================================="
-              echo "🚀 Fresh clone detected! Initializing PURE Nix Lean environment..."
+              echo "🚀 Fresh clone detected! Initializing Lean environment..."
               echo "======================================================="
               
               echo "-> Running 'lake update' to fetch dependencies..."
+              # Elan natively reads the `lean-toolchain` file in this directory.
+              # Because of ELAN_HOME, the toolchain will be isolated to .elan/
               lake update || true
               
-              echo "✅ Dependencies fetched!"
-              echo "☕ Because we are using pure Nix, Mathlib and Litlib must be compiled from source."
-              echo "   Run 'lake build' and grab a coffee (this takes 1-2 hours once)."
+              echo "-> Fetching Mathlib cache..."
+              lake exe cache get || echo "⚠️ Cache fetch failed or incomplete."
+              
+              echo "✅ Setup complete!"
+              echo "   Run 'lake build' to compile your project."
               echo "======================================================="
             fi
           '';
