@@ -33,41 +33,47 @@
 
         texlive = pkgs.texlive.combine {
           inherit (pkgs.texlive)
+            # Core and Physics
             scheme-medium
             revtex
-            biblatex
-            biber
             amsmath
             amsfonts
             graphics
-            cm-super
-            mlmodern
-            type1cm
-            preview
-            babel
-            pgf
-            tikz-feynman
+            xcolor
+
+            # Bibliography
+            biblatex
+            biber
+
+            # Lean Code Formatting & Referencing (Tao / Blueprint style)
+            hyperref
+            cleveref
+            minted     # Requires python3Packages.pygments for Lean 4 syntax
+            fvextra    # minted dependency
+            catchfile  # minted dependency
+            xstring    # minted dependency
+            upquote    # minted dependency
+            lineno     # minted dependency
+
+            # Build tools
             latexmk
-            relsize
-            todonotes
             ;
         };
 
         pythonEnv = pkgs.python3.withPackages (
           ps: with ps; [
-            black
-            graphviz
-            grip
-            matplotlib
-            monty
+            # Core Math/Physics
             numpy
-            pandas
-            requests
             scipy
             sympy
-            tabulate
-            tqdm
+            matplotlib
+
+            # Utils & Formatting
+            black
             pyyaml
+
+            # LaTeX minted dependency (Provides 'pygmentize' with Lean 4 support)
+            pygments
           ]
         );
 
@@ -79,10 +85,9 @@
             pkgs.texlab
             pkgs.wslu
             texlive
-            pkgs.evince
-            pkgs.zathura
             pkgs.git
             pkgs.curl
+            pkgs.zip  # Required for packaging arXiv submissions
             pkgs.zstd # Required to decompress Mathlib cache (.tar.zst)
             pkgs.elan # Elan reads lean-toolchain automatically
           ];
@@ -99,21 +104,62 @@
             export ELAN_HOME="$PWD/.elan"
 
             # ----------------------------------------------------------------
+            # UTILITY FUNCTIONS
+            # ----------------------------------------------------------------
+
+            # Run the CGD report tool from the repo root
+            cgd-report() {
+              local REPO_ROOT="$(git rev-parse --show-toplevel)"
+              # Run in a subshell so we don't change the user's active directory
+              (
+                cd "$REPO_ROOT" || return 1
+                lake exe cgd_report "$@"
+              )
+            }
+
+            # Compile the paper via the Makefile in the paper/ directory
+            cgd-paper() {
+              local REPO_ROOT="$(git rev-parse --show-toplevel)"
+              (
+                cd "$REPO_ROOT/paper" || return 1
+                make "$@"
+              )
+            }
+
+            # Clean all LaTeX build files
+            cgd-paper-clean() {
+              local REPO_ROOT="$(git rev-parse --show-toplevel)"
+              (
+                cd "$REPO_ROOT/paper" || return 1
+                make fullclean
+              )
+            }
+
+            # Build the arXiv submission bundle
+            cgd-paper-arXiv() {
+              local REPO_ROOT="$(git rev-parse --show-toplevel)"
+              (
+                cd "$REPO_ROOT/paper" || return 1
+                make arxiv
+              )
+            }
+
+            # ----------------------------------------------------------------
             # AUTOMATED FIRST-TIME SETUP
             # ----------------------------------------------------------------
             if [ ! -d ".lake/packages/mathlib" ]; then
               echo "======================================================="
               echo "🚀 Fresh clone detected! Initializing Lean environment..."
               echo "======================================================="
-              
+
               echo "-> Running 'lake update' to fetch dependencies..."
               # Elan natively reads the `lean-toolchain` file in this directory.
               # Because of ELAN_HOME, the toolchain will be isolated to .elan/
               lake update || true
-              
+
               echo "-> Fetching Mathlib cache..."
               lake exe cache get || echo "⚠️ Cache fetch failed or incomplete."
-              
+
               echo "✅ Setup complete!"
               echo "   Run 'lake build' to compile your project."
               echo "======================================================="
