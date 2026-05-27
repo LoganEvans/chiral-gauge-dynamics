@@ -2,47 +2,7 @@
 
 \documentclass[aps,prd,onecolumn,nofootinbib,11pt]{revtex4-2}
 
-\usepackage{amsmath,amssymb}
-\usepackage{graphicx}
-\usepackage{hyperref}
-\usepackage{minted}
-\usepackage{xcolor}
-\usepackage{xspace}
-
-% --- Hexadecimal Unicode Mappings for pdflatex ---
-\DeclareUnicodeCharacter{2200}{\ensuremath{\forall}}
-\DeclareUnicodeCharacter{2203}{\ensuremath{\exists}}
-\DeclareUnicodeCharacter{211D}{\ensuremath{\mathbb{R}}}
-\DeclareUnicodeCharacter{2102}{\ensuremath{\mathbb{C}}}
-\DeclareUnicodeCharacter{2124}{\ensuremath{\mathbb{Z}}}
-\DeclareUnicodeCharacter{2115}{\ensuremath{\mathbb{N}}}
-\DeclareUnicodeCharacter{22A4}{\ensuremath{\top}}
-\DeclareUnicodeCharacter{2192}{\ensuremath{\rightarrow}}
-\DeclareUnicodeCharacter{2211}{\ensuremath{\sum}}
-\DeclareUnicodeCharacter{03BC}{\ensuremath{\mu}}
-\DeclareUnicodeCharacter{03BD}{\ensuremath{\nu}}
-\DeclareUnicodeCharacter{03C1}{\ensuremath{\rho}}
-\DeclareUnicodeCharacter{03C3}{\ensuremath{\sigma}}
-\DeclareUnicodeCharacter{2045}{\ensuremath{[\![}}
-\DeclareUnicodeCharacter{2046}{\ensuremath{]\!]}}
-\DeclareUnicodeCharacter{27E8}{\ensuremath{\langle}}
-\DeclareUnicodeCharacter{27E9}{\ensuremath{\rangle}}
-
-\setminted{
-    linenos,
-    breaklines,
-    frame=lines,
-    framesep=2mm,
-    fontsize=\footnotesize,
-    bgcolor=gray!5
-}
-
-\newcommand{\todo}[1]{{\color{red}\bfseries [TODO: #1]}}
-\newcommand{\spinFourC}{\ensuremath{\mathrm{Spin}(4, \mathbb{C})}\xspace}
-\newcommand{\slTwoCL}{\ensuremath{\mathrm{SL}(2, \mathbb{C})_L}\xspace}
-\newcommand{\slTwoCR}{\ensuremath{\mathrm{SL}(2, \mathbb{C})_R}\xspace}
-\newcommand{\slTwoCAlgL}{\ensuremath{\mathfrak{sl}(2, \mathbb{C})_L}\xspace}
-\newcommand{\slTwoCAlgR}{\ensuremath{\mathfrak{sl}(2, \mathbb{C})_R}\xspace}
+\input{preamble}
 
 \begin{document}
 
@@ -58,68 +18,15 @@ Abstract
 
 \maketitle
 
-\section{Introduction}
-Intro
-
-\section{Foundations}
-
-The core axiom of CGD is that the universe is a \spinFourC gauge connection. That's it. The \spinFourC field is a 4-dimensional space that acts like Jello where you can grab a clump, spin it around, and after you spin it through two complete rotations, it comes back to the original state without ever ripping any of the Jello.
-
-We do, however, need a second axiom because we have no clue why the universe exists. To bridge this gap, we assert that the \spinFourC universe has non-trivial volume.
-
-Of particular note are the axioms that are missing from CGD. \spinFourC has no independent background metric (required by standard General Relativity) and it has no fundamental quantization (required by the Standard Model and Loop Quantum Gravity). We do not assert that time exists, that spacetime is Lorentz invariant, or postulate the Principle of Least Action.
-
-To formally represent these axioms, we take the set of arbitrary 4-dimensional fields $\mathcal{A}_\mu(x) \in M_4(\mathbb{C})$ and constrain it to only the \spinFourC subset.
-
-\begin{equation}
-    \mathcal{A}_\mu(x) = A^{(L)}_\mu(x) \oplus A^{(R)}_\mu(x) \equiv
-    \begin{pmatrix}
-        A^{(L)}_\mu(x) & 0 \\
-        0 & A^{(R)}_\mu(x)
-    \end{pmatrix}, 
-    \quad \text{with} \quad \text{Tr}(A^{(L)}_\mu) = \text{Tr}(A^{(R)}_\mu) = 0
-    \label{eq:chiral_split}
-\end{equation}
-
-We represent the self-dual chiral sector as $A^{(L)}$ and the anti-self-dual chiral sector as $A^{(R)}$. Since \spinFourC is isomorphic to the sum of the self-dual and anti-self-dual chiral sectors $\slTwoCL \oplus \slTwoCR$, we embed them as block-diagonal components of a 4-dimensional matrix. We require that the trace of $A_\mu(x)$ to remove scaling operations; the only operations allowed are boosts (accelerations in a direction) and spins (a rotation around an axis). Finally, since we are working with a classical theory, we need to constrain the \spinFourC field to only matrices that are differentiable by requiring $A^{(L)}_\mu, A^{(R)}_\mu \in C^\infty(\mathbb{R}^4)$.
-
-Within the Lean 4 formalization, we encode these rules as follows:
-
-\begin{minted}{lean}
-structure Universe where
-  val : Fin 4 → SpacetimePoint → ChiralM
-
-  is_spin4c : ∀ mu x, val mu x = 
-    embedSelfDual 
-      (chiralProject (val mu x)).self_dual + 
-    embedAntiSelfDual 
-      (chiralProject (val mu x)).anti_self_dual
-
-  sd_is_smooth : ∀ mu i j, ContDiff ℝ ⊤ 
-    (fun x => (chiralProject (val mu x)).self_dual.val i j)
-
-  asd_is_smooth : ∀ mu i j, ContDiff ℝ ⊤ 
-    (fun x => (chiralProject (val mu x)).anti_self_dual.val i j)
-\end{minted}
-
-\section{Gravity}
-Gravity
-
-\section{Quantum Mechanics}
-QM
-
-\section{Conclusion}
-Conclusion
-
-\appendix
-\section{Proton Radius}
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=\linewidth]{cgd_appendix_plot.pdf}
-    \caption{\todo{Explain thoroughly}}
-    \label{fig:my_graph}
-\end{figure}
+% --- INCLUDED SECTIONS ---
+\input{section-Introduction}
+\input{section-Foundations}
+\input{section-Gravity}
+\input{section-Matter}
+\input{section-Quantum}
+\input{section-Cosmology}
+\input{section-Conclusion}
+\input{section-Appendix}
 
 \bibliography{refs}
 

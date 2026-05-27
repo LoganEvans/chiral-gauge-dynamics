@@ -1,0 +1,131 @@
+% FILENAME: paper/section-Gravity.tex
+
+\section{Gravity: The Emergence of Spacetime}
+
+\subsection{The Vacuum Condensate and Time Emergence}
+
+\todo{
+  \begin{itemize}
+    \item Explain that space is not an empty stage; "empty" space mathematically has zero volume.
+    \item State that a non-degenerate macroscopic metric requires a non-trivial gauge field condensate ($A_\mu \neq 0$).
+    \item Argue that a static universe also collapses to zero volume; thus, "time" (symmetry breaking) is geometrically required for space to exist.
+  \end{itemize}
+}
+
+\begin{equation}
+    \det(g_{\mu\nu}) \neq 0 \implies A_\mu \neq 0
+\end{equation}
+\begin{minted}{lean}
+-- CGD.Quantum.Vacuum
+theorem kinematicVacuumCondensate (u : Universe) (bulk : Set SpacetimePoint)
+  [vol : CGD.Axioms.MacroscopicVolume u bulk] (x : SpacetimePoint) (hx : x ∈ bulk) :
+  u.sd_sector.val ≠ (fun _ _ => 0)
+\end{minted}
+
+\begin{equation}
+    \partial_0 A_i = 0 \implies \det(g_{\mu\nu}) = 0
+\end{equation}
+\begin{minted}{lean}
+-- CGD.Cosmology.BigBang
+theorem kinematicStaticUniverseDegeneracy (u : Universe) :
+  isStaticUniverse u →
+  ∀ x, (urbantkeMetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x)).det = 0
+\end{minted}
+
+\begin{equation}
+    F_{\mu\nu} = \frac{1}{2} \epsilon_{\mu\nu}^{\phantom{\mu\nu}\rho\sigma} F_{\rho\sigma} \implies \text{Signature is not Lorentzian}
+\end{equation}
+\begin{minted}{lean}
+-- CGD.Cosmology.TimeEmergence.Theorem
+theorem kinematicTimeEmergence (u : Universe) (phaseRegion : Set SpacetimePoint)
+  (h_symm : ∀ x ∈ phaseRegion, isFully4DSymmetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x)) :
+  ∀ x ∈ phaseRegion,
+    ¬ isLorentzian (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x))
+\end{minted}
+
+\subsection{Unimodular CDJ Gravity}
+
+\todo{
+  \begin{itemize}
+    \item Since we lack equations of motion, introduce the Capovilla-Dell-Jacobson (CDJ) algebraic constraint framework.
+    \item Explain that the Cosmological Constant ($\Lambda$) is not manually inserted into an action, but emerges purely as an integration constant (an equation of state) from the unimodular requirement.
+  \end{itemize}
+}
+
+\begin{equation}
+    \det(g_{\mu\nu}) = c \propto \Lambda^3 \neq 0
+\end{equation}
+\begin{minted}{lean}
+-- CGD.Gravity.DomainSeparation
+theorem macroscopicVacuumEmergence 
+  (u : Universe) (Λ : ℂ) (bulkVacuum : Set SpacetimePoint)
+  ... [Unimodular determinant proportionality bounds elided] ...
+  (h_vacuum : isVacuumRegion bulkVacuum u Λ) :
+  ∃ (c : ℂ), c ≠ 0 ∧ ∀ x y : bulkVacuum, 
+    (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x.val)).det = 
+    (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n y.val)).det ∧
+    (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x.val)).det = c
+\end{minted}
+
+\begin{equation}
+    R_{\mu\nu} = 0
+\end{equation}
+\begin{minted}{lean}
+-- CGD.Gravity.DomainSeparation
+theorem macroscopicRicciFlatEmergence
+  (u : Universe) (urbantke_tetrad : TetradField)
+  (metric_compat : ∀ x μ ν, metricFromTetrad urbantke_tetrad μ ν x = 
+                           CGD.Gravity.urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x) μ ν)
+  ... [Litlib.Capovilla1991 pure spinor formalism and Eq 2.2c constraints elided] ...
+  (bulkVacuum : Set SpacetimePoint) (hOpen : IsOpen bulkVacuum) :
+  ∀ x ∈ bulkVacuum, ∀ μ ν, ricciTensor (fun m n p => urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p) m n) μ ν x = 0
+\end{minted}
+
+\subsection{Exact Lorentzian Macroscopic Witness}
+
+\todo{
+  \begin{itemize}
+    \item Emphasize that this theorem is a \textbf{Capstone}. 
+    \item Explain that to prove this framework isn't just a vacuous Euclidean toy model, we have analytically verified an exact SU(2) gauge configuration that yields a strictly non-degenerate, negative determinant, Lorentzian spacetime metric.
+  \end{itemize}
+}
+
+\begin{equation}
+    \Sigma^{ab} - \frac{1}{3}\delta^{ab}\text{Tr}(\Sigma) = 0 \quad \text{and} \quad \det(g_{\mu\nu}) < 0
+\end{equation}
+\begin{minted}{lean}
+-- CGD.Gravity.ExactSolutions.MainTheorem
+theorem dynamicExactLorentzianSolution :
+  ∃ (u : Universe) (x : SpacetimePoint), 
+    (∑ μ, ∑ ν, ∑ ρ, ∑ σ, epsilon4 μ ν ρ σ • (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)) = 
+    ((∑ μ, ∑ ν, ∑ ρ, ∑ σ, epsilon4 μ ν ρ σ • (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)).trace / 3) • 1 ∧
+    isLorentzian (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x))
+\end{minted}
+
+\subsection{Machian Motion of Topological Defects}
+
+\todo{
+  \begin{itemize}
+    \item Return to the "Weinstein Critique": if the action is zero, how do things move?
+    \item Explain that the emergent Urbantke metric satisfies the Bianchi identities, which feeds the Geroch-Jang theorem.
+    \item Conclude that defects are strictly forced to travel along timelike geodesics. Geometry directly dictates motion.
+  \end{itemize}
+}
+
+\begin{equation}
+    \nabla_\mu T^{\mu\nu} = 0 \implies x^\mu(\tau) \text{ is a timelike geodesic}
+\end{equation}
+\begin{minted}{lean}
+-- CGD.Gravity.GeodesicMotion
+theorem machianTopologicalDefectMotion
+  (isFutureDirectedTimelike : SpacetimePoint → (Fin 4 → ℝ) → Prop)
+  (isTimelikeGeodesic : Set SpacetimePoint → Prop)
+  (u : Universe)
+  ... [Manifold smoothness, Contracted Bianchi, and Litlib.GerochJang axioms elided] ...
+  (T_real : Fin 4 → Fin 4 → SpacetimePoint → ℝ) (γ : Set SpacetimePoint)
+  (h_T_real_def : ∀ mu nu x, T_real mu nu x = (emergentStressEnergy (fun a b p => curvatureSl2c u.sd_sector a b p) mu nu x).re)
+  (h_dominant_energy : ∀ x, (∃ mu nu, T_real mu nu x ≠ 0) → ∀ t t', 
+    isFutureDirectedTimelike x t → isFutureDirectedTimelike x t' → ∑ a, ∑ b, T_real a b x * t a * t' b > 0)
+  (h_localized : ∀ U : Set SpacetimePoint, IsOpen U → γ ⊆ U → closure {x | ∃ mu nu, T_real mu nu x ≠ 0} ⊆ U) :
+  isTimelikeGeodesic γ
+\end{minted}

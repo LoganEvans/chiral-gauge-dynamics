@@ -1,0 +1,110 @@
+% FILENAME: paper/section-Foundations.tex
+
+\section{Foundations: The Topological Engine}
+
+\subsection{The Core Ontology}
+The core axiom of CGD is that the universe is a \spinFourC gauge connection. That's it. The \spinFourC field is a 4-dimensional space that acts like Jello where you can grab a clump, spin it around, and after you spin it through two complete rotations, it comes back to the original state without ever ripping any of the Jello. This topological "double cover" property is what natively generates fermionic spin geometry.
+
+To bridge the gap between abstract algebra and physical extension, we require a second axiom: we assert that the \spinFourC universe has non-trivial macroscopic volume.
+
+Of particular note are the axioms that are missing from CGD. \spinFourC has no independent background metric (required by standard General Relativity) and it has no fundamental quantization (required by the Standard Model and Loop Quantum Gravity). We do not assert that time exists, that spacetime is Lorentz invariant, or postulate the Principle of Least Action.
+
+To formally represent these axioms, we take the set of arbitrary 4-dimensional fields $\mathcal{A}_\mu(x) \in M_4(\mathbb{C})$ and constrain it to only the \spinFourC subset.
+
+\begin{align}
+    &\mathcal{A}_\mu(x) = A^{(L)}_\mu(x) \oplus A^{(R)}_\mu(x) \equiv
+    \begin{pmatrix}
+        A^{(L)}_\mu(x) & 0 \\
+        0 & A^{(R)}_\mu(x)
+    \end{pmatrix}, \nonumber \\
+    \text{with} \quad &\text{Tr} \left( A^{(L)}_\mu \right) = \text{Tr} \left( A^{(R)}_\mu \right) = 0.
+    \label{eq:chiral_split}
+\end{align}
+
+We represent the self-dual chiral sector as $A^{(L)}$ and the anti-self-dual chiral sector as $A^{(R)}$. Since \spinFourC is isomorphic to the sum of the self-dual and anti-self-dual chiral sectors $\slTwoCL \oplus \slTwoCR$, we embed them as block-diagonal components of a 4-dimensional matrix. In order to disable scaling operations, we require that the trace of $A_\mu(x)$ equal zero; the only operations allowed are boosts (accelerations in a direction) and spins (a rotation around an axis). Finally, since we are working with a classical theory, we need to constrain the \spinFourC field to only matrices that are differentiable by requiring $A^{(L)}_\mu, A^{(R)}_\mu \in C^\infty(\mathbb{R}^4)$.
+
+Within the Lean 4 formalization, we encode these rules by writing:
+
+\begin{minted}{lean}
+-- CGD.Axioms.Ontology
+structure Universe where
+  val : Fin 4 → SpacetimePoint → ChiralM
+
+  is_spin4c : ∀ mu x, val mu x = 
+    embedSelfDual (chiralProject (val mu x)).self_dual + 
+    embedAntiSelfDual (chiralProject (val mu x)).anti_self_dual
+
+  sd_is_smooth : ∀ mu i j, ContDiff ℝ ⊤ 
+    (fun x => (chiralProject (val mu x)).self_dual.val i j)
+
+  asd_is_smooth : ∀ mu i j, ContDiff ℝ ⊤ 
+    (fun x => (chiralProject (val mu x)).anti_self_dual.val i j)
+\end{minted}
+
+\begin{minted}{lean}
+-- CGD.Axioms.Phenomenology
+class MacroscopicVolume (u : Universe) (bulk : Set SpacetimePoint) : Prop where
+  volume_exists : ∀ x ∈ bulk, (urbantkeMetric (fun μ ν => curvatureSl2c u.sd_sector μ ν x)).det ≠ 0
+\end{minted}
+
+\todo{
+  \begin{itemize}
+    \item Explain the orthogonal decomposition of the action.
+    \item Use the Jello metaphor: point out that the left-handed twists (self-dual) and right-handed twists (anti-self-dual) do not interact topologically. 
+    \item This justifies treating gravity (left) and matter (right) as separable physical sectors.
+  \end{itemize}
+}
+
+\begin{equation}
+    \mathcal{L}(F_{\mu\nu}) = \mathcal{L}_{\text{vac}}\left(F^{(L)}_{\mu\nu}\right) + \mathcal{L}_{\text{ASD}}\left(F^{(R)}_{\mu\nu}\right)
+\end{equation}
+\begin{minted}{lean}
+-- CGD.Foundations.ChiralDecomposition
+theorem algebraicChiralDecomposition (u : Universe) (x : SpacetimePoint) :
+  lagrangianDensity (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) =
+  actionVacuum (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) +
+  actionAntiSelfDual (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x)
+\end{minted}
+
+\subsection{The Topological Constraint}
+
+\todo{
+  \begin{itemize}
+    \item Explain that because we lack a background metric (we have no fundamental "rulers"), we cannot measure distances.
+    \item We can only measure topological twists. 
+    \item Introduce the fully antisymmetric Pontryagin density as the only mathematical object that survives this requirement.
+  \end{itemize}
+}
+
+\begin{equation}
+    \mathcal{L}(F_{\mu\nu}) = c \, \epsilon^{\mu\nu\rho\sigma} \text{Tr}(F_{\mu\nu} F_{\rho\sigma})
+\end{equation}
+\begin{minted}{lean}
+-- CGD.Foundations.Lagrangian.Uniqueness
+theorem topologicalLagrangianUniqueness 
+  (L : ((Fin 4 → Fin 4 → ChiralM) → Complex))
+  ... [Utiyama scale, add, and gauge invariance bounds elided] ...
+  (h_topological : ∀ Λ : Matrix (Fin 4) (Fin 4) ℂ, 
+    ... [Background Independence Tensor Constraint elided] ...) : 
+  ∃ c : ℂ, ∀ F, (∀ μ ν, isSpin4cAlgebra (F μ ν)) → 
+  L F = c * ∑ μ, ∑ ν, ∑ ρ, ∑ σ, CGD.Gravity.epsilon4 μ ν ρ σ * Matrix.trace (F μ ν * F ρ σ)
+\end{minted}
+
+\subsection{The Absence of a Dynamical Lagrangian}
+
+\todo{
+  \begin{itemize}
+    \item Directly address the "Weinstein Critique" (or general physicist skepticism).
+    \item Explain that because our action is a purely topological boundary invariant, its continuous variation strictly evaluates to zero.
+    \item Conclude that we have no standard Euler-Lagrange equations of motion, which forces us to rely entirely on geometric constraints for dynamics.
+  \end{itemize}
+}
+
+\begin{equation}
+    \left. \frac{d}{d\tau} S[v(\tau)] \right|_{\tau=0} = 0
+\end{equation}
+\begin{minted}{lean}
+-- CGD.Foundations.Lagrangian.Variation
+theorem topologicalActionVariationZero (u : Universe) (v : ℝ → Universe) :
+  isValidUniverseVariation v → v 0 = u → HasDerivAt (fun t => universeAction (v t)) 0 0
+\end{minted}

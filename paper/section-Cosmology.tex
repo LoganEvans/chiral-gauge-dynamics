@@ -1,0 +1,65 @@
+% FILENAME: paper/section-Cosmology.tex
+
+\section{Cosmological Bounds and Compatibility Limits}
+% TODO for Author: Provide a brief introductory paragraph stating that this section verifies the framework's compatibility with established physical limits (non-relativistic mechanics, cosmology, and asymptotic limits) without needing to rely on ad-hoc parameters.
+
+\subsection{The Schrödinger Non-Relativistic Limit}
+% TODO for Author: Explain that as a compatibility check, splitting the large and small components of the covariant Dirac field natively recovers the standard 1/2m non-relativistic Schrödinger Hamiltonian.
+
+\begin{equation}
+    2m \Psi_{\text{small}} = P_+ (\partial_0 \Psi + m \Psi) + \gamma^i P_- (\partial_i \Psi)
+\end{equation}
+\begin{minted}{lean}
+-- CGD.Quantum.Schroedinger
+theorem exactSchroedingerReduction (dPsi : Fin 4 → SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) 
+  (Psi : SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) (m : Complex) (x : SpacetimePoint) :
+  localDiracOp (fun a => dPsi a x) = m • Psi x →
+  let D0_mod := modulatedTemporalDeriv (dPsi 0 x) (Psi x) m;
+  let Psi_small := P_plus * Psi x;
+  (2 • m • Psi_small = P_plus * D0_mod + gammaVec 1 * (P_minus * dPsi 1 x) + gammaVec 2 * (P_minus * dPsi 2 x) + gammaVec 3 * (P_minus * dPsi 3 x)) ∧
+  (P_minus * D0_mod = gammaVec 1 * (P_plus * dPsi 1 x) + gammaVec 2 * (P_plus * dPsi 2 x) + gammaVec 3 * (P_plus * dPsi 3 x))
+\end{minted}
+
+\subsection{Non-Singular Cosmological Origins}
+% TODO for Author: Explain how enforcing a topological boundary condition means the Big Bang manifests as a pure Euclidean SO(4) instanton bounce rather than a mathematical singularity. Additionally, explain how parity inversion naturally flips the topological charge, linking the arrow of time to matter/antimatter asymmetry.
+
+\begin{equation}
+    g_{\mu\nu} = c \delta_{\mu\nu}
+\end{equation}
+\begin{minted}{lean}
+-- CGD.Cosmology.BigBang
+theorem kinematicBigBang (u : Universe) (phaseRegion : Set SpacetimePoint)
+  [vol : CGD.Axioms.MacroscopicVolume u phaseRegion]
+  (h_symm : ∀ x ∈ phaseRegion, isFully4DSymmetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x)) :
+  ∀ x ∈ phaseRegion, ∃ c : Complex, c ≠ 0 ∧ urbantkeMetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x) = c • 1
+\end{minted}
+
+\begin{equation}
+    F_{0i} \to -F_{0i} \implies Q \to -Q
+\end{equation}
+\begin{minted}{lean}
+-- CGD.Cosmology.ParityInversion
+theorem kinematicParityInversion (u : Universe) :
+  ∀ (x : SpacetimePoint) (P_F : Fin 4 → Fin 4 → SL2C),
+    isParityInvertedTensor (fun m n => curvatureSl2c u.sd_sector m n x) P_F x →
+    pontryaginDensity P_F = - pontryaginDensity (fun mu nu => curvatureSl2c u.sd_sector mu nu x)
+\end{minted}
+
+\subsection{Asymptotic String Breaking}
+% TODO for Author: Briefly mention that while the 1D flux tube represents a confining Strong Force potential, topological crossover limits dictate that the string will eventually mathematically "snap" at macroscopic distances. 
+
+\begin{equation}
+    L > \frac{2M}{\sigma} \implies \text{String Breaking}
+\end{equation}
+\begin{minted}{lean}
+-- CGD.Quantum.Entanglement.Decay
+theorem algebraicStringBreakingLimit
+  (energyFunc : (Fin 4 → SpacetimePoint → SL2C) → ℝ)
+  (intactState snappedState : ℝ → Fin 4 → SpacetimePoint → SL2C)
+  {sigma M : ℝ} [eb : FluxTubeStringBreaking (Fin 4 → SpacetimePoint → SL2C) energyFunc intactState snappedState sigma M]
+  (u : Universe) (L : ℝ)
+  (h_L_pos : L > 0)
+  (h_intact : u.sd_sector = intactState L)
+  (h_L_crossover : L > (2 * M) / sigma) :
+  ¬ isGlobalMinimum energyFunc u.sd_sector
+\end{minted}

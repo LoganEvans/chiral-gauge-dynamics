@@ -1,0 +1,92 @@
+% FILENAME: paper/section-Quantum.tex
+
+\section{Quantum Mechanics: Geometry of the Phase Space}
+
+\subsection{The Emergent Dirac Operator}
+% TODO for Author: This is a CAPSTONE. Explain that fermionic matter is just geometry reacting to geometry. The background-independent covariant Dirac operator mathematically equals the macroscopic Yang-Mills curvature trace, plus an inertial term for the bubbling of spacetime.
+
+\begin{equation}
+    \not D = \gamma^\mu F_{\mu\nu} + \gamma^\mu \partial_\nu A_\mu
+\end{equation}
+\begin{minted}{lean}
+-- CGD.Quantum.Dirac
+theorem generalizedDynamicDiracEquation 
+  (u : Universe) (e : TetradField) (x : SpacetimePoint) (nu : Fin 4) :
+  emergentDiracOperator u e x nu = 
+  ∑ mu, ∑ a, (e a mu x) • (gammaVec a * curvature (fun m p => u.spin4c_connection m p) mu nu x) + 
+  ∑ mu, ∑ a, (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => u.spin4c_connection mu p) x)
+\end{minted}
+
+\subsection{Relational Time and Quantization}
+% TODO for Author: Explain the quantum clock. Time evolution (the Schrödinger operator) is mathematically identical to spatial phase evolution (the holonomy) along the U(1) core of a flux tube. Time is a relational geometric phase. Furthermore, explain that "quanta" arise natively from integer topological boundary invariants.
+
+\begin{equation}
+    \mathcal{P} \exp \left( \int A_1 dx^1 \right) = \exp(-i H t)
+\end{equation}
+\begin{minted}{lean}
+-- CGD.Quantum.Holonomy.RelationalTime
+theorem relationalTimeEmergence
+  (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
+  (u : CGD.Axioms.Universe) (t : ℝ)
+  (h_core : ∀ s, (u.sd_sector.val 1 (straightLinePath s)).val = Complex.I • sigmaZ) :
+  macroscopicObservable (holonomy matrixExp) u.sd_sector.val 1 t = 
+  unitaryTimeEvolution matrixExp (-sigmaZ) t
+\end{minted}
+
+\begin{equation}
+    S_{\text{top}} \in \mathbb{Z}
+\end{equation}
+\begin{minted}{lean}
+-- CGD.Quantum.ActionQuantization
+theorem kinematicActionQuantization
+  {BoundaryManifold : Type*} [TopologicalSpace BoundaryManifold] [Nonempty BoundaryManifold]
+  (boundaryMap : (Fin 4 → SpacetimePoint → SL2C) → BoundaryManifold → SU2Group)
+  (windingNumber : (BoundaryManifold → SU2Group) → ℤ)
+  (cartanMaurerIntegral : (BoundaryManifold → SU2Group) → ℝ)
+  ... [Litlib.Belavin1975 Eq 8 limits elided] ...
+  (u : Universe)
+  (h_homeo : IsHomeomorphism (boundaryMap u.sd_sector.val)) :
+  cartanMaurerIntegral (boundaryMap u.sd_sector.val) = 1 ∨ 
+  cartanMaurerIntegral (boundaryMap u.sd_sector.val) = -1
+\end{minted}
+
+\subsection{Entanglement and Macroscopic Holonomy}
+% TODO for Author: Address the "spooky action" and Hilbert space assumptions. Prove ER=EPR by showing the spatial metric determinant strictly degenerates to zero along an entangled wormhole channel. Then, explain how path-integrating the SU(2) holonomy purely recovers quantum state vectors and the macroscopic CHSH 2\sqrt{2} Tsirelson bound.
+
+\begin{equation}
+    \det(g_x) = \det(g_y) = 0 \quad \text{along the ER=EPR bridge}
+\end{equation}
+\begin{minted}{lean}
+-- CGD.Quantum.Entanglement.Wormhole
+theorem kinematicEntanglementWormhole (u : Universe) :
+  ∀ (x y : SpacetimePoint) (theta : ℝ),
+    areEntangled u.sd_sector x y theta →
+    (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x)).det = 0 ∧
+    (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n y)).det = 0
+\end{minted}
+
+\begin{equation}
+    U(\alpha, L) = \cos(L)\mathbf{1} + i \sin(L) \sigma_\alpha
+\end{equation}
+\begin{minted}{lean}
+-- CGD.Quantum.Holonomy.Evaluation
+theorem fluxTubeHolonomyEvaluation
+  (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
+  ... [Derivative properties elided] ...
+  (u : CGD.Axioms.Universe) (alpha L : ℝ)
+  (h_field : ∀ t, u.sd_sector 1 (straightLinePath t) = fluxTubeFrame 1 (straightLinePath t)) :
+  macroscopicObservable (holonomy matrixExp) (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) alpha mu p) 1 L =
+  (Complex.cos (L:ℂ)) • 1 + (Complex.I * Complex.sin (L:ℂ)) • obs_M alpha
+\end{minted}
+
+\begin{equation}
+    \left[ \text{Re}(\text{CHSH}) \right]^2 \leq 8
+\end{equation}
+\begin{minted}{lean}
+-- CGD.Quantum.Holonomy.Geometric
+theorem geometricHolonomyTsirelsonBound 
+  (A1 A2 B1 B2 : SU2Group) :
+  let chsh := geometricBellCorrelation A1 B1 + geometricBellCorrelation A1 B2 + 
+              geometricBellCorrelation A2 B1 - geometricBellCorrelation A2 B2;
+  (chsh.re)^2 ≤ 8 ∧ chsh.im = 0
+\end{minted}

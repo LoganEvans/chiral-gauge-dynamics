@@ -1,0 +1,31 @@
+% FILENAME: paper/preamble.tex
+
+% This file contains all the macros, packages, and setup for LuaLaTeX.
+
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{minted}
+\usepackage{xcolor}
+\usepackage{xspace}
+\usepackage{fontspec}
+\setmonofont{DejaVu Sans Mono}[Scale=MatchLowercase]
+
+% --- Custom Macros ---
+\newcommand{\todo}[1]{{\color{red}\bfseries [TODO: #1]}}
+\newcommand{\spinFourC}{\ensuremath{\mathrm{Spin}(4, \mathbb{C})}\xspace}
+\newcommand{\slTwoCL}{\ensuremath{\mathrm{SL}(2, \mathbb{C})_L}\xspace}
+\newcommand{\slTwoCR}{\ensuremath{\mathrm{SL}(2, \mathbb{C})_R}\xspace}
+\newcommand{\slTwoCAlgL}{\ensuremath{\mathfrak{sl}(2, \mathbb{C})_L}\xspace}
+\newcommand{\slTwoCAlgR}{\ensuremath{\mathfrak{sl}(2, \mathbb{C})_R}\xspace}
+\newcommand{\leanref}[1]{\texttt{#1}}
+
+% --- Minted Setup ---
+\setminted{
+    linenos,
+    breaklines,
+    frame=lines,
+    framesep=2mm,
+    fontsize=\footnotesize,
+    bgcolor=gray!5
+}
