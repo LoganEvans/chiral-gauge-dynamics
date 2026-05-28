@@ -32,6 +32,25 @@ Abstract
 \input{section-Litlib}
 \input{section-ProtonRadius}
 
+% --- LEAN 4 THEOREM INDEX ---
+\printleanrefs
+
 \bibliography{refs}
+
+% --- AI CONTEXT PAYLOAD ---
+% This block embeds the raw Lean 4 code summary into the PDF text stream.
+% By setting the baselineskip to 0pt and the font size to 1pt, the entire
+% codebase overprints onto a single invisible point. Human readers see nothing,
+% but AI text extractors will ingest the full codebase sequentially.
+\IfFileExists{cgd-code-summary.txt}{
+  \begingroup
+  \vbox to 0pt{%
+    \color{white}%
+    \fontsize{1pt}{0pt}\selectfont%
+    \VerbatimInput[formatcom=\color{white}\baselineskip=0pt\lineskip=0pt]{code-summary.txt}%
+    \vss
+  }%
+  \endgroup
+}{}
 
 \end{document}

@@ -9,17 +9,19 @@
 \usepackage{xcolor}
 \usepackage{xspace}
 \usepackage{fontspec}
+\usepackage{float}   % Added for [H] listing placement
+\usepackage{slashed} % Added for Dirac \slashed{D} notation
 \setmonofont{DejaVu Sans Mono}[Scale=MatchLowercase]
 
 % --- Custom Macros ---
 \newcommand{\todo}[1]{{\color{red}\bfseries [TODO: #1]}}
 \newcommand{\spinFourC}{\ensuremath{\mathrm{Spin}(4, \mathbb{C})}\xspace}
 \newcommand{\suTwo}{\ensuremath{\mathrm{Su}(2)}\xspace}
+\newcommand{\slTwoC}{\ensuremath{\mathrm{SL}(2, \mathbb{C})}\xspace}
 \newcommand{\slTwoCL}{\ensuremath{\mathrm{SL}(2, \mathbb{C})_L}\xspace}
 \newcommand{\slTwoCR}{\ensuremath{\mathrm{SL}(2, \mathbb{C})_R}\xspace}
 \newcommand{\slTwoCAlgL}{\ensuremath{\mathfrak{sl}(2, \mathbb{C})_L}\xspace}
 \newcommand{\slTwoCAlgR}{\ensuremath{\mathfrak{sl}(2, \mathbb{C})_R}\xspace}
-\newcommand{\leanref}[1]{\texttt{#1}}
 
 % --- Minted Setup ---
 \setminted{
@@ -29,4 +31,53 @@
     framesep=2mm,
     fontsize=\footnotesize,
     bgcolor=gray!5
+}
+
+% --- Lean Theorem Citation System ---
+\newcounter{leancnt}
+\newwrite\leanfile
+
+% Open the auxiliary file for writing at the start of the document
+% We immediately write \relax so the file is never mathematically 0 bytes.
+\AtBeginDocument{%
+    \immediate\openout\leanfile=\jobname.leanrefs
+    \immediate\write\leanfile{\string\relax}
+}
+
+\makeatletter
+% Command to use inside/outside equations: \leanref{TheoremName}
+\newcommand{\leanref}[1]{%
+    \ifmeasuring@
+        % amsmath pass 1 (measuring): Output dummy width, don't increment or write.
+        \ifmmode {}^{\textnormal{[L?]}} \else \textsuperscript{[L?]} \fi
+    \else
+        % pass 2 (rendering) or normal text mode:
+        % Check if we have already assigned an ID to this specific theorem.
+        \expandafter\ifx\csname lean@ref@id@\detokenize{#1}\endcsname\relax
+            % FIRST TIME SEEN: Increment counter and assign ID globally (\xdef).
+            \refstepcounter{leancnt}%
+            \expandafter\xdef\csname lean@ref@id@\detokenize{#1}\endcsname{\theleancnt}%
+            % Write the new entry to the index file.
+            \immediate\write\leanfile{%
+                \string\noindent\string\textbf{[L\theleancnt]}\string\quad%
+                \string\texttt{\string\detokenize{#1}}\string\par\string\vspace{0.5em}%
+            }%
+        \fi
+        % Output the superscript marker (either in math mode or text mode).
+        \ifmmode 
+            {}^{\textnormal{[L\csname lean@ref@id@\detokenize{#1}\endcsname]}}%
+        \else 
+            \textsuperscript{[L\csname lean@ref@id@\detokenize{#1}\endcsname]}%
+        \fi
+    \fi
+}
+\makeatother
+
+% Command to drop the table of theorems at the end of the paper
+\newcommand{\printleanrefs}{%
+    \section*{Formal Verification Index}%
+    \noindent The equations annotated with \textbf{[L$n$]} in the main text have been formally verified. They correspond to the following theorem signatures in the Lean 4 codebase:
+    \par\vspace{1em}
+    \immediate\closeout\leanfile
+    \input{\jobname.leanrefs}
 }

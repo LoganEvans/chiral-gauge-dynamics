@@ -1,13 +1,16 @@
 % FILENAME: paper/section-Foundations.tex
 
 \section{Foundations: The Topological Engine}
+\label{sec:Foundations}
 
 \subsection{The Core Ontology}
+\label{subsec:core_ontology}
+
 The core axiom of CGD is that the universe is a \spinFourC gauge connection. That's it. The \spinFourC field is a 4-dimensional space that acts like Jello where you can grab a clump, spin it around, and after you spin it through two complete rotations, it comes back to the original state without ever ripping any of the Jello.
 
-However, \spinFourC is consistent with the trivial solution where there is no universe, so we do need a second axiom to assert that the universe does, in fact, exist. To bridge this gap, we require a second axiom: the universe has non-trivial volume.
+However, \spinFourC is consistent with the trivial solution where there is no universe, so we need a second axiom to assert that the universe does, in fact, exist. To bridge this gap, we require a second axiom: the universe has non-trivial volume.
 
-Of particular note are the axioms that are missing from CGD. \spinFourC has no independent background metric (required by standard General Relativity \todo{cite?}) and it has no fundamental quantization (required by the Standard Model \todo{cite} and Loop Quantum Gravity \todo{cite}). We do not assert that time exists, that spacetime is Lorentz invariant, the Principle of Least Action, or that particles such as electrons and photons exist.
+Of particular note are the axioms that are missing from CGD. \spinFourC has no independent background metric (required by standard General Relativity) and it has no fundamental quantization (required by the Standard Model and Loop Quantum Gravity \citep{ashtekar1986new}). We do not assert that time exists, that spacetime is Lorentz invariant, the Principle of Least Action, or that particles such as electrons and photons exist.
 
 To formally represent the CGD axioms, we take the set of arbitrary 4-dimensional fields $\mathcal{A}_\mu(x) \in M_4(\mathbb{C})$ and constrain it to only the \spinFourC subset.
 
@@ -21,10 +24,11 @@ To formally represent the CGD axioms, we take the set of arbitrary 4-dimensional
     \label{eq:chiral_split}
 \end{align}
 
-We represent the self-dual chiral sector as $A^{(L)}$ and the anti-self-dual chiral sector as $A^{(R)}$. Since \spinFourC is isomorphic to the sum of the self-dual and anti-self-dual chiral sectors $\slTwoCL \oplus \slTwoCR$, we embed them as block-diagonal components of a 4-dimensional matrix. In order to disable scaling operations, the trace of $A_\mu(x)$ must equal zero; the only operations allowed are boosts (accelerations in a direction) and spins (a rotation around an axis). Finally, since CGD is a classical theory, the \spinFourC field must be differentiable everywhere, represented by requiring $A^{(L)}_\mu, A^{(R)}_\mu \in C^\infty(\mathbb{R}^4)$.
+We represent the self-dual chiral sector as $A^{(L)}$ and the anti-self-dual chiral sector as $A^{(R)}$. Since the \spinFourC algebra decomposes into the sum of the self-dual and anti-self-dual chiral algebras $\slTwoCAlgL \oplus \slTwoCAlgR$, we embed them as block-diagonal components of a 4-dimensional matrix. In order to disable scaling operations, the trace of $A_\mu(x)$ must equal zero; the only operations allowed are boosts (accelerations in a direction) and spins (a rotation around an axis). Finally, since CGD is a classical theory, the \spinFourC field must be differentiable everywhere, represented by requiring $A^{(L)}_\mu, A^{(R)}_\mu \in C^\infty(\mathbb{R}^4)$.
 
 Within the Lean 4 formalization, we encode \spinFourC by writing
 
+\begin{listing}[H]
 \begin{minted}{lean}
 -- CGD.Axioms.Ontology
 structure Universe where
@@ -34,80 +38,65 @@ structure Universe where
     embedSelfDual (chiralProject (val mu x)).self_dual + 
     embedAntiSelfDual (chiralProject (val mu x)).anti_self_dual
 
-  sd_is_smooth : ∀ mu i j, ContDiff ℝ ⊤ 
+  sd_is_smooth : ∀ mu i j, ContDiff ℝ ⊤
     (fun x => (chiralProject (val mu x)).self_dual.val i j)
-
-  asd_is_smooth : ∀ mu i j, ContDiff ℝ ⊤ 
+  asd_is_smooth : ∀ mu i j, ContDiff ℝ ⊤
     (fun x => (chiralProject (val mu x)).anti_self_dual.val i j)
 \end{minted}
+\caption{The foundational definition of the universe as a continuous \spinFourC gauge field.}
+\label{lean:Universe}
+\end{listing}
 
 and we encode the existence of the universe by writing
 
+\begin{listing}[H]
 \begin{minted}{lean}
 -- CGD.Axioms.Phenomenology
 class MacroscopicVolume (u : Universe) (bulk : Set SpacetimePoint) : Prop where
   volume_exists : ∀ x ∈ bulk, (urbantkeMetric (fun μ ν => curvatureSl2c u.sd_sector μ ν x)).det ≠ 0
 \end{minted}
+\caption{The phenomenological volume axiom requiring non-degenerate geometry.}
+\label{lean:MacroscopicVolume}
+\end{listing}
 
-The \spinFourC gauge connection is not arbitrary. Instead, it satisfies several properties required to make the universe work. In order to represent time and to represent Dirac spinors \todo{x-ref}, we require a 4-dimensional space. Since CGD does not postulate a distance metric, we will need to use the Urbantke metric \todo{x-ref} to obtain one. However, the Urbantke metric only works for \suTwo or \spinFourC \todo{cite}, and \suTwo is eliminated because it is 3-dimensional.
+The \spinFourC gauge connection is not arbitrary. Instead, it satisfies several properties required to make the universe work. In order to represent time and to represent Dirac spinors (Section \ref{subsec:emergent_dirac}), we require a 4-dimensional space. Since CGD does not postulate a distance metric, we will need to use the Urbantke metric (Section \ref{subsec:unimodular_cdj}) to obtain one. However, the Urbantke metric only works for \suTwo or \spinFourC \citep{urbantke1984integrability}, and \suTwo is eliminated because it is 3-dimensional.
 
-As soon as we select the \spinFourC gauge connection, an astonishing mathematical property emerges: \spinFourC is isomorphic to $\slTwoCL \oplus \slTwoCR$. This is the only complexified gauge group that decomposes into two orthogonal chiral halves. Returning to the Jello metaphor, this means that if you take a clump of Jello and throw it like a football with a perfect spiral, then the footballs thrown by a left-handed and a right-handed quarterback will pass through each other without interfering. While this algebraic independence is a type of superposition, it is not quantum superposition, and in fact, we will see in \todo{x-ref} that quantum mechanics in CGD doesn't use superposition at all. Instead, we will show in \todo{x-ref} that superposition is important to generate of mass.
-
-We represent the geometric constraints of CGD using a Lagrangian. As we will prove in \todo{x-ref topologicalLagrangianUniqueness}, the only possible background-independent Lagrangian is the Pontryagin topological density $\mathcal{L} = Tr(F \wedge F)$, but since the two chiral halves are orthogonal, we can represent this using
-
-\begin{equation}
-    \mathcal{L}(F_{\mu\nu}) = \mathcal{L}_{\text{vac}}\left(F^{(L)}_{\mu\nu}\right) + \mathcal{L}_{\text{ASD}}\left(F^{(R)}_{\mu\nu}\right)
-\end{equation}
-
-where vac represents the self-dual vacuum and ASD represents the anti-self-dual chiral half of the universe. In lean, this is
-
-\begin{minted}{lean}
--- CGD.Foundations.ChiralDecomposition
-theorem algebraicChiralDecomposition (u : Universe) (x : SpacetimePoint) :
-  lagrangianDensity (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) =
-  actionVacuum (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) +
-  actionAntiSelfDual (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x)
-\end{minted}
-
-\subsection{The Topological Constraint}
-
-\todo{
-  \begin{itemize}
-    \item Explain that because we lack a background metric (we have no fundamental "rulers"), we cannot measure distances.
-    \item We can only measure topological twists. 
-    \item Introduce the fully antisymmetric Pontryagin density as the only mathematical object that survives this requirement.
-  \end{itemize}
-}
-
-\begin{equation}
-    \mathcal{L}(F_{\mu\nu}) = c \, \epsilon^{\mu\nu\rho\sigma} \text{Tr}(F_{\mu\nu} F_{\rho\sigma})
-\end{equation}
-\begin{minted}{lean}
--- CGD.Foundations.Lagrangian.Uniqueness
-theorem topologicalLagrangianUniqueness 
-  (L : ((Fin 4 → Fin 4 → ChiralM) → Complex))
-  ... [Utiyama scale, add, and gauge invariance bounds elided] ...
-  (h_topological : ∀ Λ : Matrix (Fin 4) (Fin 4) ℂ, 
-    ... [Background Independence Tensor Constraint elided] ...) : 
-  ∃ c : ℂ, ∀ F, (∀ μ ν, isSpin4cAlgebra (F μ ν)) → 
-  L F = c * ∑ μ, ∑ ν, ∑ ρ, ∑ σ, CGD.Gravity.epsilon4 μ ν ρ σ * Matrix.trace (F μ ν * F ρ σ)
-\end{minted}
+As soon as we select the \spinFourC gauge connection, an astonishing mathematical property emerges: \spinFourC is isomorphic to $\slTwoCL \oplus \slTwoCR$. This is the only complexified gauge group that decomposes into two orthogonal chiral halves. Returning to the Jello metaphor, this means that if you take a clump of Jello and throw it like a football with a perfect spiral, then the footballs thrown by a left-handed and a right-handed quarterback will pass through each other without interfering. While this algebraic independence is a type of superposition, it is not quantum superposition, and in fact, we will see in Section \ref{sec:Quantum} that quantum mechanics in CGD doesn't use superposition at all. Instead, we will show in Section \ref{subsec:schroedinger_limit} that superposition is important to generate mass.
 
 \subsection{The Absence of a Dynamical Lagrangian}
+\label{subsec:absence_of_lagrangian}
 
-\todo{
-  \begin{itemize}
-    \item Directly address the "Weinstein Critique" (or general physicist skepticism).
-    \item Explain that because our action is a purely topological boundary invariant, its continuous variation strictly evaluates to zero.
-    \item Conclude that we have no standard Euler-Lagrange equations of motion, which forces us to rely entirely on geometric constraints for dynamics.
-  \end{itemize}
-}
+We represent the geometric constraints of CGD using the Lagrangian
+
+\begin{align}
+    \mathcal{L}_{\text{CGD}} 
+    &= \text{Tr}(F \wedge F) \nonumber \\
+    &= -\frac{1}{2} \sum_{\mu,\nu,\rho,\sigma} \epsilon^{\mu\nu\rho\sigma} \text{Tr}(F_{\mu\nu} F_{\rho\sigma}) \quad \leanref{CGD.Foundations.Lagrangian.topologicalLagrangianUniqueness} \nonumber \\
+    &= \mathcal{L}_{\text{vac}}\left(F^{(L)}_{\mu\nu}\right) + \mathcal{L}_{\text{ASD}}\left(F^{(R)}_{\mu\nu}\right) \quad \leanref{CGD.Foundations.ChiralDecomposition.algebraicChiralDecomposition} .
+    \label{eq:master_lagrangian}
+\end{align}
+
+\noindent While we have three equivalent ways to write the Lagrangian, $\mathcal{L} = \mathcal{L}_{\text{vac}}\left(F^{(L)}_{\mu\nu}\right) + \mathcal{L}_{\text{ASD}}\left(F^{(R)}_{\mu\nu}\right)$, where vac represents the self-dual vacuum and ASD represents the anti-self-dual sector, is the notation that emphasizes that the CGD universe is made up of two chiral halves.
+
+In order to do physics in a universe with no independent background metric, we need to bootstrap a way to measure direction and distance. So far, the only thing we're able to measure in \spinFourC is topological twists. However, \citet{utiyama1956invariant} showed that gauge invariance forces the Lagrangian to be the trace of the curvature squared. Since no background metric exists, the unique Lagrangian that satisfies this constraint is $-\frac{1}{2} \sum_{\mu,\nu,\rho,\sigma} \epsilon^{\mu\nu\rho\sigma} \text{Tr}(F_{\mu\nu} F_{\rho\sigma})$ \citep{nakahara2003geometry}.
+
+Typically, we could use the Lagrangian of a system to give us the action, and by varying the action we can find the equations of motion and extract a distance metric. However, with the Utiyama Lagrangian, when we build the action and then vary it, we get exactly zero.
+
+\begin{align}
+    S[A] &= \int \mathcal{L}(F_{\mu\nu}) \, d^4x \quad \leanref{CGD.Foundations.Action.universeAction} \nonumber \\
+    \left. \frac{d}{d\tau} S[v(\tau)] \right|_{\tau=0} &= 0 \quad \leanref{CGD.Foundations.Lagrangian.topologicalActionVariationZero}
+    \label{eq:topologicalActionVariationZero}
+\end{align}
+
+\noindent In other words, while we have a Lagrangian, we cannot use Euler-Lagrange equations to obtain a distance metric, the equation of state, or equations of motion.
+
+Instead, we turn to a metric that natively lives within the \spinFourC topology \citep{urbantke1984integrability}. The Urbantke metric is the unique conformal metric that forces a \slTwoC gauge field to be self-dual. Specifically,
 
 \begin{equation}
-    \left. \frac{d}{d\tau} S[v(\tau)] \right|_{\tau=0} = 0
+    g_{\mu\nu} = \sum_{a,b,c=1}^3 \sum_{\alpha,\beta,\gamma,\delta=0}^3 \epsilon_{abc} \epsilon^{\alpha\beta\gamma\delta} F^a_{\mu\alpha} F^b_{\nu\beta} F^c_{\gamma\delta}.
+    \quad \leanref{CGD.Gravity.Geometry.urbantkeMetric}
+    \label{eq:urbantke_metric}
 \end{equation}
-\begin{minted}{lean}
--- CGD.Foundations.Lagrangian.Variation
-theorem topologicalActionVariationZero (u : Universe) (v : ℝ → Universe) :
-  isValidUniverseVariation v → v 0 = u → HasDerivAt (fun t => universeAction (v t)) 0 0
-\end{minted}
+
+\noindent This metric exists independently for both the \slTwoCL and \slTwoCR chiral halves. At this point, we have a metric and a Lagrangian, but we do not yet know if the metric collapses or if particles exist. In the next section we will explore what happens to the metric in both chiral halves as we show how gravity and the equations of motion emerge from \spinFourC.
+
