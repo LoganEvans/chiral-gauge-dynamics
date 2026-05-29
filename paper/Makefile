@@ -16,7 +16,11 @@ RESET  := \033[0m
 
 all: $(PDF)
 
-$(PDF): $(TEX_FILES)
+$(PDF): $(TEX_FILES) code-summary.txt
+	@if [ -f code-summary.txt ]; then \
+		echo "Sanitizing AI context payload..."; \
+		sed -i 's/𝓝/nhds /g' code-summary.txt; \
+	fi
 	@echo "Building $(PDF)..."
 	@if latexmk $(LATEXMK_FLAGS) $(PAPER); then \
 		printf "$(GREEN)✅ Success: $(PDF) has been successfully built!$(RESET)\n"; \

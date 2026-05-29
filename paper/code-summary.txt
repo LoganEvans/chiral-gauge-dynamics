@@ -13,22 +13,7 @@ the chiral asymmetry of the geometry.
 theorem algebraicAntiSelfDualSectorDecoupling (u : Universe)
   (A_R_alt : Sl2cGaugeField) (x : SpacetimePoint) :
   actionVacuum (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) =
-  actionVacuum (fun mu nu => curvature (fun m p => embedSelfDual (u.sd_sector m p) + embedAntiSelfDual (A_R_alt m p)) mu nu x) := by
-
-  let u_alt : Universe := universeEquiv.symm (u.sd_sector, A_R_alt)
-  
-  have h_alt_eq : (fun m p => embedSelfDual (u.sd_sector m p) + embedAntiSelfDual (A_R_alt m p)) = 
-                  (fun m p => u_alt.spin4c_connection m p) := rfl
-                  
-  rw [h_alt_eq]
-
-  apply action_vacuum_congr (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) (fun mu nu => curvature (fun m p => u_alt.spin4c_connection m p) mu nu x)
-  intro mu nu
-
-  have h_L_eq_1 := F_L_eq u mu nu x
-  have h_L_eq_2 := F_L_eq u_alt mu nu x
-
-  have h3 : u_alt.sd_sector = u.sd_sector
+  actionVacuum (fun mu nu => curvature (fun m p => embedSelfDual (u.sd_sector m p) + embedAntiSelfDual (A_R_alt m p)) mu nu x)
 
 
 -- MODULE: CGD.AntiSelfDualSector.SelfInteracting
@@ -55,58 +40,7 @@ non-Abelian gauge condensates, cementing the geometric chirality of the universe
 -/
 theorem kinematicAsdVacuumDegeneracy (u : Universe) :
   u.asd_sector.val = (fun _ _ => (0 : SL2C)) →
-  ∀ x, (urbantkeMetric (fun m n => curvatureSl2c u.asd_sector m n x)).det = 0 := by
-  intro h_empty x
-  
-  -- Step 1: Establish that the ASD field is 0 everywhere
-  have h_A_zero : ∀ μ p, u.asd_sector.val μ p = 0 := by
-    intro μ p
-    have h1 : u.asd_sector.val μ p = (fun _ _ => (0 : SL2C)) μ p := by
-      rw [h_empty]
-    exact h1
-
-  -- Step 2: Establish that the curvature of the 0 field is exactly 0 everywhere
-  have h_F_zero : ∀ μ ν, curvatureSl2c u.asd_sector μ ν x = 0 := by
-    intro μ ν
-    rw [curvatureSl2c_def]
-    
-    -- The partial derivative of a constant zero field is zero
-    have hd1 : partialDerivSl2c μ (u.asd_sector ν) x = 0 := by
-      have h_func : (u.asd_sector ν) = fun _ => (0 : SL2C) := by
-        funext p
-        change u.asd_sector.val ν p = 0
-        exact h_A_zero ν p
-      rw [h_func]
-      exact partialDerivSl2c_const 0 μ x
-      
-    have hd2 : partialDerivSl2c ν (u.asd_sector μ) x = 0 := by
-      have h_func : (u.asd_sector μ) = fun _ => (0 : SL2C) := by
-        funext p
-        change u.asd_sector.val μ p = 0
-        exact h_A_zero μ p
-      rw [h_func]
-      exact partialDerivSl2c_const 0 ν x
-      
-    -- The commutator of zero with zero is zero
-    have h_comm : ⁅u.asd_sector μ x, u.asd_sector ν x⁆ = 0 := by
-      have h1 : u.asd_sector μ x = 0 := by 
-        change u.asd_sector.val μ x = 0
-        exact h_A_zero μ x
-      have h2 : u.asd_sector ν x = 0 := by 
-        change u.asd_sector.val ν x = 0
-        exact h_A_zero ν x
-      rw [h1, h2]
-      simp
-      
-    -- Combine components to show the full curvature tensor is zero
-    rw [hd1, hd2, h_comm]
-    simp
-    
-  -- Step 3: Define the local macroscopic curvature mapping evaluated at x
-  let F := fun m n => curvatureSl2c u.asd_sector m n x
-  
-  -- Step 4: Prove this zero-field trivially satisfies the Abelian (single-color) constraint
-  have h_single : isSingleColor F
+  ∀ x, (urbantkeMetric (fun m n => curvatureSl2c u.asd_sector m n x)).det = 0
 
 
 -- MODULE: CGD.Axioms.Ontology
@@ -176,22 +110,7 @@ By enforcing a topological initial condition, the Big Bang manifests as a pure E
 theorem kinematicBigBang (u : Universe) (phaseRegion : Set SpacetimePoint)
   [vol : CGD.Axioms.MacroscopicVolume u phaseRegion]
   (h_symm : ∀ x ∈ phaseRegion, isFully4DSymmetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x)) :
-  ∀ x ∈ phaseRegion, ∃ c : Complex, c ≠ 0 ∧ urbantkeMetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x) = c • 1 := by
-  intro x hx
-  have h_tic := h_symm x hx
-  have h_g := urbantke_eq_smul_id_of_self_dual (fun mu nu => curvatureSl2c u.sd_sector mu nu x) h_tic
-  rcases h_g with ⟨c, hc⟩
-  use c
-  constructor
-  · intro hc_zero
-    rw [hc_zero, zero_smul] at hc
-    have h_nd := vol.volume_exists x hx
-    rw [hc] at h_nd
-    have h_det_zero : (0 : Matrix (Fin 4) (Fin 4) Complex).det = 0 := by
-      rw [Matrix.det_apply]
-      apply Finset.sum_eq_zero
-      intro σ _
-      have h_prod : (∏ i : Fin 4, (0 : Matrix (Fin 4) (Fin 4) Complex) (σ i) i) = 0
+  ∀ x ∈ phaseRegion, ∃ c : Complex, c ≠ 0 ∧ urbantkeMetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x) = c • 1
 
 /--
 In pure connection gravity, 4D spacetime volume geometrically requires time-evolution. A completely static universe (where electric/temporal components of the field strength are zero) cannot sustain a macroscopic 4D metric and topologically collapses, forcing the metric determinant to zero.
@@ -233,13 +152,7 @@ Negating the electric (temporal) components of the field strength tensor while p
 theorem kinematicParityInversion (u : Universe) :
   ∀ (x : SpacetimePoint) (P_F : Fin 4 → Fin 4 → SL2C),
     isParityInvertedTensor (fun m n => curvatureSl2c u.sd_sector m n x) P_F x →
-    pontryaginDensity P_F = - pontryaginDensity (fun mu nu => curvatureSl2c u.sd_sector mu nu x) := by
-  intro x P_F ⟨h_parity_0i, h_parity_ij, h_parity_00⟩
-  have h_PF : ∀ μ ν, (P_F μ ν).val =
-    if μ = 0 ∧ ν = 0 then (curvatureSl2c u.sd_sector 0 0 x).val
-    else if μ = 0 then -(curvatureSl2c u.sd_sector 0 ν x).val
-    else if ν = 0 then -(curvatureSl2c u.sd_sector μ 0 x).val
-    else (curvatureSl2c u.sd_sector μ ν x).val
+    pontryaginDensity P_F = - pontryaginDensity (fun mu nu => curvatureSl2c u.sd_sector mu nu x)
 
 noncomputable def pontryaginDensity (F : Fin 4 → Fin 4 → SL2C) : Complex :=
   ∑ μ, ∑ ν, ∑ ρ, ∑ σ, epsilon4 μ ν ρ σ * Matrix.trace ((F μ ν).val * (F ρ σ).val)
@@ -349,112 +262,7 @@ theorem topologicalChargeConservation
   (h_diff_fderiv_re : ∀ ρ σ x, DifferentiableAt ℝ (fderiv ℝ (fun p => (F ρ σ p).re)) x)
   (h_diff_fderiv_im : ∀ ρ σ x, DifferentiableAt ℝ (fderiv ℝ (fun p => (F ρ σ p).im)) x) :
   ∀ x : SpacetimePoint, 
-    ∑ μ : Fin 4, partialDeriv μ (fun p => emergentElectricCurrent F μ p) x = 0 := by
-  intro x
-  let S := fun (μ ν : Fin 4) => ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv μ (fun p => partialDeriv ν (fun p' => F ρ σ p') p) x
-  
-  have h_diff_smul : ∀ μ ν ρ σ, DifferentiableAt ℝ (fun p => epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x :=
-    fun μ ν ρ σ => diff_const_mul (epsilon4 μ ν ρ σ) (fun p => partialDeriv ν (fun p' => F ρ σ p') p) x (h_diff ν ρ σ x)
-  
-  have h_diff_sum_sigma : ∀ μ ν ρ, DifferentiableAt ℝ (fun p => ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x :=
-    fun μ ν ρ => diff_sum (fun σ p => epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x (fun σ => h_diff_smul μ ν ρ σ)
-  
-  have h_diff_sum_rho : ∀ μ ν, DifferentiableAt ℝ (fun p => ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x :=
-    fun μ ν => diff_sum (fun ρ p => ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x (fun ρ => h_diff_sum_sigma μ ν ρ)
-
-  have step1 (μ : Fin 4) :
-    partialDeriv μ (fun p => emergentElectricCurrent F μ p) x =
-    ∑ ν : Fin 4, partialDeriv μ (fun p => ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x :=
-    partialDeriv_sum (fun ν p => ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) μ x (fun ν => h_diff_sum_rho μ ν)
-    
-  have step2 (μ ν : Fin 4) :
-    partialDeriv μ (fun p => ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x =
-    ∑ ρ : Fin 4, partialDeriv μ (fun p => ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x :=
-    partialDeriv_sum (fun ρ p => ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) μ x (fun ρ => h_diff_sum_sigma μ ν ρ)
-    
-  have step3 (μ ν ρ : Fin 4) :
-    partialDeriv μ (fun p => ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x =
-    ∑ σ : Fin 4, partialDeriv μ (fun p => epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x :=
-    partialDeriv_sum (fun σ p => epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) μ x (fun σ => h_diff_smul μ ν ρ σ)
-    
-  have step4 (μ ν ρ σ : Fin 4) :
-    partialDeriv μ (fun p => epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x =
-    epsilon4 μ ν ρ σ * partialDeriv μ (fun p => partialDeriv ν (fun p' => F ρ σ p') p) x :=
-    partialDeriv_const_smul (epsilon4 μ ν ρ σ) (fun p => partialDeriv ν (fun p' => F ρ σ p') p) μ x (h_diff ν ρ σ x)
-
-  have h_sum :
-    ∑ μ : Fin 4, partialDeriv μ (fun p => emergentElectricCurrent F μ p) x =
-    ∑ μ : Fin 4, ∑ ν : Fin 4, S μ ν := by
-    apply Finset.sum_congr rfl
-    intro μ _
-    rw [step1 μ]
-    apply Finset.sum_congr rfl
-    intro ν _
-    rw [step2 μ ν]
-    apply Finset.sum_congr rfl
-    intro ρ _
-    rw [step3 μ ν ρ]
-    apply Finset.sum_congr rfl
-    intro σ _
-    rw [step4 μ ν ρ σ]
-
-  have h_S_anti : ∀ μ ν, S μ ν = - S ν μ := by
-    intro μ ν
-    calc
-      S μ ν = ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv μ (fun p => partialDeriv ν (fun p' => F ρ σ p') p) x := rfl
-      _ = ∑ ρ : Fin 4, ∑ σ : Fin 4, (- epsilon4 ν μ ρ σ) * partialDeriv ν (fun p => partialDeriv μ (fun p' => F ρ σ p') p) x := by
-        apply Finset.sum_congr rfl
-        intro ρ _
-        apply Finset.sum_congr rfl
-        intro σ _
-        have h_eps : epsilon4 μ ν ρ σ = - epsilon4 ν μ ρ σ := (epsilon4_alt μ ν ρ σ).1
-        
-        have h_comm : partialDeriv μ (fun p => partialDeriv ν (fun p' => F ρ σ p') p) x = partialDeriv ν (fun p => partialDeriv μ (fun p' => F ρ σ p') p) x := by
-          apply Complex.ext
-          · have hr1 := partialDeriv_re (fun p => partialDeriv ν (fun p' => F ρ σ p') p) μ x (h_diff ν ρ σ x)
-            have h_inner_re : (fun p => (partialDeriv ν (fun p' => F ρ σ p') p).re) = fun p => partialDeriv ν (fun p' => (F ρ σ p').re) p := by
-              ext p
-              exact partialDeriv_re (fun p' => F ρ σ p') ν p (h_diff_F ρ σ p)
-            rw [h_inner_re] at hr1
-            rw [hr1]
-            
-            have hr2 := partialDeriv_re (fun p => partialDeriv μ (fun p' => F ρ σ p') p) ν x (h_diff μ ρ σ x)
-            have h_inner_re2 : (fun p => (partialDeriv μ (fun p' => F ρ σ p') p).re) = fun p => partialDeriv μ (fun p' => (F ρ σ p').re) p := by
-              ext p
-              exact partialDeriv_re (fun p' => F ρ σ p') μ p (h_diff_F ρ σ p)
-            rw [h_inner_re2] at hr2
-            rw [hr2]
-            
-            exact partialDeriv_comm_real (fun p => (F ρ σ p).re) (h_smooth_re ρ σ) μ ν x (h_diff_fderiv_re ρ σ x)
-            
-          · have hi1 := partialDeriv_im (fun p => partialDeriv ν (fun p' => F ρ σ p') p) μ x (h_diff ν ρ σ x)
-            have h_inner_im : (fun p => (partialDeriv ν (fun p' => F ρ σ p') p).im) = fun p => partialDeriv ν (fun p' => (F ρ σ p').im) p := by
-              ext p
-              exact partialDeriv_im (fun p' => F ρ σ p') ν p (h_diff_F ρ σ p)
-            rw [h_inner_im] at hi1
-            rw [hi1]
-            
-            have hi2 := partialDeriv_im (fun p => partialDeriv μ (fun p' => F ρ σ p') p) ν x (h_diff μ ρ σ x)
-            have h_inner_im2 : (fun p => (partialDeriv μ (fun p' => F ρ σ p') p).im) = fun p => partialDeriv μ (fun p' => (F ρ σ p').im) p := by
-              ext p
-              exact partialDeriv_im (fun p' => F ρ σ p') μ p (h_diff_F ρ σ p)
-            rw [h_inner_im2] at hi2
-            rw [hi2]
-            
-            exact partialDeriv_comm_real (fun p => (F ρ σ p).im) (h_smooth_im ρ σ) μ ν x (h_diff_fderiv_im ρ σ x)
-
-        rw [h_eps, h_comm]
-      _ = ∑ ρ : Fin 4, ∑ σ : Fin 4, - (epsilon4 ν μ ρ σ * partialDeriv ν (fun p => partialDeriv μ (fun p' => F ρ σ p') p) x) := by
-        apply Finset.sum_congr rfl
-        intro ρ _
-        apply Finset.sum_congr rfl
-        intro σ _
-        ring
-      _ = ∑ ρ : Fin 4, - ∑ σ : Fin 4, epsilon4 ν μ ρ σ * partialDeriv ν (fun p => partialDeriv μ (fun p' => F ρ σ p') p) x := by
-        apply Finset.sum_congr rfl
-        intro ρ _
-        exact sum_neg_extract _ (fun σ => epsilon4 ν μ ρ σ * partialDeriv ν (fun p => partialDeriv μ (fun p' => F ρ σ p') p) x)
-      _ = - ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 ν μ ρ σ * partialDeriv ν (fun p => partialDeriv μ (fun p' => F ρ σ p') p) x
+    ∑ μ : Fin 4, partialDeriv μ (fun p => emergentElectricCurrent F μ p) x = 0
 
 
 -- MODULE: CGD.Foundations.ChiralDecomposition
@@ -465,22 +273,7 @@ The topological Pontryagin action strictly preserves the chiral split. Because t
 theorem algebraicChiralDecomposition (u : Universe) (x : SpacetimePoint) :
   lagrangianDensity (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) =
   actionVacuum (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) +
-  actionAntiSelfDual (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) := by
-  unfold lagrangianDensity actionVacuum actionAntiSelfDual
-  have h_proj_L : ∀ mu nu,
-    (chiralProject (curvature (fun m p => u.spin4c_connection m p) mu nu x)).self_dual = curvatureSl2c u.sd_sector mu nu x := by
-    intro mu nu
-    rw [curvature_embed_eq u mu nu x]
-    exact chiralProject_embed_sd _ _
-  have h_proj_R : ∀ mu nu,
-    (chiralProject (curvature (fun m p => u.spin4c_connection m p) mu nu x)).anti_self_dual = curvatureSl2c u.asd_sector mu nu x := by
-    intro mu nu
-    rw [curvature_embed_eq u mu nu x]
-    exact chiralProject_embed_asd _ _
-  have h_trace : ∀ mu nu rho sigma,
-    Matrix.trace (curvature (fun m p => u.spin4c_connection m p) mu nu x * curvature (fun m p => u.spin4c_connection m p) rho sigma x) =
-    Matrix.trace ((curvatureSl2c u.sd_sector mu nu x).val * (curvatureSl2c u.sd_sector rho sigma x).val) +
-    Matrix.trace ((curvatureSl2c u.asd_sector mu nu x).val * (curvatureSl2c u.asd_sector rho sigma x).val)
+  actionAntiSelfDual (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x)
 
 
 -- MODULE: CGD.Foundations.GaugeGroup
@@ -596,31 +389,7 @@ The trace of the square of the curvature tensor is invariant under gauge transfo
 theorem gauge_transform_curvature_trace (A B : Fin 4 → SpacetimePoint → SL2C) :
   isGaugeTransform A B →
   ∀ x mu nu, Matrix.trace ((curvatureSl2c A mu nu x).val * (curvatureSl2c A mu nu x).val) =
-             Matrix.trace ((curvatureSl2c B mu nu x).val * (curvatureSl2c B mu nu x).val) := by
-  intro h x mu nu
-  rcases h with ⟨hA_smooth, U, U_inv, hU_smooth, hUinv_smooth, h_inv1, h_inv2, h_B⟩
-  have hcov := gauge_curvature_covariance A B hA_smooth U U_inv hU_smooth hUinv_smooth h_inv1 h_inv2 h_B x mu nu
-  
-  let A_x := (curvatureSl2c A mu nu x).val
-  let B_x := (curvatureSl2c B mu nu x).val
-  let U_x := U x
-  let Uinv_x := U_inv x
-  
-  have h_B_eq : B_x = U_x * A_x * Uinv_x := hcov
-  
-  have h_B_B : B_x * B_x = U_x * (A_x * A_x) * Uinv_x := by
-    calc B_x * B_x = (U_x * A_x * Uinv_x) * (U_x * A_x * Uinv_x) := by rw [h_B_eq]
-      _ = U_x * A_x * (Uinv_x * U_x) * A_x * Uinv_x := by simp only [Matrix.mul_assoc]
-      _ = U_x * A_x * 1 * A_x * Uinv_x := by rw [h_inv2 x]
-      _ = U_x * (A_x * A_x) * Uinv_x := by simp only [Matrix.mul_one, Matrix.mul_assoc]
-      
-  symm
-  calc Matrix.trace (B_x * B_x) = Matrix.trace (U_x * (A_x * A_x) * Uinv_x) := by rw [h_B_B]
-    _ = Matrix.trace (U_x * ((A_x * A_x) * Uinv_x)) := by rw [Matrix.mul_assoc]
-    _ = Matrix.trace (((A_x * A_x) * Uinv_x) * U_x) := by rw [Matrix.trace_mul_comm]
-    _ = Matrix.trace ((A_x * A_x) * (Uinv_x * U_x)) := by rw [Matrix.mul_assoc]
-    _ = Matrix.trace ((A_x * A_x) * 1) := by rw [h_inv2 x]
-    _ = Matrix.trace (A_x * A_x)
+             Matrix.trace ((curvatureSl2c B mu nu x).val * (curvatureSl2c B mu nu x).val)
 
 
 -- MODULE: CGD.Foundations.Topology
@@ -665,29 +434,7 @@ theorem macroscopicRicciFlatEmergence
     (dSigma := fun (x : bulkVacuum) => cgd_dSigma urbantke_tetrad x.val)
     (omega := fun (x : bulkVacuum) => cgd_omega u x.val)
     (isRicciFlat := fun (g : bulkVacuum → Fin 4 → Fin 4 → ℂ) => ∀ (x : bulkVacuum) μ ν, CGD.Gravity.ricciTensor (extendMetric bulkVacuum g) μ ν x.val = 0)] :
-  ∀ x ∈ bulkVacuum, ∀ μ ν, ricciTensor (fun m n p => urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p) m n) μ ν x = 0 := by
-  intro x hx μ ν
-  let x_sub : bulkVacuum := ⟨x, hx⟩
-  have h_r := th_ricci.eq2_2c_implies_ricci_flat ?h_Sigma_def ?h_DSigma_eq_zero ?h_eq2_2c x_sub μ ν
-  
-  let g_local : bulkVacuum → Fin 4 → Fin 4 → ℂ := fun y m n => metricFromTetrad urbantke_tetrad m n y.val
-  
-  have h_match : ∀ y : bulkVacuum, ∀ m n, metricFromTetrad urbantke_tetrad m n y.val = g_local y m n := by
-    intro y m n; rfl
-
-  have h_ext_eq : ∀ y : bulkVacuum, ∀ m n, extendMetric bulkVacuum g_local m n y.val = g_local y m n :=
-    extendMetric_spec bulkVacuum g_local (metricFromTetrad urbantke_tetrad) h_match
-
-  have h_metrics_match_on_U : ∀ p ∈ bulkVacuum, ∀ m n, metricFromTetrad urbantke_tetrad m n p = extendMetric bulkVacuum g_local m n p := by
-    intro p hp m n
-    let y : bulkVacuum := ⟨p, hp⟩
-    calc metricFromTetrad urbantke_tetrad m n p = g_local y m n := rfl
-      _ = extendMetric bulkVacuum g_local m n p := (h_ext_eq y m n).symm
-
-  have h_ricci_match := ricci_locality_open (metricFromTetrad urbantke_tetrad) (extendMetric bulkVacuum g_local) bulkVacuum hOpen h_metrics_match_on_U x hx μ ν
-
-  have h_metric_eq : (fun m n p => metricFromTetrad urbantke_tetrad m n p) = 
-                     (fun m n p => urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p) m n)
+  ∀ x ∈ bulkVacuum, ∀ μ ν, ricciTensor (fun m n p => urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p) m n) μ ν x = 0
 
 /--
 By treating the bulk vacuum as its own topological subspace, we map the global Unimodular CDJ theorem to the exterior region. This proves that the constant macroscopic volume form emerges strictly independently of the defect core.
@@ -704,21 +451,7 @@ theorem macroscopicVacuumEmergence
   (h_vacuum : isVacuumRegion bulkVacuum u Λ) :
   ∃ (c : ℂ), c ≠ 0 ∧ ∀ x y : bulkVacuum, 
     (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x.val)).det = (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n y.val)).det ∧
-    (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x.val)).det = c := by
-  let c := k * (Λ ^ 3)
-  use c
-  have h_c_neq_zero : c ≠ 0 := by
-    apply mul_ne_zero hk
-    exact pow_ne_zero 3 h_Λ_neq_zero
-  constructor
-  · exact h_c_neq_zero
-  · intro x y
-    have h_det_eval : ∀ z : bulkVacuum, (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n z.val)).det = c := by
-      intro z
-      have hz := h_urbantke_det z.val
-      have h_vac_z := h_vacuum z.val z.property
-      rw [h_vac_z] at hz
-      have h_det_smul : (Λ • (1 : Matrix (Fin 3) (Fin 3) ℂ)).det = Λ ^ 3
+    (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x.val)).det = c
 
 
 -- MODULE: CGD.Gravity.ExactSolutions.Abelian
@@ -731,116 +464,7 @@ theorem dynamicExactAbelianSolution (c : ℂ) (hc : c ≠ 0) :
   ∃ (u : Universe), 
     CGD.Gravity.satisfiesPureCdjConstraint (fun p m n => cgdAdjointCurvature u m n p) ∧ 
     (∀ x, curvatureSl2c u.sd_sector 1 2 x = c • toSl2c sigmaX) ∧
-    (∃ x, curvatureSl2c u.sd_sector 1 2 x ≠ 0) := by
-  have h_smooth_AL : ∀ mu i j, ContDiff ℝ ⊤ (fun x : SpacetimePoint => (exactAbelianField c mu x).val i j) := by
-    intro mu i j
-    dsimp [exactAbelianField]
-    split_ifs with h_mu
-    · have h_val : (fun x => (toSl2c (exactAbelianL c x)).val i j) = fun x => x 1 • (c • sigmaX) i j := by
-        ext x; rw [toSl2c_exactAbelianL c x]; rfl
-      rw [h_val]
-      let L : SpacetimePoint →L[ℝ] ℂ := ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 1) ((c • sigmaX) i j)
-      have h_eq : (fun x : SpacetimePoint => x 1 • (c • sigmaX) i j) = L := rfl
-      rw [h_eq]
-      exact ContinuousLinearMap.contDiff L
-    · exact contDiff_const
-
-  let A_L : Sl2cGaugeField := ⟨exactAbelianField c, h_smooth_AL⟩
-  let A_R : Sl2cGaugeField := ⟨fun _ _ => 0, fun _ _ _ => contDiff_const⟩
-  let u : Universe := universeEquiv.symm (A_L, A_R)
-
-  have h_sd_val : u.sd_sector.val = A_L.val := by
-    have h_u_eq : universeEquiv u = (A_L, A_R) := Equiv.right_inv universeEquiv (A_L, A_R)
-    exact congrArg Sl2cGaugeField.val (congrArg Prod.fst h_u_eq)
-
-  use u
-  constructor
-  · unfold satisfiesPureCdjConstraint cgdAdjointCurvature
-    intro x
-    have h_Sigma_zero : (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
-      epsilon4 μ ν ρ σ • (extractAdjoint (curvatureSl2c u.sd_sector μ ν x).val * extractAdjoint (curvatureSl2c u.sd_sector ρ σ x).val)) = 0 := by
-      have h_term_zero : ∀ μ ν ρ σ, epsilon4 μ ν ρ σ • (extractAdjoint (curvatureSl2c u.sd_sector μ ν x).val * extractAdjoint (curvatureSl2c u.sd_sector ρ σ x).val) = 0 := by
-        intro μ ν ρ σ
-        have h_curv_mu : curvatureSl2c u.sd_sector μ ν x = curvature_const c μ ν := by
-          have h_sd_curv : curvatureSl2c u.sd_sector μ ν x = curvatureSl2c A_L μ ν x := by
-            have h_sec : u.sd_sector = A_L := by
-              have h_u_eq : universeEquiv u = (A_L, A_R) := Equiv.right_inv universeEquiv (A_L, A_R)
-              exact congrArg Prod.fst h_u_eq
-            rw [h_sec]
-          rw [h_sd_curv]
-          exact curvature_exactAbelian c μ ν x
-        have h_curv_rho : curvatureSl2c u.sd_sector ρ σ x = curvature_const c ρ σ := by
-          have h_sd_curv : curvatureSl2c u.sd_sector ρ σ x = curvatureSl2c A_L ρ σ x := by
-            have h_sec : u.sd_sector = A_L := by
-              have h_u_eq : universeEquiv u = (A_L, A_R) := Equiv.right_inv universeEquiv (A_L, A_R)
-              exact congrArg Prod.fst h_u_eq
-            rw [h_sec]
-          rw [h_sd_curv]
-          exact curvature_exactAbelian c ρ σ x
-        rw [h_curv_mu, h_curv_rho]
-        
-        have h_supp1 := curvature_const_supp c μ ν
-        have h_supp2 := curvature_const_supp c ρ σ
-        rcases h_supp1 with h1 | h1
-        · rw [h1, sl2c_zero_val, extractAdjoint_zero, Matrix.zero_mul, smul_zero]
-        · rcases h_supp2 with h2 | h2
-          · rw [h2, sl2c_zero_val, extractAdjoint_zero, Matrix.mul_zero, smul_zero]
-          · have h_eps : epsilon4 μ ν ρ σ = 0 := by
-              rcases h1 with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
-              · rcases h2 with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
-                · exact epsilon4_1212
-                · exact epsilon4_1221
-              · rcases h2 with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
-                · exact epsilon4_2112
-                · exact epsilon4_2121
-            rw [h_eps, zero_smul]
-
-      apply Finset.sum_eq_zero; intro μ _
-      apply Finset.sum_eq_zero; intro ν _
-      apply Finset.sum_eq_zero; intro ρ _
-      apply Finset.sum_eq_zero; intro σ _
-      exact h_term_zero μ ν ρ σ
-
-    rw [h_Sigma_zero]
-    dsimp only
-    simp
-
-  constructor
-  · intro x
-    have h_sd_curv : curvatureSl2c u.sd_sector 1 2 x = curvatureSl2c A_L 1 2 x := by
-      have h_sec : u.sd_sector = A_L := by
-        have h_u_eq : universeEquiv u = (A_L, A_R) := Equiv.right_inv universeEquiv (A_L, A_R)
-        exact congrArg Prod.fst h_u_eq
-      rw [h_sec]
-    rw [h_sd_curv, curvature_exactAbelian c 1 2 x]
-    unfold curvature_const
-    have h_1_eq : (1 : Fin 4) = 1 := rfl
-    have h_2_eq : (2 : Fin 4) = 2 := rfl
-    simp
-    exact toSl2c_c_sigmaX_smul c
-
-  · use (fun _ => 0)
-    intro h_zero
-    have h_zero_val : (curvatureSl2c u.sd_sector 1 2 (fun _ => 0)).val = (0 : SL2C).val := congrArg Subtype.val h_zero
-    have h_sd_curv : curvatureSl2c u.sd_sector 1 2 (fun _ => 0) = curvatureSl2c A_L 1 2 (fun _ => 0) := by
-      have h_sec : u.sd_sector = A_L := by
-        have h_u_eq : universeEquiv u = (A_L, A_R) := Equiv.right_inv universeEquiv (A_L, A_R)
-        exact congrArg Prod.fst h_u_eq
-      rw [h_sec]
-    have h_curv_val : curvatureSl2c u.sd_sector 1 2 (fun _ => 0) = toSl2c (c • sigmaX) := by
-      rw [h_sd_curv, curvature_exactAbelian c 1 2 (fun _ => 0)]
-      unfold curvature_const
-      have h_1_eq : (1 : Fin 4) = 1 := rfl
-      have h_2_eq : (2 : Fin 4) = 2 := rfl
-      simp
-    rw [h_curv_val] at h_zero_val
-    have h_zero_val_2 : (0 : SL2C).val = 0 := rfl
-    rw [h_zero_val_2] at h_zero_val
-    have h_tr : Matrix.trace (c • sigmaX) = 0 := by
-      unfold Matrix.trace Matrix.diag sigmaX mkMat
-      simp [Fin.sum_univ_two]
-    rw [toSl2c_val_eq _ h_tr] at h_zero_val
-    have h_elem : (c • sigmaX) 0 1 = 0
+    (∃ x, curvatureSl2c u.sd_sector 1 2 x ≠ 0)
 
 
 -- MODULE: CGD.Gravity.ExactSolutions.MainTheorem
@@ -862,34 +486,7 @@ theorem dynamicExactLorentzianSolution :
       epsilon4 μ ν ρ σ • (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)) = 
     ((∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
       epsilon4 μ ν ρ σ • (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)).trace / 3) • 1 ∧
-    isLorentzian (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x)) := by
-  
-  let A_L : Sl2cGaugeField := ⟨exactLorentzianField, exactLorentzian_smooth⟩
-  let A_R : Sl2cGaugeField := ⟨fun _ _ => 0, fun _ _ _ => contDiff_const⟩
-  let u : Universe := universeEquiv.symm (A_L, A_R)
-
-  have h_sd_val : u.sd_sector.val = A_L.val := by
-    have h_u_eq : universeEquiv u = (A_L, A_R) := Equiv.right_inv universeEquiv (A_L, A_R)
-    exact congrArg Sl2cGaugeField.val (congrArg Prod.fst h_u_eq)
-
-  use u, origin
-
-  have h_cgd_adj : ∀ m n, cgdAdjointCurvature u m n origin = adj_F m n := by
-    intro m n
-    exact cgdAdjointCurvature_eval u m n h_sd_val
-
-  have h_curv : ∀ m n, curvatureSl2c u.sd_sector m n origin = urb_F_origin m n := by
-    intro m n
-    have h_sd_full : u.sd_sector = ⟨exactLorentzianField, exactLorentzian_smooth⟩ := by
-      apply Sl2cGaugeField.ext
-      exact h_sd_val
-    rw [h_sd_full, curvature_origin_eq m n]
-    unfold urb_F_origin
-    rw [c_F_mat_eval m n]
-
-  constructor
-  · simp only [h_cgd_adj]; exact CDJ_constraint_holds
-  · have h_metric_eq : (fun m n => curvatureSl2c u.sd_sector m n origin) = urb_F_origin
+    isLorentzian (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x))
 
 
 -- MODULE: CGD.Gravity.GeodesicMotion
@@ -1089,37 +686,7 @@ theorem emergentStressEnergyConservation (u : Universe) (bulk : Set SpacetimePoi
       partialDeriv alpha (fun p => if _h : p ∈ bulk then T mu nu p else 0) x.val -
       ∑ lambda : Fin 4, (CGD.Gravity.christoffel g_urb lambda alpha mu x.val * T lambda nu x.val + 
                          CGD.Gravity.christoffel g_urb lambda alpha nu x.val * T mu lambda x.val)
-    ) = 0 := by
-  intro nu x
-  let g := fun i j (p : bulk) => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p.val) i j
-  let g_inv := fun i j (p : bulk) => CGD.Gravity.matrixInv4x4 (fun m n => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p.val) m n) i j
-  
-  -- Rigorously derive invertibility of the metric via macroscopic volume axiom
-  have h_inv_prop : ∀ p : bulk, ∀ i j, (∑ k : Fin 4, g i k p * g_inv k j p) = if i = j then 1 else 0 := by
-    intro p i j
-    let M : Matrix (Fin 4) (Fin 4) ℂ := Matrix.of (fun m n => g m n p)
-    have h_det : M.det ≠ 0 := _vol.volume_exists p.val p.property
-    have h_adj := Matrix.mul_adjugate M
-    
-    have step1 : (∑ k : Fin 4, g i k p * g_inv k j p) = ∑ k : Fin 4, M i k * ((1 / M.det) * M.adjugate k j) := rfl
-    have step2 : ∑ k : Fin 4, M i k * ((1 / M.det) * M.adjugate k j) = (1 / M.det) * (M * M.adjugate) i j := by
-      calc ∑ k : Fin 4, M i k * ((1 / M.det) * M.adjugate k j)
-        _ = ∑ k : Fin 4, (1 / M.det) * (M i k * M.adjugate k j) := by apply Finset.sum_congr rfl; intro k _; ring
-        _ = (1 / M.det) * ∑ k : Fin 4, M i k * M.adjugate k j := by rw [← Finset.mul_sum]
-        _ = (1 / M.det) * (M * M.adjugate) i j := rfl
-    have step3 : (1 / M.det) * (M * M.adjugate) i j = (1 / M.det) * (M.det • (1 : Matrix (Fin 4) (Fin 4) ℂ)) i j := by rw [h_adj]
-    have step4 : (1 / M.det) * (M.det • (1 : Matrix (Fin 4) (Fin 4) ℂ)) i j = ((1 / M.det) * M.det) * (1 : Matrix (Fin 4) (Fin 4) ℂ) i j := by
-      have h_eval : (M.det • (1 : Matrix (Fin 4) (Fin 4) ℂ)) i j = M.det * (1 : Matrix (Fin 4) (Fin 4) ℂ) i j := rfl
-      rw [h_eval]
-      ring
-    have step5 : ((1 / M.det) * M.det) * (1 : Matrix (Fin 4) (Fin 4) ℂ) i j = 1 * (1 : Matrix (Fin 4) (Fin 4) ℂ) i j := by
-      have h_cancel : (1 / M.det) * M.det = 1 := by
-        calc (1 / M.det) * M.det = M.det / M.det := by ring
-        _ = 1 := div_self h_det
-      rw [h_cancel]
-    have step6 : 1 * (1 : Matrix (Fin 4) (Fin 4) ℂ) i j = if i = j then 1 else 0 := by
-      calc 1 * (1 : Matrix (Fin 4) (Fin 4) ℂ) i j 
-        _ = (1 : Matrix (Fin 4) (Fin 4) ℂ) i j
+    ) = 0
 
 
 -- MODULE: CGD.Gravity.Urbantke.Basic
@@ -1152,53 +719,7 @@ theorem kinematicStringConfinement :
   ∀ (E B : Matrix (Fin 3) (Fin 3) ℂ) (E_z : ℂ),
     isCrushedString E E_z →
     ∃ (v : Fin 3 → ℂ), (∑ i : Fin 3, v i * v i = 1) ∧
-      densitizedHamiltonian E B = (1 / 2 : ℂ) * E_z^2 + (1 / 2 : ℂ) * ∑ a : Fin 3, ∑ b : Fin 3, B a b * B a b := by
-  intro E B E_z h_crushed
-  rcases h_crushed with ⟨v, h_E, h_v2⟩
-  use v
-  have h_sum_v : (∑ i : Fin 3, v i * v i) = 1 := by
-    -- Expand the sum manually for Fin 3
-    calc (∑ i : Fin 3, v i * v i) 
-      _ = v 0 * v 0 + v 1 * v 1 + v 2 * v 2 := by
-        simp only [Fin.sum_univ_three]
-      _ = 1 := h_v2
-  constructor
-  · exact h_sum_v
-  · unfold densitizedHamiltonian
-    have h_sum_split : (∑ a : Fin 3, ∑ b : Fin 3, (E a b * E a b + B a b * B a b)) = 
-                       (∑ a : Fin 3, ∑ b : Fin 3, E a b * E a b) + (∑ a : Fin 3, ∑ b : Fin 3, B a b * B a b) := by
-      simp only [Finset.sum_add_distrib]
-    rw [h_sum_split]
-    have h_E_sum : (∑ a : Fin 3, ∑ b : Fin 3, E a b * E a b) = E_z^2 := by
-      calc (∑ a : Fin 3, ∑ b : Fin 3, E a b * E a b)
-        _ = ∑ a : Fin 3, ∑ b : Fin 3, (E_z * v a * v b) * (E_z * v a * v b) := by
-          apply Finset.sum_congr rfl
-          intro a _
-          apply Finset.sum_congr rfl
-          intro b _
-          rw [h_E a b]
-        _ = ∑ a : Fin 3, ∑ b : Fin 3, E_z^2 * ((v a * v a) * (v b * v b)) := by
-          apply Finset.sum_congr rfl
-          intro a _
-          apply Finset.sum_congr rfl
-          intro b _
-          ring
-        _ = ∑ a : Fin 3, E_z^2 * (∑ b : Fin 3, (v a * v a) * (v b * v b)) := by
-          apply Finset.sum_congr rfl
-          intro a _
-          rw [← Finset.mul_sum]
-        _ = E_z^2 * (∑ a : Fin 3, ∑ b : Fin 3, (v a * v a) * (v b * v b)) := by
-          rw [← Finset.mul_sum]
-        _ = E_z^2 * ((∑ a : Fin 3, v a * v a) * (∑ b : Fin 3, v b * v b)) := by
-          have h_factor : (∑ a : Fin 3, ∑ b : Fin 3, (v a * v a) * (v b * v b)) = (∑ a : Fin 3, v a * v a) * (∑ b : Fin 3, v b * v b) := by
-            rw [Finset.sum_mul]
-            apply Finset.sum_congr rfl
-            intro a _
-            rw [Finset.mul_sum]
-          rw [h_factor]
-        _ = E_z^2 * (1 * 1) := by
-          rw [h_sum_v]
-        _ = E_z^2
+      densitizedHamiltonian E B = (1 / 2 : ℂ) * E_z^2 + (1 / 2 : ℂ) * ∑ a : Fin 3, ∑ b : Fin 3, B a b * B a b
 
 
 -- MODULE: CGD.Particles.Definitions
@@ -1265,19 +786,7 @@ theorem kinematicTopologicalStability
   [tc : CartanMaurerTopology (S3 → SU2Group) Continuous windingNumber cartanMaurerIntegral] 
   [belavin : Eq8 S3 SU2Group Continuous windingNumber cartanMaurerIntegral]
   (integral_zero : cartanMaurerIntegral 1 = 0) :
-  ¬ isHomotopicConnection bpstInstanton 0 := by
-  intro h_homotopy
-  rcases h_homotopy with ⟨H, hH0, hH1, hHCont, hHBoundCont⟩
-  
-  have h_wind_eq := tc.homotopyInvariance (fun t => geometricBoundaryProjection (H t)) hHBoundCont 0 1
-  
-  have h0_eq : H 0 = bpstInstanton := by funext mu x; exact hH0 mu x
-  have h1_eq : H 1 = 0 := by funext mu x; exact hH1 mu x
-  
-  have h_wind_0 : windingNumber (geometricBoundaryProjection (H 0)) = windingNumber bpstAsymptoticMap := by
-    rw [h0_eq, geometricBoundaryProjection_bpstInstanton]
-    
-  have h_wind_1 : windingNumber (geometricBoundaryProjection (H 1)) = 0
+  ¬ isHomotopicConnection bpstInstanton 0
 
 
 -- MODULE: CGD.Quantum.ActionQuantization
@@ -1297,27 +806,7 @@ theorem kinematicActionQuantization
   (u : Universe)
   (h_homeo : IsHomeomorphism (boundaryMap u.sd_sector.val)) :
   cartanMaurerIntegral (boundaryMap u.sd_sector.val) = 1 ∨ 
-  cartanMaurerIntegral (boundaryMap u.sd_sector.val) = -1 := by
-  
-  -- Step 1: Belavin 1975 gives us that the winding number of a homeomorphism is ±1.
-  have h_deg := belavin.degree_of_homeomorph (boundaryMap u.sd_sector.val) h_homeo
-  
-  -- Step 2: Extract the continuity property from the homeomorphism structure.
-  have h_cont : Continuous (boundaryMap u.sd_sector.val) := h_homeo.cont
-  
-  -- Step 3: Nakahara 2003 degree theorem equates the integral to the winding number.
-  have h_thm := tc.degreeTheorem (boundaryMap u.sd_sector.val) h_cont
-  
-  -- Step 4: Destructure the Belavin bound and apply the Nakahara equality to prove the goal.
-  cases h_deg with
-  | inl h_pos => 
-    left
-    have h_eval : (windingNumber (boundaryMap u.sd_sector.val) : ℝ) = 1 := by exact_mod_cast h_pos
-    rw [←h_thm] at h_eval
-    exact h_eval
-  | inr h_neg => 
-    right
-    have h_eval : (windingNumber (boundaryMap u.sd_sector.val) : ℝ) = -1
+  cartanMaurerIntegral (boundaryMap u.sd_sector.val) = -1
 
 
 -- MODULE: CGD.Quantum.Definitions
@@ -1378,9 +867,7 @@ theorem familiarDynamicDiracEquation
   (u : Universe) (e : TetradField) (x : SpacetimePoint) (nu : Fin 4)
   (h_stationary : ∀ mu, partialDerivChiral nu (fun p => u.spin4c_connection mu p) x = 0) :
   emergentDiracOperator u e x nu = 
-  ∑ mu, ∑ a, (e a mu x) • (gammaVec a * curvature (fun m p => u.spin4c_connection m p) mu nu x) := by
-  rw [generalizedDynamicDiracEquation]
-  have h_zero : (∑ mu : Fin 4, ∑ a : Fin 4, (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => u.spin4c_connection mu p) x)) = 0
+  ∑ mu, ∑ a, (e a mu x) • (gammaVec a * curvature (fun m p => u.spin4c_connection m p) mu nu x)
 
 /--
 The CAPSTONE Dirac equivalence.
@@ -1392,37 +879,7 @@ theorem generalizedDynamicDiracEquation
   (u : Universe) (e : TetradField) (x : SpacetimePoint) (nu : Fin 4) :
   emergentDiracOperator u e x nu = 
   ∑ mu, ∑ a, (e a mu x) • (gammaVec a * curvature (fun m p => u.spin4c_connection m p) mu nu x) + 
-  ∑ mu, ∑ a, (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => u.spin4c_connection mu p) x) := by
-  unfold emergentDiracOperator
-  have h_sub : ∀ mu a, (e a mu x) • (gammaVec a * covariantSpinorDeriv u x mu nu) = 
-                       (e a mu x) • (gammaVec a * curvature (fun m p => u.spin4c_connection m p) mu nu x) + 
-                       (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => u.spin4c_connection mu p) x) := by
-    intro mu a
-    rw [covariantSpinorDeriv_eq_curvature_plus_deriv]
-    rw [Matrix.mul_add, smul_add]
-    
-  have h_congr : (∑ mu : Fin 4, ∑ a : Fin 4, (e a mu x) • (gammaVec a * covariantSpinorDeriv u x mu nu)) = 
-                 ∑ mu : Fin 4, ∑ a : Fin 4, ((e a mu x) • (gammaVec a * curvature (fun m p => u.spin4c_connection m p) mu nu x) + 
-                                             (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => u.spin4c_connection mu p) x)) := by
-    apply Finset.sum_congr rfl
-    intro mu _
-    apply Finset.sum_congr rfl
-    intro a _
-    exact h_sub mu a
-    
-  rw [h_congr]
-  
-  have h_inner : ∀ mu, (∑ a : Fin 4, ((e a mu x) • (gammaVec a * curvature (fun m p => u.spin4c_connection m p) mu nu x) + 
-                                      (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => u.spin4c_connection mu p) x))) =
-                       (∑ a : Fin 4, (e a mu x) • (gammaVec a * curvature (fun m p => u.spin4c_connection m p) mu nu x)) + 
-                       (∑ a : Fin 4, (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => u.spin4c_connection mu p) x)) := by
-    intro mu
-    exact Finset.sum_add_distrib
-    
-  have h_outer : (∑ mu : Fin 4, ∑ a : Fin 4, ((e a mu x) • (gammaVec a * curvature (fun m p => u.spin4c_connection m p) mu nu x) + 
-                                              (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => u.spin4c_connection mu p) x))) =
-                 ∑ mu : Fin 4, ((∑ a : Fin 4, (e a mu x) • (gammaVec a * curvature (fun m p => u.spin4c_connection m p) mu nu x)) + 
-                                (∑ a : Fin 4, (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => u.spin4c_connection mu p) x)))
+  ∑ mu, ∑ a, (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => u.spin4c_connection mu p) x)
 
 /--
 The covariant Dirac operator mathematically preserves the strict odd/even grading of the spinor algebra for any orientation vector.
@@ -1466,54 +923,7 @@ theorem kinematicEntanglementWormhole (u : Universe) :
   ∀ (x y : SpacetimePoint) (theta : ℝ),
     areEntangled u.sd_sector x y theta →
     (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x)).det = 0 ∧
-    (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n y)).det = 0 := by
-  intros x y theta h_entangled
-  unfold areEntangled at h_entangled
-  rcases h_entangled with ⟨γ, θ, h_γ_0, h_γ_1, h_θ_0, h_θ_1, h_path⟩
-
-  have h_x_val : ∀ mu, u.sd_sector mu x = rotateYAxis fluxTubeFrame (θ 0) mu x := by
-    intro mu
-    have h_t := (h_path 0) (by linarith) (by linarith)
-    have h_eval := h_t.1 mu
-    rw [h_γ_0] at h_eval
-    exact h_eval
-
-  have h_x_deriv : ∀ mu nu, partialDerivSl2c nu (u.sd_sector mu) x = partialDerivSl2c nu (rotateYAxis fluxTubeFrame (θ 0) mu) x := by
-    intro mu nu
-    have h_t := (h_path 0) (by linarith) (by linarith)
-    have h_eval := h_t.2 mu nu
-    rw [h_γ_0] at h_eval
-    exact h_eval
-
-  have h_curv_x : ∀ mu nu, curvatureSl2c u.sd_sector mu nu x = curvatureSl2c (rotateYAxis fluxTubeFrame (θ 0)) mu nu x :=
-    entang_curvature_congruence u.sd_sector (rotateYAxis fluxTubeFrame (θ 0)) x h_x_val h_x_deriv
-
-  have h_F_x : (fun m n => curvatureSl2c u.sd_sector m n x) = (fun m n => curvatureSl2c (rotateYAxis fluxTubeFrame (θ 0)) m n x) := by funext m n; exact h_curv_x m n
-  have h_det_x : (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x)).det = 0 := by
-    rw [h_F_x]
-    apply Matrix.det_eq_zero_of_row_eq_zero 0
-    intro j
-    exact rotateYAxis_metric_electric_zero_at (θ 0) j x
-
-  have h_y_val : ∀ mu, u.sd_sector mu y = rotateYAxis fluxTubeFrame (θ 1) mu y := by
-    intro mu
-    have h_t := (h_path 1) (by linarith) (by linarith)
-    have h_eval := h_t.1 mu
-    rw [h_γ_1] at h_eval
-    exact h_eval
-
-  have h_y_deriv : ∀ mu nu, partialDerivSl2c nu (u.sd_sector mu) y = partialDerivSl2c nu (rotateYAxis fluxTubeFrame (θ 1) mu) y := by
-    intro mu nu
-    have h_t := (h_path 1) (by linarith) (by linarith)
-    have h_eval := h_t.2 mu nu
-    rw [h_γ_1] at h_eval
-    exact h_eval
-
-  have h_curv_y : ∀ mu nu, curvatureSl2c u.sd_sector mu nu y = curvatureSl2c (rotateYAxis fluxTubeFrame (θ 1)) mu nu y :=
-    entang_curvature_congruence u.sd_sector (rotateYAxis fluxTubeFrame (θ 1)) y h_y_val h_y_deriv
-
-  have h_F_y : (fun m n => curvatureSl2c u.sd_sector m n y) = (fun m n => curvatureSl2c (rotateYAxis fluxTubeFrame (θ 1)) m n y) := by funext m n; exact h_curv_y m n
-  have h_det_y : (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n y)).det = 0
+    (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n y)).det = 0
 
 
 -- MODULE: CGD.Quantum.FluxTube
@@ -1529,11 +939,7 @@ Demonstrates that the spatial metric describing an isolated 1D flux tube has a s
 theorem kinematicFluxTubeStability (u : Universe) :
   ∀ (x : SpacetimePoint),
     isFluxTube u.sd_sector x →
-    (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x)).det = 0 := by
-  intros x h_flux; unfold isFluxTube at h_flux; rcases h_flux with ⟨h_val, h_deriv⟩
-  have h_curv : ∀ mu nu, curvatureSl2c u.sd_sector mu nu x = curvatureSl2c fluxTubeFrame mu nu x :=
-    fluxTube_curvature_congruence u.sd_sector fluxTubeFrame x h_val h_deriv
-  have h_F : (fun m n => curvatureSl2c u.sd_sector m n x) = (fun m n => curvatureSl2c fluxTubeFrame m n x)
+    (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x)).det = 0
 
 def satisfies1DMinimalEnergyBound (A : Fin 4 → SpacetimePoint → SL2C) (x : SpacetimePoint) : Prop :=
   (∀ nu, curvatureSl2c A 0 nu x = 0) ∧
@@ -1554,36 +960,7 @@ theorem fluxTubeHolonomyEvaluation
   (u : CGD.Axioms.Universe) (alpha L : ℝ)
   (h_field : ∀ t, u.sd_sector 1 (straightLinePath t) = fluxTubeFrame 1 (straightLinePath t)) :
   macroscopicObservable (holonomy matrixExp) (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) alpha mu p) 1 L =
-  (Complex.cos (L:ℂ)) • 1 + (Complex.I * Complex.sin (L:ℂ)) • obs_M alpha := by
-  
-  dsimp [macroscopicObservable, holonomy]
-  
-  have hf : (u.sd_sector 1 (straightLinePath 0)).val = (fluxTubeFrame 1 (straightLinePath 0)).val :=
-    congr_arg Subtype.val (h_field 0)
-  
-  have h_eval : (rotateYAxis (fun m p => u.sd_sector m p) alpha 1 (straightLinePath 0)).val = 
-                Complex.I • obs_M alpha := by
-    dsimp [rotateYAxis]
-    rw [hf]
-    have h_flux := fluxTubeFrame_one_val 0
-    rw [h_flux]
-    
-    have h_assoc : Matrix.of ![![Complex.cos (alpha / 2 : ℂ), -Complex.sin (alpha / 2 : ℂ)], ![Complex.sin (alpha / 2 : ℂ), Complex.cos (alpha / 2 : ℂ)]] *
-                   (Complex.I • sigma3.val) *
-                   Matrix.of ![![Complex.cos (alpha / 2 : ℂ), Complex.sin (alpha / 2 : ℂ)], ![-Complex.sin (alpha / 2 : ℂ), Complex.cos (alpha / 2 : ℂ)]] =
-                   Complex.I • obs_M alpha := by
-      dsimp [obs_M]
-      rw [Matrix.mul_smul, Matrix.smul_mul]
-      
-    rw [h_assoc]
-    exact I_obs_M_toSl2c alpha
-    
-  rw [h_eval]
-  
-  have hz : ((L : ℂ) - (0 : ℂ)) = (L : ℂ) := sub_zero _
-  rw [hz]
-  
-  have h_arg : (L : ℂ) • Complex.I • obs_M alpha = (Complex.I * (L : ℂ)) • obs_M alpha
+  (Complex.cos (L:ℂ)) • 1 + (Complex.I * Complex.sin (L:ℂ)) • obs_M alpha
 
 noncomputable def holonomy (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
   (A : ℝ → Matrix (Fin 2) (Fin 2) ℂ) (t0 t1 : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
@@ -1632,52 +1009,7 @@ the SU(2) group manifold.
 -/
 theorem geometricHolonomyIntegration (θ : ℝ) :
   let U := Matrix.of ![![Complex.cos (θ/2), -Complex.sin (θ/2)], ![Complex.sin (θ/2), Complex.cos (θ/2)]];
-  U * U.conjTranspose = 1 ∧ Matrix.det U = 1 := by
-  intro U
-  have hz : (θ / 2 : ℂ) = ↑(θ / 2 : ℝ) := by push_cast; ring
-  
-  have h_star_cos : star (Complex.cos (θ / 2 : ℂ)) = Complex.cos (θ / 2 : ℂ) := by
-    rw [hz, star_cos_real]
-  have h_star_sin : star (Complex.sin (θ / 2 : ℂ)) = Complex.sin (θ / 2 : ℂ) := by
-    rw [hz, star_sin_real]
-    
-  have h_trig : Complex.sin (θ / 2 : ℂ) ^ 2 + Complex.cos (θ / 2 : ℂ) ^ 2 = 1 := 
-    Complex.sin_sq_add_cos_sq (θ / 2 : ℂ)
-    
-  have h_det : Matrix.det U = 1 := by
-    dsimp [U]
-    rw [Matrix.det_fin_two]
-    change Complex.cos (θ / 2 : ℂ) * Complex.cos (θ / 2 : ℂ) - (-Complex.sin (θ / 2 : ℂ)) * Complex.sin (θ / 2 : ℂ) = 1
-    calc
-      Complex.cos (θ / 2 : ℂ) * Complex.cos (θ / 2 : ℂ) - (-Complex.sin (θ / 2 : ℂ)) * Complex.sin (θ / 2 : ℂ)
-        = Complex.sin (θ / 2 : ℂ) ^ 2 + Complex.cos (θ / 2 : ℂ) ^ 2 := by ring
-      _ = 1 := h_trig
-      
-  have h_unit : U * U.conjTranspose = 1 := by
-    dsimp [U]
-    ext i j
-    fin_cases i <;> fin_cases j
-    · simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, Fin.sum_univ_two, Matrix.one_apply]
-      change Complex.cos (θ / 2 : ℂ) * star (Complex.cos (θ / 2 : ℂ)) + (-Complex.sin (θ / 2 : ℂ)) * star (-Complex.sin (θ / 2 : ℂ)) = 1
-      rw [star_neg, h_star_cos, h_star_sin]
-      calc
-        Complex.cos (θ / 2 : ℂ) * Complex.cos (θ / 2 : ℂ) + -Complex.sin (θ / 2 : ℂ) * -Complex.sin (θ / 2 : ℂ)
-          = Complex.sin (θ / 2 : ℂ) ^ 2 + Complex.cos (θ / 2 : ℂ) ^ 2 := by ring
-        _ = 1 := h_trig
-    · simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, Fin.sum_univ_two, Matrix.zero_apply]
-      change Complex.cos (θ / 2 : ℂ) * star (Complex.sin (θ / 2 : ℂ)) + (-Complex.sin (θ / 2 : ℂ)) * star (Complex.cos (θ / 2 : ℂ)) = 0
-      rw [h_star_cos, h_star_sin]
-      ring
-    · simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, Fin.sum_univ_two, Matrix.zero_apply]
-      change Complex.sin (θ / 2 : ℂ) * star (Complex.cos (θ / 2 : ℂ)) + Complex.cos (θ / 2 : ℂ) * star (-Complex.sin (θ / 2 : ℂ)) = 0
-      rw [star_neg, h_star_cos, h_star_sin]
-      ring
-    · simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, Fin.sum_univ_two, Matrix.one_apply]
-      change Complex.sin (θ / 2 : ℂ) * star (Complex.sin (θ / 2 : ℂ)) + Complex.cos (θ / 2 : ℂ) * star (Complex.cos (θ / 2 : ℂ)) = 1
-      rw [h_star_cos, h_star_sin]
-      calc
-        Complex.sin (θ / 2 : ℂ) * Complex.sin (θ / 2 : ℂ) + Complex.cos (θ / 2 : ℂ) * Complex.cos (θ / 2 : ℂ)
-          = Complex.sin (θ / 2 : ℂ) ^ 2 + Complex.cos (θ / 2 : ℂ) ^ 2
+  U * U.conjTranspose = 1 ∧ Matrix.det U = 1
 
 /--
 Geometric Tsirelson Bound
@@ -1690,32 +1022,7 @@ theorem geometricHolonomyTsirelsonBound
   (A1 A2 B1 B2 : SU2Group) :
   let chsh := geometricBellCorrelation A1 B1 + geometricBellCorrelation A1 B2 + 
               geometricBellCorrelation A2 B1 - geometricBellCorrelation A2 B2;
-  (chsh.re)^2 ≤ 8 ∧ chsh.im = 0 := by
-  intro chsh
-  have hA1_unit : A1.val * A1.val.conjTranspose = 1 := A1.property.1
-  have hA1_det : Matrix.det A1.val = 1 := A1.property.2
-  have hA2_unit : A2.val * A2.val.conjTranspose = 1 := A2.property.1
-  have hA2_det : Matrix.det A2.val = 1 := A2.property.2
-  have hB1_unit : B1.val * B1.val.conjTranspose = 1 := B1.property.1
-  have hB1_det : Matrix.det B1.val = 1 := B1.property.2
-  have hB2_unit : B2.val * B2.val.conjTranspose = 1 := B2.property.1
-  have hB2_det : Matrix.det B2.val = 1 := B2.property.2
-
-  have hA1B1 := su2_trace_reduction A1.val B1.val hA1_unit hA1_det hB1_unit hB1_det
-  have hA1B2 := su2_trace_reduction A1.val B2.val hA1_unit hA1_det hB2_unit hB2_det
-  have hA2B1 := su2_trace_reduction A2.val B1.val hA2_unit hA2_det hB1_unit hB1_det
-  have hA2B2 := su2_trace_reduction A2.val B2.val hA2_unit hA2_det hB2_unit hB2_det
-
-  have h_chsh_real : chsh.im = 0 := by
-    dsimp [chsh, geometricBellCorrelation]
-    rw [hA1B1, hA1B2, hA2B1, hA2B2]
-    simp
-    
-  have h_chsh_re_val : chsh.re = 
-    ((A1.val 0 0).re * (B1.val 0 0).re + (A1.val 0 0).im * (B1.val 0 0).im + (A1.val 1 0).re * (B1.val 1 0).re + (A1.val 1 0).im * (B1.val 1 0).im) +
-    ((A1.val 0 0).re * (B2.val 0 0).re + (A1.val 0 0).im * (B2.val 0 0).im + (A1.val 1 0).re * (B2.val 1 0).re + (A1.val 1 0).im * (B2.val 1 0).im) +
-    ((A2.val 0 0).re * (B1.val 0 0).re + (A2.val 0 0).im * (B1.val 0 0).im + (A2.val 1 0).re * (B1.val 1 0).re + (A2.val 1 0).im * (B1.val 1 0).im) -
-    ((A2.val 0 0).re * (B2.val 0 0).re + (A2.val 0 0).im * (B2.val 0 0).im + (A2.val 1 0).re * (B2.val 1 0).re + (A2.val 1 0).im * (B2.val 1 0).im)
+  (chsh.re)^2 ≤ 8 ∧ chsh.im = 0
 
 
 -- MODULE: CGD.Quantum.Holonomy.RelationalTime
@@ -1788,28 +1095,7 @@ theorem exactSchroedingerReduction (dPsi : Fin 4 → SpacetimePoint → Matrix (
   let D0_mod := modulatedTemporalDeriv (dPsi 0 x) (Psi x) m
   let Psi_small := P_plus * Psi x
   (2 • m • Psi_small = P_plus * D0_mod + gammaVec 1 * (P_minus * dPsi 1 x) + gammaVec 2 * (P_minus * dPsi 2 x) + gammaVec 3 * (P_minus * dPsi 3 x)) ∧
-  (P_minus * D0_mod = gammaVec 1 * (P_plus * dPsi 1 x) + gammaVec 2 * (P_plus * dPsi 2 x) + gammaVec 3 * (P_plus * dPsi 3 x)) := by
-  intro h
-  have h_split := algebraicDiracChiralSplit dPsi Psi m x h
-  rcases h_split with ⟨h_plus, h_minus⟩
-  
-  let dP := fun a => dPsi a x
-  let D_space := spatialDiracOp dP
-  let D0_mod := modulatedTemporalDeriv (dPsi 0 x) (Psi x) m
-  
-  have h_P_plus_D_space : P_plus * gamma0 * D_space = gammaVec 1 * (P_minus * dP 1) + gammaVec 2 * (P_minus * dP 2) + gammaVec 3 * (P_minus * dP 3) := by
-    rw [P_plus_gamma0]
-    exact P_plus_D_space dP
-    
-  have h_P_minus_D_space : P_minus * D_space = gammaVec 1 * (P_plus * dP 1) + gammaVec 2 * (P_plus * dP 2) + gammaVec 3 * (P_plus * dP 3) := by
-    exact P_minus_D_space dP
-    
-  constructor
-  · rw [← h_plus, h_P_plus_D_space]
-    ext a b
-    simp [Matrix.add_apply]
-    try ring
-  · have h_minus_eq : P_minus * D0_mod = P_minus * D_space
+  (P_minus * D0_mod = gammaVec 1 * (P_plus * dPsi 1 x) + gammaVec 2 * (P_plus * dPsi 2 x) + gammaVec 3 * (P_plus * dPsi 3 x))
 
 /-- 
 The core Dirac operator evaluated in the local tangent space frame (using tangent space index 'a' 
@@ -1829,12 +1115,7 @@ In pure connection emergent gravity, spacetime volume is not a fixed background;
 -/
 theorem kinematicVacuumCondensate (u : Universe) (bulk : Set SpacetimePoint)
   [vol : CGD.Axioms.MacroscopicVolume u bulk] (x : SpacetimePoint) (hx : x ∈ bulk) :
-  u.sd_sector.val ≠ (fun _ _ => 0) := by
-  intro h_trivial
-  have h_det := vol.volume_exists x hx
-  apply h_det
-  rw [h_trivial]
-  have h_curv : (fun mu nu => curvatureSl2c (fun _ _ => (0 : SL2C)) mu nu x) = (fun _ _ => (0 : SL2C))
+  u.sd_sector.val ≠ (fun _ _ => 0)
 
 
 -- MODULE: CGD.Quantum.YangMills
@@ -1846,59 +1127,7 @@ theorem kinematicYangMillsChaos :
   ∀ (x : SpacetimePoint),
     Matrix.trace (⁅homogeneousChaosAnsatz 1 x, homogeneousChaosAnsatz 2 x⁆.val *
                   ⁅homogeneousChaosAnsatz 1 x, homogeneousChaosAnsatz 2 x⁆.val) =
-    -8 * (x 1 : ℂ)^2 * (x 2 : ℂ)^2 := by
-  intro x
-  unfold homogeneousChaosAnsatz
-  have h1 : (if (1 : Fin 4) = 1 then (Complex.I * ↑(x 1)) • sigma1 else if (1 : Fin 4) = 2 then (Complex.I * ↑(x 2)) • sigma2 else 0) = (Complex.I * ↑(x 1)) • sigma1 := by exact if_pos rfl
-  have h2 : (if (2 : Fin 4) = 1 then (Complex.I * ↑(x 1)) • sigma1 else if (2 : Fin 4) = 2 then (Complex.I * ↑(x 2)) • sigma2 else 0) = (Complex.I * ↑(x 2)) • sigma2 := by
-    have h_neq : (2 : Fin 4) ≠ 1 := by decide
-    rw [if_neg h_neq, if_pos rfl]
-  rw [h1, h2]
-  have hb : ⁅(Complex.I * ↑(x 1)) • sigma1, (Complex.I * ↑(x 2)) • sigma2⁆.val = 
-            ((Complex.I * ↑(x 1)) * (Complex.I * ↑(x 2))) • (sigma1.val * sigma2.val - sigma2.val * sigma1.val) := by
-    change ((Complex.I * ↑(x 1)) • sigma1.val) * ((Complex.I * ↑(x 2)) • sigma2.val) - ((Complex.I * ↑(x 2)) • sigma2.val) * ((Complex.I * ↑(x 1)) • sigma1.val) = _
-    rw [Matrix.smul_mul, Matrix.mul_smul, smul_smul, Matrix.smul_mul, Matrix.mul_smul, smul_smul]
-    have h_comm_C : (Complex.I * ↑(x 2)) * (Complex.I * ↑(x 1)) = (Complex.I * ↑(x 1)) * (Complex.I * ↑(x 2)) := by ring
-    rw [h_comm_C, ← smul_sub]
-  rw [hb]
-  have h_mat_smul (c : ℂ) (M : Matrix (Fin 2) (Fin 2) ℂ) : (c • M) * (c • M) = (c^2) • (M * M) := by
-    rw [Matrix.smul_mul, Matrix.mul_smul, smul_smul, sq]
-  rw [h_mat_smul]
-  have h_trace_smul (c : ℂ) (M : Matrix (Fin 2) (Fin 2) ℂ) : Matrix.trace (c • M) = c * Matrix.trace M := by
-    unfold Matrix.trace Matrix.diag
-    rw [sum_fin_2_expand]
-    simp only [Fin.sum_univ_two, Matrix.smul_apply, smul_eq_mul]
-    ring
-  rw [h_trace_smul]
-  have hc_sq : ((Complex.I * ↑(x 1)) * (Complex.I * ↑(x 2)))^2 = (↑(x 1))^2 * (↑(x 2))^2 := by
-    calc ((Complex.I * ↑(x 1)) * (Complex.I * ↑(x 2)))^2
-      _ = Complex.I^2 * Complex.I^2 * (x 1)^2 * (x 2)^2 := by ring
-      _ = (-1) * (-1) * (x 1)^2 * (x 2)^2 := by rw [Complex.I_sq]
-      _ = (x 1)^2 * (x 2)^2 := by ring
-  rw [hc_sq]
-  have h_trace_8 : Matrix.trace ((sigma1.val * sigma2.val - sigma2.val * sigma1.val) * (sigma1.val * sigma2.val - sigma2.val * sigma1.val)) = -8 := by
-    rw [val_sigma1, val_sigma2]
-    have eq_comm : sigmaX * sigmaY - sigmaY * sigmaX = (2 * Complex.I) • sigmaZ := by
-      ext i j
-      unfold sigmaX sigmaY sigmaZ mkMat
-      fin_cases i <;> fin_cases j <;> simp [Matrix.sub_apply, Matrix.mul_apply, sum_fin_2_expand, Matrix.smul_apply] <;> ring
-    rw [eq_comm]
-    have eq_sq : ((2 * Complex.I) • sigmaZ) * ((2 * Complex.I) • sigmaZ) = (2 * Complex.I)^2 • (sigmaZ * sigmaZ) := by
-      ext i j; simp [Matrix.mul_apply, sum_fin_2_expand, Matrix.smul_apply]; ring
-    rw [eq_sq]
-    have eq_z_sq : sigmaZ * sigmaZ = 1 := by
-      ext i j
-      unfold sigmaZ mkMat
-      fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, sum_fin_2_expand, Matrix.one_apply] <;> ring
-    rw [eq_z_sq]
-    have eq_tr : Matrix.trace ((2 * Complex.I) ^ 2 • (1 : Matrix (Fin 2) (Fin 2) ℂ)) = (2 * Complex.I)^2 * 2 := by
-      unfold Matrix.trace Matrix.diag
-      simp [sum_fin_2_expand, Matrix.smul_apply, Matrix.one_apply]
-      ring
-    rw [eq_tr]
-    calc (2 * Complex.I) ^ 2 * 2 = 4 * Complex.I ^ 2 * 2 := by ring
-      _ = 4 * (-1) * 2 := by rw [Complex.I_sq]
-      _ = -8
+    -8 * (x 1 : ℂ)^2 * (x 2 : ℂ)^2
 
 
 -- MODULE: Litlib.Math.Dirac
@@ -2180,7 +1409,7 @@ class DerivativeExponential
     (n : Type*) [Fintype n] [DecidableEq n]
     [NormedAddCommGroup (Matrix n n ℂ)] [NormedSpace ℝ (Matrix n n ℂ)]
     (exp : Matrix n n ℂ → Matrix n n ℂ) where
-  hIsExp : ∀ X, Tendsto (fun m : ℕ => ∑ k ∈ Finset.range m, (1 / (Nat.factorial k : ℂ)) • X^k) atTop (𝓝 (exp X))
+  hIsExp : ∀ X, Tendsto (fun m : ℕ => ∑ k ∈ Finset.range m, (1 / (Nat.factorial k : ℂ)) • X^k) atTop (nhds  (exp X))
   smooth_exp : 
     ∀ X : Matrix n n ℂ, ContDiff ℝ ⊤ (fun (t : ℝ) => exp ((t : ℂ) • X))
   deriv_exp : 
