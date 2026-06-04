@@ -8,7 +8,7 @@ import CGD.Foundations.Action
 import Mathlib.Data.Matrix.Basic
 import Mathlib.LinearAlgebra.Matrix.Trace
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import CGD.Axioms.Ontology
+import CGD.Axioms.PhysicalUniverse
 
 open Complex Matrix CGD.Foundations BigOperators
 open CGD.Axioms
@@ -168,27 +168,27 @@ Litlib.theorem
 /--
 The topological Pontryagin action strictly preserves the chiral split. Because the cross terms vanish orthogonally, the 4D spacetime topology cleanly factorizes into a self-dual topological charge and an anti-self-dual topological charge.
 -/
-theorem algebraicChiralDecomposition (u : Universe) (x : SpacetimePoint) :
-  lagrangianDensity (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) =
-  actionVacuum (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) +
-  actionAntiSelfDual (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) := by
+theorem algebraicChiralDecomposition (pu : PhysicalUniverse) (x : SpacetimePoint) :
+  lagrangianDensity (fun mu nu => curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) =
+  actionVacuum (fun mu nu => curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) +
+  actionAntiSelfDual (fun mu nu => curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) := by
   unfold lagrangianDensity actionVacuum actionAntiSelfDual
   have h_proj_L : ∀ mu nu,
-    (chiralProject (curvature (fun m p => u.spin4c_connection m p) mu nu x)).self_dual = curvatureSl2c u.sd_sector mu nu x := by
+    (chiralProject (curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x)).self_dual = curvatureSl2c pu.toUniverse.sd_sector mu nu x := by
     intro mu nu
-    rw [curvature_embed_eq u mu nu x]
+    rw [curvature_embed_eq pu.toUniverse mu nu x]
     exact chiralProject_embed_sd _ _
   have h_proj_R : ∀ mu nu,
-    (chiralProject (curvature (fun m p => u.spin4c_connection m p) mu nu x)).anti_self_dual = curvatureSl2c u.asd_sector mu nu x := by
+    (chiralProject (curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x)).anti_self_dual = curvatureSl2c pu.toUniverse.asd_sector mu nu x := by
     intro mu nu
-    rw [curvature_embed_eq u mu nu x]
+    rw [curvature_embed_eq pu.toUniverse mu nu x]
     exact chiralProject_embed_asd _ _
   have h_trace : ∀ mu nu rho sigma,
-    Matrix.trace (curvature (fun m p => u.spin4c_connection m p) mu nu x * curvature (fun m p => u.spin4c_connection m p) rho sigma x) =
-    Matrix.trace ((curvatureSl2c u.sd_sector mu nu x).val * (curvatureSl2c u.sd_sector rho sigma x).val) +
-    Matrix.trace ((curvatureSl2c u.asd_sector mu nu x).val * (curvatureSl2c u.asd_sector rho sigma x).val) := by
+    Matrix.trace (curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x * curvature (fun m p => pu.toUniverse.spin4c_connection m p) rho sigma x) =
+    Matrix.trace ((curvatureSl2c pu.toUniverse.sd_sector mu nu x).val * (curvatureSl2c pu.toUniverse.sd_sector rho sigma x).val) +
+    Matrix.trace ((curvatureSl2c pu.toUniverse.asd_sector mu nu x).val * (curvatureSl2c pu.toUniverse.asd_sector rho sigma x).val) := by
     intro mu nu rho sigma
-    rw [curvature_embed_eq u mu nu x, curvature_embed_eq u rho sigma x]
+    rw [curvature_embed_eq pu.toUniverse mu nu x, curvature_embed_eq pu.toUniverse rho sigma x]
     exact trace_embed_mul_embed _ _ _ _
   simp only [h_proj_L, h_proj_R, h_trace]
   simp only [mul_add, Finset.sum_add_distrib]

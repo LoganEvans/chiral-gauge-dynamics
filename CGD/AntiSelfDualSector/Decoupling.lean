@@ -6,6 +6,7 @@ import CGD.Foundations.Lagrangian
 import CGD.Foundations.ChiralDecomposition
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import CGD.Axioms.Ontology
+import CGD.Axioms.PhysicalUniverse
 
 
 open CGD.Foundations Matrix BigOperators
@@ -50,26 +51,26 @@ This theorem asserts that the topological vacuum action is completely
 insensitive to the Anti-Self-Dual gauge field connection, securing 
 the chiral asymmetry of the geometry.
 -/
-theorem algebraicAntiSelfDualSectorDecoupling (u : Universe)
+theorem algebraicAntiSelfDualSectorDecoupling (pu : PhysicalUniverse)
   (A_R_alt : Sl2cGaugeField) (x : SpacetimePoint) :
-  actionVacuum (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) =
-  actionVacuum (fun mu nu => curvature (fun m p => embedSelfDual (u.sd_sector m p) + embedAntiSelfDual (A_R_alt m p)) mu nu x) := by
+  actionVacuum (fun mu nu => curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) =
+  actionVacuum (fun mu nu => curvature (fun m p => embedSelfDual (pu.toUniverse.sd_sector m p) + embedAntiSelfDual (A_R_alt m p)) mu nu x) := by
 
-  let u_alt : Universe := universeEquiv.symm (u.sd_sector, A_R_alt)
+  let u_alt : Universe := universeEquiv.symm (pu.toUniverse.sd_sector, A_R_alt)
   
-  have h_alt_eq : (fun m p => embedSelfDual (u.sd_sector m p) + embedAntiSelfDual (A_R_alt m p)) = 
+  have h_alt_eq : (fun m p => embedSelfDual (pu.toUniverse.sd_sector m p) + embedAntiSelfDual (A_R_alt m p)) = 
                   (fun m p => u_alt.spin4c_connection m p) := rfl
                   
   rw [h_alt_eq]
 
-  apply action_vacuum_congr (fun mu nu => curvature (fun m p => u.spin4c_connection m p) mu nu x) (fun mu nu => curvature (fun m p => u_alt.spin4c_connection m p) mu nu x)
+  apply action_vacuum_congr (fun mu nu => curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) (fun mu nu => curvature (fun m p => u_alt.spin4c_connection m p) mu nu x)
   intro mu nu
 
-  have h_L_eq_1 := F_L_eq u mu nu x
+  have h_L_eq_1 := F_L_eq pu.toUniverse mu nu x
   have h_L_eq_2 := F_L_eq u_alt mu nu x
 
-  have h3 : u_alt.sd_sector = u.sd_sector := by
-    have h_pair : universeEquiv u_alt = (u.sd_sector, A_R_alt) := Equiv.apply_symm_apply universeEquiv (u.sd_sector, A_R_alt)
+  have h3 : u_alt.sd_sector = pu.toUniverse.sd_sector := by
+    have h_pair : universeEquiv u_alt = (pu.toUniverse.sd_sector, A_R_alt) := Equiv.apply_symm_apply universeEquiv (pu.toUniverse.sd_sector, A_R_alt)
     exact congrArg Prod.fst h_pair
 
   rw [h_L_eq_1, h_L_eq_2, h3]

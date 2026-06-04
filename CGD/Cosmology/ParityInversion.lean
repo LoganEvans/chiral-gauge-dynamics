@@ -6,6 +6,7 @@ import CGD.Gravity.Geometry
 import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.Ring
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import CGD.Axioms.PhysicalUniverse
 
 set_option linter.unusedSimpArgs false
 
@@ -99,16 +100,16 @@ Litlib.theorem
 /--
 Negating the electric (temporal) components of the field strength tensor while preserving the magnetic (spatial) components inverts the sign of the fully antisymmetric topological density. This directly links the parity inversion of the local geometry to the negation of the topological charge (Pontryagin density), seamlessly mapping the geometric arrow of time to matter/antimatter asymmetry.
 -/
-theorem kinematicParityInversion (u : Universe) :
+theorem kinematicParityInversion (pu : PhysicalUniverse) :
   ∀ (x : SpacetimePoint) (P_F : Fin 4 → Fin 4 → SL2C),
-    isParityInvertedTensor (fun m n => curvatureSl2c u.sd_sector m n x) P_F x →
-    pontryaginDensity P_F = - pontryaginDensity (fun mu nu => curvatureSl2c u.sd_sector mu nu x) := by
+    isParityInvertedTensor (fun m n => curvatureSl2c pu.toUniverse.sd_sector m n x) P_F x →
+    pontryaginDensity P_F = - pontryaginDensity (fun mu nu => curvatureSl2c pu.toUniverse.sd_sector mu nu x) := by
   intro x P_F ⟨h_parity_0i, h_parity_ij, h_parity_00⟩
   have h_PF : ∀ μ ν, (P_F μ ν).val =
-    if μ = 0 ∧ ν = 0 then (curvatureSl2c u.sd_sector 0 0 x).val
-    else if μ = 0 then -(curvatureSl2c u.sd_sector 0 ν x).val
-    else if ν = 0 then -(curvatureSl2c u.sd_sector μ 0 x).val
-    else (curvatureSl2c u.sd_sector μ ν x).val := by
+    if μ = 0 ∧ ν = 0 then (curvatureSl2c pu.toUniverse.sd_sector 0 0 x).val
+    else if μ = 0 then -(curvatureSl2c pu.toUniverse.sd_sector 0 ν x).val
+    else if ν = 0 then -(curvatureSl2c pu.toUniverse.sd_sector μ 0 x).val
+    else (curvatureSl2c pu.toUniverse.sd_sector μ ν x).val := by
       intro m n
       exact P_F_eq _ _ h_parity_0i h_parity_ij h_parity_00 m n
 

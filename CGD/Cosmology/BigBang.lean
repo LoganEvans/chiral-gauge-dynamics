@@ -8,7 +8,7 @@ import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
 import CGD.Axioms.Ontology
-import CGD.Axioms.Phenomenology
+import CGD.Axioms.PhysicalUniverse
 
 set_option linter.unusedSimpArgs false
 
@@ -22,19 +22,19 @@ Litlib.theorem
 /--
 By enforcing a topological initial condition, the Big Bang manifests as a pure Euclidean SO(4) instanton rather than a mathematical singularity. Provided the bouncing instanton is topologically non-degenerate (metric determinant is non-zero), it forms a strictly non-zero, macroscopic Euclidean scale state.
 -/
-theorem kinematicBigBang (u : Universe) (phaseRegion : Set SpacetimePoint)
-  [vol : CGD.Axioms.MacroscopicVolume u phaseRegion]
-  (h_symm : ∀ x ∈ phaseRegion, isFully4DSymmetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x)) :
-  ∀ x ∈ phaseRegion, ∃ c : Complex, c ≠ 0 ∧ urbantkeMetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x) = c • 1 := by
+theorem kinematicBigBang (pu : PhysicalUniverse) (phaseRegion : Set SpacetimePoint)
+  (h_subset : phaseRegion ⊆ pu.bulk)
+  (h_symm : ∀ x ∈ phaseRegion, isFully4DSymmetric (fun mu nu => curvatureSl2c pu.toUniverse.sd_sector mu nu x)) :
+  ∀ x ∈ phaseRegion, ∃ c : Complex, c ≠ 0 ∧ urbantkeMetric (fun mu nu => curvatureSl2c pu.toUniverse.sd_sector mu nu x) = c • 1 := by
   intro x hx
   have h_tic := h_symm x hx
-  have h_g := urbantke_eq_smul_id_of_self_dual (fun mu nu => curvatureSl2c u.sd_sector mu nu x) h_tic
+  have h_g := urbantke_eq_smul_id_of_self_dual (fun mu nu => curvatureSl2c pu.toUniverse.sd_sector mu nu x) h_tic
   rcases h_g with ⟨c, hc⟩
   use c
   constructor
   · intro hc_zero
     rw [hc_zero, zero_smul] at hc
-    have h_nd := vol.volume_exists x hx
+    have h_nd := pu.has_volume.volume_exists x (h_subset hx)
     rw [hc] at h_nd
     have h_det_zero : (0 : Matrix (Fin 4) (Fin 4) Complex).det = 0 := by
       rw [Matrix.det_apply]
@@ -101,12 +101,12 @@ Litlib.theorem
 /--
 In pure connection gravity, 4D spacetime volume geometrically requires time-evolution. A completely static universe (where electric/temporal components of the field strength are zero) cannot sustain a macroscopic 4D metric and topologically collapses, forcing the metric determinant to zero.
 -/
-theorem kinematicStaticUniverseDegeneracy (u : Universe) :
-  isStaticUniverse u →
-  ∀ x, (urbantkeMetric (fun mu nu => curvatureSl2c u.sd_sector mu nu x)).det = 0 := by
+theorem kinematicStaticUniverseDegeneracy (pu : PhysicalUniverse) :
+  isStaticUniverse pu.toUniverse →
+  ∀ x, (urbantkeMetric (fun mu nu => curvatureSl2c pu.toUniverse.sd_sector mu nu x)).det = 0 := by
   intro h x
-  have h_static : ∀ j : Fin 4, curvatureSl2c u.sd_sector 0 j x = 0 := h x
-  have h_metric_zero_row := math_Static_Electric_Zero (fun mu nu => curvatureSl2c u.sd_sector mu nu x) h_static
+  have h_static : ∀ j : Fin 4, curvatureSl2c pu.toUniverse.sd_sector 0 j x = 0 := h x
+  have h_metric_zero_row := math_Static_Electric_Zero (fun mu nu => curvatureSl2c pu.toUniverse.sd_sector mu nu x) h_static
   exact det_zero_of_row_zero _ h_metric_zero_row
 
 end CGD.Cosmology

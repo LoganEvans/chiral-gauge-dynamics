@@ -3,6 +3,7 @@
 import Litlib.Core
 import CGD.Foundations.Spacetime
 import CGD.Axioms.Ontology
+import CGD.Axioms.PhysicalUniverse
 import CGD.Foundations.GaugeGroup
 import CGD.Foundations.Math
 import Mathlib.LinearAlgebra.Matrix.Trace
@@ -138,12 +139,12 @@ Litlib.theorem
 /-- 
 This theorem proves that non-commuting SU(2) fields (which correspond to non-trivial matter) natively expand into non-zero topological density traces without needing a background metric.
 -/
-theorem kinematicSIDMTrace (u : Universe)
+theorem kinematicSIDMTrace (pu : PhysicalUniverse)
   (x : SpacetimePoint) (μ ν : Fin 4)
-  (h_anti_self_dual_su2 : ∀ m p, isSu2 (u.asd_sector m p).val)
-  (h_comm : ((u.asd_sector μ x).val * (u.asd_sector ν x).val - (u.asd_sector ν x).val * (u.asd_sector μ x).val) ≠ 0) :
-  Matrix.trace (((u.asd_sector μ x).val * (u.asd_sector ν x).val - (u.asd_sector ν x).val * (u.asd_sector μ x).val) *
-                ((u.asd_sector μ x).val * (u.asd_sector ν x).val - (u.asd_sector ν x).val * (u.asd_sector μ x).val)) ≠ 0 := by
+  (h_anti_self_dual_su2 : ∀ m p, isSu2 (pu.toUniverse.asd_sector m p).val)
+  (h_comm : ((pu.toUniverse.asd_sector μ x).val * (pu.toUniverse.asd_sector ν x).val - (pu.toUniverse.asd_sector ν x).val * (pu.toUniverse.asd_sector μ x).val) ≠ 0) :
+  Matrix.trace (((pu.toUniverse.asd_sector μ x).val * (pu.toUniverse.asd_sector ν x).val - (pu.toUniverse.asd_sector ν x).val * (pu.toUniverse.asd_sector μ x).val) *
+                ((pu.toUniverse.asd_sector μ x).val * (pu.toUniverse.asd_sector ν x).val - (pu.toUniverse.asd_sector ν x).val * (pu.toUniverse.asd_sector μ x).val)) ≠ 0 := by
   exact math_su2_commutator_squared_trace _ _ (h_anti_self_dual_su2 μ x) (h_anti_self_dual_su2 ν x) h_comm
 
 end CGD.AntiSelfDualSector

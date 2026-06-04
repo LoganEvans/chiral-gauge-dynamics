@@ -4,11 +4,11 @@ import CGD.Foundations.Spacetime
 import CGD.Foundations.GaugeGroup
 import CGD.Foundations.Calculus
 import CGD.Axioms.Ontology
+import CGD.Axioms.PhysicalUniverse
 import CGD.Gravity.Geometry
 import Mathlib.LinearAlgebra.Matrix.Trace
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
-
 
 open BigOperators Complex Matrix CGD.Axioms
 
@@ -54,13 +54,15 @@ A physically valid universe variation is mathematically constrained:
 1. It must be a smooth path through configuration space.
 2. It must have compact support (vanish at spatial infinity).
 3. The underlying physical Lagrangian density must be Lebesgue Integrable.
+4. It must map `ℝ → PhysicalUniverse` to ensure the macroscopic volume and vacuum 
+   constraints are not violated during the perturbation.
 -/
-def isValidUniverseVariation (v : ℝ → Universe) : Prop :=
-  (∀ mu i j, ContDiff ℝ ⊤ (fun (tx : ℝ × CGD.Foundations.SpacetimePoint) => ((v tx.1).sd_sector mu tx.2).val i j)) ∧
-  (∀ mu i j, ContDiff ℝ ⊤ (fun (tx : ℝ × CGD.Foundations.SpacetimePoint) => ((v tx.1).asd_sector mu tx.2).val i j)) ∧
+def isValidPhysicalVariation (v : ℝ → PhysicalUniverse) : Prop :=
+  (∀ mu i j, ContDiff ℝ ⊤ (fun (tx : ℝ × CGD.Foundations.SpacetimePoint) => ((v tx.1).toUniverse.sd_sector mu tx.2).val i j)) ∧
+  (∀ mu i j, ContDiff ℝ ⊤ (fun (tx : ℝ × CGD.Foundations.SpacetimePoint) => ((v tx.1).toUniverse.asd_sector mu tx.2).val i j)) ∧
   (∀ t, ∃ R > 0, ∀ x, (x 0)^2 + (x 1)^2 + (x 2)^2 + (x 3)^2 > R^2 →
-    (∀ mu, (v t).sd_sector mu x = (v 0).sd_sector mu x) ∧
-    (∀ mu, (v t).asd_sector mu x = (v 0).asd_sector mu x)) ∧
-  (∀ t, MeasureTheory.Integrable (fun p => lagrangianDensity (fun mu nu => curvature (fun m x => (v t).spin4c_connection m x) mu nu p)))
+    (∀ mu, (v t).toUniverse.sd_sector mu x = (v 0).toUniverse.sd_sector mu x) ∧
+    (∀ mu, (v t).toUniverse.asd_sector mu x = (v 0).toUniverse.asd_sector mu x)) ∧
+  (∀ t, MeasureTheory.Integrable (fun p => lagrangianDensity (fun mu nu => curvature (fun m x => (v t).toUniverse.spin4c_connection m x) mu nu p)))
 
 end CGD.Foundations

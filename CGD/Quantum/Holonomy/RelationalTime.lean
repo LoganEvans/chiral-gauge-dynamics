@@ -2,11 +2,12 @@
 
 import Litlib.Core
 import CGD.Axioms.Ontology
+import CGD.Axioms.PhysicalUniverse
 import CGD.Foundations.GaugeGroup
 import CGD.Quantum.Definitions
 import CGD.Quantum.Holonomy.Evaluation
 
-open Complex Matrix CGD.Foundations CGD.Quantum 
+open Complex Matrix CGD.Foundations CGD.Quantum CGD.Axioms
 
 set_option linter.unusedSimpArgs false
 
@@ -31,10 +32,10 @@ as the passage of time for the localized state. Time is the relational geometric
 -/
 theorem relationalTimeEmergence
   (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
-  (u : CGD.Axioms.Universe) 
+  (pu : PhysicalUniverse) 
   (t : ℝ)
-  (h_core : ∀ s, (u.sd_sector.val 1 (straightLinePath s)).val = Complex.I • sigmaZ) :
-  macroscopicObservable (holonomy matrixExp) u.sd_sector.val 1 t = 
+  (h_core : ∀ s, (pu.toUniverse.sd_sector.val 1 (straightLinePath s)).val = Complex.I • sigmaZ) :
+  macroscopicObservable (holonomy matrixExp) pu.toUniverse.sd_sector.val 1 t = 
   unitaryTimeEvolution matrixExp (-sigmaZ) t := by
   
   unfold macroscopicObservable holonomy unitaryTimeEvolution

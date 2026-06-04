@@ -6,6 +6,7 @@ import CGD.Gravity.Geometry
 import CGD.Foundations.Calculus
 import CGD.Foundations.Action
 import CGD.Axioms.Ontology
+import CGD.Axioms.PhysicalUniverse
 import Mathlib.Data.Complex.Basic
 import Mathlib.Data.Matrix.Basic
 import Mathlib.Analysis.Complex.Basic
@@ -136,14 +137,14 @@ Litlib.theorem
 /--
 Demonstrates that the spatial metric describing an isolated 1D flux tube has a strictly zero determinant, indicating that it represents a degenerate, non-macroscopic topological background.
 -/
-theorem kinematicFluxTubeStability (u : Universe) :
+theorem kinematicFluxTubeStability (pu : PhysicalUniverse) :
   ∀ (x : SpacetimePoint),
-    isFluxTube u.sd_sector x →
-    (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x)).det = 0 := by
+    isFluxTube pu.toUniverse.sd_sector x →
+    (urbantkeMetric (fun m n => curvatureSl2c pu.toUniverse.sd_sector m n x)).det = 0 := by
   intros x h_flux; unfold isFluxTube at h_flux; rcases h_flux with ⟨h_val, h_deriv⟩
-  have h_curv : ∀ mu nu, curvatureSl2c u.sd_sector mu nu x = curvatureSl2c fluxTubeFrame mu nu x :=
-    fluxTube_curvature_congruence u.sd_sector fluxTubeFrame x h_val h_deriv
-  have h_F : (fun m n => curvatureSl2c u.sd_sector m n x) = (fun m n => curvatureSl2c fluxTubeFrame m n x) := by funext m n; exact h_curv m n
+  have h_curv : ∀ mu nu, curvatureSl2c pu.toUniverse.sd_sector mu nu x = curvatureSl2c fluxTubeFrame mu nu x :=
+    fluxTube_curvature_congruence pu.toUniverse.sd_sector fluxTubeFrame x h_val h_deriv
+  have h_F : (fun m n => curvatureSl2c pu.toUniverse.sd_sector m n x) = (fun m n => curvatureSl2c fluxTubeFrame m n x) := by funext m n; exact h_curv m n
   rw[h_F]; apply Matrix.det_eq_zero_of_row_eq_zero 0; intro j; exact metric_electric_zero_at j x
 
 end CGD.Quantum

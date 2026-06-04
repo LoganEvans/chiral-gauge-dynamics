@@ -1,6 +1,7 @@
 -- FILENAME: CGD/AntiSelfDualSector/VacuumDegeneracy.lean
 
 import CGD.Axioms.Ontology
+import CGD.Axioms.PhysicalUniverse
 import CGD.Foundations.Calculus
 import CGD.Gravity.Geometry
 import CGD.Particles.Color
@@ -22,47 +23,47 @@ its resulting emergent Urbantke metric mathematically degenerates to a zero dete
 This strictly enforces that macroscopic spacetime can only emerge from non-trivial, 
 non-Abelian gauge condensates, cementing the geometric chirality of the universe.
 -/
-theorem kinematicAsdVacuumDegeneracy (u : Universe) :
-  u.asd_sector.val = (fun _ _ => (0 : SL2C)) →
-  ∀ x, (urbantkeMetric (fun m n => curvatureSl2c u.asd_sector m n x)).det = 0 := by
+theorem kinematicAsdVacuumDegeneracy (pu : PhysicalUniverse) :
+  pu.toUniverse.asd_sector.val = (fun _ _ => (0 : SL2C)) →
+  ∀ x, (urbantkeMetric (fun m n => curvatureSl2c pu.toUniverse.asd_sector m n x)).det = 0 := by
   intro h_empty x
   
   -- Step 1: Establish that the ASD field is 0 everywhere
-  have h_A_zero : ∀ μ p, u.asd_sector.val μ p = 0 := by
+  have h_A_zero : ∀ μ p, pu.toUniverse.asd_sector.val μ p = 0 := by
     intro μ p
-    have h1 : u.asd_sector.val μ p = (fun _ _ => (0 : SL2C)) μ p := by
+    have h1 : pu.toUniverse.asd_sector.val μ p = (fun _ _ => (0 : SL2C)) μ p := by
       rw [h_empty]
     exact h1
 
   -- Step 2: Establish that the curvature of the 0 field is exactly 0 everywhere
-  have h_F_zero : ∀ μ ν, curvatureSl2c u.asd_sector μ ν x = 0 := by
+  have h_F_zero : ∀ μ ν, curvatureSl2c pu.toUniverse.asd_sector μ ν x = 0 := by
     intro μ ν
     rw [curvatureSl2c_def]
     
     -- The partial derivative of a constant zero field is zero
-    have hd1 : partialDerivSl2c μ (u.asd_sector ν) x = 0 := by
-      have h_func : (u.asd_sector ν) = fun _ => (0 : SL2C) := by
+    have hd1 : partialDerivSl2c μ (pu.toUniverse.asd_sector ν) x = 0 := by
+      have h_func : (pu.toUniverse.asd_sector ν) = fun _ => (0 : SL2C) := by
         funext p
-        change u.asd_sector.val ν p = 0
+        change pu.toUniverse.asd_sector.val ν p = 0
         exact h_A_zero ν p
       rw [h_func]
       exact partialDerivSl2c_const 0 μ x
       
-    have hd2 : partialDerivSl2c ν (u.asd_sector μ) x = 0 := by
-      have h_func : (u.asd_sector μ) = fun _ => (0 : SL2C) := by
+    have hd2 : partialDerivSl2c ν (pu.toUniverse.asd_sector μ) x = 0 := by
+      have h_func : (pu.toUniverse.asd_sector μ) = fun _ => (0 : SL2C) := by
         funext p
-        change u.asd_sector.val μ p = 0
+        change pu.toUniverse.asd_sector.val μ p = 0
         exact h_A_zero μ p
       rw [h_func]
       exact partialDerivSl2c_const 0 ν x
       
     -- The commutator of zero with zero is zero
-    have h_comm : ⁅u.asd_sector μ x, u.asd_sector ν x⁆ = 0 := by
-      have h1 : u.asd_sector μ x = 0 := by 
-        change u.asd_sector.val μ x = 0
+    have h_comm : ⁅pu.toUniverse.asd_sector μ x, pu.toUniverse.asd_sector ν x⁆ = 0 := by
+      have h1 : pu.toUniverse.asd_sector μ x = 0 := by 
+        change pu.toUniverse.asd_sector.val μ x = 0
         exact h_A_zero μ x
-      have h2 : u.asd_sector ν x = 0 := by 
-        change u.asd_sector.val ν x = 0
+      have h2 : pu.toUniverse.asd_sector ν x = 0 := by 
+        change pu.toUniverse.asd_sector.val ν x = 0
         exact h_A_zero ν x
       rw [h1, h2]
       simp
@@ -72,7 +73,7 @@ theorem kinematicAsdVacuumDegeneracy (u : Universe) :
     simp
     
   -- Step 3: Define the local macroscopic curvature mapping evaluated at x
-  let F := fun m n => curvatureSl2c u.asd_sector m n x
+  let F := fun m n => curvatureSl2c pu.toUniverse.asd_sector m n x
   
   -- Step 4: Prove this zero-field trivially satisfies the Abelian (single-color) constraint
   have h_single : isSingleColor F := by

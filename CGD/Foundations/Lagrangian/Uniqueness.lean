@@ -10,6 +10,15 @@ open Matrix Complex BigOperators CGD.Axioms CGD.Foundations
 
 namespace CGD.Foundations
 
+lemma M0_ne_zero : M0 ≠ 0 := by
+  intro h
+  have h_tr := trace_M0_sq
+  rw [h, Matrix.zero_mul, Matrix.trace_zero] at h_tr
+  norm_num at h_tr
+
+lemma spin4c_non_degenerate : ∃ x, isSpin4cAlgebra x ∧ x ≠ 0 := 
+  ⟨M0, isSpin4cAlgebra_M0, M0_ne_zero⟩
+
 lemma uniqueness_master_lemma
   (ue : Litlib.Y1956.utiyama1956invariant.AppendixI_Expansion.{0})
   (bi : Litlib.Y1956.utiyama1956invariant.AppendixI_BilinearForm.{0})
@@ -58,9 +67,9 @@ lemma uniqueness_master_lemma
         isSpin4cAlgebra ((U : ChiralM) * y * (↑U⁻¹ : ChiralM)) → 
         B ((U : ChiralM) * x * (↑U⁻¹ : ChiralM)) ((U : ChiralM) * y * (↑U⁻¹ : ChiralM)) = B x y) →
       ∃ (k : ℂ), ∀ x y, isSpin4cAlgebra x → isSpin4cAlgebra y → B x y = k * Matrix.trace (x * y) := by
-    exact bi.spans ChiralM Matrix.trace isSpin4cAlgebra
+    exact bi.spans ChiralM Matrix.trace isSpin4cAlgebra spin4c_non_degenerate
     
-  have h_expansion := ue.yieldsTraceExpansion ChiralM Matrix.trace isSpin4cAlgebra L h_trace_spans hLQuadScale hLQuadAdd h_inv_mapped
+  have h_expansion := ue.yieldsTraceExpansion ChiralM Matrix.trace isSpin4cAlgebra spin4c_non_degenerate L h_trace_spans hLQuadScale hLQuadAdd h_inv_mapped
   
   apply Exists.elim h_expansion
   intro T h_L_eq

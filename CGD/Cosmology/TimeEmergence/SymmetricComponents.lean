@@ -9,7 +9,7 @@ import Mathlib.Tactic.Ring
 import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.Linarith
 import CGD.Axioms.Ontology
-import CGD.Axioms.Phenomenology
+import CGD.Axioms.PhysicalUniverse
 
 set_option maxHeartbeats 4000000
 set_option linter.unusedSimpArgs false

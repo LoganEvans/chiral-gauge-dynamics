@@ -3,13 +3,14 @@
 import CGD.Quantum.Holonomy.Geometric
 import CGD.Quantum.Holonomy.Euler
 import CGD.Quantum.Definitions
+import CGD.Axioms.PhysicalUniverse
 import Litlib.Y2000.hall2000elementary.Signature
 
 set_option linter.unusedSimpArgs false
 
 namespace CGD.Quantum
 
-open CGD.Foundations Complex Matrix Litlib.Y2000.hall2000elementary
+open CGD.Foundations CGD.Axioms Complex Matrix Litlib.Y2000.hall2000elementary
 
 noncomputable def straightLinePath (t : ℝ) : SpacetimePoint := fun _ => t
 
@@ -122,17 +123,17 @@ trigonometric coefficients of the quantum state vectors.
 theorem fluxTubeHolonomyEvaluation
   (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
   [DerivativeExponential (Fin 2) matrixExp]
-  (u : CGD.Axioms.Universe) (alpha L : ℝ)
-  (h_field : ∀ t, u.sd_sector 1 (straightLinePath t) = fluxTubeFrame 1 (straightLinePath t)) :
-  macroscopicObservable (holonomy matrixExp) (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) alpha mu p) 1 L =
+  (pu : PhysicalUniverse) (alpha L : ℝ)
+  (h_field : ∀ t, pu.toUniverse.sd_sector 1 (straightLinePath t) = fluxTubeFrame 1 (straightLinePath t)) :
+  macroscopicObservable (holonomy matrixExp) (fun mu p => rotateYAxis (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 L =
   (Complex.cos (L:ℂ)) • 1 + (Complex.I * Complex.sin (L:ℂ)) • obs_M alpha := by
   
   dsimp [macroscopicObservable, holonomy]
   
-  have hf : (u.sd_sector 1 (straightLinePath 0)).val = (fluxTubeFrame 1 (straightLinePath 0)).val :=
+  have hf : (pu.toUniverse.sd_sector 1 (straightLinePath 0)).val = (fluxTubeFrame 1 (straightLinePath 0)).val :=
     congr_arg Subtype.val (h_field 0)
   
-  have h_eval : (rotateYAxis (fun m p => u.sd_sector m p) alpha 1 (straightLinePath 0)).val = 
+  have h_eval : (rotateYAxis (fun m p => pu.toUniverse.sd_sector m p) alpha 1 (straightLinePath 0)).val = 
                 Complex.I • obs_M alpha := by
     dsimp [rotateYAxis]
     rw [hf]
