@@ -1,6 +1,7 @@
 -- FILENAME: CGD/Gravity/DomainSeparation.lean
 
 import CGD.Axioms.Ontology
+import CGD.Axioms.PhysicalUniverse
 import CGD.Foundations.Spacetime
 import CGD.Gravity.Geometry
 import CGD.Gravity.Urbantke
@@ -138,18 +139,17 @@ Litlib.theorem
 By treating the bulk vacuum as its own topological subspace, we map the global Unimodular CDJ theorem to the exterior region. This proves that the constant macroscopic volume form emerges strictly independently of the defect core.
 -/
 theorem macroscopicVacuumEmergence 
-  (u : Universe)
+  (pu : PhysicalUniverse)
   (Λ : ℂ)
-  (bulkVacuum : Set SpacetimePoint)
   (h_Λ_neq_zero : Λ ≠ 0)
   (k : ℂ) (hk : k ≠ 0)
-  (h_urbantke_det : ∀ x, (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x)).det = 
+  (h_urbantke_det : ∀ x, (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature pu.toUniverse m n x)).det = 
     k * (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
-      epsilon4 μ ν ρ σ • (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)).det)
-  (h_vacuum : isVacuumRegion bulkVacuum u Λ) :
-  ∃ (c : ℂ), c ≠ 0 ∧ ∀ x y : bulkVacuum, 
-    (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x.val)).det = (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n y.val)).det ∧
-    (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n x.val)).det = c := by
+      epsilon4 μ ν ρ σ • (cgdAdjointCurvature pu.toUniverse μ ν x * cgdAdjointCurvature pu.toUniverse ρ σ x)).det)
+  (h_vacuum : isVacuumRegion pu.bulk pu.toUniverse Λ) :
+  ∃ (c : ℂ), c ≠ 0 ∧ ∀ x y : pu.bulk, 
+    (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature pu.toUniverse m n x.val)).det = (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature pu.toUniverse m n y.val)).det ∧
+    (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature pu.toUniverse m n x.val)).det = c := by
   let c := k * (Λ ^ 3)
   use c
   have h_c_neq_zero : c ≠ 0 := by
@@ -158,7 +158,7 @@ theorem macroscopicVacuumEmergence
   constructor
   · exact h_c_neq_zero
   · intro x y
-    have h_det_eval : ∀ z : bulkVacuum, (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature u m n z.val)).det = c := by
+    have h_det_eval : ∀ z : pu.bulk, (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature pu.toUniverse m n z.val)).det = c := by
       intro z
       have hz := h_urbantke_det z.val
       have h_vac_z := h_vacuum z.val z.property
@@ -181,52 +181,50 @@ Litlib.theorem
 A parallel theorem for the pure GR vacuum limit ($\Lambda = 0$) evaluated on the open bulk manifold subspace outside a topological defect. Because the domain is open, the mapping is mathematically exact for local derivatives.
 -/
 theorem macroscopicRicciFlatEmergence
-  (u : Universe)
+  (pu : PhysicalUniverse)
   (urbantke_tetrad : TetradField)
   (metric_compat : ∀ x μ ν, metricFromTetrad urbantke_tetrad μ ν x = 
-                           CGD.Gravity.urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x) μ ν)
+                           CGD.Gravity.urbantkeMetric (fun m n => curvatureSl2c pu.toUniverse.sd_sector m n x) μ ν)
   (Psi : SpacetimePoint → Fin 2 → Fin 2 → Fin 2 → Fin 2 → ℂ)
-  [eq2_2b : Eq2_2b SpacetimePoint (cgd_dSigma urbantke_tetrad) (cgd_omega u) (cgd_Sigma urbantke_tetrad) cgd_eps2_up]
-  [eq2_2c : Eq2_2c SpacetimePoint (cgd_R u) Psi (cgd_Sigma urbantke_tetrad)]
-  (bulkVacuum : Set SpacetimePoint)
-  (hOpen : IsOpen bulkVacuum)
+  [eq2_2b : Eq2_2b SpacetimePoint (cgd_dSigma urbantke_tetrad) (cgd_omega pu.toUniverse) (cgd_Sigma urbantke_tetrad) cgd_eps2_up]
+  [eq2_2c : Eq2_2c SpacetimePoint (cgd_R pu.toUniverse) Psi (cgd_Sigma urbantke_tetrad)]
   [th_ricci : Theorem_Eq2_2c_RicciFlat 
-    (Spacetime := bulkVacuum)
-    (theta := fun (x : bulkVacuum) => cgd_theta urbantke_tetrad x.val) 
-    (g := fun (x : bulkVacuum) m n => metricFromTetrad urbantke_tetrad m n x.val) 
+    (Spacetime := pu.bulk)
+    (theta := fun (x : pu.bulk) => cgd_theta urbantke_tetrad x.val) 
+    (g := fun (x : pu.bulk) m n => metricFromTetrad urbantke_tetrad m n x.val) 
     (eps2_down := cgd_eps2_down)
     (eps2_bar_down := cgd_eps2_bar_down)
     (eps2_right := cgd_eps2_bar_down)
     (eps2_up := cgd_eps2_up)
-    (R := fun (x : bulkVacuum) => cgd_R u x.val) 
-    (Psi := fun (x : bulkVacuum) => Psi x.val) 
-    (Sigma := fun (x : bulkVacuum) => cgd_Sigma urbantke_tetrad x.val) 
-    (dSigma := fun (x : bulkVacuum) => cgd_dSigma urbantke_tetrad x.val)
-    (omega := fun (x : bulkVacuum) => cgd_omega u x.val)
-    (isRicciFlat := fun (g : bulkVacuum → Fin 4 → Fin 4 → ℂ) => ∀ (x : bulkVacuum) μ ν, CGD.Gravity.ricciTensor (extendMetric bulkVacuum g) μ ν x.val = 0)] :
-  ∀ x ∈ bulkVacuum, ∀ μ ν, ricciTensor (fun m n p => urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p) m n) μ ν x = 0 := by
+    (R := fun (x : pu.bulk) => cgd_R pu.toUniverse x.val) 
+    (Psi := fun (x : pu.bulk) => Psi x.val) 
+    (Sigma := fun (x : pu.bulk) => cgd_Sigma urbantke_tetrad x.val) 
+    (dSigma := fun (x : pu.bulk) => cgd_dSigma urbantke_tetrad x.val)
+    (omega := fun (x : pu.bulk) => cgd_omega pu.toUniverse x.val)
+    (isRicciFlat := fun (g : pu.bulk → Fin 4 → Fin 4 → ℂ) => ∀ (x : pu.bulk) μ ν, CGD.Gravity.ricciTensor (extendMetric pu.bulk g) μ ν x.val = 0)] :
+  ∀ x ∈ pu.bulk, ∀ μ ν, ricciTensor (fun m n p => urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p) m n) μ ν x = 0 := by
   intro x hx μ ν
-  let x_sub : bulkVacuum := ⟨x, hx⟩
+  let x_sub : pu.bulk := ⟨x, hx⟩
   have h_r := th_ricci.eq2_2c_implies_ricci_flat ?h_Sigma_def ?h_DSigma_eq_zero ?h_eq2_2c x_sub μ ν
   
-  let g_local : bulkVacuum → Fin 4 → Fin 4 → ℂ := fun y m n => metricFromTetrad urbantke_tetrad m n y.val
+  let g_local : pu.bulk → Fin 4 → Fin 4 → ℂ := fun y m n => metricFromTetrad urbantke_tetrad m n y.val
   
-  have h_match : ∀ y : bulkVacuum, ∀ m n, metricFromTetrad urbantke_tetrad m n y.val = g_local y m n := by
+  have h_match : ∀ y : pu.bulk, ∀ m n, metricFromTetrad urbantke_tetrad m n y.val = g_local y m n := by
     intro y m n; rfl
 
-  have h_ext_eq : ∀ y : bulkVacuum, ∀ m n, extendMetric bulkVacuum g_local m n y.val = g_local y m n :=
-    extendMetric_spec bulkVacuum g_local (metricFromTetrad urbantke_tetrad) h_match
+  have h_ext_eq : ∀ y : pu.bulk, ∀ m n, extendMetric pu.bulk g_local m n y.val = g_local y m n :=
+    extendMetric_spec pu.bulk g_local (metricFromTetrad urbantke_tetrad) h_match
 
-  have h_metrics_match_on_U : ∀ p ∈ bulkVacuum, ∀ m n, metricFromTetrad urbantke_tetrad m n p = extendMetric bulkVacuum g_local m n p := by
+  have h_metrics_match_on_U : ∀ p ∈ pu.bulk, ∀ m n, metricFromTetrad urbantke_tetrad m n p = extendMetric pu.bulk g_local m n p := by
     intro p hp m n
-    let y : bulkVacuum := ⟨p, hp⟩
+    let y : pu.bulk := ⟨p, hp⟩
     calc metricFromTetrad urbantke_tetrad m n p = g_local y m n := rfl
-      _ = extendMetric bulkVacuum g_local m n p := (h_ext_eq y m n).symm
+      _ = extendMetric pu.bulk g_local m n p := (h_ext_eq y m n).symm
 
-  have h_ricci_match := ricci_locality_open (metricFromTetrad urbantke_tetrad) (extendMetric bulkVacuum g_local) bulkVacuum hOpen h_metrics_match_on_U x hx μ ν
+  have h_ricci_match := ricci_locality_open (metricFromTetrad urbantke_tetrad) (extendMetric pu.bulk g_local) pu.bulk pu.has_volume.h_bulk_open h_metrics_match_on_U x hx μ ν
 
   have h_metric_eq : (fun m n p => metricFromTetrad urbantke_tetrad m n p) = 
-                     (fun m n p => urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b p) m n) := by
+                     (fun m n p => urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p) m n) := by
     funext m n p
     exact metric_compat p m n
   

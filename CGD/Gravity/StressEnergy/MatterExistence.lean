@@ -4,7 +4,7 @@ import CGD.Axioms.Ontology
 import CGD.Foundations.Calculus
 import CGD.Foundations.Spacetime
 import CGD.Gravity.Geometry
-import CGD.Gravity.StressEnergy
+import CGD.Gravity.StressEnergy.Conservation
 import CGD.Gravity.MacroscopicVacuum.Basic
 import Litlib.Y2011.krasnov2011plebanski.Signature
 import Mathlib.Tactic
