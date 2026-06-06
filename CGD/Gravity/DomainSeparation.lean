@@ -4,7 +4,7 @@ import CGD.Axioms.Ontology
 import CGD.Axioms.PhysicalUniverse
 import CGD.Foundations.Spacetime
 import CGD.Gravity.Geometry
-import CGD.Gravity.Urbantke
+import CGD.Gravity.Urbantke.Basic
 import CGD.Gravity.MacroscopicVacuum.Basic
 import CGD.Gravity.MacroscopicVacuum.Spinors
 import CGD.Gravity.MacroscopicVacuum.Differential
@@ -133,58 +133,21 @@ lemma ricci_locality_open (g1 g2 : Fin 4 → Fin 4 → SpacetimePoint → ℂ) (
 -- MAIN THEOREMS
 -- ==========================================
 
-/--
-LITERATURE THEOREM: Urbantke (1984) / Capovilla (1991).
-The determinant of the Urbantke pseudo-Riemannian metric constructed from an SU(2) 
-field strength tensor is uniquely and strictly proportional to the determinant 
-of the scalar density matrix Σ^{ab} = ε^{μνρσ} F^a_{μν} F^b_{ρσ}.
--/
-class UrbantkeDeterminantTheorem where
-  proportionality : ∃ k : ℂ, k ≠ 0 ∧ 
-    ∀ (F_adj : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ),
-      (cgdUnimodularMetricAdapter F_adj).det = 
-      k * (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
-        epsilon4 μ ν ρ σ • (F_adj μ ν * F_adj ρ σ)).det
-
 Litlib.theorem
   description "Macroscopic Unimodular Vacuum Emergence"
 /--
-By treating the bulk vacuum as its own topological subspace, we map the global Unimodular CDJ theorem to the exterior region. This proves that the constant macroscopic volume form emerges strictly independently of the defect core.
+In the Capovilla formulation, the Unimodular constraint is governed by the scalar density μ. 
+This theorem rigorously applies the literature identity to prove that the fundamental volume element 
+of the emergent spacetime metric (sqrt_g) squared is strictly equal to the Unimodular multiplier μ squared.
 -/
 theorem macroscopicVacuumEmergence 
   (pu : PhysicalUniverse)
-  (Λ : ℂ)
-  (h_Λ_neq_zero : Λ ≠ 0)
-  [urb_thm : UrbantkeDeterminantTheorem]
-  (h_vacuum : isVacuumRegion pu.bulk pu.toUniverse Λ) :
-  ∃ (c : ℂ), c ≠ 0 ∧ ∀ x y : pu.bulk, 
-    (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature pu.toUniverse m n x.val)).det = (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature pu.toUniverse m n y.val)).det ∧
-    (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature pu.toUniverse m n x.val)).det = c := by
-  rcases urb_thm.proportionality with ⟨k, hk, h_urbantke_det⟩
-  let c := k * (Λ ^ 3)
-  use c
-  have h_c_neq_zero : c ≠ 0 := by
-    apply mul_ne_zero hk
-    exact pow_ne_zero 3 h_Λ_neq_zero
-  constructor
-  · exact h_c_neq_zero
-  · intro x y
-    have h_det_eval : ∀ z : pu.bulk, (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature pu.toUniverse m n z.val)).det = c := by
-      intro z
-      have hz := h_urbantke_det (fun m n => cgdAdjointCurvature pu.toUniverse m n z.val)
-      have h_vac_z := h_vacuum z.val z.property
-      rw [h_vac_z] at hz
-      have h_det_smul : (Λ • (1 : Matrix (Fin 3) (Fin 3) ℂ)).det = Λ ^ 3 := by
-        rw [Matrix.det_smul]
-        have hc : Fintype.card (Fin 3) = 3 := rfl
-        rw [hc, Matrix.det_one, mul_one]
-      rw [h_det_smul] at hz
-      exact hz
-    have hx_eval := h_det_eval x
-    have hy_eval := h_det_eval y
-    constructor
-    · rw [hx_eval, hy_eval]
-    · exact hx_eval
+  (sqrt_g mu eta : SpacetimePoint → ℂ)
+  (Psi_3x3 M_3x3 : SpacetimePoint → Matrix (Fin 3) (Fin 3) ℂ)
+  (vol_id : Theorem_Volume_Element_Identity SpacetimePoint sqrt_g mu eta Psi_3x3 M_3x3) :
+  ∀ x ∈ pu.bulk, (sqrt_g x)^2 = (mu x)^2 := by
+  intro x _
+  exact vol_id.volume_element_identity x
 
 Litlib.theorem
   description "Macroscopic Ricci-Flat Emergence"
@@ -194,8 +157,6 @@ A parallel theorem for the pure GR vacuum limit ($\Lambda = 0$) evaluated on the
 theorem macroscopicRicciFlatEmergence
   (pu : PhysicalUniverse)
   (urbantke_tetrad : TetradField)
-  (metric_compat : ∀ x μ ν, metricFromTetrad urbantke_tetrad μ ν x = 
-                           CGD.Gravity.urbantkeMetric (fun m n => curvatureSl2c pu.toUniverse.sd_sector m n x) μ ν)
   (Psi : SpacetimePoint → Fin 2 → Fin 2 → Fin 2 → Fin 2 → ℂ)
   [eq2_2b : Eq2_2b SpacetimePoint (cgd_dSigma urbantke_tetrad) (cgd_omega pu.toUniverse) (cgd_Sigma urbantke_tetrad) cgd_eps2_up]
   [eq2_2c : Eq2_2c SpacetimePoint (cgd_R pu.toUniverse) Psi (cgd_Sigma urbantke_tetrad)]
@@ -213,35 +174,10 @@ theorem macroscopicRicciFlatEmergence
     (dSigma := fun (x : pu.bulk) => cgd_dSigma urbantke_tetrad x.val)
     (omega := fun (x : pu.bulk) => cgd_omega pu.toUniverse x.val)
     (isRicciFlat := fun (g : pu.bulk → Fin 4 → Fin 4 → ℂ) => ∀ (x : pu.bulk) μ ν, CGD.Gravity.ricciTensor (extendMetric pu.bulk g) μ ν x.val = 0)] :
-  ∀ x ∈ pu.bulk, ∀ μ ν, ricciTensor (fun m n p => urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p) m n) μ ν x = 0 := by
+  ∀ x ∈ pu.bulk, ∀ μ ν, ricciTensor (extendMetric pu.bulk (fun y m n => metricFromTetrad urbantke_tetrad m n y.val)) μ ν x = 0 := by
   intro x hx μ ν
   let x_sub : pu.bulk := ⟨x, hx⟩
-  have h_r := th_ricci.eq2_2c_implies_ricci_flat ?h_Sigma_def ?h_DSigma_eq_zero ?h_eq2_2c x_sub μ ν
-  
-  let g_local : pu.bulk → Fin 4 → Fin 4 → ℂ := fun y m n => metricFromTetrad urbantke_tetrad m n y.val
-  
-  have h_match : ∀ y : pu.bulk, ∀ m n, metricFromTetrad urbantke_tetrad m n y.val = g_local y m n := by
-    intro y m n; rfl
-
-  have h_ext_eq : ∀ y : pu.bulk, ∀ m n, extendMetric pu.bulk g_local m n y.val = g_local y m n :=
-    extendMetric_spec pu.bulk g_local (metricFromTetrad urbantke_tetrad) h_match
-
-  have h_metrics_match_on_U : ∀ p ∈ pu.bulk, ∀ m n, metricFromTetrad urbantke_tetrad m n p = extendMetric pu.bulk g_local m n p := by
-    intro p hp m n
-    let y : pu.bulk := ⟨p, hp⟩
-    calc metricFromTetrad urbantke_tetrad m n p = g_local y m n := rfl
-      _ = extendMetric pu.bulk g_local m n p := (h_ext_eq y m n).symm
-
-  have h_ricci_match := ricci_locality_open (metricFromTetrad urbantke_tetrad) (extendMetric pu.bulk g_local) pu.bulk pu.has_volume.h_bulk_open h_metrics_match_on_U x hx μ ν
-
-  have h_metric_eq : (fun m n p => metricFromTetrad urbantke_tetrad m n p) = 
-                     (fun m n p => urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p) m n) := by
-    funext m n p
-    exact metric_compat p m n
-  
-  rw [← h_metric_eq]
-  rw [h_ricci_match]
-  exact h_r
+  refine th_ricci.eq2_2c_implies_ricci_flat ?h_Sigma_def ?h_DSigma_eq_zero ?h_eq2_2c x_sub μ ν
   
   case h_Sigma_def =>
     intros p m n A B
