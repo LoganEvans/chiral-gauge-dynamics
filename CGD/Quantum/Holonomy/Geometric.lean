@@ -2,6 +2,7 @@
 
 import Litlib.Core
 import CGD.Axioms.Ontology
+import CGD.Axioms.PhysicalUniverse
 import CGD.Foundations.Calculus
 import CGD.Foundations.GaugeGroup
 import Mathlib.Data.Complex.Basic
@@ -31,10 +32,10 @@ natively mathematically decouple under the geometric trace metric because their
 underlying 4x4 matrix embeddings occupy perfectly disjoint sub-blocks. 
 The geometry requires no artificial truncation to separate chiral sectors.
 -/
-theorem algebraicChiralOrthogonalization (u : Universe) (x : SpacetimePoint) (μ ν ρ σ : Fin 4) :
-  Matrix.trace (embedSelfDual (CGD.Foundations.curvatureSl2c u.sd_sector μ ν x) * 
-                embedAntiSelfDual (CGD.Foundations.curvatureSl2c u.asd_sector ρ σ x)) = 0 := by
-  have h_mul := embed_mul_eq_zero (CGD.Foundations.curvatureSl2c u.sd_sector μ ν x) (CGD.Foundations.curvatureSl2c u.asd_sector ρ σ x)
+theorem algebraicChiralOrthogonalization (pu : PhysicalUniverse) (x : SpacetimePoint) (μ ν ρ σ : Fin 4) :
+  Matrix.trace (embedSelfDual (CGD.Foundations.curvatureSl2c pu.toUniverse.sd_sector μ ν x) * 
+                embedAntiSelfDual (CGD.Foundations.curvatureSl2c pu.toUniverse.asd_sector ρ σ x)) = 0 := by
+  have h_mul := embed_mul_eq_zero (CGD.Foundations.curvatureSl2c pu.toUniverse.sd_sector μ ν x) (CGD.Foundations.curvatureSl2c pu.toUniverse.asd_sector ρ σ x)
   rw [h_mul]
   simp [Matrix.trace]
 

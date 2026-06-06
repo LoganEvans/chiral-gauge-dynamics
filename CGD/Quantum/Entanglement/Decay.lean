@@ -3,6 +3,7 @@
 import Litlib.Core
 import CGD.Quantum.Entanglement.Basic
 import CGD.Axioms.Ontology
+import CGD.Axioms.PhysicalUniverse
 import CGD.Quantum.Definitions
 import Litlib.Y2001.bali2001qcd.Signature
 
@@ -23,12 +24,12 @@ theorem algebraicStringBreakingCrossover
   (energyFunc : (Fin 4 → SpacetimePoint → SL2C) → ℝ)
   (intactState snappedState : ℝ → Fin 4 → SpacetimePoint → SL2C)
   {sigma M : ℝ} [eb : FluxTubeStringBreaking (Fin 4 → SpacetimePoint → SL2C) energyFunc intactState snappedState sigma M]
-  (u : Universe)
+  (pu : PhysicalUniverse)
   (L : ℝ)
   (h_L_pos : L > 0)
-  (h_intact : u.sd_sector = intactState L)
+  (h_intact : pu.toUniverse.sd_sector = intactState L)
   (h_L_crossover : L > (2 * M) / sigma) :
-  energyFunc (u.sd_sector) > energyFunc (snappedState L) := by
+  energyFunc (pu.toUniverse.sd_sector) > energyFunc (snappedState L) := by
   
   -- Step 1: Map the unified Universe sector to the parametrized intact state
   rw [h_intact]
@@ -57,19 +58,19 @@ theorem algebraicStringBreakingLimit
   (energyFunc : (Fin 4 → SpacetimePoint → SL2C) → ℝ)
   (intactState snappedState : ℝ → Fin 4 → SpacetimePoint → SL2C)
   {sigma M : ℝ} [eb : FluxTubeStringBreaking (Fin 4 → SpacetimePoint → SL2C) energyFunc intactState snappedState sigma M]
-  (u : Universe)
+  (pu : PhysicalUniverse)
   (L : ℝ)
   (h_L_pos : L > 0)
-  (h_intact : u.sd_sector = intactState L)
+  (h_intact : pu.toUniverse.sd_sector = intactState L)
   (h_L_crossover : L > (2 * M) / sigma) :
-  ¬ isGlobalMinimum energyFunc u.sd_sector := by
+  ¬ isGlobalMinimum energyFunc pu.toUniverse.sd_sector := by
   
   -- Step 1: Assume for contradiction that the intact string is the global minimum
   intro h_min
   unfold isGlobalMinimum at h_min
   
   -- Step 2: Extract the actual crossover inequality from the previous theorem
-  have h_crossover := algebraicStringBreakingCrossover energyFunc intactState snappedState u L h_L_pos h_intact h_L_crossover
+  have h_crossover := algebraicStringBreakingCrossover energyFunc intactState snappedState pu L h_L_pos h_intact h_L_crossover
   
   -- Step 3: Apply the minimum bound to the specific alternative of the snapped flux tube
   have h_le := h_min (snappedState L)
