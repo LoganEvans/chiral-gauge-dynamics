@@ -133,6 +133,19 @@ lemma ricci_locality_open (g1 g2 : Fin 4 → Fin 4 → SpacetimePoint → ℂ) (
 -- MAIN THEOREMS
 -- ==========================================
 
+/--
+LITERATURE THEOREM: Urbantke (1984) / Capovilla (1991).
+The determinant of the Urbantke pseudo-Riemannian metric constructed from an SU(2) 
+field strength tensor is uniquely and strictly proportional to the determinant 
+of the scalar density matrix Σ^{ab} = ε^{μνρσ} F^a_{μν} F^b_{ρσ}.
+-/
+class UrbantkeDeterminantTheorem where
+  proportionality : ∃ k : ℂ, k ≠ 0 ∧ 
+    ∀ (F_adj : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ),
+      (cgdUnimodularMetricAdapter F_adj).det = 
+      k * (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
+        epsilon4 μ ν ρ σ • (F_adj μ ν * F_adj ρ σ)).det
+
 Litlib.theorem
   description "Macroscopic Unimodular Vacuum Emergence"
 /--
@@ -142,14 +155,12 @@ theorem macroscopicVacuumEmergence
   (pu : PhysicalUniverse)
   (Λ : ℂ)
   (h_Λ_neq_zero : Λ ≠ 0)
-  (k : ℂ) (hk : k ≠ 0)
-  (h_urbantke_det : ∀ x, (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature pu.toUniverse m n x)).det = 
-    k * (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
-      epsilon4 μ ν ρ σ • (cgdAdjointCurvature pu.toUniverse μ ν x * cgdAdjointCurvature pu.toUniverse ρ σ x)).det)
+  [urb_thm : UrbantkeDeterminantTheorem]
   (h_vacuum : isVacuumRegion pu.bulk pu.toUniverse Λ) :
   ∃ (c : ℂ), c ≠ 0 ∧ ∀ x y : pu.bulk, 
     (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature pu.toUniverse m n x.val)).det = (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature pu.toUniverse m n y.val)).det ∧
     (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature pu.toUniverse m n x.val)).det = c := by
+  rcases urb_thm.proportionality with ⟨k, hk, h_urbantke_det⟩
   let c := k * (Λ ^ 3)
   use c
   have h_c_neq_zero : c ≠ 0 := by
@@ -160,7 +171,7 @@ theorem macroscopicVacuumEmergence
   · intro x y
     have h_det_eval : ∀ z : pu.bulk, (cgdUnimodularMetricAdapter (fun m n => cgdAdjointCurvature pu.toUniverse m n z.val)).det = c := by
       intro z
-      have hz := h_urbantke_det z.val
+      have hz := h_urbantke_det (fun m n => cgdAdjointCurvature pu.toUniverse m n z.val)
       have h_vac_z := h_vacuum z.val z.property
       rw [h_vac_z] at hz
       have h_det_smul : (Λ • (1 : Matrix (Fin 3) (Fin 3) ℂ)).det = Λ ^ 3 := by
