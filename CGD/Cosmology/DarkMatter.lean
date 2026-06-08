@@ -40,13 +40,17 @@ lemma commutator_is_su2 (M N : Matrix (Fin 2) (Fin 2) ℂ) (hM : isSu2 M) (hN : 
     simp only [neg_mul_neg]
     exact neg_sub (M * N) (N * M) |>.symm
 
-/-- Phase 3: Capstone. A pure non-Abelian defect mathematically requires inertial mass > 0, and guarantees a strictly non-zero self-interaction topological density. -/
-theorem emergentDarkMatterProfile (pu : PhysicalUniverse) (x : SpacetimePoint)
-  (h_su2 : ∀ μ p, isSu2 (pu.toUniverse.asd_sector.val μ p).val)
-  (h_dark : isPureNonAbelian (fun m n => curvatureSl2c pu.toUniverse.asd_sector.val m n x)) :
+Litlib.theorem
+  description "Emergent Dark Matter Profile"
+/-- A pure non-Abelian defect mathematically requires inertial mass > 0, and guarantees a strictly non-zero self-interaction topological density. -/
+theorem emergentDarkMatterProfile (pu : PhysicalUniverse) :
+  ∀ (x : SpacetimePoint),
+  (∀ μ p, isSu2 (pu.toUniverse.asd_sector.val μ p).val) →
+  isPureNonAbelian (fun m n => curvatureSl2c pu.toUniverse.asd_sector.val m n x) →
   inertialMass pu x > 0 ∧
   Matrix.trace (⁅curvatureSl2c pu.toUniverse.asd_sector.val 1 2 x, curvatureSl2c pu.toUniverse.asd_sector.val 2 3 x⁆.val * 
                 ⁅curvatureSl2c pu.toUniverse.asd_sector.val 1 2 x, curvatureSl2c pu.toUniverse.asd_sector.val 2 3 x⁆.val) ≠ 0 := by
+  intro x h_su2 h_dark
   constructor
   · -- Mass Gap
     apply topologicalMassGap pu x h_su2

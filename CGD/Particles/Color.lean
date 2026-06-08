@@ -257,6 +257,8 @@ theorem kinematicSingleColorDegeneracy :
   rw[h_zero]
   exact Matrix.det_zero ⟨0⟩
 
+Litlib.theorem
+  description "Kinematic Multi-Color Requirement"
 /--
 Demonstrates that a non-zero macroscopic spacetime volume strictly requires non-Abelian fields.
 -/

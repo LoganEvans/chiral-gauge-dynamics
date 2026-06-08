@@ -35,6 +35,8 @@ lemma project_scaled (F : Fin 4 → Fin 4 → SL2C) (lambda_sq : ℂ) (a : Fin 3
   rw [smul_eq_mul]
   ring
 
+Litlib.theorem
+  description "Kinematic Classical Scale Breaking"
 /--
 The Urbantke metric natively breaks conformal symmetry at the classical level. A scale transformation of the field strength tensor results in a non-trivial scaling of the emergent metric.
 -/

@@ -187,6 +187,8 @@ theorem right_inv_su2_s3 (M : SU2Group) : bpstAsymptoticMap (su2ToS3 M) = M := b
 
 noncomputable instance : TopologicalSpace SU2Group := instTopologicalSpaceSubtype
 
+Litlib.theorem
+  description "BPST Instanton Is Homeomorphism"
 theorem bpst_is_homeomorphism : IsHomeomorphism bpstAsymptoticMap := by
   apply IsHomeomorphism.mk
   · constructor

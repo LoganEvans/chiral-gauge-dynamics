@@ -174,6 +174,8 @@ lemma P_minus_D_space (dPsi : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) :
   have h_assoc6 : (gammaVec 3 * P_plus) * dPsi 3 = gammaVec 3 * (P_plus * dPsi 3) := Matrix.mul_assoc _ _ _
   rw [h_assoc4, h_assoc5, h_assoc6]
 
+Litlib.theorem
+  description "Algebraic Dirac Chiral Split"
 /--
 The exact algebraic chiral split of the emergent Dirac equation.
 By applying the projection operators, the relativistic Dirac equation natively factors 

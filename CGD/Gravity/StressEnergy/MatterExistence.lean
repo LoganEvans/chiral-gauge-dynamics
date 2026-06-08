@@ -1,6 +1,7 @@
 -- FILENAME: CGD/Gravity/StressEnergy/MatterExistence.lean
 
 import CGD.Axioms.Ontology
+import CGD.Axioms.PhysicalUniverse
 import CGD.Foundations.Calculus
 import CGD.Foundations.Spacetime
 import CGD.Gravity.Geometry
@@ -23,13 +24,15 @@ This natively acts as the F_bar_ij coefficient matrix in the Plebanski formulati
 noncomputable def cgdAdjointCurvatureAsd (u : Universe) (μ ν : Fin 4) (x : SpacetimePoint) : Matrix (Fin 3) (Fin 3) ℂ :=
   extractAdjoint (curvatureSl2c u.asd_sector μ ν x).val
 
+Litlib.theorem
+  description "Dynamic Matter Existence"
 /--
 Proves that the CGD ontology is not an empty vacuum. A topological connection 
 with a non-zero anti-self-dual curvature natively generates a strictly non-zero 
 physical Stress-Energy tensor (T_μν ≠ 0), representing the presence of matter.
 -/
 theorem dynamicMatterExistence
-  (u : Universe)
+  (pu : PhysicalUniverse)
   (x : SpacetimePoint)
   (Sigma Sigma_bar : Fin 3 → Fin 4 → Fin 4 → ℂ)
   (T_ij : Fin 3 → Fin 3 → ℂ)
@@ -41,22 +44,22 @@ theorem dynamicMatterExistence
   (eq16 : Eq16 
     Sigma 
     Sigma_bar 
-    (fun μ ν => matrixInv4x4 (fun m n => urbantkeMetric (fun a b => curvatureSl2c u.sd_sector a b x) m n) μ ν)
-    (fun μ ν => emergentStressEnergy (fun a b p => curvatureSl2c u.sd_sector a b p) μ ν x)
+    (fun μ ν => matrixInv4x4 (fun m n => urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b x) m n) μ ν)
+    (fun μ ν => emergentStressEnergy (fun a b p => curvatureSl2c pu.toUniverse.sd_sector a b p) μ ν x)
     T_ij)
   -- The physics: Eq17 directly binds the physical Universe curvatures to the Stress-Energy
   (eq17 : Eq17 
     Lambda 
     G 
-    (cgdAdjointCurvature u 0 1 x) 
-    (cgdAdjointCurvatureAsd u 0 1 x) 
+    (cgdAdjointCurvature pu.toUniverse 0 1 x) 
+    (cgdAdjointCurvatureAsd pu.toUniverse 0 1 x) 
     T_scalar 
     T_ij 
     plebanski_matter_eqs)
   (h_matter : plebanski_matter_eqs)
   -- The non-vacuum state condition: the physical anti-self-dual part of the universe's curvature is non-zero
-  (h_non_vacuum : ∃ i j, (cgdAdjointCurvatureAsd u 0 1 x) i j ≠ 0) :
-  ∃ ρ μ, emergentStressEnergy (fun a b p => curvatureSl2c u.sd_sector a b p) ρ μ x ≠ 0 := by
+  (h_non_vacuum : ∃ i j, (cgdAdjointCurvatureAsd pu.toUniverse 0 1 x) i j ≠ 0) :
+  ∃ ρ μ, emergentStressEnergy (fun a b p => curvatureSl2c pu.toUniverse.sd_sector a b p) ρ μ x ≠ 0 := by
   
   -- 1. Assume by contradiction that the physical stress-energy tensor is zero everywhere
   by_contra h_zero
@@ -65,7 +68,7 @@ theorem dynamicMatterExistence
   have _dummy_G : G ≠ 0 := h_G
 
   -- Manually expand the negation to avoid dependency on push_neg
-  have h_zero_all : ∀ ρ μ, emergentStressEnergy (fun a b p => curvatureSl2c u.sd_sector a b p) ρ μ x = 0 := by
+  have h_zero_all : ∀ ρ μ, emergentStressEnergy (fun a b p => curvatureSl2c pu.toUniverse.sd_sector a b p) ρ μ x = 0 := by
     intro ρ μ
     by_contra h_neq
     apply h_zero
@@ -85,18 +88,18 @@ theorem dynamicMatterExistence
     ring
     
   -- 3. Apply Eq17.einstein_eqs_iff to algebraically link the physical ASD curvature to T_ij
-  have h_F_bar : ∀ i j, (cgdAdjointCurvatureAsd u 0 1 x) i j = -2 * (Real.pi : ℂ) * G * T_ij i j := by
+  have h_F_bar : ∀ i j, (cgdAdjointCurvatureAsd pu.toUniverse 0 1 x) i j = -2 * (Real.pi : ℂ) * G * T_ij i j := by
     have h1 := eq17.einstein_eqs_iff
     have h_fwd := h1.mp h_matter
     exact h_fwd.right
     
   -- This forces the physical anti-self-dual curvature of the universe to be identically zero
-  have h_F_bar_zero : ∀ i j, (cgdAdjointCurvatureAsd u 0 1 x) i j = 0 := by
+  have h_F_bar_zero : ∀ i j, (cgdAdjointCurvatureAsd pu.toUniverse 0 1 x) i j = 0 := by
     intro i j
     rw [h_F_bar i j, h_T_ij_zero i j]
     ring
     
   -- 4. Contradiction: we assumed the non-vacuum state has non-zero ASD curvature
   rcases h_non_vacuum with ⟨i, j, hij⟩
-  have h_contra : (cgdAdjointCurvatureAsd u 0 1 x) i j = 0 := h_F_bar_zero i j
+  have h_contra : (cgdAdjointCurvatureAsd pu.toUniverse 0 1 x) i j = 0 := h_F_bar_zero i j
   exact hij h_contra

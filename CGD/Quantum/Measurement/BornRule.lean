@@ -2,6 +2,7 @@
 
 import CGD.Quantum.Measurement.Attractors
 import CGD.Axioms.Ontology
+import CGD.Axioms.PhysicalUniverse
 
 namespace CGD.Quantum.Measurement
 
@@ -16,21 +17,23 @@ The strict analytical primitive (antiderivative) of sin(θ) evaluates to -cos(θ
 noncomputable def hopfVolumePrimitive (theta : ℝ) : ℝ :=
   - Real.cos theta
 
+Litlib.theorem
+  description "Physical Born Rule"
 /--
 The Physical Born Rule
 Connects the purely geometric volume calculation directly to the topological 
 Yang-Mills interaction energy of the Universe's self-dual boundary sector.
 -/
 theorem physicalBornRule
-  (u : Universe)
+  (pu : PhysicalUniverse)
   (evaluateBoundary : Sl2cGaugeField → SU2Group)
   (detector_state : SU2Group)
   (E_0 M : ℝ) (hE0 : E_0 ≠ 0)
   (theta_separatrix : ℝ)
   -- Coordinate Definition: theta_separatrix is the angle parameterized by the geometric correlation
-  (h_angle : Real.cos theta_separatrix = (geometricBellCorrelation (evaluateBoundary u.sd_sector) detector_state).re)
+  (h_angle : Real.cos theta_separatrix = (geometricBellCorrelation (evaluateBoundary pu.toUniverse.sd_sector) detector_state).re)
   -- The physical state lies exactly on the dynamical string-breaking separatrix
-  (h_separatrix : isSeparatrixBoundary E_0 M (evaluateBoundary u.sd_sector) detector_state) :
+  (h_separatrix : isSeparatrixBoundary E_0 M (evaluateBoundary pu.toUniverse.sd_sector) detector_state) :
   (hopfVolumePrimitive Real.pi - hopfVolumePrimitive theta_separatrix) / 
   (hopfVolumePrimitive Real.pi - hopfVolumePrimitive 0) = 1 - M / E_0 := by
   
@@ -38,11 +41,11 @@ theorem physicalBornRule
   unfold isSeparatrixBoundary boundaryInteractionEnergy at h_separatrix
   
   -- 2. Algebraically isolate the correlation trace (which is cos θ)
-  have h_trace : (geometricBellCorrelation (evaluateBoundary u.sd_sector) detector_state).re = 1 - 2 * M / E_0 := by
-    have h1 : E_0 * (1 - (geometricBellCorrelation (evaluateBoundary u.sd_sector) detector_state).re) = 2 * M := h_separatrix
-    have h2 : 1 - (geometricBellCorrelation (evaluateBoundary u.sd_sector) detector_state).re = (2 * M) / E_0 := by
-      calc 1 - (geometricBellCorrelation (evaluateBoundary u.sd_sector) detector_state).re
-        _ = (E_0 * (1 - (geometricBellCorrelation (evaluateBoundary u.sd_sector) detector_state).re)) / E_0 := by rw [mul_div_cancel_left₀ _ hE0]
+  have h_trace : (geometricBellCorrelation (evaluateBoundary pu.toUniverse.sd_sector) detector_state).re = 1 - 2 * M / E_0 := by
+    have h1 : E_0 * (1 - (geometricBellCorrelation (evaluateBoundary pu.toUniverse.sd_sector) detector_state).re) = 2 * M := h_separatrix
+    have h2 : 1 - (geometricBellCorrelation (evaluateBoundary pu.toUniverse.sd_sector) detector_state).re = (2 * M) / E_0 := by
+      calc 1 - (geometricBellCorrelation (evaluateBoundary pu.toUniverse.sd_sector) detector_state).re
+        _ = (E_0 * (1 - (geometricBellCorrelation (evaluateBoundary pu.toUniverse.sd_sector) detector_state).re)) / E_0 := by rw [mul_div_cancel_left₀ _ hE0]
         _ = (2 * M) / E_0 := by rw [h1]
     linarith
 
