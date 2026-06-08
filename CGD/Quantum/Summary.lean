@@ -23,6 +23,7 @@ import CGD.Quantum.Schroedinger
 import CGD.Quantum.Vacuum
 import CGD.Quantum.YangMills
 import Mathlib.Data.Matrix.Basic
+import Litlib.Core
 import Litlib.Y1975.belavin1975pseudoparticle.Signature
 import Litlib.Y2003.nakahara2003geometry.Chapter10.Sec05_GaugeTheories
 import Litlib.Y2001.bali2001qcd.Signature
@@ -37,9 +38,9 @@ open Litlib.Y1989.arnold1989mathematical
 
 namespace CGD.Quantum
 
+Litlib.theorem
+  description "Quantum Summary"
 /--
-@Litlib.theorem
-
 This theorem aggregates all quantum mechanical properties of the CGD framework 
 into a single rigorous conjunction. It mathematically proves that for any well-defined 
 physical universe, standard quantum behavior emerges strictly from the topology of the connection.

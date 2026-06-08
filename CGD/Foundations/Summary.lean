@@ -14,6 +14,7 @@ import CGD.Foundations.Math
 import CGD.Foundations.Spacetime
 import CGD.Foundations.Topology
 import Mathlib.Data.Matrix.Basic
+import Litlib.Core
 import Litlib.Y1965.spivak1965calculus.Chapter05.IntegrationOnChains
 import Litlib.Y1976.rudin1976principles.Chapter09.Sec08_DerivativesOfHigherOrder
 import Litlib.Y1976.rudin1976principles.Chapter11.LebesgueIntegral
@@ -23,9 +24,9 @@ open Complex Matrix
 
 namespace CGD.Foundations
 
+Litlib.theorem
+  description "Foundations Summary"
 /--
-@Litlib.theorem
-
 This theorem aggregates all foundational mathematical properties of the CGD framework 
 into a single rigorous conjunction. It mathematically proves that for any well-defined 
 physical universe, the following core foundational phenomena emerge simultaneously:

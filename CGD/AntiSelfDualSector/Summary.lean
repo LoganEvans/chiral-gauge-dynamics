@@ -1,5 +1,6 @@
 -- FILENAME: CGD/AntiSelfDualSector/Summary.lean
 
+import Litlib.Core
 import CGD.Axioms.PhysicalUniverse
 import CGD.Axioms.Ontology
 import CGD.Foundations.Action
@@ -16,9 +17,9 @@ open Complex Matrix CGD.Foundations CGD.Axioms CGD.Gravity
 
 namespace CGD.AntiSelfDualSector
 
+Litlib.theorem
+  description "AntiSelfDualSector Summary"
 /--
-@Litlib.theorem
-
 This theorem aggregates all foundational properties of the Anti-Self-Dual (ASD) sector 
 within the CGD framework. It mathematically proves that for any well-defined physical universe:
 1. The topological vacuum action is strictly decoupled from the ASD gauge field.

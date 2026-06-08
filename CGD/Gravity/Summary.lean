@@ -15,6 +15,7 @@ import CGD.Gravity.MacroscopicVacuum.Spinors
 import CGD.Gravity.StressEnergy.Conservation
 import CGD.Gravity.StressEnergy.MatterExistence
 import Mathlib.Data.Matrix.Basic
+import Litlib.Core
 import Litlib.Y1951.papapetrou1951spinning.Signature
 import Litlib.Y1984.urbantke1984integrability.Signature
 import Litlib.Y1991.capovilla1991pure.Signature
@@ -25,9 +26,9 @@ open Complex Matrix CGD.Foundations CGD.Axioms CGD.Gravity
 
 namespace CGD.Gravity
 
+Litlib.theorem
+  description "Gravity Summary"
 /--
-@Litlib.theorem
-
 This theorem aggregates all macroscopic gravitational properties of the CGD framework 
 into a single rigorous conjunction. It mathematically proves that for any well-defined 
 physical universe, the following gravitational phenomena emerge natively:

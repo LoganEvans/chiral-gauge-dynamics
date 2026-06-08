@@ -11,6 +11,7 @@ import CGD.Particles.Confinement
 import CGD.Particles.Mass
 import CGD.Particles.TopologicalStability
 import Mathlib.Data.Matrix.Basic
+import Litlib.Core
 import Litlib.Y1975.belavin1975pseudoparticle.Signature
 import Litlib.Y2003.nakahara2003geometry.Chapter10.Sec05_GaugeTheories
 
@@ -18,9 +19,9 @@ open Complex Matrix CGD.Foundations CGD.Axioms CGD.Gravity CGD.Particles
 
 namespace CGD.Particles
 
+Litlib.theorem
+  description "Particles Summary"
 /--
-@Litlib.theorem
-
 This theorem aggregates all particle and topological defect properties of the CGD framework 
 into a single rigorous conjunction. It mathematically proves that for any well-defined 
 physical universe, the following particle phenomena emerge directly from the topology:

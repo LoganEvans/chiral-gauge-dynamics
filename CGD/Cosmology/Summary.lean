@@ -1,5 +1,6 @@
 -- FILENAME: CGD/Cosmology/Summary.lean
 
+import Litlib.Core
 import CGD.Axioms.PhysicalUniverse
 import CGD.Foundations.Calculus
 import CGD.Foundations.GaugeGroup
@@ -18,9 +19,9 @@ open Complex Matrix CGD.Foundations CGD.Axioms CGD.Gravity CGD.Particles
 
 namespace CGD.Cosmology
 
+Litlib.theorem
+  description "Cosmology Summary"
 /--
-@Litlib.theorem
-
 This theorem aggregates all cosmological properties of the CGD framework 
 into a single rigorous conjunction. It mathematically proves that for any well-defined 
 physical universe, the following cosmological phenomena emerge directly from the gauge topology:
