@@ -43,11 +43,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1780039987,
-        "narHash": "sha256-q21lCiCrSTYdVILIn5jxQ8oOKeG4TqIARbsN4yS3Qsk=",
+        "lastModified": 1780793567,
+        "narHash": "sha256-bFBS64y+YSPb1WobOFaizVV/PdPQof1MO2n1PJvSRTA=",
         "ref": "refs/heads/main",
-        "rev": "c6a6eccc6df2e2a76d563f61d75d92131cb7685e",
-        "revCount": 191,
+        "rev": "91764336b8319e585a2238c1b2fa863be70b5dfa",
+        "revCount": 231,
         "type": "git",
         "url": "ssh://git@github.com/LoganEvans/litlib4.git"
       },
@@ -141,11 +141,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1775636079,
-        "narHash": "sha256-pc20NRoMdiar8oPQceQT47UUZMBTiMdUuWrYu2obUP0=",
+        "lastModified": 1780220602,
+        "narHash": "sha256-eynAfOmbmxJnkp7YewvCEbShNnnYJ9gLLqkzsYtBPeM=",
         "owner": "numtide",
         "repo": "treefmt-nix",
-        "rev": "790751ff7fd3801feeaf96d7dc416a8d581265ba",
+        "rev": "db947814a175b7ca6ded66e21383d938df01c227",
         "type": "github"
       },
       "original": {

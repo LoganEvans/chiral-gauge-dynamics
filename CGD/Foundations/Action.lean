@@ -43,7 +43,7 @@ noncomputable def actionAntiSelfDual (F : Fin 4 -> Fin 4 -> ChiralM) : Complex :
 -- ============================================================================
 
 noncomputable def complexVolumeIntegral (f : SpacetimePoint → ℂ) : ℂ :=
-  Complex.mk (volumeIntegral (fun p => (f p).re)) (volumeIntegral (fun p => (f p).im))
+  MeasureTheory.integral MeasureTheory.volume f
 
 /-- Explicit geometric universe action map over the continuous geometry -/
 noncomputable def universeAction (u : Universe) : ℂ :=
@@ -52,7 +52,7 @@ noncomputable def universeAction (u : Universe) : ℂ :=
 /--
 A physically valid universe variation is mathematically constrained:
 1. It must be a smooth path through configuration space.
-2. It must have compact support (vanish at spatial infinity).
+2. It must have uniform compact support (vanish at spatial infinity consistently across the perturbation).
 3. The underlying physical Lagrangian density must be Lebesgue Integrable.
 4. It must map `ℝ → PhysicalUniverse` to ensure the macroscopic volume and vacuum 
    constraints are not violated during the perturbation.
@@ -60,7 +60,7 @@ A physically valid universe variation is mathematically constrained:
 def isValidPhysicalVariation (v : ℝ → PhysicalUniverse) : Prop :=
   (∀ mu i j, ContDiff ℝ ⊤ (fun (tx : ℝ × CGD.Foundations.SpacetimePoint) => ((v tx.1).toUniverse.sd_sector mu tx.2).val i j)) ∧
   (∀ mu i j, ContDiff ℝ ⊤ (fun (tx : ℝ × CGD.Foundations.SpacetimePoint) => ((v tx.1).toUniverse.asd_sector mu tx.2).val i j)) ∧
-  (∀ t, ∃ R > 0, ∀ x, (x 0)^2 + (x 1)^2 + (x 2)^2 + (x 3)^2 > R^2 →
+  (∃ R > 0, ∀ t, ∀ x, (x 0)^2 + (x 1)^2 + (x 2)^2 + (x 3)^2 > R^2 →
     (∀ mu, (v t).toUniverse.sd_sector mu x = (v 0).toUniverse.sd_sector mu x) ∧
     (∀ mu, (v t).toUniverse.asd_sector mu x = (v 0).toUniverse.asd_sector mu x)) ∧
   (∀ t, MeasureTheory.Integrable (fun p => lagrangianDensity (fun mu nu => curvature (fun m x => (v t).toUniverse.spin4c_connection m x) mu nu p)))
