@@ -8,8 +8,6 @@ open Matrix Complex BigOperators Litlib.Y2003.nakahara2003geometry
 
 namespace CGD.Foundations
 
-Litlib.theorem
-  description "Gauge Invariance of the Curvature Trace"
 /--
 The trace of the square of the curvature tensor is invariant under gauge transformations.
 -/

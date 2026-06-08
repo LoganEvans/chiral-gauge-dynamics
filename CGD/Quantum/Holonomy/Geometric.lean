@@ -24,8 +24,6 @@ lemma embed_mul_eq_zero (L R : SL2C) : embedSelfDual L * embedAntiSelfDual R = 0
   intro k _
   cases chiralIso.symm i <;> cases chiralIso.symm j <;> cases chiralIso.symm k <;> simp
 
-Litlib.theorem
-  description "Algebraic Chiral Orthogonalization"
 /--
 Demonstrates that the self-dual and anti-self-dual spin connection components 
 natively mathematically decouple under the geometric trace metric because their 
@@ -51,8 +49,6 @@ lemma star_sin_real (x : ℝ) : star (Complex.sin (x:ℂ)) = Complex.sin (x:ℂ)
   · rfl
   · exact neg_zero
 
-Litlib.theorem
-  description "Geometric SU(2) Holonomy Integration"
 /--
 Demonstrates that the geometric path-ordered integration of a purely spatial 
 SU(2) flux tube connection evaluates strictly to a unitary holonomy within 

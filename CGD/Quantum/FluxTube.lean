@@ -122,8 +122,6 @@ lemma fluxTube_curvature_congruence (A B : Fin 4 → SpacetimePoint → SL2C) (x
   intros mu nu; unfold curvatureSl2c
   rw[h_deriv mu nu, h_deriv nu mu, h_val mu, h_val nu]
 
-Litlib.theorem
-  description "Flux Tube Minimal Energy Bounds"
 /--
 Proves that the classical flux tube geometry exactly satisfies the 1D minimal energy differential boundary conditions.
 -/

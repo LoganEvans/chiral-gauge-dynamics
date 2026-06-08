@@ -121,8 +121,6 @@ lemma isOdd_smul (c : Complex) (M : Matrix (Fin 4) (Fin 4) Complex) (hM : isOdd 
   intros i j hij
   rw [Matrix.smul_apply, hM i j hij, smul_zero]
 
-Litlib.theorem
-  description "Geometric Dirac Operator Grading"
 /--
 The covariant Dirac operator mathematically preserves the strict odd/even grading of the spinor algebra for any orientation vector.
 -/
