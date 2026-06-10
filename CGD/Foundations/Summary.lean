@@ -41,18 +41,11 @@ theorem foundationsSummary
   [uti1 : Litlib.Y1956.utiyama1956invariant.AppendixI_BilinearForm.{0}]
   [uti2 : Litlib.Y1956.utiyama1956invariant.AppendixI_Expansion.{0}] :
   
-  -- Conjunct 1: Charge Conservation
-  -- Proved by `topologicalChargeConservation` in `CGD.Foundations.Charge`
+  -- Conjunct 1: Kinematic Charge Conservation
+  -- Proved by `kinematicChargeConservation` in `CGD.Foundations.Charge`
   -- Demonstrates that the Abelian field strength components inherently yield a topologically conserved charge current.
-  (∀ (F : Fin 4 → Fin 4 → SpacetimePoint → ℂ),
-     (∀ ρ σ, ContDiffOn ℝ 2 (fun p => (F ρ σ p).re) Set.univ) →
-     (∀ ρ σ, ContDiffOn ℝ 2 (fun p => (F ρ σ p).im) Set.univ) →
-     (∀ ρ σ x, DifferentiableAt ℝ (fun p => F ρ σ p) x) →
-     (∀ ν ρ σ x, DifferentiableAt ℝ (fun p => partialDeriv ν (fun p' => F ρ σ p') p) x) →
-     (∀ ρ σ x, DifferentiableAt ℝ (fderiv ℝ (fun p => (F ρ σ p).re)) x) →
-     (∀ ρ σ x, DifferentiableAt ℝ (fderiv ℝ (fun p => (F ρ σ p).im)) x) →
-     ∀ x : SpacetimePoint, 
-       ∑ μ : Fin 4, partialDeriv μ (fun p => emergentElectricCurrent F μ p) x = 0)
+  (∀ (i j : Fin 4) (x : SpacetimePoint), 
+    ∑ μ : Fin 4, partialDeriv μ (fun p => emergentElectricCurrent (abelianFieldStrength pu i j) μ p) x = 0)
   ∧
   
   -- Conjunct 2: Chiral Decomposition
@@ -93,7 +86,7 @@ theorem foundationsSummary
     [Litlib.Y1976.rudin1976principles.LeibnizIntegralRule (fun s x => lagrangianDensity (fun mu nu => curvature (fun m p => (v s).toUniverse.spin4c_connection m p) mu nu x))],
     isValidPhysicalVariation v → deriv (fun t => physicalUniverseAction (v t)) 0 = 0) := by
   exact ⟨
-    topologicalChargeConservation,
+    kinematicChargeConservation pu,
     algebraicChiralDecomposition pu,
     topologicalLagrangianUniqueness,
     topologicalActionVariationZero

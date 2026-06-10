@@ -102,15 +102,8 @@ theorem cgdSummary
   -- ====================================================================
   -- I. FOUNDATIONS
   -- ====================================================================
-  (∀ (F : Fin 4 → Fin 4 → SpacetimePoint → ℂ),
-     (∀ ρ σ, ContDiffOn ℝ 2 (fun p => (F ρ σ p).re) Set.univ) →
-     (∀ ρ σ, ContDiffOn ℝ 2 (fun p => (F ρ σ p).im) Set.univ) →
-     (∀ ρ σ x, DifferentiableAt ℝ (fun p => F ρ σ p) x) →
-     (∀ ν ρ σ x, DifferentiableAt ℝ (fun p => partialDeriv ν (fun p' => F ρ σ p') p) x) →
-     (∀ ρ σ x, DifferentiableAt ℝ (fderiv ℝ (fun p => (F ρ σ p).re)) x) →
-     (∀ ρ σ x, DifferentiableAt ℝ (fderiv ℝ (fun p => (F ρ σ p).im)) x) →
-     ∀ x : SpacetimePoint, 
-       ∑ μ : Fin 4, partialDeriv μ (fun p => emergentElectricCurrent F μ p) x = 0)
+  (∀ (i j : Fin 4) (x : SpacetimePoint), 
+    ∑ μ : Fin 4, partialDeriv μ (fun p => emergentElectricCurrent (abelianFieldStrength pu i j) μ p) x = 0)
   ∧
   (∀ x : SpacetimePoint,
     lagrangianDensity (fun mu nu => curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) =
@@ -473,7 +466,7 @@ theorem cgdSummary
                   ⁅homogeneousChaosAnsatz 1 x, homogeneousChaosAnsatz 2 x⁆.val) =
     -8 * (x 1 : ℂ)^2 * (x 2 : ℂ)^2) := by
   exact ⟨
-    topologicalChargeConservation,
+    kinematicChargeConservation pu,
     algebraicChiralDecomposition pu,
     topologicalLagrangianUniqueness,
     topologicalActionVariationZero,
