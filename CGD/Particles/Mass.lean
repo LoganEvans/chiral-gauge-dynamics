@@ -11,8 +11,8 @@ open CGD.Foundations
 namespace CGD.Particles
 
 noncomputable def inertialMass (pu : PhysicalUniverse) (x : SpacetimePoint) : ℝ :=
-  - (Matrix.trace ((curvatureSl2c pu.toUniverse.asd_sector.val 1 2 x).val * 
-                   (curvatureSl2c pu.toUniverse.asd_sector.val 1 2 x).val)).re
+  ∑ μ : Fin 4, ∑ ν : Fin 4, - (Matrix.trace ((curvatureSl2c pu.toUniverse.asd_sector.val μ ν x).val * 
+                                             (curvatureSl2c pu.toUniverse.asd_sector.val μ ν x).val)).re
 
 /-- Phase 1: Prove that the Cartan-Killing trace for any SU(2) matrix is strictly non-negative. -/
 lemma su2_trace_sq_nonneg (M : Matrix (Fin 2) (Fin 2) ℂ) (h : isSu2 M) : 
@@ -361,13 +361,27 @@ Litlib.theorem
 theorem topologicalMassGap (pu : PhysicalUniverse) :
   ∀ (x : SpacetimePoint),
   (∀ μ p, isSu2 (pu.toUniverse.asd_sector.val μ p).val) →
-  (curvatureSl2c pu.toUniverse.asd_sector.val 1 2 x ≠ 0) →
+  (∃ μ ν, curvatureSl2c pu.toUniverse.asd_sector.val μ ν x ≠ 0) →
   inertialMass pu x > 0 := by
   intro x h_su2 h_defect
   unfold inertialMass
-  let F := curvatureSl2c pu.toUniverse.asd_sector.val 1 2 x
-  have hF_su2 : isSu2 F.val := curvature_is_su2 pu x 1 2 h_su2
-  have hF_neq : F.val ≠ 0 := fun h => h_defect (Subtype.ext h)
-  exact su2_trace_sq_pos F.val hF_su2 hF_neq
+  rcases h_defect with ⟨μ0, ν0, hF_neq⟩
+  apply Finset.sum_pos'
+  · intro μ _
+    apply Finset.sum_nonneg
+    intro ν _
+    have hF_su2 : isSu2 (curvatureSl2c pu.toUniverse.asd_sector.val μ ν x).val := curvature_is_su2 pu x μ ν h_su2
+    exact su2_trace_sq_nonneg _ hF_su2
+  · use μ0
+    refine ⟨Finset.mem_univ _, ?_⟩
+    apply Finset.sum_pos'
+    · intro ν _
+      have hF_su2 : isSu2 (curvatureSl2c pu.toUniverse.asd_sector.val μ0 ν x).val := curvature_is_su2 pu x μ0 ν h_su2
+      exact su2_trace_sq_nonneg _ hF_su2
+    · use ν0
+      refine ⟨Finset.mem_univ _, ?_⟩
+      have hF0_su2 : isSu2 (curvatureSl2c pu.toUniverse.asd_sector.val μ0 ν0 x).val := curvature_is_su2 pu x μ0 ν0 h_su2
+      have hF0_neq : (curvatureSl2c pu.toUniverse.asd_sector.val μ0 ν0 x).val ≠ 0 := fun h => hF_neq (Subtype.ext h)
+      exact su2_trace_sq_pos _ hF0_su2 hF0_neq
 
 end CGD.Particles

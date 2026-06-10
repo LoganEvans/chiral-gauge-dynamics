@@ -13,7 +13,7 @@ open CGD.Particles
 namespace CGD.Cosmology
 
 def isPureNonAbelian (F : Fin 4 → Fin 4 → SL2C) : Prop :=
-  ⁅F 1 2, F 2 3⁆ ≠ 0
+  ∃ μ ν ρ σ, ⁅F μ ν, F ρ σ⁆ ≠ 0
 
 /-- Phase 1: Prove the logical contrapositive that a non-zero commutator requires non-zero constituent matrices. -/
 lemma non_abelian_implies_nonzero (M N : SL2C) (h : ⁅M, N⁆ ≠ 0) : 
@@ -48,28 +48,29 @@ theorem emergentDarkMatterProfile (pu : PhysicalUniverse) :
   (∀ μ p, isSu2 (pu.toUniverse.asd_sector.val μ p).val) →
   isPureNonAbelian (fun m n => curvatureSl2c pu.toUniverse.asd_sector.val m n x) →
   inertialMass pu x > 0 ∧
-  Matrix.trace (⁅curvatureSl2c pu.toUniverse.asd_sector.val 1 2 x, curvatureSl2c pu.toUniverse.asd_sector.val 2 3 x⁆.val * 
-                ⁅curvatureSl2c pu.toUniverse.asd_sector.val 1 2 x, curvatureSl2c pu.toUniverse.asd_sector.val 2 3 x⁆.val) ≠ 0 := by
+  ∃ α β γ δ, Matrix.trace (⁅curvatureSl2c pu.toUniverse.asd_sector.val α β x, curvatureSl2c pu.toUniverse.asd_sector.val γ δ x⁆.val * 
+                ⁅curvatureSl2c pu.toUniverse.asd_sector.val α β x, curvatureSl2c pu.toUniverse.asd_sector.val γ δ x⁆.val) ≠ 0 := by
   intro x h_su2 h_dark
+  rcases h_dark with ⟨α, β, γ, δ, h_comm_neq⟩
   constructor
   · -- Mass Gap
     apply topologicalMassGap pu x h_su2
-    have h_comm : ⁅curvatureSl2c pu.toUniverse.asd_sector.val 1 2 x, curvatureSl2c pu.toUniverse.asd_sector.val 2 3 x⁆ ≠ 0 := h_dark
-    exact non_abelian_implies_nonzero _ _ h_comm
+    use α, β
+    exact non_abelian_implies_nonzero _ _ h_comm_neq
   · -- Self-interaction density
-    let F12 := curvatureSl2c pu.toUniverse.asd_sector.val 1 2 x
-    let F23 := curvatureSl2c pu.toUniverse.asd_sector.val 2 3 x
-    have h_comm_neq : ⁅F12, F23⁆ ≠ 0 := h_dark
-    have h_comm_val_neq : ⁅F12, F23⁆.val ≠ 0 := fun h => h_comm_neq (Subtype.ext h)
-    have h_su2_F12 : isSu2 F12.val := curvature_is_su2 pu x 1 2 h_su2
-    have h_su2_F23 : isSu2 F23.val := curvature_is_su2 pu x 2 3 h_su2
-    have h_comm_val_eq : ⁅F12, F23⁆.val = F12.val * F23.val - F23.val * F12.val := rfl
-    have h_comm_su2 : isSu2 (⁅F12, F23⁆.val) := by
+    use α, β, γ, δ
+    let F_ab := curvatureSl2c pu.toUniverse.asd_sector.val α β x
+    let F_gd := curvatureSl2c pu.toUniverse.asd_sector.val γ δ x
+    have h_comm_val_neq : ⁅F_ab, F_gd⁆.val ≠ 0 := fun h => h_comm_neq (Subtype.ext h)
+    have h_su2_F_ab : isSu2 F_ab.val := curvature_is_su2 pu x α β h_su2
+    have h_su2_F_gd : isSu2 F_gd.val := curvature_is_su2 pu x γ δ h_su2
+    have h_comm_val_eq : ⁅F_ab, F_gd⁆.val = F_ab.val * F_gd.val - F_gd.val * F_ab.val := rfl
+    have h_comm_su2 : isSu2 (⁅F_ab, F_gd⁆.val) := by
       rw [h_comm_val_eq]
-      exact commutator_is_su2 F12.val F23.val h_su2_F12 h_su2_F23
-    have h_pos := su2_trace_sq_pos ⁅F12, F23⁆.val h_comm_su2 h_comm_val_neq
+      exact commutator_is_su2 F_ab.val F_gd.val h_su2_F_ab h_su2_F_gd
+    have h_pos := su2_trace_sq_pos ⁅F_ab, F_gd⁆.val h_comm_su2 h_comm_val_neq
     intro h_tr_zero
-    have h_re_zero : (Matrix.trace (⁅F12, F23⁆.val * ⁅F12, F23⁆.val)).re = 0 := by rw [h_tr_zero]; rfl
+    have h_re_zero : (Matrix.trace (⁅F_ab, F_gd⁆.val * ⁅F_ab, F_gd⁆.val)).re = 0 := by rw [h_tr_zero]; rfl
     linarith
 
 end CGD.Cosmology

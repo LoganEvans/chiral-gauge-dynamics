@@ -66,7 +66,7 @@ theorem particlesSummary
   -- topological origin of strictly positive inertial mass.
   (∀ (x : SpacetimePoint),
     (∀ μ p, isSu2 (pu.toUniverse.asd_sector.val μ p).val) →
-    (curvatureSl2c pu.toUniverse.asd_sector.val 1 2 x ≠ 0) →
+    (∃ μ ν, curvatureSl2c pu.toUniverse.asd_sector.val μ ν x ≠ 0) →
     inertialMass pu x > 0)
   ∧
 

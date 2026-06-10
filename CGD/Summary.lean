@@ -167,8 +167,8 @@ theorem cgdSummary
     (∀ μ p, isSu2 (pu.toUniverse.asd_sector.val μ p).val) →
     isPureNonAbelian (fun m n => curvatureSl2c pu.toUniverse.asd_sector.val m n x) →
     inertialMass pu x > 0 ∧
-    Matrix.trace (⁅curvatureSl2c pu.toUniverse.asd_sector.val 1 2 x, curvatureSl2c pu.toUniverse.asd_sector.val 2 3 x⁆.val * 
-                  ⁅curvatureSl2c pu.toUniverse.asd_sector.val 1 2 x, curvatureSl2c pu.toUniverse.asd_sector.val 2 3 x⁆.val) ≠ 0)
+    ∃ α β γ δ, Matrix.trace (⁅curvatureSl2c pu.toUniverse.asd_sector.val α β x, curvatureSl2c pu.toUniverse.asd_sector.val γ δ x⁆.val * 
+                  ⁅curvatureSl2c pu.toUniverse.asd_sector.val α β x, curvatureSl2c pu.toUniverse.asd_sector.val γ δ x⁆.val) ≠ 0)
   ∧
   (∀ (x : SpacetimePoint) (P_F : Fin 4 → Fin 4 → SL2C),
     isParityInvertedTensor (fun m n => curvatureSl2c pu.toUniverse.sd_sector m n x) P_F x →
@@ -337,7 +337,7 @@ theorem cgdSummary
   ∧
   (∀ (x : SpacetimePoint),
     (∀ μ p, isSu2 (pu.toUniverse.asd_sector.val μ p).val) →
-    (curvatureSl2c pu.toUniverse.asd_sector.val 1 2 x ≠ 0) →
+    (∃ μ ν, curvatureSl2c pu.toUniverse.asd_sector.val μ ν x ≠ 0) →
     inertialMass pu x > 0)
   ∧
   (∀ (windingNumber : (S3 → SU2Group) → ℤ)
