@@ -2,9 +2,12 @@
 
 % This file contains all the macros, packages, and setup for LuaLaTeX.
 
+\usepackage[english]{babel}  % Added for BibTeX language compatibility
 \usepackage{amsmath,amssymb}
+\usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{hyperref}
+\usepackage{pdfcomment}
 \usepackage{minted}
 \usepackage{xcolor}
 \usepackage{xspace}
@@ -33,45 +36,9 @@
     frame=lines,
     framesep=2mm,
     fontsize=\footnotesize,
-    bgcolor=gray!5
+    bgcolor=gray!5,
+    escapeinside=(*@ @*) % Added for hyperlinked labels in code
 }
 
 % --- Lean Theorem Citation System ---
-\newcounter{leancnt}
-\newwrite\leanfile
-
-% Open the auxiliary file for writing at the start of the document
-\AtBeginDocument{%
-    \immediate\openout\leanfile=\jobname.leanrefs
-    \immediate\write\leanfile{\string\relax}
-}
-
-\makeatletter
-\newcommand{\leanref}[1]{%
-    \ifmeasuring@
-        \ifmmode {}^{\textnormal{[L?]}} \else \textsuperscript{[L?]} \fi
-    \else
-        \expandafter\ifx\csname lean@ref@id@\detokenize{#1}\endcsname\relax
-            \refstepcounter{leancnt}%
-            \expandafter\xdef\csname lean@ref@id@\detokenize{#1}\endcsname{\theleancnt}%
-            \immediate\write\leanfile{%
-                \string\noindent\string\textbf{[L\theleancnt]}\string\quad%
-                \string\texttt{\string\detokenize{#1}}\string\par\string\vspace{0.5em}%
-            }%
-        \fi
-        \ifmmode 
-            {}^{\textnormal{[L\csname lean@ref@id@\detokenize{#1}\endcsname]}}%
-        \else 
-            \textsuperscript{[L\csname lean@ref@id@\detokenize{#1}\endcsname]}%
-        \fi
-    \fi
-}
-\makeatother
-
-\newcommand{\printleanrefs}{%
-    \section*{Formal Verification Index}%
-    \noindent The equations annotated with \textbf{[L$n$]} in the main text have been formally verified. They correspond to the following theorem signatures in the Lean 4 codebase:
-    \par\vspace{1em}
-    \immediate\closeout\leanfile
-    \input{\jobname.leanrefs}
-}
+\input{lean-citation.tex}

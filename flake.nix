@@ -48,6 +48,13 @@
             # Lean Code Formatting & Referencing (Tao / Blueprint style)
             hyperref
             cleveref
+            pdfcomment
+            datetime2  # <--- Dependency of pdfcomment
+            tracklang  # <--- Dependency of datetime2
+            marginnote # <--- Dependency of pdfcomment
+            soulpos    # <--- Dependency of pdfcomment
+            soul       # <--- Dependency of pdfcomment
+            zref       # <--- Dependency of pdfcomment
             minted     # Requires python3Packages.pygments for Lean 4 syntax
             fvextra    # minted dependency
             catchfile  # minted dependency

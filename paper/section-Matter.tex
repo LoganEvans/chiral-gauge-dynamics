@@ -1,94 +1,73 @@
 % FILENAME: paper/section-Matter.tex
 
-\section{Matter: Topological Knots and the SU(3) Problem}
+\todo{Author Overview: This section proves that particles are not fundamental points added to the spacetime stage, but rather topological defects (knots) within the connection itself.
+Order of theorems covered:
+1. kinematicMultiColorRequirement / kinematicSingleColorDegeneracy: Abelian fields collapse space. Volume requires non-Abelian fields (Color).
+2. kinematicTopologicalStability: Instantons cannot decay due to Cartan-Maurer bounds.
+3. topologicalMassGap: SU(2) curvature strictly generates positive inertial mass.
+4. kinematicStringConfinement: 3D geometric strings crush into the exact 1D confinement Hamiltonian.
+5. macroscopicVolumeImpliesAxialCondensate: Broken chiral symmetry forces an isovector, parity-odd axial condensate.
+Nuances: Address the "SU(3) Problem"—why the Strong Force emerges geometrically from SU(2) topology without needing a fundamental SU(3) gauge group.}
+
+\todo{Author: Review and rename section title if desired.}
+\section{Matter: Topological Knots and the Mass Gap}
 \label{sec:Matter}
 
+\todo{Author: Review and rename subsection title if desired.}
 \subsection{The Necessity of Non-Abelian Fields}
 \label{subsec:non_abelian}
 
 \todo{Author: Explain why a U(1) Abelian field (like pure electromagnetism) cannot create space on its own. The volume determinant natively collapses. The universe absolutely requires non-Abelian fields (color) to expand into a macroscopic geometry.}
 
 \begin{equation}
-    [F_{\mu\nu}, F_{\rho\sigma}] = 0 \implies \det(g_{\mu\nu}) = 0
+    [\mathcal{F}_{\mu\nu}, \mathcal{F}_{\rho\sigma}] = 0 \implies \det(g_{\mu\nu}) = 0
+    \quad \leanref{CGD.Particles.Color.kinematicSingleColorDegeneracy}
     \label{eq:kinematicSingleColorDegeneracy}
 \end{equation}
 
-\begin{listing}[H]
-\begin{minted}{lean}
--- CGD.Particles.Color
-theorem kinematicSingleColorDegeneracy :
-  ∀ (F : Fin 4 → Fin 4 → SL2C),
-    isSingleColor F →
-    (urbantkeMetric F).det = 0
-\end{minted}
-\caption{Purely Abelian (single-color) gauge fields trivially degenerate the spatial metric.}
-\label{lean:kinematicSingleColorDegeneracy}
-\end{listing}
-
-\subsection{Topological Stability}
-\label{subsec:topological_stability}
-
-\todo{Author: Explain that particles are not point masses added to the universe; they are stable topological knots (instantons) in the gauge field. Introduce the Cartan-Maurer degree / Belavin bounds to explain why these knots cannot mathematically decay or unwrap into the trivial vacuum.}
-
 \begin{equation}
-    \int_{S^3} \text{Cartan-Maurer Form} \neq 0 \implies A \text{ cannot continuously decay to } 0
-    \label{eq:kinematicTopologicalStability}
+    \det(g_{\mu\nu}) \neq 0 \implies \text{Field is strictly Non-Abelian}
+    \quad \leanref{CGD.Particles.Color.kinematicMultiColorRequirement}
+    \label{eq:kinematicMultiColorRequirement}
 \end{equation}
 
-\begin{listing}[H]
-\begin{minted}{lean}
--- CGD.Particles.TopologicalStability
-theorem kinematicTopologicalStability 
-  (windingNumber : (S3 → SU2Group) → ℤ)
-  (cartanMaurerIntegral : (S3 → SU2Group) → ℝ)
-  ... [Litlib.Belavin1975 and Nakahara Cartan-Maurer boundaries elided] ...
-  (integral_zero : cartanMaurerIntegral 1 = 0) :
-  ¬ isHomotopicConnection bpstInstanton 0
-\end{minted}
-\caption{The topological protection of instanton configurations against trivial vacuum decay.}
-\label{lean:kinematicTopologicalStability}
-\end{listing}
+\todo{Author: Review and rename subsection title if desired.}
+\subsection{Topological Stability and the Mass Gap}
+\label{subsec:topological_stability}
 
-\subsection{Geometric Confinement and Asymptotic Breaking}
+\todo{Author: Explain that particles are stable topological knots (instantons) in the gauge field. Introduce the Cartan-Maurer degree / Belavin bounds to explain why these knots cannot mathematically decay or unwrap into the trivial vacuum.}
+
+\begin{equation}
+    \int_{S^3} \text{Cartan-Maurer Form} \neq 0 \implies \mathcal{A} \text{ cannot continuously decay to } 0
+    \quad \leanref{CGD.Particles.TopologicalStability.kinematicTopologicalStability}
+    \label{eq:kinematicTopologicalStability}
+\end{equation}
+\todo{Cite Litlib Dependency: \cite{belavin1975pseudoparticle} for the topological energy bounds and \cite{nakahara2003geometry} for the Cartan-Maurer degree.}
+
+\todo{Author: Explain how the trace of the SU(2) curvature defect mathematically forces the inertial mass of these knots to be strictly positive, proving the Mass Gap from geometry.}
+
+\begin{equation}
+    \text{Tr}(\mathcal{F}^{(R)}_{\mu\nu} \mathcal{F}^{(R)\mu\nu}) \neq 0 \implies m_{\text{inertial}} > 0
+    \quad \leanref{CGD.Particles.Mass.topologicalMassGap}
+    \label{eq:topologicalMassGap}
+\end{equation}
+
+\todo{Author: Review and rename subsection title if desired.}
+\subsection{Geometric Confinement and Phenomenology}
 \label{subsec:geometric_confinement}
 
-\todo{Author: Address the "SU(3) Problem". Why don't we need a fundamental SU(3) gauge group for the Strong Force? Explain that multi-color components natively crush into 1D topological flux tubes (strings), perfectly yielding a 1D confining Hamiltonian. Then, briefly mention that while the 1D flux tube represents a confining potential, topological crossover limits dictate that the string will eventually mathematically "snap" at macroscopic distances, proving confinement is not absolute at infinite ranges.}
+\todo{Author: Explain that multi-color components natively crush into 1D topological flux tubes (strings), perfectly yielding a 1D confining Hamiltonian.}
 
 \begin{equation}
     \mathcal{H}_{3D} \rightarrow \frac{1}{2} E_z^2 + \frac{1}{2} \text{Tr}(B^2) \quad \text{(1D Confinement Reduction)}
+    \quad \leanref{CGD.Particles.Confinement.kinematicStringConfinement}
     \label{eq:kinematicStringConfinement}
 \end{equation}
 
-\begin{listing}[H]
-\begin{minted}{lean}
--- CGD.Particles.Confinement
-theorem kinematicStringConfinement :
-  ∀ (E B : Matrix (Fin 3) (Fin 3) ℂ) (E_z : ℂ),
-    isCrushedString E E_z →
-    ∃ (v : Fin 3 → ℂ), (∑ i : Fin 3, v i * v i = 1) ∧
-      densitizedHamiltonian E B = (1 / 2 : ℂ) * E_z^2 + (1 / 2 : ℂ) * ∑ a : Fin 3, ∑ b : Fin 3, B a b * B a b
-\end{minted}
-\caption{The exact reduction of the 3D Hamiltonian into a 1D string confining potential.}
-\label{lean:kinematicStringConfinement}
-\end{listing}
+\todo{Author: Note that breaking the L=R chiral symmetry to establish macroscopic volume mathematically guarantees the existence of a pervasive Axial-Vector condensate in the background.}
 
 \begin{equation}
-    L > \frac{2M}{\sigma} \implies \text{String Breaking Limit Reached}
-    \label{eq:algebraicStringBreakingLimit}
+    \mathcal{A}^{(L)} \neq \mathcal{A}^{(R)} \implies \mathcal{A}_{\text{axial}} \neq 0
+    \quad \leanref{CGD.Phenomenology.AxialCondensate.macroscopicVolumeImpliesAxialCondensate}
+    \label{eq:macroscopicVolumeImpliesAxialCondensate}
 \end{equation}
-
-\begin{listing}[H]
-\begin{minted}{lean}
--- CGD.Quantum.Entanglement.Decay
-theorem algebraicStringBreakingLimit
-  (energyFunc : (Fin 4 → SpacetimePoint → SL2C) → ℝ)
-  (intactState snappedState : ℝ → Fin 4 → SpacetimePoint → SL2C)
-  ... [FluxTubeStringBreaking limits elided] ...
-  (u : Universe) (L : ℝ) (h_L_pos : L > 0)
-  (h_intact : u.sd_sector = intactState L)
-  (h_L_crossover : L > (2 * M) / sigma) :
-  ¬ isGlobalMinimum energyFunc u.sd_sector
-\end{minted}
-\caption{The macroscopic limit where an intact flux tube drops out of the global minimum.}
-\label{lean:algebraicStringBreakingLimit}
-\end{listing}

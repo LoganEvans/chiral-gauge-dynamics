@@ -1,0 +1,44 @@
+% FILENAME: paper/lean-citation.tex
+
+% This file defines the custom \leanref macro and the \printleanrefs index generator.
+% It maps inline theorem citations to their corresponding line numbers in the code appendix.
+
+\newcounter{leancnt}
+\newwrite\leanfile
+
+% Open the auxiliary file for writing at the start of the document
+\AtBeginDocument{%
+    \immediate\openout\leanfile=\jobname.leanrefs
+    \immediate\write\leanfile{\string\relax}
+}
+
+\makeatletter
+\newcommand{\leanref}[1]{%
+    \ifmeasuring@
+        \ifmmode {}^{\textnormal{[L?]}} \else \textsuperscript{[L?]} \fi
+    \else
+        \expandafter\ifx\csname lean@ref@id@\detokenize{#1}\endcsname\relax
+            \refstepcounter{leancnt}%
+            \expandafter\xdef\csname lean@ref@id@\detokenize{#1}\endcsname{\theleancnt}%
+            \immediate\write\leanfile{%
+                \string\noindent\string\textbf{[L\theleancnt]}\string\quad%
+                \string\hyperref[lean:#1]{\string\texttt{\string\detokenize{#1}}}%
+                \string\dotfill\space Line \string\ref{lean:#1}\string\par\string\vspace{0.5em}%
+            }%
+        \fi
+        \ifmmode 
+            {}^{\textnormal{\pdftooltip{\hyperref[lean:#1]{[L\csname lean@ref@id@\detokenize{#1}\endcsname]}}{\detokenize{#1}}}}%
+        \else 
+            \textsuperscript{\pdftooltip{\hyperref[lean:#1]{[L\csname lean@ref@id@\detokenize{#1}\endcsname]}}{\detokenize{#1}}}%
+        \fi
+    \fi
+}
+\makeatother
+
+\newcommand{\printleanrefs}{%
+    \section*{Formal Verification Index}%
+    \noindent The equations annotated with \textbf{[L$n$]} in the main text have been formally verified in Lean 4. Click the theorem name to jump to the code signature, or reference the line number in the Appendix.
+    \par\vspace{1em}
+    \immediate\closeout\leanfile
+    \input{\jobname.leanrefs}
+}

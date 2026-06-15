@@ -1,159 +1,109 @@
 % FILENAME: paper/section-Quantum.tex
 
+\todo{Author Overview: This section proves that standard quantum mechanical behavior—wave equations, quantization, and entanglement—emerges strictly from the geometric phase space of the topological connection.
+Order of theorems covered:
+1. generalizedDynamicDiracEquation / familiarDynamicDiracEquation: The covariant Dirac operator is exactly the macroscopic Yang-Mills curvature trace plus a dynamic geometric expansion term.
+2. algebraicDiracChiralSplit / exactSchroedingerReduction: This relativistic structure natively reduces to the non-relativistic 1/2m Schrödinger Hamiltonian.
+3. kinematicActionQuantization: Integer quantization emerges strictly from Cartan-Maurer topological boundaries.
+4. relationalTimeEmergence: Time evolution (Hamiltonian) is mathematically identical to traversing the spatial holonomy (phase) of a U(1) defect. Time is relational.
+5. kinematicEntanglementWormhole / kinematicFluxTubeStability: The channel connecting entangled states is a topologically degenerate 1D metric string.
+6. fluxTubeHolonomyEvaluation / geometricHolonomyTsirelsonBound: Path-integrating this holonomy exactly reproduces standard quantum state vectors bounded at the $2\sqrt{2}$ Tsirelson limit.
+7. algebraicStringBreakingLimit: The string breaking separatrix crossover limit.
+8. finiteLiouvilleBoundaryFlow / physicalBornRule: Phase space volume is preserved, and its geometric projection rigorously derives the Born Rule.
+Nuances: Emphasize that we do not 'quantize' the system. Quantum mechanics is just the relational geometry of how topological defects measure each other.
+
+TONE CHECK: Emphasize that we are not "quantizing" a classical system. The Schrödinger/Dirac equations are just the relational geometry of how macroscopic defects measure one another in the background connection.
+}
+
+\todo{Author: Review and rename section title if desired.}
 \section{Quantum Mechanics: Geometry of the Phase Space}
 \label{sec:Quantum}
 
+\todo{Author: Review and rename subsection title if desired.}
 \subsection{The Emergent Dirac Operator}
 \label{subsec:emergent_dirac}
 
-\todo{Author: This is a CAPSTONE. Explain that fermionic matter is just geometry reacting to geometry. Note how the background-independent covariant Dirac operator mathematically equals the macroscopic Yang-Mills curvature trace, plus an inertial term for the dynamical evolution of spacetime. Ensure you point out the use of the emergent tetrad $e_a^\mu$ rather than a flat metric.}
+\todo{Author: Explain that fermionic matter is just geometry reacting to geometry. Note how the background-independent covariant Dirac operator mathematically equals the macroscopic Yang-Mills curvature trace.}
 
 \begin{equation}
-    \slashed{D}_\nu \Psi = e_a^\mu \gamma^a F_{\mu\nu} + e_a^\mu \gamma^a (\partial_\nu A_\mu)
+    \slashed{D}_\nu \Psi = e_a^\mu \gamma^a \mathcal{F}_{\mu\nu} + e_a^\mu \gamma^a (\partial_\nu \mathcal{A}_\mu)
+    \quad \leanref{CGD.Quantum.Dirac.generalizedDynamicDiracEquation}
     \label{eq:generalizedDynamicDiracEquation}
 \end{equation}
 
-\begin{listing}[H]
-\begin{minted}{lean}
--- CGD.Quantum.Dirac
-theorem generalizedDynamicDiracEquation 
-  (u : Universe) (e : TetradField) (x : SpacetimePoint) (nu : Fin 4) :
-  emergentDiracOperator u e x nu = 
-  ∑ mu, ∑ a, (e a mu x) • (gammaVec a * curvature (fun m p => u.spin4c_connection m p) mu nu x) + 
-  ∑ mu, ∑ a, (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => u.spin4c_connection mu p) x)
-\end{minted}
-\caption{Formal verification of the background-independent Dirac operator.}
-\label{lean:generalizedDynamicDiracEquation}
-\end{listing}
-
+\todo{Author: Review and rename subsection title if desired.}
 \subsection{The Schrödinger Non-Relativistic Limit}
 \label{subsec:schroedinger_limit}
 
-\todo{Author: Explain that as a compatibility check, splitting the large and small components of the covariant Dirac field natively recovers the standard 1/2m non-relativistic Schrödinger Hamiltonian without invoking external potentials.}
+\todo{Author: Explain that splitting the large and small components of the covariant Dirac field natively recovers the standard 1/2m non-relativistic Schrödinger Hamiltonian without invoking external potentials.}
 
 \begin{align}
     2m \Psi_+ &= P_+ (\partial_0 \Psi + m \Psi) + \gamma^i P_- (\partial_i \Psi) \nonumber \\
     P_- (\partial_0 \Psi + m \Psi) &= \gamma^i P_+ (\partial_i \Psi)
+    \quad \leanref{CGD.Quantum.Schroedinger.exactSchroedingerReduction}
     \label{eq:exactSchroedingerReduction}
 \end{align}
 
-\begin{listing}[H]
-\begin{minted}{lean}
--- CGD.Quantum.Schroedinger
-theorem exactSchroedingerReduction (dPsi : Fin 4 → SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) 
-  (Psi : SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) (m : Complex) (x : SpacetimePoint) :
-  localDiracOp (fun a => dPsi a x) = m • Psi x →
-  let D0_mod := modulatedTemporalDeriv (dPsi 0 x) (Psi x) m;
-  let Psi_small := P_plus * Psi x;
-  (2 • m • Psi_small = P_plus * D0_mod + gammaVec 1 * (P_minus * dPsi 1 x) + gammaVec 2 * (P_minus * dPsi 2 x) + gammaVec 3 * (P_minus * dPsi 3 x)) ∧
-  (P_minus * D0_mod = gammaVec 1 * (P_plus * dPsi 1 x) + gammaVec 2 * (P_plus * dPsi 2 x) + gammaVec 3 * (P_plus * dPsi 3 x))
-\end{minted}
-\caption{The exact analytical recovery of the non-relativistic Schrödinger structure.}
-\label{lean:exactSchroedingerReduction}
-\end{listing}
-
+\todo{Author: Review and rename subsection title if desired.}
 \subsection{Relational Time and Quantization}
 \label{subsec:relational_time}
 
-\todo{Author: Explain the quantum clock. Time evolution (the Schrödinger operator) is mathematically identical to spatial phase evolution (the holonomy) along the U(1) core of a flux tube. Time is a relational geometric phase. Furthermore, explain that "quanta" arise natively from integer topological boundary invariants (Belavin bounds).}
+\todo{Author: Explain the quantum clock. Time evolution (the Schrödinger operator) is mathematically identical to spatial phase evolution (the holonomy) along the U(1) core of a flux tube. Time is a relational geometric phase.}
 
 \begin{equation}
-    \mathcal{P} \exp \left( \int A_1 dx^1 \right) = \exp(-i H t)
+    \mathcal{P} \exp \left( \int \mathcal{A}_1 dx^1 \right) = \exp(-i H t)
+    \quad \leanref{CGD.Quantum.Holonomy.RelationalTime.relationalTimeEmergence}
     \label{eq:relationalTimeEmergence}
 \end{equation}
 
-\begin{listing}[H]
-\begin{minted}{lean}
--- CGD.Quantum.Holonomy.RelationalTime
-theorem relationalTimeEmergence
-  (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
-  (u : CGD.Axioms.Universe) (t : ℝ)
-  (h_core : ∀ s, (u.sd_sector.val 1 (straightLinePath s)).val = Complex.I • sigmaZ) :
-  macroscopicObservable (holonomy matrixExp) u.sd_sector.val 1 t = 
-  unitaryTimeEvolution matrixExp (-sigmaZ) t
-\end{minted}
-\caption{The derivation of Schrödinger time evolution directly from spatial holonomy.}
-\label{lean:relationalTimeEmergence}
-\end{listing}
+\todo{Author: Explain that "quanta" arise natively from integer topological boundary invariants.}
 
 \begin{equation}
     S_{\text{top}} \in \{ -1, 1 \}
+    \quad \leanref{CGD.Quantum.ActionQuantization.kinematicActionQuantization}
     \label{eq:kinematicActionQuantization}
 \end{equation}
+\todo{Cite Litlib Dependency: \cite{belavin1975pseudoparticle} and \cite{nakahara2003geometry} for the topological degree mapping constraints.}
 
-\begin{listing}[H]
-\begin{minted}{lean}
--- CGD.Quantum.ActionQuantization
-theorem kinematicActionQuantization
-  {BoundaryManifold : Type*} [TopologicalSpace BoundaryManifold] [Nonempty BoundaryManifold]
-  (boundaryMap : (Fin 4 → SpacetimePoint → SL2C) → BoundaryManifold → SU2Group)
-  ... [Litlib.Belavin1975 Eq 8 bounds and Nakahara prerequisites elided] ...
-  (u : Universe)
-  (h_homeo : IsHomeomorphism (boundaryMap u.sd_sector.val)) :
-  cartanMaurerIntegral (boundaryMap u.sd_sector.val) = 1 ∨ 
-  cartanMaurerIntegral (boundaryMap u.sd_sector.val) = -1
-\end{minted}
-\caption{The integer quantization of the topological boundary map.}
-\label{lean:kinematicActionQuantization}
-\end{listing}
-
+\todo{Author: Review and rename subsection title if desired.}
 \subsection{Entanglement and Macroscopic Holonomy}
 \label{subsec:entanglement}
 
-\todo{Author: Address "spooky action" and Hilbert space assumptions. Prove ER=EPR by showing the spatial metric determinant strictly degenerates to zero along an entangled wormhole channel. Then, explain how path-integrating the SU(2) holonomy purely recovers quantum state vectors and the macroscopic CHSH Tsirelson bound of $2\sqrt{2}$.}
+\todo{Author: Address "spooky action". Prove ER=EPR by showing the spatial metric determinant strictly degenerates to zero along an entangled wormhole channel.}
 
 \begin{equation}
-    \det(g_x) = \det(g_y) = 0 \quad \text{along the ER=EPR bridge}
+    \det(g_{\mu\nu}) = 0 \quad \text{along the ER=EPR bridge}
+    \quad \leanref{CGD.Quantum.Entanglement.Wormhole.kinematicEntanglementWormhole}
     \label{eq:kinematicEntanglementWormhole}
 \end{equation}
 
-\begin{listing}[H]
-\begin{minted}{lean}
--- CGD.Quantum.Entanglement.Wormhole
-theorem kinematicEntanglementWormhole (u : Universe) :
-  ∀ (x y : SpacetimePoint) (theta : ℝ),
-    areEntangled u.sd_sector x y theta →
-    (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x)).det = 0 ∧
-    (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n y)).det = 0
-\end{minted}
-\caption{The topological degeneration of the metric along an ER=EPR entangled bridge.}
-\label{lean:kinematicEntanglementWormhole}
-\end{listing}
-
-\begin{equation}
-    U(\alpha, L) = \cos(L)\mathbf{1} + i \sin(L) \sigma_\alpha
-    \label{eq:fluxTubeHolonomyEvaluation}
-\end{equation}
-
-\begin{listing}[H]
-\begin{minted}{lean}
--- CGD.Quantum.Holonomy.Evaluation
-theorem fluxTubeHolonomyEvaluation
-  (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
-  ... [Derivative properties elided] ...
-  (u : CGD.Axioms.Universe) (alpha L : ℝ)
-  (h_field : ∀ t, u.sd_sector 1 (straightLinePath t) = fluxTubeFrame 1 (straightLinePath t)) :
-  macroscopicObservable (holonomy matrixExp) (fun mu p => rotateYAxis (fun m p => u.sd_sector m p) alpha mu p) 1 L =
-  (Complex.cos (L:ℂ)) • 1 + (Complex.I * Complex.sin (L:ℂ)) • obs_M alpha
-\end{minted}
-\caption{The spatial SU(2) holonomy matching standard quantum state vectors.}
-\label{lean:fluxTubeHolonomyEvaluation}
-\end{listing}
+\todo{Author: Explain how path-integrating the SU(2) holonomy purely recovers quantum state vectors and the macroscopic CHSH Tsirelson bound of $2\sqrt{2}$.}
 
 \begin{equation}
     \left[ \text{Re}(\text{CHSH}) \right]^2 \leq 8
+    \quad \leanref{CGD.Quantum.Holonomy.Geometric.geometricHolonomyTsirelsonBound}
     \label{eq:geometricHolonomyTsirelsonBound}
 \end{equation}
+\todo{Cite Litlib Dependency: \cite{hall2000elementary} for the Lie derivative exponential maps required for macroscopic holonomy.}
 
-\begin{listing}[H]
-\begin{minted}{lean}
--- CGD.Quantum.Holonomy.Geometric
-theorem geometricHolonomyTsirelsonBound 
-  (A1 A2 B1 B2 : SU2Group) :
-  let chsh := geometricBellCorrelation A1 B1 + geometricBellCorrelation A1 B2 + 
-              geometricBellCorrelation A2 B1 - geometricBellCorrelation A2 B2;
-  (chsh.re)^2 ≤ 8 ∧ chsh.im = 0
-\end{minted}
-\caption{The geometric realization of the CHSH correlation bounded natively at $2\sqrt{2}$.}
-\label{lean:geometricHolonomyTsirelsonBound}
-\end{listing}
+\todo{Author: Review and rename subsection title if desired.}
+\subsection{The Born Rule and Measurement}
+\label{subsec:measurement}
+
+\todo{Author: Explain that macroscopic crossover limits dictate string breaking.}
+
+\begin{equation}
+    L > \frac{2M}{\sigma} \implies \text{String Breaking Limit Reached}
+    \quad \leanref{CGD.Quantum.Entanglement.Decay.algebraicStringBreakingLimit}
+    \label{eq:algebraicStringBreakingLimit}
+\end{equation}
+\todo{Cite Litlib Dependency: \cite{bali2001qcd} for the QCD flux tube energy crossover bounds.}
+
+\todo{Author: Conclude with the Born Rule. Explain that continuous gauge flow inherently preserves phase space volume (Liouville's theorem), and projecting this invariant volume exactly derives the $1 - M/E_0$ Born Rule probability.}
+
+\begin{equation}
+    P = \frac{\int_{\theta}^{\pi} d\mathcal{V}_{\text{Hopf}}}{\int_{0}^{\pi} d\mathcal{V}_{\text{Hopf}}} = 1 - \frac{M}{E_0}
+    \quad \leanref{CGD.Quantum.Measurement.BornRule.physicalBornRule}
+    \label{eq:physicalBornRule}
+\end{equation}
+\todo{Cite Litlib Dependency: \cite{arnold1989mathematical} for the n-dimensional Liouville volume-preservation theorem.}

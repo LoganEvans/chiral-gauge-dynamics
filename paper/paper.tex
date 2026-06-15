@@ -22,10 +22,10 @@ Abstract
 % --- INCLUDED SECTIONS ---
 \input{section-Introduction}
 \input{section-Foundations}
+\input{section-Cosmology}
 \input{section-Gravity}
 \input{section-Matter}
 \input{section-Quantum}
-\input{section-Cosmology}
 \input{section-Conclusion}
 
 \appendix
@@ -49,8 +49,8 @@ While all of the proof text and compilation logs are omitted from the code summa
 (nix:nix-shell-env) .../chiral-gauge-dynamics$ lake exe cgd_report --code-summary=theorems
 \end{minted}
 
-\setminted{breaklines=true, breakanywhere=true, fontsize=\footnotesize, xleftmargin=0pt, baselinestretch=1}
-\inputminted{lean}{code-summary.txt}
+\setminted{breaklines=true, breakanywhere=true, fontsize=\footnotesize, xleftmargin=0pt, baselinestretch=1, escapeinside=(*@ @*)}
+\inputminted[escapeinside=||]{lean}{code-summary-labeled.txt}
 
 
 \end{document}

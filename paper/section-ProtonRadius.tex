@@ -1,11 +1,59 @@
-% FILENAME: paper/section-Appendix.tex
+% FILENAME: paper/section-ProtonRadius.tex
 
 \section{Phenomenological Implications: The Proton Radius}
-% TODO for Author: Explain how the 1D flux tube / instanton geometry maps to empirical scattering data. Discuss the implications of the plot.
+\label{sec:ProtonRadius}
+
+In this section, we will stray away from theoretical formalization and look at a phenomenological implication related to the proton radius puzzle. \citet{pohl2010size} showed that measuring the proton radius using muonic hydrogen differed by 5.0 standard deviations compared to the atomic hydrogen measurements. \citet{miller2026proton} argues that newer atomic hydrogen experiments have resolved the discrepancy. \citet{maisenbacher2026sub} used the 2S-6P transition of atomic hydrogen to obtain the measurement of $r_p = 0.8406(15)$ fm, which is consistent with muonic hydrogen measurements.
+
+However, this brings up the question of why older atomic hydrogen experiments measured a different value. In order to declare the proton radius solved, we must ignore the older atomic hydrogen experiments. We will use CGD to create a different model for how electrons and protons interact and reevaluate some of the older atomic hydrogen data.
+
+To begin, Equations \ref{eq:macroscopicVolumeImpliesAxialCondensate} and \ref{eq:axialIsIsovector} show that in CGD, it is a mathematical necessity that an axial-vector isovector condensate permeates the universe. Consulting \cite{pdg2024}, only one particle family matches the axial-vector isovector quantum numbers: the $a_1$ meson. This is the crux of why CGD predicts a different interaction model for protons and electrons: in the Standard Model, no $a_1$ condensate exists.
+
+At this point we stray from the formalized CGD theory and use phenomenological grafts from Quantum Field Theory (QFT). Based on QFT, if we bombard a proton with an electron, we need to compute the probability amplitude that the two particles will interact. This amplitude is the product of the bare interaction $G_{Dipole}(Q^2, r_{core})$ (the probability of interacting due to the electron interacting with the proton core) and the vacuum corrections $1 - F_{Axial}(Q^2, \kappa_E)$ (which is the influence of the $a_1$ condensate):
+
+\begin{equation}
+    G_E(Q^2) = G_{Dipole}(Q^2, r_{core}) \times ( 1 - F_{Axial}(Q^2, \kappa_E) ).
+\end{equation}
+
+\noindent Using Vector Meson Dominance (VMD) \citep{bodek2008vector}, we describe the core interaction using
+
+\begin{equation}
+    G_{Dipole}(Q^2, r) = \left( 1 + \frac{Q^2}{12 / (r / \hbar c)^2} \right)^{-2}.
+\end{equation}
+
+This leaves us needing to describe the influence of the axial-vector condensate in the $F_{Axial}(Q^2, \kappa_E)$ equation. This is the product of three components: the massive propagator $Q^2 / (Q^2 + m_{a_1}^2)$ associated with the probability amplitude that a virtual photon will resolve into an $a_1$ meson state \citep{guichon1983axial}, the loop screening term $\ln(1 + Q^2 / (m_{a_1}^2 - m_\rho^2))$ which describes the mass gap between the vector environment of the proton and the axial-vector state of the $a_1$ condensate \citep{coleman1973radiative, gross1973asymptotically}, and finally the Weinberg mixing angle \citep{weinberg1967precise} which describes the strength at which the vector and axial-vector environments mix. Putting this together we have
+
+\begin{equation}
+    F_{Axial}(Q^2, \kappa_E) = \frac{Q^2}{Q^2 + m_{a_1}^2} \times \ln\left( 1 + \frac{Q^2}{m_{a_1}^2 - m_\rho^2} \right) \times \left( \frac{m_\rho}{m_{a_1}} \right)^2 .
+\end{equation}
+
+Notice that the only free parameter in this model is $r$. However, this hides uncertainty around the $a_1$ meson particle family, because \citet{pdg2024} lists multiple resonances for the $a_1$ and $\rho$ mesons. In order to address this issue, in Figure \ref{fig:proton_radius} and Table \ref{tab:proton_radius_fits} we analyze an additional model where we treat $m_{a_1}$ and $m_\rho$ as free parameters.
+
+Another nuance of this proton form factor model is that it requires a relatively high momentum transfer $Q^2$ in order for $F_{Axial}(Q^2, \kappa_E)$ to have any value other than 0. In order to test this model in a regime where the effects of the axial-vector condensate are visible, we will need to find a dataset with a high momentum transfer. For this, we will use the Jefferson Lab high GeV$^2$ polarization transfer experiments described in \citet{punjabi2005proton, gayou2001measurements, puckett2012final, puckett2010recoil} and aggregated by \citet{ye2018proton}.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=\linewidth]{cgd_appendix_plot.pdf}
-    \caption{\todo{Explain the proton radius plot thoroughly}}
+    \includegraphics[width=\linewidth]{proton-radius/jlab-hall-C-polarization-transfer.pdf}
+    \caption{The proton radius factor form factor models. \citet{ye2018proton} is a global parameterization that represents a best-fit for atomic hydrogen based experiments. The CGD 1-Param model leaves only the proton radius $r_p$ as an unknown value, while the CGD 3-Param model additionally treats the meson masses $m_{a_1}$ and $m_\rho$ as unknown values. The statistical analysis of these models is shown in Table \ref{tab:proton_radius_fits}.}
     \label{fig:proton_radius}
 \end{figure}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Model} & \textbf{Parameters} & \textbf{Extracted $R_p$ [fm]} & \textbf{Total $\chi^2$} \\
+\midrule
+CGD Topology (Fixed Mesons) & 1 & 0.8373 & 20.7 \\
+CGD Topology (Free Mesons) & 3 & 0.8440 & 17.8 \\
+Ye 2018 Global & 13 & 0.879* & 36.0 \\
+\bottomrule
+\end{tabular}
+\caption{The statistical analysis for the models shown in Figure \ref{fig:proton_radius}. The CGD Topology (Free Mesons) model extracted the values $m_{a_1} = 1.2002$ GeV, $m_\rho = 0.7497$ GeV, and $r_p = 0.8440$ fm. The CGD Topology (Fixed Mesons) used the values $m_{a_1} = 1.209$ GeV, $m_\rho = 0.775$ reported in \citet{pdg2024}, and extracted the value $r_p = 0.8373$ fm.}
+\label{tab:proton_radius_fits}
+\end{table}
+
+It's important to note that despite the statistical comparisons shown in Table \ref{tab:proton_radius_fits}, we can only really reach one conclusion from this: CGD's axial condensate requirement is not easily falsified. We only analyzed a small subset of the available proton radius data, and we deliberately avoided looking at low GeV$^2$ momentum transfers. Furthermore, while our comparison against the Ye 2018 Global model is the best comparison we could find as a proxy for the Standard Model, it is somewhat disingenuous. \citet{ye2018proton} built this parameterization from all of the data available at the time, not just the high GeV$^2$ polarization transfer from JLab Hall C.
+
+According to \citet{miller2026proton}, the Standard Model requires that we model the effects of both one-photon and two-photon exchange. However, with CGD, we didn't need to model the effects of two-photon exchange in order to reach high accuracy. Our theoretical basis is currently silent about whether two-photon exchange is important or not. The upcoming MUSE experiment \citet{cline2021muse} is exciting because if it shows that TPE is a much smaller effect than currently expected, then it will violate the lepton universality axiom of the Standard Model. In contrast, an anomalous MUSE result may be perfectly consistent with the CGD axioms.
+
