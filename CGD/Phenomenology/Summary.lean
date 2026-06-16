@@ -2,9 +2,12 @@
 
 import CGD.Axioms.PhysicalUniverse
 import CGD.Foundations.Spacetime
+import CGD.Foundations.Calculus
 import CGD.Phenomenology.AxialCondensate
 import CGD.Phenomenology.Chirality
 import Mathlib.Data.Matrix.Basic
+
+set_option linter.unusedVariables false
 
 open Complex Matrix CGD.Foundations CGD.Axioms
 
@@ -38,19 +41,19 @@ theorem phenomenologySummary (pu : PhysicalUniverse) :
 
   -- Conjunct 3: Macroscopic Volume Implies Chirality
   -- Proved by `macroscopicVolumeImpliesChirality` in `CGD.Phenomenology.Chirality`
-  (∀ (x : SpacetimePoint) (hx : x ∈ pu.bulk), PhysicalFramework pu x hx →
+  (∀ (x : SpacetimePoint) (hx : x ∈ pu.bulk), (∀ μ ν, curvatureSl2c pu.toUniverse.asd_sector.val μ ν x = 0) →
     pu.toUniverse.sd_sector.val ≠ pu.toUniverse.asd_sector.val)
   ∧
 
   -- Conjunct 4: Macroscopic Volume Implies Axial Condensate
   -- Proved by `macroscopicVolumeImpliesAxialCondensate` in `CGD.Phenomenology.AxialCondensate`
-  (∀ (x : SpacetimePoint) (hx : x ∈ pu.bulk), PhysicalFramework pu x hx →
+  (∀ (x : SpacetimePoint) (hx : x ∈ pu.bulk), (∀ μ ν, curvatureSl2c pu.toUniverse.asd_sector.val μ ν x = 0) →
     ∃ y mu, axialField pu.toUniverse mu y ≠ 0) := by
   exact ⟨
     fun mu x => axialIsIsovector pu mu x,
     fun mu x => axialIsParityOdd pu mu x,
-    fun x hx fw => macroscopicVolumeImpliesChirality pu x hx fw,
-    fun x hx fw => macroscopicVolumeImpliesAxialCondensate pu x hx fw
+    fun x hx h_vacuum => macroscopicVolumeImpliesChirality pu x hx h_vacuum,
+    fun x hx h_vacuum => macroscopicVolumeImpliesAxialCondensate pu x hx h_vacuum
   ⟩
 
 end CGD.Phenomenology

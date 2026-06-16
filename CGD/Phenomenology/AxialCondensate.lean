@@ -85,11 +85,11 @@ space spontaneously generates the axial field to preserve its volume.
 -/
 theorem macroscopicVolumeImpliesAxialCondensate 
   (pu : PhysicalUniverse) (x : SpacetimePoint) (hx : x ∈ pu.bulk)
-  (fw : PhysicalFramework pu x hx) :
+  (h_vacuum : ∀ μ ν, curvatureSl2c pu.toUniverse.asd_sector.val μ ν x = 0) :
   ∃ y mu, axialField pu.toUniverse mu y ≠ 0 := by
   
   -- 1. Obtain the global chiral collapse theorem
-  have h_chiral := macroscopicVolumeImpliesChirality pu x hx fw
+  have h_chiral := macroscopicVolumeImpliesChirality pu x hx h_vacuum
   
   -- 2. Assume by contradiction that the axial field is strictly zero everywhere
   by_contra h_not_exists
