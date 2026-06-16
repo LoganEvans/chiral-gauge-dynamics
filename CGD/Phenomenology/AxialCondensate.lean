@@ -5,9 +5,11 @@ import CGD.Axioms.PhysicalUniverse
 import CGD.Foundations.GaugeGroup
 import CGD.Foundations.Spacetime
 import CGD.AntiSelfDualSector.Decoupling
+import CGD.Phenomenology.Chirality
 import Mathlib.Data.Matrix.Basic
 import Mathlib.Algebra.Lie.Basic
 import Mathlib.Algebra.Lie.Matrix
+import Mathlib.Tactic
 
 open Matrix
 open Complex
@@ -76,17 +78,34 @@ theorem axialIsIsovector (pu : PhysicalUniverse) (mu : Fin 4) (x : SpacetimePoin
 Litlib.theorem
   description "Macroscopic Volume Implies Axial Condensate"
 /--
-If the macroscopic volume emergent metric is non-degenerate, chiral symmetry must be broken (L ≠ R). 
-This mathematically guarantees that the spacetime background is natively populated by a strictly non-zero 
-Axial-Vector condensate.
+Because the macroscopic volume emergent metric strictly forbids global chiral symmetry 
+(via `macroscopicVolumeImpliesChirality`), this mathematically guarantees that the spacetime 
+background is natively populated by a strictly non-zero Axial-Vector condensate. Empty 
+space spontaneously generates the axial field to preserve its volume.
 -/
-theorem macroscopicVolumeImpliesAxialCondensate (pu : PhysicalUniverse) (mu : Fin 4) (x : SpacetimePoint)
-  (h_neq : (pu.toUniverse.sd_sector mu x).val ≠ (pu.toUniverse.asd_sector mu x).val) :
-  axialField pu.toUniverse mu x ≠ 0 := by
-  unfold axialField
-  intro h_zero
-  have h2 : (2 : ℂ) • ((1 / 2 : ℂ) • ((pu.toUniverse.sd_sector mu x).val - (pu.toUniverse.asd_sector mu x).val)) = (2 : ℂ) • (0 : Matrix (Fin 2) (Fin 2) ℂ) := by rw [h_zero]
-  rw [smul_smul] at h2
-  have h_mul : (2 : ℂ) * (1 / 2 : ℂ) = 1 := by norm_num
-  rw [h_mul, one_smul, smul_zero] at h2
-  exact h_neq (sub_eq_zero.mp h2)
+theorem macroscopicVolumeImpliesAxialCondensate 
+  (pu : PhysicalUniverse) (x : SpacetimePoint) (hx : x ∈ pu.bulk)
+  (fw : PhysicalFramework pu x hx) :
+  ∃ y mu, axialField pu.toUniverse mu y ≠ 0 := by
+  
+  -- 1. Obtain the global chiral collapse theorem
+  have h_chiral := macroscopicVolumeImpliesChirality pu x hx fw
+  
+  -- 2. Assume by contradiction that the axial field is strictly zero everywhere
+  by_contra h_not_exists
+  push_neg at h_not_exists
+  
+  -- 3. If the axial field is zero everywhere, the Universe is globally symmetric
+  have h_eq : pu.toUniverse.sd_sector.val = pu.toUniverse.asd_sector.val := by
+    funext mu y
+    apply Subtype.ext
+    have h_ax := h_not_exists y mu
+    unfold axialField at h_ax
+    have h2 : (2 : ℂ) • ((1 / 2 : ℂ) • ((pu.toUniverse.sd_sector mu y).val - (pu.toUniverse.asd_sector mu y).val)) = (2 : ℂ) • (0 : Matrix (Fin 2) (Fin 2) ℂ) := by rw [h_ax]
+    rw [smul_smul] at h2
+    have h_mul : (2 : ℂ) * (1 / 2 : ℂ) = 1 := by norm_num
+    rw [h_mul, one_smul, smul_zero] at h2
+    exact sub_eq_zero.mp h2
+    
+  -- 4. A globally symmetric universe contradicts the macroscopic volume constraint
+  exact h_chiral h_eq

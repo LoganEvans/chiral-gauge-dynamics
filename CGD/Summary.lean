@@ -39,6 +39,7 @@ import CGD.Particles.Confinement
 import CGD.Particles.Mass
 import CGD.Particles.TopologicalStability
 import CGD.Phenomenology.AxialCondensate
+import CGD.Phenomenology.Chirality
 import CGD.Quantum.Definitions
 import CGD.Quantum.ActionQuantization
 import CGD.Quantum.Dirac
@@ -360,9 +361,11 @@ theorem cgdSummary
   (∀ (mu : Fin 4) (x : SpacetimePoint),
     axialField (paritySwap pu.toUniverse) mu x = - axialField pu.toUniverse mu x)
   ∧
-  (∀ (mu : Fin 4) (x : SpacetimePoint),
-    (pu.toUniverse.sd_sector mu x).val ≠ (pu.toUniverse.asd_sector mu x).val →
-    axialField pu.toUniverse mu x ≠ 0)
+  (∀ (x : SpacetimePoint) (hx : x ∈ pu.bulk), PhysicalFramework pu x hx →
+    pu.toUniverse.sd_sector.val ≠ pu.toUniverse.asd_sector.val)
+  ∧
+  (∀ (x : SpacetimePoint) (hx : x ∈ pu.bulk), PhysicalFramework pu x hx →
+    ∃ y mu, axialField pu.toUniverse mu y ≠ 0)
   ∧
 
   -- ====================================================================
@@ -497,7 +500,8 @@ theorem cgdSummary
     kinematicTopologicalStability,
     fun mu x => axialIsIsovector pu mu x,
     fun mu x => axialIsParityOdd pu mu x,
-    fun mu x h => macroscopicVolumeImpliesAxialCondensate pu mu x h,
+    fun x hx fw => macroscopicVolumeImpliesChirality pu x hx fw,
+    fun x hx fw => macroscopicVolumeImpliesAxialCondensate pu x hx fw,
     fun {BoundaryManifold} _ _ boundaryMap windingNumber cartanMaurerIntegral _ _ h_homeo => kinematicActionQuantization boundaryMap windingNumber cartanMaurerIntegral pu h_homeo,
     fun e x nu h_stat => familiarDynamicDiracEquation pu e x nu h_stat,
     fun e x nu => generalizedDynamicDiracEquation pu e x nu,
