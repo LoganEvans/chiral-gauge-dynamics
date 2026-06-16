@@ -67,6 +67,7 @@ import Litlib.Y1976.rudin1976principles.Chapter11.LebesgueIntegral
 import Litlib.Y1956.utiyama1956invariant.Signature
 import Litlib.Y1975.belavin1975pseudoparticle.Signature
 import Litlib.Y2003.nakahara2003geometry.Chapter10.Sec05_GaugeTheories
+import Litlib.Y2011.krasnov2011plebanski.Signature
 import Litlib.Y2001.bali2001qcd.Signature
 import Litlib.Y2000.hall2000elementary.Signature
 import Litlib.Y1989.arnold1989mathematical.Chapter03.Sec16_Liouville
@@ -296,10 +297,13 @@ theorem cgdSummary
   ∧
   (∀ (x : SpacetimePoint)
      (Sigma Sigma_bar : Fin 3 → Fin 4 → Fin 4 → ℂ)
-     (T_ij : Fin 3 → Fin 3 → ℂ)
+     (F_ij F_bar_ij T_ij : Fin 3 → Fin 3 → ℂ)
      (Lambda G T_scalar : ℂ)
      (plebanski_matter_eqs : Prop),
      G ≠ 0 →
+     ∀ (eval_SL2C : SL2C → Fin 3 → ℂ),
+     (∀ A, (∀ i, eval_SL2C A i = 0) → A = 0) →
+     (∀ μ ν i, eval_SL2C (curvatureSl2c pu.toUniverse.asd_sector μ ν x) i = ∑ j, F_bar_ij i j * Sigma_bar j μ ν) →
      Litlib.Y2011.krasnov2011plebanski.Eq16 
        Sigma 
        Sigma_bar 
@@ -309,13 +313,13 @@ theorem cgdSummary
      Litlib.Y2011.krasnov2011plebanski.Eq17 
        Lambda 
        G 
-       (cgdAdjointCurvature pu.toUniverse 0 1 x) 
-       (cgdAdjointCurvatureAsd pu.toUniverse 0 1 x) 
+       F_ij 
+       F_bar_ij 
        T_scalar 
        T_ij 
        plebanski_matter_eqs →
      plebanski_matter_eqs →
-     (∃ i j, (cgdAdjointCurvatureAsd pu.toUniverse 0 1 x) i j ≠ 0) →
+     (∃ μ ν, curvatureSl2c pu.toUniverse.asd_sector μ ν x ≠ 0) →
      ∃ ρ μ, emergentStressEnergy (fun a b p => curvatureSl2c pu.toUniverse.sd_sector a b p) ρ μ x ≠ 0)
   ∧
 

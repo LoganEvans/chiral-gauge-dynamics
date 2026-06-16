@@ -181,10 +181,13 @@ theorem gravitySummary
   -- Proves that the anti-self-dual curvature natively generates a strictly non-zero Stress-Energy tensor.
   (∀ (x : SpacetimePoint)
      (Sigma Sigma_bar : Fin 3 → Fin 4 → Fin 4 → ℂ)
-     (T_ij : Fin 3 → Fin 3 → ℂ)
+     (F_ij F_bar_ij T_ij : Fin 3 → Fin 3 → ℂ)
      (Lambda G T_scalar : ℂ)
      (plebanski_matter_eqs : Prop),
      G ≠ 0 →
+     ∀ (eval_SL2C : SL2C → Fin 3 → ℂ),
+     (∀ A, (∀ i, eval_SL2C A i = 0) → A = 0) →
+     (∀ μ ν i, eval_SL2C (curvatureSl2c pu.toUniverse.asd_sector μ ν x) i = ∑ j, F_bar_ij i j * Sigma_bar j μ ν) →
      Litlib.Y2011.krasnov2011plebanski.Eq16 
        Sigma 
        Sigma_bar 
@@ -194,13 +197,13 @@ theorem gravitySummary
      Litlib.Y2011.krasnov2011plebanski.Eq17 
        Lambda 
        G 
-       (cgdAdjointCurvature pu.toUniverse 0 1 x) 
-       (cgdAdjointCurvatureAsd pu.toUniverse 0 1 x) 
+       F_ij 
+       F_bar_ij 
        T_scalar 
        T_ij 
        plebanski_matter_eqs →
      plebanski_matter_eqs →
-     (∃ i j, (cgdAdjointCurvatureAsd pu.toUniverse 0 1 x) i j ≠ 0) →
+     (∃ μ ν, curvatureSl2c pu.toUniverse.asd_sector μ ν x ≠ 0) →
      ∃ ρ μ, emergentStressEnergy (fun a b p => curvatureSl2c pu.toUniverse.sd_sector a b p) ρ μ x ≠ 0) := by
   exact ⟨
     macroscopicRicciFlatEmergence pu,
