@@ -28,7 +28,7 @@ $(PROTON_RADIUS_PDF): proton-radius/analysis.py proton-radius/graph.py
 	@echo "Generating Proton Radius Analysis Graph..."
 	@cd proton-radius && python3 graph.py
 
-$(PDF): $(TEX_FILES) code-summary-labeled.txt $(PROTON_RADIUS_PDF)
+$(PDF): $(TEX_FILES) code-summary-labeled.txt $(PROTON_RADIUS_PDF) Makefile
 	@echo "Building $(PDF)..."
 	@if latexmk $(LATEXMK_FLAGS) $(PAPER); then \
 		printf "$(GREEN)✅ Success: $(PDF) has been successfully built!$(RESET)\n"; \

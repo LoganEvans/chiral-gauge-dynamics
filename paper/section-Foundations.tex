@@ -1,11 +1,12 @@
 % FILENAME: paper/section-Foundations.tex
 
-\todo{Author Overview: This section establishes the bare ontology of Chiral Gauge Dynamics. The universe is a continuous Spin(4,C) gauge field. There is no independent metric, no fundamental quantization, and no point particles.
+\todo{Author Overview: This section establishes the bare ontology of Chiral Gauge Dynamics. The universe is a continuous \spinFourC gauge field. There is no independent metric, no fundamental quantization, and no point particles.
 Order of theorems covered:
-1. algebraicChiralDecomposition: The 4D field cleanly factorizes into left and right chiral halves without cross-contamination.
-2. topologicalLagrangianUniqueness: Gauge invariance natively forces the Utiyama/Pontryagin action when no background metric exists.
-3. topologicalActionVariationZero: The classical variation of this action is exactly zero (no dynamical equations of motion).
-4. kinematicChargeConservation: U(1) charge conservation natively falls out of n-dimensional Clairaut symmetry without needing an action principle.
+1. Universe / PhysicalUniverse: The foundational axioms defining the Spin(4,C) connection, the macroscopic volume constraint, and the unimodular vacuum.
+2. algebraicChiralDecomposition: The 4D field cleanly factorizes into left and right chiral halves without cross-contamination.
+3. topologicalLagrangianUniqueness: Gauge invariance natively forces the Utiyama/Pontryagin action when no background metric exists.
+4. topologicalActionVariationZero: The classical variation of this action is exactly zero (no dynamical equations of motion).
+5. kinematicChargeConservation: U(1) charge conservation natively falls out of n-dimensional Clairaut symmetry without needing an action principle.
 Nuances: Emphasize what is missing. We do not assert that time exists, that spacetime is Lorentz invariant, the Principle of Least Action, or that particles exist yet.}
 
 \todo{Author: Review and rename section title if desired.}
@@ -16,14 +17,31 @@ Nuances: Emphasize what is missing. We do not assert that time exists, that spac
 \subsection{The Core Ontology}
 \label{subsec:core_ontology}
 
-\todo{Author: Introduce the core axioms. The universe is exclusively a Spin(4,C) continuous gauge connection. It decomposes into self-dual and anti-self-dual chiral sectors. To prevent a trivial vacuous state, we postulate a macroscopic volume bulk axiom.}
+\todo{Author: Introduce Axiom I: The core ontology. The universe is exclusively a \spinFourC continuous gauge connection. Explain that it naturally decomposes into self-dual (Gravity) and anti-self-dual (Matter) chiral sectors. Reference the `Universe` lean structure.}
 
 \begin{equation}
-    \mathcal{A}_\mu(x) = A^{(L)}_\mu(x) \oplus A^{(R)}_\mu(x)
+    \mathcal{A}_\mu(x) = A^{(L)}_\mu(x) \oplus A^{(R)}_\mu(x) \in \spinFourC
+    \quad \leanref{CGD.Axioms.Ontology.Universe}
     \label{eq:chiral_split}
 \end{equation}
 
-\todo{Author: Mention that the topological Pontryagin action strictly preserves this chiral split. The cross terms vanish orthogonally, allowing the left and right halves to act independently.}
+\todo{Author: Introduce Axiom II: Macroscopic Volume. Explain that to prevent a trivial vacuous state, we demand an open, non-empty topological bulk $\mathcal{B}$ where the determinant of the emergent Urbantke metric (derived from the self-dual sector) is non-zero.}
+
+\begin{equation}
+    \det(g_{\mu\nu}(x)) \neq 0 \quad \forall x \in \mathcal{B}
+    \quad \leanref{CGD.Axioms.MacroscopicVolume.MacroscopicVolume}
+    \label{eq:macroscopicVolumeAxiom}
+\end{equation}
+
+\todo{Author: Introduce Axiom III: Unimodular Vacuum. Explain that in this bulk (where there are no topological defects), the vacuum must maintain unimodular isotropy. The stress-energy/curvature interaction tensor $\Sigma$ must be purely trace.}
+
+\begin{equation}
+    \Sigma_{ab}(x) = \frac{1}{3} \mathrm{Tr}(\Sigma(x)) \delta_{ab} \quad \forall x \in \mathcal{B}
+    \quad \leanref{CGD.Axioms.UnimodularVacuum.UnimodularVacuum}
+    \label{eq:unimodularVacuumAxiom}
+\end{equation}
+
+\todo{Author: Conclude the axioms by noting that these three constraints are bundled into the `PhysicalUniverse` class. Mention that the topological Pontryagin action strictly preserves the chiral split of Axiom I. The cross terms vanish orthogonally, allowing the left and right halves to act independently.}
 
 \begin{equation}
     \mathcal{L}(F) = \mathcal{L}_{\text{vac}}(F^{(L)}) + \mathcal{L}_{\text{ASD}}(F^{(R)})

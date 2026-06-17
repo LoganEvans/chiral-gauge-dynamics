@@ -1,3 +1,5 @@
+# FILENAME: paper/label_code.py
+
 import os
 import re
 
@@ -15,7 +17,7 @@ def main():
     current_module = ""
     mod_regex = re.compile(r'^-- MODULE:\s*(\S+)')
     # Captures the keyword prefix (Group 1) and the full theorem name including dots/underscores (Group 2)
-    decl_regex = re.compile(r'^((?:noncomputable\s+)?(?:theorem|def|class|structure|instance|abbrev)\s+)([a-zA-Z0-9_.]+)')
+    decl_regex = re.compile(r'^((?:noncomputable\s+)?(?:theorem|def|class|structure|instance|abbrev|lemma)\s+)([a-zA-Z0-9_.]+)')
 
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
         for line in lines:
@@ -28,9 +30,9 @@ def main():
                 prefix = decl_match.group(1)
                 name = decl_match.group(2)
                 full_name = f"{current_module}.{name}"
-                # Injects: theorem |\label{lean:Module.Name}| Name ...
+                # Injects: theorem §\phantomsection\label{lean:Module.Name}§Name ...
                 remainder = line[decl_match.end():]
-                f.write(f"{prefix}|\\phantomsection\\label{{lean:{full_name}}}|{name}{remainder}")
+                f.write(f"{prefix}§\\phantomsection\\label{{lean:{full_name}}}§{name}{remainder}")
             else:
                 f.write(line)
 

@@ -3,13 +3,55 @@
 \section{Phenomenological Implications: The Proton Radius}
 \label{sec:ProtonRadius}
 
-In this section, we will stray away from theoretical formalization and look at a phenomenological implication related to the proton radius puzzle. \citet{pohl2010size} showed that measuring the proton radius using muonic hydrogen differed by 5.0 standard deviations compared to the atomic hydrogen measurements. \citet{miller2026proton} argues that newer atomic hydrogen experiments have resolved the discrepancy. \citet{maisenbacher2026sub} used the 2S-6P transition of atomic hydrogen to obtain the measurement of $r_p = 0.8406(15)$ fm, which is consistent with muonic hydrogen measurements.
+In this section, we will start by characterizing the CGD condensate and exploring the phenomenological implications related to the proton radius puzzle.
 
-However, this brings up the question of why older atomic hydrogen experiments measured a different value. In order to declare the proton radius solved, we must ignore the older atomic hydrogen experiments. We will use CGD to create a different model for how electrons and protons interact and reevaluate some of the older atomic hydrogen data.
+To evaluate the proton radius, we first consider the empty vacuum where the anti-self-dual (ASD) sector's curvature is zero. If the self-dual (SD) sector were structurally equivalent to the ASD sector, then both sectors would be zero and thus the field would trivially commute with itself. However, if the field trivially commuted with itself, then Equation \ref{eq:kinematicSingleColorDegeneracy} shows that the universe would lack volume, which would contradict the CGD Axiom \ref{eq:macroscopicVolumeAxiom} asserting that the universe has volume. Thus, we can show that the universe must have chirality
 
-To begin, Equations \ref{eq:macroscopicVolumeImpliesAxialCondensate} and \ref{eq:axialIsIsovector} show that in CGD, it is a mathematical necessity that an axial-vector isovector condensate permeates the universe. Consulting \cite{pdg2024}, only one particle family matches the axial-vector isovector quantum numbers: the $a_1$ meson. This is the crux of why CGD predicts a different interaction model for protons and electrons: in the Standard Model, no $a_1$ condensate exists.
+\begin{equation}
+    \left( \forall \mu, \nu, \ F^{(R)}_{\mu\nu}(x) = 0 \right) \implies \mathcal{A}^{(L)} \neq \mathcal{A}^{(R)}.
+    \quad \leanref{CGD.Phenomenology.Chirality.macroscopicVolumeImpliesChirality}
+    \label{eq:macroscopicVolumeImpliesChirality}
+\end{equation}
 
-At this point we stray from the formalized CGD theory and use phenomenological grafts from Quantum Field Theory (QFT). Based on QFT, if we bombard a proton with an electron, we need to compute the probability amplitude that the two particles will interact. This amplitude is the product of the bare interaction $G_{Dipole}(Q^2, r_{core})$ (the probability of interacting due to the electron interacting with the proton core) and the vacuum corrections $1 - F_{Axial}(Q^2, \kappa_E)$ (which is the influence of the $a_1$ condensate):
+\noindent Furthermore, by looking at the definition of an axial field, $\mathcal{A}_{\text{axial}} = \frac{1}{2}(\mathcal{A}^{(L)} - \mathcal{A}^{(R)})$, we see that since chirality exists throughout the vacuum, a non-zero axial background condensate must exist
+
+\begin{equation}
+    \left( \forall \mu, \nu, \ F^{(R)}_{\mu\nu}(x) = 0 \right) \implies \exists y, \mu \text{ s.t. } \mathcal{A}^{\text{axial}}_\mu(y) \neq 0.
+    \quad \leanref{CGD.Phenomenology.AxialCondensate.macroscopicVolumeImpliesAxialCondensate}
+    \label{eq:macroscopicVolumeImpliesAxialCondensate}
+\end{equation}
+
+We can further characterize the condensate by observing that both the SD and ASD Lie algebras are restricted to \slTwoCAlg, so they are traceless matrices by definition. Since the trace is a linear operation, we conclude that the condensate is isovector
+
+\begin{equation}
+    \mathrm{Tr}(\mathcal{A}^{\mathrm{axial}}_\mu(x)) = 0 .
+    \quad \leanref{CGD.Phenomenology.AxialCondensate.axialIsIsovector}
+    \label{eq:axialIsIsovector}
+\end{equation}
+
+\noindent We can also consider what happens when we invert the parity of the field $\mathcal{P}(\mathcal{A}_{\text{axial}}) = \mathcal{P}\left[ \frac{1}{2}(\mathcal{A}^{(L)} - \mathcal{A}^{(R)}) \right]$. This simplifies to $\mathcal{P}(\mathcal{A}_{\text{axial}}) = - \mathcal{A}_{\text{axial}}$, which means
+
+\begin{equation}
+    \mathcal{A}^{\mathrm{axial}}_\mu(\mathcal{P}x) = - \mathcal{A}^{\mathrm{axial}}_\mu(x).
+    \quad \leanref{CGD.Phenomenology.AxialCondensate.axialIsParityOdd}
+    \label{eq:axialIsParityOdd}
+\end{equation}
+
+\noindent All together, we can characterize the quantum numbers of the condensate as $I^G(J^{PC}) = 1^{-}(1^{++})$.
+
+This mathematical necessity of CGD is the crux of why CGD predicts a different interaction model for protons and electrons: in the Standard Model, no axial-vector condensate exists.
+
+\subsubsection{Phenomenological Model}
+
+At this point, we will stray away from theoretical formalization to look at phenomenological implication of an isovector axial-vector condensate. Only one particle family matches the axial-vector isovector quantum numbers: the $a_1$ meson \citep{pdg2024}, so if we are going to guess that the characteristic particle of the CGD condensate has already been discovered, this is our only choice.
+
+Now that we have characterized the CGD condensate, let us consider how a $a_1$ condensate would impact the proton radius puzzle.
+
+\citet{pohl2010size} showed that measuring the proton radius using muonic hydrogen differed by 5.0 standard deviations compared to the atomic hydrogen measurements. \citet{miller2026proton} argues that newer atomic hydrogen experiments have resolved the discrepancy. \citet{maisenbacher2026sub} used the 2S-6P transition of atomic hydrogen to obtain the measurement of $r_p = 0.8406(15)$ fm, which is consistent with muonic hydrogen measurements.
+
+However, this brings up the question of why older atomic hydrogen experiments measured a different value. Physicists have not identified any technical problems for all of the older atomic hydrogen experiments, so in order to declare the proton radius solved, the Standard Model must ignore this data.
+
+Based on QFT, if we bombard a proton with an electron, we need to compute the probability amplitude that the two particles will interact. In the presence of an axial-vector condensate, this amplitude is the product of the bare interaction $G_{Dipole}(Q^2, r_{core})$ (the probability of interacting due to the electron interacting with the proton core) and the vacuum corrections $1 - F_{Axial}(Q^2, \kappa_E)$ (which is the influence of the $a_1$ condensate):
 
 \begin{equation}
     G_E(Q^2) = G_{Dipole}(Q^2, r_{core}) \times ( 1 - F_{Axial}(Q^2, \kappa_E) ).

@@ -32,6 +32,7 @@ Abstract
 \input{section-Litlib}
 \input{section-ProtonRadius}
 
+\bibliographystyle{apsrev4-2}
 \bibliography{refs}
 
 % --- LEAN 4 THEOREM INDEX ---
@@ -49,8 +50,7 @@ While all of the proof text and compilation logs are omitted from the code summa
 (nix:nix-shell-env) .../chiral-gauge-dynamics$ lake exe cgd_report --code-summary=theorems
 \end{minted}
 
-\setminted{breaklines=true, breakanywhere=true, fontsize=\footnotesize, xleftmargin=0pt, baselinestretch=1, escapeinside=(*@ @*)}
-\inputminted[escapeinside=||]{lean}{code-summary-labeled.txt}
-
+\setminted{breaklines=true, breakanywhere=true, fontsize=\footnotesize, xleftmargin=0pt, baselinestretch=1, escapeinside=§§}
+\inputminted{lean}{code-summary-labeled.txt}
 
 \end{document}
