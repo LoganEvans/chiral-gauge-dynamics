@@ -22,4 +22,5 @@ lean_lib «CGD» {
 
 lean_exe «cgd_report» {
   root := `Main
+  supportInterpreter := true
 }

@@ -29,14 +29,29 @@ def main():
             if decl_match and current_module:
                 prefix = decl_match.group(1)
                 name = decl_match.group(2)
-                full_name = f"{current_module}.{name}"
-                # Injects: theorem §\phantomsection\label{lean:Module.Name}§Name ...
+                
+                # Ensure the name is fully qualified with the module path
+                if name.startswith(current_module):
+                    full_name = name
+                else:
+                    full_name = f"{current_module}.{name}"
+                
+                # Extract the BibTeX key if this is a Litlib module
+                cite_str = ""
+                if current_module.startswith("Litlib.Y"):
+                    parts = current_module.split('.')
+                    if len(parts) >= 3:
+                        bib_key = parts[2]
+                        # Use \textsuperscript so the citation doesn't look like a Lean array index [1]
+                        cite_str = f"§\\textsuperscript{{\\cite{{{bib_key}}}}}§"
+
+                # Injects the FULL name so the module prefix is visually printed in the PDF
                 remainder = line[decl_match.end():]
-                f.write(f"{prefix}§\\phantomsection\\label{{lean:{full_name}}}§{name}{remainder}")
+                f.write(f"{prefix}§\\phantomsection\\label{{lean:{full_name}}}§{full_name}{cite_str}{remainder}")
             else:
                 f.write(line)
 
-    print(f"Generated {OUTPUT_FILE} with bulletproof hyperlinked labels!")
+    print(f"Generated {OUTPUT_FILE} with bulletproof hyperlinked labels and inline citations!")
 
 if __name__ == "__main__":
     main()

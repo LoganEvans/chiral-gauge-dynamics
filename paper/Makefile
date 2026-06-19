@@ -13,7 +13,7 @@ GREEN  := \033[1;32m
 RED    := \033[1;31m
 RESET  := \033[0m
 
-.PHONY: all clean fullclean
+.PHONY: all clean fullclean watch
 
 all: $(PDF) $(PROTON_RADIUS_PDF)
 
@@ -36,6 +36,11 @@ $(PDF): $(TEX_FILES) code-summary-labeled.txt $(PROTON_RADIUS_PDF) Makefile
 		printf "$(RED)❌ Failure: latexmk encountered an error. Check paper.log.$(RESET)\n"; \
 		exit 1; \
 	fi
+
+# Continuous compilation target
+watch: code-summary-labeled.txt $(PROTON_RADIUS_PDF)
+	@echo "Starting latexmk in continuous preview mode..."
+	@latexmk $(LATEXMK_FLAGS) -pvc $(PAPER)
 
 clean:
 	@latexmk -silent -c $(PAPER)

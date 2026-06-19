@@ -1,8 +1,16 @@
 % FILENAME: paper/paper.tex
 
-\documentclass[aps,prd,onecolumn,nofootinbib,11pt]{revtex4-2}
+\documentclass[aps,prd,onecolumn,nofootinbib,11pt,longbibliography]{revtex4-2}
 
 \input{preamble}
+
+% --- DRAFT MODE TOGGLE ---
+% Minted takes a long time to syntax-highlight the 7,000 line code summary.
+% Leave this as \showcodefalse while drafting to speed up compilation.
+% Change to \showcodetrue before your final release build.
+\newif\ifshowcode
+%\showcodefalse
+\showcodetrue
 
 \begin{document}
 
@@ -26,31 +34,35 @@ Abstract
 \input{section-Gravity}
 \input{section-Matter}
 \input{section-Quantum}
+\input{section-ProtonRadius}
 \input{section-Conclusion}
 
 \appendix
 \input{section-Litlib}
-\input{section-ProtonRadius}
 
-\bibliographystyle{apsrev4-2}
+% Removed \bibliographystyle entirely. RevTeX 4.2 natively auto-injects 
+% the correct title-printing style when 'longbibliography' is active!
 \bibliography{refs}
 
 % --- LEAN 4 THEOREM INDEX ---
 \printleanrefs
 
-\section{Lean 4 Code Summary}
-\label{app:code_dump}
-
-In this appendix, we include the listing of the primary lean 4 theorem signatures and definitions for CGD. This includes the definitions found within the chiral-gauge-dynamics repository as well as the relevant Litlib classes defined in the litlib4 repository.
-
-While all of the proof text and compilation logs are omitted from the code summary, this listing represents the entirety of the statements that are formally proven within the CGD theory.
-
-\begin{minted}{bash}
-.../chiral-gauge-dynamics$ nix develop
-(nix:nix-shell-env) .../chiral-gauge-dynamics$ lake exe cgd_report --code-summary=theorems
-\end{minted}
-
-\setminted{breaklines=true, breakanywhere=true, fontsize=\footnotesize, xleftmargin=0pt, baselinestretch=1, escapeinside=§§}
-\inputminted{lean}{code-summary-labeled.txt}
+% --- APPENDIX C: CODE SUMMARY (TOGGLED VIA \ifshowcode) ---
+\ifshowcode
+    \section{Lean 4 Code Summary}
+    \label{app:code_dump}
+    
+    In this appendix, we include the listing of the primary lean 4 theorem signatures and definitions for CGD. This includes the definitions found within the chiral-gauge-dynamics repository as well as the relevant Litlib classes defined in the litlib4 repository.
+    
+    While all of the proof text and compilation logs are omitted from the code summary, this listing represents the entirety of the statements that are formally proven within the CGD theory.
+    
+    \begin{minted}{bash}
+    .../chiral-gauge-dynamics$ nix develop
+    (nix:nix-shell-env) .../chiral-gauge-dynamics$ lake exe cgd_report --code-summary=theorems
+    \end{minted}
+    
+    \setminted{breaklines=true, breakanywhere=true, fontsize=\footnotesize, xleftmargin=0pt, baselinestretch=1, escapeinside=§§}
+    \inputminted{lean}{code-summary-labeled.txt}
+\fi
 
 \end{document}
