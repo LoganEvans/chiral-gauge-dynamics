@@ -23,7 +23,6 @@ import CGD.Gravity.MacroscopicVacuum.Basic
 import CGD.Gravity.MacroscopicVacuum.Differential
 import CGD.Gravity.MacroscopicVacuum.Spinors
 import CGD.Gravity.StressEnergy.Conservation
-import CGD.Gravity.StressEnergy.MatterExistence
 import CGD.AntiSelfDualSector.Decoupling
 import CGD.AntiSelfDualSector.SelfInteracting
 import CGD.AntiSelfDualSector.VacuumDegeneracy
@@ -38,6 +37,7 @@ import CGD.Particles.Color
 import CGD.Particles.Confinement
 import CGD.Particles.Mass
 import CGD.Particles.TopologicalStability
+import CGD.Particles.Matter
 import CGD.Phenomenology.AxialCondensate
 import CGD.Phenomenology.Chirality
 import CGD.Quantum.Definitions
@@ -296,33 +296,6 @@ theorem cgdSummary
                             chris lambda alpha nu x * T mu lambda x)
        ) = 0)
   ∧
-  (∀ (x : SpacetimePoint)
-     (Sigma Sigma_bar : Fin 3 → Fin 4 → Fin 4 → ℂ)
-     (F_ij F_bar_ij T_ij : Fin 3 → Fin 3 → ℂ)
-     (Lambda G T_scalar : ℂ)
-     (plebanski_matter_eqs : Prop),
-     G ≠ 0 →
-     ∀ (eval_SL2C : SL2C → Fin 3 → ℂ),
-     (∀ A, (∀ i, eval_SL2C A i = 0) → A = 0) →
-     (∀ μ ν i, eval_SL2C (curvatureSl2c pu.toUniverse.asd_sector μ ν x) i = ∑ j, F_bar_ij i j * Sigma_bar j μ ν) →
-     Litlib.Y2011.krasnov2011plebanski.Eq16 
-       Sigma 
-       Sigma_bar 
-       (fun μ ν => matrixInv4x4 (fun m n => urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b x) m n) μ ν)
-       (fun μ ν => emergentStressEnergy (fun a b p => curvatureSl2c pu.toUniverse.sd_sector a b p) μ ν x)
-       T_ij →
-     Litlib.Y2011.krasnov2011plebanski.Eq17 
-       Lambda 
-       G 
-       F_ij 
-       F_bar_ij 
-       T_scalar 
-       T_ij 
-       plebanski_matter_eqs →
-     plebanski_matter_eqs →
-     (∃ μ ν, curvatureSl2c pu.toUniverse.asd_sector μ ν x ≠ 0) →
-     ∃ ρ μ, emergentStressEnergy (fun a b p => curvatureSl2c pu.toUniverse.sd_sector a b p) ρ μ x ≠ 0)
-  ∧
 
   -- ====================================================================
   -- V. PARTICLES
@@ -350,6 +323,33 @@ theorem cgdSummary
      [Litlib.Y2003.nakahara2003geometry.CartanMaurerTopology (S3 → SU2Group) Continuous windingNumber cartanMaurerIntegral]
      [Litlib.Y1975.belavin1975pseudoparticle.Eq8 S3 SU2Group Continuous windingNumber cartanMaurerIntegral],
      cartanMaurerIntegral 1 = 0 → ¬ isHomotopicConnection bpstInstanton 0)
+  ∧
+  (∀ (x : SpacetimePoint)
+     (Sigma Sigma_bar : Fin 3 → Fin 4 → Fin 4 → ℂ)
+     (F_ij F_bar_ij T_ij : Fin 3 → Fin 3 → ℂ)
+     (Lambda G T_scalar : ℂ)
+     (plebanski_matter_eqs : Prop),
+     G ≠ 0 →
+     ∀ (eval_SL2C : SL2C → Fin 3 → ℂ),
+     (∀ A, (∀ i, eval_SL2C A i = 0) → A = 0) →
+     (∀ μ ν i, eval_SL2C (curvatureSl2c pu.toUniverse.asd_sector μ ν x) i = ∑ j, F_bar_ij i j * Sigma_bar j μ ν) →
+     Litlib.Y2011.krasnov2011plebanski.Eq16 
+       Sigma 
+       Sigma_bar 
+       (fun μ ν => matrixInv4x4 (fun m n => urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b x) m n) μ ν)
+       (fun μ ν => emergentStressEnergy (fun a b p => curvatureSl2c pu.toUniverse.sd_sector a b p) μ ν x)
+       T_ij →
+     Litlib.Y2011.krasnov2011plebanski.Eq17 
+       Lambda 
+       G 
+       F_ij 
+       F_bar_ij 
+       T_scalar 
+       T_ij 
+       plebanski_matter_eqs →
+     plebanski_matter_eqs →
+     (∃ μ ν, curvatureSl2c pu.toUniverse.asd_sector μ ν x ≠ 0) →
+     ∃ ρ μ, emergentStressEnergy (fun a b p => curvatureSl2c pu.toUniverse.sd_sector a b p) ρ μ x ≠ 0)
   ∧
 
   -- ====================================================================
@@ -492,12 +492,12 @@ theorem cgdSummary
     dynamicExactLorentzianSolution,
     machianTopologicalDefectMotion pu,
     emergentStressEnergyConservation pu,
-    dynamicMatterExistence pu,
     kinematicMultiColorRequirement,
     kinematicSingleColorDegeneracy,
     kinematicStringConfinement,
     topologicalMassGap pu,
     kinematicTopologicalStability,
+    dynamicMatterExistence pu,
     fun mu x => axialIsIsovector pu mu x,
     fun mu x => axialIsParityOdd pu mu x,
     fun x hx h_vacuum => macroscopicVolumeImpliesChirality pu x hx h_vacuum,

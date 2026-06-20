@@ -13,14 +13,12 @@ import CGD.Gravity.MacroscopicVacuum.Basic
 import CGD.Gravity.MacroscopicVacuum.Differential
 import CGD.Gravity.MacroscopicVacuum.Spinors
 import CGD.Gravity.StressEnergy.Conservation
-import CGD.Gravity.StressEnergy.MatterExistence
 import Mathlib.Data.Matrix.Basic
 import Litlib.Core
 import Litlib.Y1951.papapetrou1951spinning.Signature
 import Litlib.Y1984.urbantke1984integrability.Signature
 import Litlib.Y1991.capovilla1991pure.Signature
 import Litlib.Y2003.nakahara2003geometry.Chapter07.Sec04_LeviCivita
-import Litlib.Y2011.krasnov2011plebanski.Signature
 
 open Complex Matrix CGD.Foundations CGD.Axioms CGD.Gravity
 
@@ -37,7 +35,6 @@ physical universe, the following gravitational phenomena emerge natively:
 3. Exact dynamic solutions exist for Abelian and fully non-Abelian Lorentzian spacetimes.
 4. Local single-pole topological defects exactly traverse geodesics of the dynamically emergent Urbantke metric.
 5. The emergent Stress-Energy tensor natively satisfies covariant conservation inside the macroscopic bulk.
-6. A non-zero Anti-Self-Dual curvature rigorously evaluates as physical matter via the Plebanski coupling.
 -/
 theorem gravitySummary
   (pu : PhysicalUniverse) :
@@ -173,46 +170,14 @@ theorem gravitySummary
          bulkDeriv pu alpha (fun p => T mu nu p) x -
          ∑ lambda : Fin 4, (chris lambda alpha mu x * T lambda nu x + 
                             chris lambda alpha nu x * T mu lambda x)
-       ) = 0)
-  ∧
-
-  -- Conjunct 7: Dynamic Matter Existence
-  -- Proved by `dynamicMatterExistence` in `CGD.Gravity.StressEnergy.MatterExistence`
-  -- Proves that the anti-self-dual curvature natively generates a strictly non-zero Stress-Energy tensor.
-  (∀ (x : SpacetimePoint)
-     (Sigma Sigma_bar : Fin 3 → Fin 4 → Fin 4 → ℂ)
-     (F_ij F_bar_ij T_ij : Fin 3 → Fin 3 → ℂ)
-     (Lambda G T_scalar : ℂ)
-     (plebanski_matter_eqs : Prop),
-     G ≠ 0 →
-     ∀ (eval_SL2C : SL2C → Fin 3 → ℂ),
-     (∀ A, (∀ i, eval_SL2C A i = 0) → A = 0) →
-     (∀ μ ν i, eval_SL2C (curvatureSl2c pu.toUniverse.asd_sector μ ν x) i = ∑ j, F_bar_ij i j * Sigma_bar j μ ν) →
-     Litlib.Y2011.krasnov2011plebanski.Eq16 
-       Sigma 
-       Sigma_bar 
-       (fun μ ν => matrixInv4x4 (fun m n => urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b x) m n) μ ν)
-       (fun μ ν => emergentStressEnergy (fun a b p => curvatureSl2c pu.toUniverse.sd_sector a b p) μ ν x)
-       T_ij →
-     Litlib.Y2011.krasnov2011plebanski.Eq17 
-       Lambda 
-       G 
-       F_ij 
-       F_bar_ij 
-       T_scalar 
-       T_ij 
-       plebanski_matter_eqs →
-     plebanski_matter_eqs →
-     (∃ μ ν, curvatureSl2c pu.toUniverse.asd_sector μ ν x ≠ 0) →
-     ∃ ρ μ, emergentStressEnergy (fun a b p => curvatureSl2c pu.toUniverse.sd_sector a b p) ρ μ x ≠ 0) := by
+       ) = 0) := by
   exact ⟨
     macroscopicRicciFlatEmergence pu,
     macroscopicVacuumEmergence pu,
     dynamicExactAbelianSolution,
     dynamicExactLorentzianSolution,
     machianTopologicalDefectMotion pu,
-    emergentStressEnergyConservation pu,
-    dynamicMatterExistence pu
+    emergentStressEnergyConservation pu
   ⟩
 
 end CGD.Gravity

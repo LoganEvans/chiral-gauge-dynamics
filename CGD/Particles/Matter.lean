@@ -1,4 +1,4 @@
--- FILENAME: CGD/Gravity/StressEnergy/MatterExistence.lean
+-- FILENAME: CGD/Particles/Matter.lean
 
 import CGD.Axioms.Ontology
 import CGD.Axioms.PhysicalUniverse
@@ -16,6 +16,8 @@ set_option linter.unusedVariables false
 open scoped BigOperators
 open Litlib.Y2011.krasnov2011plebanski
 open CGD.Axioms CGD.Foundations CGD.Gravity
+
+namespace CGD.Particles
 
 /-- 
 Projects the anti-self-dual gauge field curvature into the adjoint 3x3 matrix representation.
@@ -123,3 +125,5 @@ theorem dynamicMatterExistence
     exact h_sum_zero
 
   exact h_curv_neq h_curv_eq
+
+end CGD.Particles
