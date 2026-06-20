@@ -1,23 +1,48 @@
 % FILENAME: paper/section-Introduction.tex
 
-\todo{Author Overview: This section introduces the crisis in physics (the conflict between a fundamental metric and quantum mechanics) and introduces the historical lineage that solves it by removing the metric entirely, culminating in the formally verified CGD framework.}
-
-\todo{Author: Review and rename section title if desired.}
 \section{Introduction}
 \label{sec:Introduction}
 
-\todo{Author: Paragraph 1 (The Crisis). Describe the ontological clash. General Relativity treats the metric as fundamental and dynamic. QFT treats it as fundamental and fixed. Attempting to quantize a fundamental metric leads to infinite vacuum energies \cite{weinberg1989cosmological}. This broken foundation forces phenomenological bloat: we insert manual parameters for the mass gap \cite{jaffe2006quantum}, dark matter \cite{rubin1980rotational}, and antimatter asymmetry \cite{sakharov1991violation}.}
+In this paper, we explore an ontological foundation for the Einstein Field Equations (EFE). We extend the pure gauge connection formulation for gravity by showing that General Relativity emerges from a \spinFourC pure gauge connection. However, whereas the previously known \suTwo pure gauge formulation contains General Relativity, it does not natively contain particles. In contrast, a universe composed of only a \spinFourC connection contains General Relativity \textit{and} particles.
 
-\todo{Author: Paragraph 2 (The Historical Enablers). Instead of adding stringy dimensions, 20th-century physics provided a roadmap to remove the metric entirely. 
-- Skyrme (1961) showed particles are topological knots \cite{skyrme1962unified}.
-- Urbantke (1984) showed SU(2) gauge fields natively generate their own conformal metrics \cite{urbantke1984integrability}.
-- Capovilla, Dell, Jacobson (1989) showed General Relativity is just a pure SU(2) gauge theory \cite{capovilla1989general, capovilla1991pure}.
-- Krasnov (2011) showed matter couples natively to this pure connection \cite{krasnov2011plebanski}.}
+This research extensively uses the lean 4 mathematical formalization language \cite{deMoura2015lean}. The reason for this is simple: when we first discovered the mathematical structures that emerge from \spinFourC, which touch on problems related to quantum gravity, entanglement, measurement, dark energy, dark matter, and the origin of time, we were certain we had made a mathematical error. By formalizing the derivations in lean 4, we have eliminated the possibility that the math is incorrect. It's still possible that the theorems we prove here have no association with real physical phenomena, and lean 4 makes absolutely no claims about whether the \spinFourC gauge connection is ontologically correct for our universe. Also, due to the nascent state of the lean 4 ecosystem, our use of peer-reviewed literature exposes another possible avenue for errors.
 
-\todo{Author: Paragraph 3 (The Thesis - CGD). CGD takes this to its absolute unified limit. The universe is nothing but a Spin(4, C) gauge connection. It naturally splits into two chiral halves: the self-dual half generates the CDJ/Urbantke macroscopic spacetime, and the anti-self-dual half generates the Skyrmion topological matter knots.}
+In an ideal world, all of the physics literature we rely upon would be fully formalized from basic mathematical axioms, but that does not exist, so we created the Litlib library of transcriptions from published literature into lean 4 code. The lean 4 environment treats these transcriptions as axiomatically true, so we have to first trust that the papers were in fact correct, and then we have scrape up even more trust that the transcriptions into lean 4 are accurate.
 
-\todo{Author: Paragraph 4 (The Method \& Formal Verification). We aren't just proposing this; we compiled it. Emphasize that by utilizing Lean 4 and the Litlib library, every major claim in this paper has been computationally verified to prevent topological collapse, vacuous limits, or mathematical loopholes.}
+We refer to this research program as Chiral Gauge Dynamics (CGD) because much of the rich mathematical structure comes from the chiral split $\spinFourC \cong \slTwoCL \times \slTwoCR$. Gauge theory, and in particular Yang-Mills theory \cite{yang1954conservation}, describes how elements of a field relate to each other regardless of the choice of coordinates. Since its introduction, it has undisputedly become the language of the Standard Model.
 
-\todo{Author: Paragraph 5 (The Roadmap). Briefly state: Section II shows time emerges from topology, Section III derives Ricci-flat gravity, Section IV extracts the mass gap, and Section V recovers quantum mechanics.}
+However, it wasn't until \citet{plebanski1977separation} that physicists knew that General Relativity could also be written as a gauge theory \citep{krasnov2011plebanski}. While this self-dual 2-forms formulation is not how General Relativity is taught in undergraduate classrooms, it is of vital importance to CGD.
 
-\todo{Authord: THE HOOK: Do not bury the lede. Explicitly state in the first page that this pure-topology framework natively projects down to a zero-parameter derivation of the 0.84 fm proton radius. Give the phenomenologists a reason to read the math.}
+Then \citet{ashtekar1986new} introduced \citeauthor{ashtekar1986new} variables, which showed that the gauge connection itself could produce General Relativity. With this result, General Relativity looked exactly like a Yang-Mills theory. It is interesting to note that this is the point in history where the research path that led to CGD diverged from the path that led to Loop Quantum Gravity (LQG) \citep{rovelli2008loop}. While the mathematical results of LQG and CGD are vastly different, at this historical fork in the road, the difference is that LQG quantized spacetime while CGD leaves spacetime as a classical field.
+
+The mathematical insight that makes CGD possible is the astonishingly elegant Urbantke metric presented in \cite{urbantke1984integrability}. This work shows that a metric necessarily emerges for \suTwo and \spinFourC gauge fields. Intuitively, this describes the distance between two points by measuring the amount of twist in the field between two points.
+
+The work first introduced in \citet{capovilla1989general} and later expanded in \citet{capovilla1991pure} took the Urbantke metric and showed that for a \suTwo pure gauge connection, General Relativity emerges without depending on a separate axiom for a background metric. We extend this result by showing that General Relativity also emerges from a \spinFourC pure gauge connection. However, while a universe composed only of a \suTwo connection contains General Relativity, it does not natively contain particles. In contrast, a universe composed of only a \spinFourC connection contains General Relativity as well as particles.
+
+In Section \ref{sec:Foundations}, we will lay out the three CGD axioms:
+
+\begin{itemize}
+    \item Axiom 1: The universe is a classical \spinFourC gauge connection.
+    \item Axiom 2: Macroscopic volume exists. This is a mathematical necessity for the lean 4 formalization to ignore trivial solutions. Conceptually it says, "There universe contains \textit{something} rather than \textit{nothing}."
+    \item Axiom 3: The vacuum is unimodular. Tensor transformations, such as stretching, twisting, and compression, do not change the volume of spacetime.
+\end{itemize}
+
+\noindent In this section, we will also derive the Lagrangian and the Bianchi identities that govern stress-energy conservation and motion.
+
+In Section \ref{sec:Gravity} we will prove that \spinFourC gives rise to General Relativity. This derivation takes us through the CDJ constraints \citep{capovilla1991pure}, Ricci-flat emergent spacetime, and stress-energy conservation.
+
+Once we have formalized the existence of gravity within CGD, we will shift our focus in Section \ref{sec:matter} and show how the curvature of the \slTwoCR chiral sector acts as a physical matter source term. Skyrmion particles \citep{skyrme1962unified} emerge from CGD as topological defects where the metric becomes degenerate but where stable knots form. We will demonstrate confinement and three colors for these particles. Furthermore, we will show how a topological mass gap must exist for these particles.
+
+Perhaps the most surprising aspect of CGD comes in Section \ref{sec:Quantum}, where we will derive the Dirac equation and the Born rule. We also derive entanglement and demonstrate that correlations of entangled particles match the Tsirelson bound. While this seems at first glance like a contradiction because CGD is a classical field theory, CGD entanglement bypasses Bell's theorem by challenging the assumption that two entangled particles are separate.
+
+Finally, at the end of this paper in Section \ref{sec:ProtonRadius}, we will turn our focus on phenomenology. Most of the theoretical work presented in this paper focuses on showing how various physical theories emerge from \spinFourC. In a few places, our derivations require some nuance that is different between CGD and the Standard Model. However, in once case, CGD requires a feature that is starkly different: it requires the presence of an isovector axial-vector condensate. If such a condensate exists, it should have a substantial impact on the proton radius puzzle. When we first identified this, we assumed it would be an easy way to falsify the CGD theory. However, we created a one-parameter mathematical model that not only substantially outperformed the leading Standard Model empirical model, it also correctly identified the proton radius. We cannot argue that CGD solves the proton radius puzzle, but our assumption that this would be a quick and easy falsification turned out to be wrong.
+
+In the appendices, we briefly summarize other proofs found within the lean 4 code. This includes several observations about cosmology.
+
+\todo{Author (Final Polish): Update this appendix summary sentence once the paper is complete. Ensure it mentions:
+\begin{itemize}
+    \item Appendix A: Formal Verification Methodology and Litlib.
+    \item Appendix B: Lean 4 Code Summary (The theorem signatures).
+    \item Appendix C (or wherever it lands): Global Symmetries and Cosmological Boundary Conditions (The Big Bang / Hartle-Hawking Euclidean bounce proofs).
+\end{itemize}}
+
