@@ -16,11 +16,10 @@ open Complex Matrix
 
 namespace CGD.Foundations
 
-noncomputable abbrev sl2cAlgebra := LieAlgebra.SpecialLinear.sl (Fin 2) Complex
-abbrev SL2C := ↥sl2cAlgebra
+abbrev SL2C := ↥(LieAlgebra.SpecialLinear.sl (Fin 2) Complex)
 abbrev ChiralM := Matrix (Fin 4) (Fin 4) Complex
 
-lemma mem_sl_iff (A : Matrix (Fin 2) (Fin 2) Complex) : A ∈ sl2cAlgebra ↔ Matrix.trace A = 0 := by rfl
+lemma mem_sl_iff (A : Matrix (Fin 2) (Fin 2) Complex) : A ∈ (LieAlgebra.SpecialLinear.sl (Fin 2) Complex) ↔ Matrix.trace A = 0 := by rfl
 
 noncomputable def toSl2c (M : Matrix (Fin 2) (Fin 2) Complex) : SL2C :=
   let tr := M.trace

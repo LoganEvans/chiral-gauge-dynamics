@@ -17,6 +17,8 @@ open CGD
 open CGD.Axioms
 open CGD.Foundations
 
+namespace CGD.Phenomenology
+
 /-- The pure Vector Chiral field, defined as the symmetric superposition of the left and right sectors. -/
 noncomputable def vectorField (u : Universe) (mu : Fin 4) (x : SpacetimePoint) : Matrix (Fin 2) (Fin 2) ℂ :=
   (1 / 2 : ℂ) • ((u.sd_sector mu x).val + (u.asd_sector mu x).val)
@@ -89,7 +91,7 @@ theorem macroscopicVolumeImpliesAxialCondensate
   ∃ y mu, axialField pu.toUniverse mu y ≠ 0 := by
   
   -- 1. Obtain the global chiral collapse theorem
-  have h_chiral := macroscopicVolumeImpliesChirality pu x hx h_vacuum
+  have h_chiral := CGD.Phenomenology.macroscopicVolumeImpliesChirality pu x hx h_vacuum
   
   -- 2. Assume by contradiction that the axial field is strictly zero everywhere
   by_contra h_not_exists
@@ -109,3 +111,5 @@ theorem macroscopicVolumeImpliesAxialCondensate
     
   -- 4. A globally symmetric universe contradicts the macroscopic volume constraint
   exact h_chiral h_eq
+
+end CGD.Phenomenology

@@ -28,32 +28,32 @@ physical universe, the following phenomena naturally emerge:
 theorem phenomenologySummary (pu : PhysicalUniverse) :
 
   -- Conjunct 1: Axial Field is Isovector
-  -- Proved by `axialIsIsovector` in `CGD.Phenomenology.AxialCondensate`
+  -- Proved by `CGD.Phenomenology.axialIsIsovector` in `CGD.Phenomenology.AxialCondensate`
   (∀ (mu : Fin 4) (x : SpacetimePoint),
-    Matrix.trace (axialField pu.toUniverse mu x) = 0)
+    Matrix.trace (CGD.Phenomenology.axialField pu.toUniverse mu x) = 0)
   ∧
 
   -- Conjunct 2: Axial Field is Parity Odd
-  -- Proved by `axialIsParityOdd` in `CGD.Phenomenology.AxialCondensate`
+  -- Proved by `CGD.Phenomenology.axialIsParityOdd` in `CGD.Phenomenology.AxialCondensate`
   (∀ (mu : Fin 4) (x : SpacetimePoint),
-    axialField (paritySwap pu.toUniverse) mu x = - axialField pu.toUniverse mu x)
+    CGD.Phenomenology.axialField (CGD.Phenomenology.paritySwap pu.toUniverse) mu x = - CGD.Phenomenology.axialField pu.toUniverse mu x)
   ∧
 
   -- Conjunct 3: Macroscopic Volume Implies Chirality
-  -- Proved by `macroscopicVolumeImpliesChirality` in `CGD.Phenomenology.Chirality`
+  -- Proved by `CGD.Phenomenology.macroscopicVolumeImpliesChirality` in `CGD.Phenomenology.Chirality`
   (∀ (x : SpacetimePoint) (hx : x ∈ pu.bulk), (∀ μ ν, curvatureSl2c pu.toUniverse.asd_sector.val μ ν x = 0) →
     pu.toUniverse.sd_sector.val ≠ pu.toUniverse.asd_sector.val)
   ∧
 
   -- Conjunct 4: Macroscopic Volume Implies Axial Condensate
-  -- Proved by `macroscopicVolumeImpliesAxialCondensate` in `CGD.Phenomenology.AxialCondensate`
+  -- Proved by `CGD.Phenomenology.macroscopicVolumeImpliesAxialCondensate` in `CGD.Phenomenology.AxialCondensate`
   (∀ (x : SpacetimePoint) (hx : x ∈ pu.bulk), (∀ μ ν, curvatureSl2c pu.toUniverse.asd_sector.val μ ν x = 0) →
-    ∃ y mu, axialField pu.toUniverse mu y ≠ 0) := by
+    ∃ y mu, CGD.Phenomenology.axialField pu.toUniverse mu y ≠ 0) := by
   exact ⟨
-    fun mu x => axialIsIsovector pu mu x,
-    fun mu x => axialIsParityOdd pu mu x,
-    fun x hx h_vacuum => macroscopicVolumeImpliesChirality pu x hx h_vacuum,
-    fun x hx h_vacuum => macroscopicVolumeImpliesAxialCondensate pu x hx h_vacuum
+    fun mu x => CGD.Phenomenology.axialIsIsovector pu mu x,
+    fun mu x => CGD.Phenomenology.axialIsParityOdd pu mu x,
+    fun x hx h_vacuum => CGD.Phenomenology.macroscopicVolumeImpliesChirality pu x hx h_vacuum,
+    fun x hx h_vacuum => CGD.Phenomenology.macroscopicVolumeImpliesAxialCondensate pu x hx h_vacuum
   ⟩
 
 end CGD.Phenomenology

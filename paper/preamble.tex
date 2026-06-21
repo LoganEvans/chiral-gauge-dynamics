@@ -15,6 +15,7 @@
 \usepackage{float}           % Added for [H] listing placement
 \usepackage{slashed}         % Added for Dirac \slashed{D} notation
 \usepackage{verbatim}        % Added for native AI context embedding
+\usepackage{litlib}
 
 \setmonofont{DejaVu Sans Mono}[Scale=MatchLowercase]
 
@@ -30,16 +31,3 @@
 \newcommand{\slTwoCAlgL}{\ensuremath{\mathfrak{sl}(2, \mathbb{C})_L}\xspace}
 \newcommand{\slTwoCAlgR}{\ensuremath{\mathfrak{sl}(2, \mathbb{C})_R}\xspace}
 
-% --- Minted Setup ---
-\setminted{
-    linenos=true,
-    breaklines=true,
-    breakanywhere=true,
-    frame=lines,
-    framesep=2mm,
-    fontsize=\footnotesize,
-    bgcolor=gray!5
-}
-
-% --- Lean Theorem Citation System ---
-\input{lean-citation.tex}

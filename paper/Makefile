@@ -17,18 +17,17 @@ RESET  := \033[0m
 
 all: $(PDF) $(PROTON_RADIUS_PDF)
 
-# Generate the labeled summary file whenever the base code summary or python script changes
-code-summary-labeled.txt: code-summary.txt label_code.py
-	@echo "Sanitizing AI context payload..."
-	@sed -i 's/𝓝/nhds /g' code-summary.txt
-	@echo "Injecting minted LaTeX labels..."
-	@python3 label_code.py
-
 $(PROTON_RADIUS_PDF): proton-radius/analysis.py proton-radius/graph.py
 	@echo "Generating Proton Radius Analysis Graph..."
 	@cd proton-radius && python3 graph.py
 
-$(PDF): $(TEX_FILES) code-summary-labeled.txt $(PROTON_RADIUS_PDF) Makefile
+# Failsafe dummy target to ensure the user knows to run the cgd-report tool
+litlib-code-summary.tex:
+	@echo "$(RED)Error: litlib-code-summary.tex not found.$(RESET)"
+	@echo "Please run 'cgd-report --latex=paper' from the project root to generate the LaTeX artifacts."
+	@exit 1
+
+$(PDF): $(TEX_FILES) litlib-code-summary.tex $(PROTON_RADIUS_PDF) Makefile
 	@echo "Building $(PDF)..."
 	@if latexmk $(LATEXMK_FLAGS) $(PAPER); then \
 		printf "$(GREEN)✅ Success: $(PDF) has been successfully built!$(RESET)\n"; \
@@ -38,7 +37,7 @@ $(PDF): $(TEX_FILES) code-summary-labeled.txt $(PROTON_RADIUS_PDF) Makefile
 	fi
 
 # Continuous compilation target
-watch: code-summary-labeled.txt $(PROTON_RADIUS_PDF)
+watch: litlib-code-summary.tex $(PROTON_RADIUS_PDF)
 	@echo "Starting latexmk in continuous preview mode..."
 	@latexmk $(LATEXMK_FLAGS) -pvc $(PAPER)
 
@@ -53,4 +52,3 @@ fullclean: clean
 	@latexmk -silent -C $(PAPER)
 	@rm -f $(PDF)
 	@rm -f $(PROTON_RADIUS_PDF)
-	@rm -f code-summary-labeled.txt

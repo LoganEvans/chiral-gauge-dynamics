@@ -356,16 +356,16 @@ theorem cgdSummary
   -- VI. PHENOMENOLOGY
   -- ====================================================================
   (∀ (mu : Fin 4) (x : SpacetimePoint),
-    Matrix.trace (axialField pu.toUniverse mu x) = 0)
+    Matrix.trace (CGD.Phenomenology.axialField pu.toUniverse mu x) = 0)
   ∧
   (∀ (mu : Fin 4) (x : SpacetimePoint),
-    axialField (paritySwap pu.toUniverse) mu x = - axialField pu.toUniverse mu x)
+    CGD.Phenomenology.axialField (CGD.Phenomenology.paritySwap pu.toUniverse) mu x = - CGD.Phenomenology.axialField pu.toUniverse mu x)
   ∧
   (∀ (x : SpacetimePoint), x ∈ pu.bulk → (∀ μ ν, curvatureSl2c pu.toUniverse.asd_sector.val μ ν x = 0) →
     pu.toUniverse.sd_sector.val ≠ pu.toUniverse.asd_sector.val)
   ∧
   (∀ (x : SpacetimePoint), x ∈ pu.bulk → (∀ μ ν, curvatureSl2c pu.toUniverse.asd_sector.val μ ν x = 0) →
-    ∃ y mu, axialField pu.toUniverse mu y ≠ 0)
+    ∃ y mu, CGD.Phenomenology.axialField pu.toUniverse mu y ≠ 0)
   ∧
 
   -- ====================================================================
@@ -498,10 +498,10 @@ theorem cgdSummary
     topologicalMassGap pu,
     kinematicTopologicalStability,
     dynamicMatterExistence pu,
-    fun mu x => axialIsIsovector pu mu x,
-    fun mu x => axialIsParityOdd pu mu x,
-    fun x hx h_vacuum => macroscopicVolumeImpliesChirality pu x hx h_vacuum,
-    fun x hx h_vacuum => macroscopicVolumeImpliesAxialCondensate pu x hx h_vacuum,
+    fun mu x => CGD.Phenomenology.axialIsIsovector pu mu x,
+    fun mu x => CGD.Phenomenology.axialIsParityOdd pu mu x,
+    fun x hx h_vacuum => CGD.Phenomenology.macroscopicVolumeImpliesChirality pu x hx h_vacuum,
+    fun x hx h_vacuum => CGD.Phenomenology.macroscopicVolumeImpliesAxialCondensate pu x hx h_vacuum,
     fun {BoundaryManifold} _ _ boundaryMap windingNumber cartanMaurerIntegral _ _ h_homeo => kinematicActionQuantization boundaryMap windingNumber cartanMaurerIntegral pu h_homeo,
     fun e x nu h_stat => familiarDynamicDiracEquation pu e x nu h_stat,
     fun e x nu => generalizedDynamicDiracEquation pu e x nu,

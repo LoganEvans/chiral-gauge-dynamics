@@ -11,7 +11,7 @@ require mathlib from git
   "https://github.com/leanprover-community/mathlib4.git" @ "v4.27.0"
 
 -- The new foundational mathematical and literature library.
-require litlib4 from "../litlib4"
+require litlib4 from "../litlib4" -- TODO switch this to the github source
 -- require litlib4 from git
 --   "https://github.com/LoganEvans/litlib4.git" @ "main"
 

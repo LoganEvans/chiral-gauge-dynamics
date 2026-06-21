@@ -92,7 +92,7 @@ lemma partialDerivSl2c_val_eq (μ : Fin 4) (A : SpacetimePoint → SL2C) (x : Sp
     rw [trace_partialDerivMat μ (fun p => (A p).val) x hA00 hA11]
     have hA_trace_zero : ∀ p, Matrix.trace ((A p).val) = 0 := by
       intro p
-      have hp : (A p).val ∈ sl2cAlgebra := (A p).property
+      have hp : (A p).val ∈ LieAlgebra.SpecialLinear.sl (Fin 2) Complex := (A p).property
       rw [mem_sl_iff] at hp
       exact hp
     have h_trace_f : (fun p => Matrix.trace ((A p).val)) = fun p => 0 := by funext p; rw [hA_trace_zero p]

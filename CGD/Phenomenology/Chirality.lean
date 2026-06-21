@@ -17,6 +17,8 @@ set_option linter.unusedVariables false
 open scoped BigOperators
 open CGD.Axioms CGD.Foundations CGD.Gravity CGD.Particles
 
+namespace CGD.Phenomenology
+
 --------------------------------------------------------------------
 -- HELPER LEMMAS
 --------------------------------------------------------------------
@@ -32,6 +34,8 @@ lemma zero_curvature_single_color (F : Fin 4 → Fin 4 → SL2C) (h_zero : ∀ �
 -- THEOREM CAPSTONE
 --------------------------------------------------------------------
 
+Litlib.theorem
+  description "Macroscopic volume must have chirality"
 /--
 Proves that a perfectly symmetric, non-chiral universe mathematically destroys itself.
 
@@ -69,3 +73,5 @@ theorem macroscopicVolumeImpliesChirality
   change (CGD.Gravity.urbantkeMetric (fun m n => CGD.Foundations.curvatureSl2c pu.toUniverse.sd_sector.val m n x)).det ≠ 0 at h_vol
   
   exact h_vol h_det_zero
+
+end CGD.Phenomenology
