@@ -69,29 +69,12 @@ and the Lie bracket Jacobi identity, without invoking unproven geometric assumpt
 -/
 theorem cgd_bianchi_identity_R 
   [clairaut : Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional]
-  (u : CGD.Axioms.Universe) (x : CGD.Foundations.SpacetimePoint) (μ ν ρ : Fin 4) (A B : Fin 2)
-  (h_diff_dmu_Anu : ∀ i j, DifferentiableAt ℝ (fun p => (CGD.Foundations.partialDerivSl2c μ (u.sd_sector ν) p).val i j) x)
-  (h_diff_dnu_Amu : ∀ i j, DifferentiableAt ℝ (fun p => (CGD.Foundations.partialDerivSl2c ν (u.sd_sector μ) p).val i j) x)
-  (h_diff_dnu_Arho : ∀ i j, DifferentiableAt ℝ (fun p => (CGD.Foundations.partialDerivSl2c ν (u.sd_sector ρ) p).val i j) x)
-  (h_diff_drho_Anu : ∀ i j, DifferentiableAt ℝ (fun p => (CGD.Foundations.partialDerivSl2c ρ (u.sd_sector ν) p).val i j) x)
-  (h_diff_drho_Amu : ∀ i j, DifferentiableAt ℝ (fun p => (CGD.Foundations.partialDerivSl2c ρ (u.sd_sector μ) p).val i j) x)
-  (h_diff_dmu_Arho : ∀ i j, DifferentiableAt ℝ (fun p => (CGD.Foundations.partialDerivSl2c μ (u.sd_sector ρ) p).val i j) x)
-  (h_diff_bracket_munu : ∀ i j, DifferentiableAt ℝ (fun p => ⁅u.sd_sector μ p, u.sd_sector ν p⁆.val i j) x)
-  (h_diff_bracket_nurho : ∀ i j, DifferentiableAt ℝ (fun p => ⁅u.sd_sector ν p, u.sd_sector ρ p⁆.val i j) x)
-  (h_diff_bracket_rhomu : ∀ i j, DifferentiableAt ℝ (fun p => ⁅u.sd_sector ρ p, u.sd_sector μ p⁆.val i j) x)
-  (h_diffA : ∀ σ p i j, DifferentiableAt ℝ (fun p' => (u.sd_sector σ p').val i j) p)
-  (h_smooth_re : ∀ σ i j, ContDiffOn ℝ 2 (fun p => ((u.sd_sector σ p).val i j).re) Set.univ)
-  (h_smooth_im : ∀ σ i j, ContDiffOn ℝ 2 (fun p => ((u.sd_sector σ p).val i j).im) Set.univ)
-  (h_diff_fderiv_re : ∀ σ i j, DifferentiableAt ℝ (fderiv ℝ (fun p => ((u.sd_sector σ p).val i j).re)) x)
-  (h_diff_fderiv_im : ∀ σ i j, DifferentiableAt ℝ (fderiv ℝ (fun p => ((u.sd_sector σ p).val i j).im)) x) :
+  (u : CGD.Axioms.Universe) (x : CGD.Foundations.SpacetimePoint) (μ ν ρ : Fin 4) (A B : Fin 2) :
   cgd_D_R_wedge u x μ ν ρ A B = 0 := by
   
   dsimp only [cgd_D_R_wedge]
   
-  have h_bianchi := CGD.Foundations.cgd_bianchi_identity (fun i p => u.sd_sector i p) ρ μ ν x
-    h_diff_dmu_Anu h_diff_dnu_Amu h_diff_dnu_Arho h_diff_drho_Anu h_diff_drho_Amu h_diff_dmu_Arho
-    h_diff_bracket_munu h_diff_bracket_nurho h_diff_bracket_rhomu
-    h_diffA h_smooth_re h_smooth_im h_diff_fderiv_re h_diff_fderiv_im
+  have h_bianchi := CGD.Foundations.kinematicBianchiIdentity u.sd_sector ρ μ ν x
     
   have h_val_zero : (0 : CGD.Foundations.SL2C).val = 0 := rfl
   

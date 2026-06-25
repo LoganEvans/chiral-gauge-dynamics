@@ -134,6 +134,9 @@ theorem cgdSummary
     [Litlib.Y1976.rudin1976principles.LeibnizIntegralRule (fun s x => lagrangianDensity (fun mu nu => curvature (fun m p => (v s).toUniverse.spin4c_connection m p) mu nu x))],
     isValidPhysicalVariation v → deriv (fun t => physicalUniverseAction (v t)) 0 = 0)
   ∧
+  (∀ (A : CGD.Axioms.Sl2cGaugeField) (ρ μ ν : Fin 4) (x : SpacetimePoint),
+    covariantDeriv A ρ μ ν x + covariantDeriv A μ ν ρ x + covariantDeriv A ν ρ μ x = 0)
+  ∧
 
   -- ====================================================================
   -- II. ANTI-SELF-DUAL SECTOR
@@ -477,6 +480,7 @@ theorem cgdSummary
     algebraicChiralDecomposition pu,
     topologicalLagrangianUniqueness,
     topologicalActionVariationZero,
+    fun A ρ μ ν x => kinematicBianchiIdentity A ρ μ ν x,
     algebraicAntiSelfDualSectorDecoupling pu,
     kinematicSIDMTrace pu,
     kinematicAsdVacuumDegeneracy pu,

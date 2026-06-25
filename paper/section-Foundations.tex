@@ -9,80 +9,95 @@ Order of theorems covered:
 5. kinematicChargeConservation: U(1) charge conservation natively falls out of n-dimensional Clairaut symmetry without needing an action principle.
 Nuances: Emphasize what is missing. We do not assert that time exists, that spacetime is Lorentz invariant, the Principle of Least Action, or that particles exist yet.}
 
-\todo{Author: Review and rename section title if desired.}
-\section{Foundations: The Topological Engine}
+\section{Foundations}
 \label{sec:Foundations}
 
-\todo{Author: Review and rename subsection title if desired.}
-\subsection{The Core Ontology}
-\label{subsec:core_ontology}
+All of the results derived in this paper depend upon three axioms. However, in order to contrast CGD with the Standard Model and General Relativity, we will also discuss two non-axioms.
 
-\todo{Author: Introduce Axiom I: The core ontology. The universe is exclusively a \spinFourC continuous gauge connection. Explain that it naturally decomposes into self-dual (Gravity) and anti-self-dual (Matter) chiral sectors. Reference the `Universe` lean structure.}
+The axiom selection is the only point where we are able to engineer the physics of the CGD universe. Engineering decisions are often indistinguishable from philosophy, and that certainly applies here. For this reason, we will discuss our motivations for exploring a universe with the selected features. However, once the axiom basis is solidified, everything else is mathematically forced.
 
+The workhorse ontological axiom is
 \begin{equation}
-    \mathcal{A}_\mu(x) = A^{(L)}_\mu(x) \oplus A^{(R)}_\mu(x) \in \spinFourC
+    \mathcal{A}_\mu(x) = A^{(L)}_\mu(x) \oplus A^{(R)}_\mu(x) \in \spinFourC.
     \quad \leanref{CGD.Axioms.Universe}
-    \label{eq:chiral_split}
+    \label{eq:spinFourCAxiom}
 \end{equation}
+\noindent This merely states that the universe is a \spinFourC gauge connection. The $A^{(L)}_\mu(x) \oplus A^{(R)}_\mu(x)$ part is stating a property of the matrix math, which is often described as \spinFourC decomposing into two chiral halves \slTwoCL and \slTwoCR. While we must start somewhere, we could state this ontological axiom and move on, but we will take a few moments to describe why \spinFourC is an interesting place to start.
 
-\todo{Author: Introduce Axiom II: Macroscopic Volume. Explain that to prevent a trivial vacuous state, we demand an open, non-empty topological bulk $\mathcal{B}$ where the determinant of the emergent Urbantke metric (derived from the self-dual sector) is non-zero.}
+Perhaps the most compelling motivation for \spinFourC is to notice that the Dirac Equation is naturally described in \spinFourC. That is, Paul Dirac started with the 4-dimensional symmetries of Special Relativity, which is the Lorentz Group \soOneThree. However, the electron is a spin-$1/2$ particle, which requires a double cover of the Lorentz Group such as \slTwoC. However, \slTwoC is a 2-component Weyl spinor that can only describe massless particles, so to describe a massive particle, Dirac combined a left-handed and right-handed Weyl spinor into a 4-component Dirac spinor \cite{nakahara2003geometry}. This representation is the group $(1/2, 0) \oplus (0, 1/2)$, but the Lie group that natively describes this structure is \spinFourC. In other words, if we hope to derive the Dirac Equation, we need to use either \spinFourC or a supergroup.
 
+Axiom \ref{eq:spinFourCAxiom} requires some initial conditions. To begin with, we must require that the universe exists so that we can ignore all vacuous solutions to the math. The most convenient way for us to state that the universe exists is to require that the bulk $\mathcal{B}$ (i.e. the ``empty'' part of the universe) has non-zero volume
 \begin{equation}
-    \det(g_{\mu\nu}(x)) \neq 0 \quad \forall x \in \mathcal{B}
+    \det(g_{\mu\nu}(x)) \neq 0 \quad \forall x \in \mathcal{B}.
     \quad \leanref{CGD.Axioms.MacroscopicVolume}
     \label{eq:macroscopicVolumeAxiom}
 \end{equation}
+\noindent This axiom doesn't require that everything within the universe has non-zero volume. In fact, exploring scenarios where the volume collapses leads to several interesting observations, as we will see in Sections \ref{sec:Matter} and \ref{sec:Quantum}.
 
-\todo{Author: Introduce Axiom III: Unimodular Vacuum. Explain that in this bulk (where there are no topological defects), the vacuum must maintain unimodular isotropy. The stress-energy/curvature interaction tensor $\Sigma$ must be purely trace.}
-
+While Axiom \ref{eq:macroscopicVolumeAxiom} largely serves to allow the Lean 4 formalization to ignore trivial solutions, our final axiom does some heavy lifting. Without any additional constraints, \spinFourC may lack isotropy. Among other things, a lack of isotropy would warp spacetime and effectively create matter and gravity out of otherwise empty space. In order avoid this situation, we require a third axiom that enforces a smooth background vacuum when no matter is present. Formally, we state
 \begin{equation}
-    \Sigma_{ab}(x) = \frac{1}{3} \mathrm{Tr}(\Sigma(x)) \delta_{ab} \quad \forall x \in \mathcal{B}
+    \Sigma^{ab}(x) = \frac{1}{3} \mathrm{Tr}(\Sigma(x)) \delta^{ab} \quad \forall x \in \mathcal{B}.
     \quad \leanref{CGD.Axioms.UnimodularVacuum}
     \label{eq:unimodularVacuumAxiom}
 \end{equation}
+\noindent Here, $\Sigma^{ab}$ is the $3 \times 3$ matrix representing the topological density ($\Sigma^{ab} = \epsilon^{\mu\nu\rho\sigma} F^a_{\mu\nu} F^b_{\rho\sigma}$). For all elements $x$ in the bulk $\mathcal{B}$, we require that the topological density in each of the three internal gauge axes is equal \cite{capovilla1991pure}.
 
-\todo{Author: Conclude the axioms by noting that these three constraints are bundled into the `PhysicalUniverse` class. Mention that the topological Pontryagin action strictly preserves the chiral split of Axiom I. The cross terms vanish orthogonally, allowing the left and right halves to act independently.}
+At this point, we have finalized our axiom basis, but it's worth emphasizing the fundamental way that CGD differs from the Standard Model and Loop Quantum Gravity (LQG): we do not quantize the gauge connection. We do not assume that force transfer occurs in quantized units and we do not assume that particles are quantum points. From a practical perspective, this means we will not proceed with deriving CGD by user perturbation and renormalization techniques.
 
+Another notable absence from our axiom set is that we do not assume an independent Minkowski metric space background. This is a feature CGD shares with LQG, and in fact, the LQG body of work demonstrates that the absense of an independent background is fully consistent with General Relativity (GR). However, LQG attempts to modify GR by quantizing it. In contrast, in CGD we will demonstrate that instead of quantizing gravity, we can instead gravitize the quantum. That is, we will take a classical framework that is fully consistent with Einstein's field equations and show that Standard Model phenomenology emerges.
+
+Now that we have our full axiom basis, we can show that \spinFourC decomposes perfectly into two chiral halves.
 \begin{equation}
     \mathcal{L}(F) = \mathcal{L}_{\text{vac}}(F^{(L)}) + \mathcal{L}_{\text{ASD}}(F^{(R)})
     \quad \leanref{CGD.Foundations.algebraicChiralDecomposition}
     \label{eq:algebraicChiralDecomposition}
 \end{equation}
+\noindent This follows by observing that $\spinFourC \cong \slTwoCL \times \slTwoCR$, so we can select a basis to map \slTwoCL into the top left $2 \times 2$ sub-matrix and \slTwoCR into the bottom right $2 \times 2$ sub-matrix. Then, when we multiply these matrices together, we get
+\begin{equation}
+    \begin{pmatrix} L & 0 \\ 0 & 0 \end{pmatrix}
+    \begin{pmatrix} 0 & 0 \\ 0 & R \end{pmatrix}
+    =
+    \begin{pmatrix} 0 & 0 \\ 0 & 0 \end{pmatrix}
+\end{equation}
+\noindent Notably, all cross terms vanish.
 
-\todo{Author: Review and rename subsection title if desired.}
-\subsection{The Absence of a Dynamical Lagrangian}
-\label{subsec:absence_of_lagrangian}
+The CGD Lagrangian is built from the trace of the curvature squared. Because the cross terms vanish, we have
+\begin{equation}
+    \mathrm{Tr}\left( (F^{(L)} + F^{(R)}) \wedge (F^{(L)} + F^{(R)}) \right) = \mathrm{Tr}(F^{(L)} \wedge F^{(L)}) + \mathrm{Tr}(F^{(R)} \wedge F^{(R)})
+    \label{eq:chiralTraceSplit}
+\end{equation}
+\noindent The geometry of the self-dual (L) sector does not algebraically interact with the geometry of the anti-self-dual (R) sector. As we will see in Sections \ref{sec:Gravity} and \ref{sec:Matter}, this will lead to the observation that gravity and matter couple geometrically, but not algibraically. They can coexist in a volume without sharing energy through the action.
 
-\todo{Author: Explain that gauge invariance and the lack of a background metric uniquely force the Lagrangian to be the fully antisymmetric Pontryagin topological density.}
+To construct a gauge-invariant Lagrangian, we need to build a scalar density that is quadritic in the field strength tensor. In \cite{utiyama1956invariant}, Utiyama showed that the only possible invariant scalars are the Yang-Mills term $\mathrm{Tr}(F_{\mu\nu} F^{\mu\nu})$ or the Pontryagin density $\epsilon^{\mu\nu\rho\sigma}\mathrm{Tr}(F_{\mu\nu} F_{\rho\sigma})$. However, as shown in \cite{nakahara2003geometry}, the Yang-Mills term requires an independent background metric, so CGD must use the Pontryagin density.
 
+This leads us to the unique Lagrangian candidate
 \begin{equation}
     \mathcal{L}_{\text{CGD}} = c \sum_{\mu\nu\rho\sigma} \epsilon^{\mu\nu\rho\sigma} \text{Tr}(F_{\mu\nu} F_{\rho\sigma})
     \quad \leanref{CGD.Foundations.topologicalLagrangianUniqueness}
     \label{eq:topologicalLagrangianUniqueness}
 \end{equation}
-\todo{Cite Litlib Dependency: \cite{utiyama1956invariant} for the Lie algebra invariant bilinear form expansion.}
 
-\todo{Author: Explain that because the Lagrangian is purely topological, its classical action variation over compactly supported perturbations is identically zero. We cannot use Euler-Lagrange equations to obtain standard equations of motion.}
-
+However, this is a purely topological Lagrangian, any classical action variation gives
 \begin{equation}
-    \left. \frac{d}{d\tau} S[v(\tau)] \right|_{\tau=0} = 0 
+    \left. \frac{d}{d\tau} S[v(\tau)] \right|_{\tau=0} = 0 .
     \quad \leanref{CGD.Foundations.topologicalActionVariationZero}
     \label{eq:topologicalActionVariationZero}
 \end{equation}
-\todo{Cite Litlib Dependency: \cite{spivak1965calculus} for the divergence theorem constraints and \cite{rudin1976principles} for the Leibniz integral rule.
+\noindent This means that we cannot construct Euler-Lagrange equations of motion.
 
-CRITICAL NARRATIVE BRIDGE: Explicitly address the field theorist's immediate objection. If variation is zero, there are no Euler-Lagrange local degrees of freedom. State clearly here that macroscopic dynamics are driven entirely by topological defects (knots) being forced to satisfy geometric Bianchi constraints. We don't use a Lagrangian to move things; we use geometry.
-}
+If CGD has no equations of motion, how does anything move? By expanding the covariant derivative of the field strength tensor into its fundamental matrix algebra, we derive the exact differential Bianchi identity
+\begin{equation}
+    D_\rho \mathcal{F}_{\mu\nu} + D_\mu \mathcal{F}_{\nu\rho} + D_\nu \mathcal{F}_{\rho\mu} = 0 .
+    \quad \leanref{CGD.Foundations.kinematicBianchiIdentity}
+    \label{eq:bianchiIdentity}
+\end{equation}
+\noindent This equation shows that the geometry of CGD is conserved and that no operations exist that can tear the gauge field. In Section \ref{sec:Gravity}, we will show how this leads to the Einstein-Infeld-Hoffman mechanism \cite{papapetrou1951spinning} that replaces the standard equations of motion and causes objects to move along geodesics in 4-dimensional spacetime.
 
-\todo{Author: Review and rename subsection title if desired.}
-\subsection{Topological Charge Conservation}
-\label{subsec:charge_conservation}
-
-\todo{Author: Explain that while we lack an action principle, U(1) charge conservation natively falls out of n-dimensional Clairaut symmetry on the Abelian projection.}
-
+Another consequence of missing equations of motion is that we cannot use Noether's Theorem \cite{nakahara2003geometry} to prove properties such as charge, angular momentum, or energy are conserved. Later in Section \ref{sec:Gravity}, we will use Equation \ref{eq:bianchiIdentity} to prove that stress-energy is conserved in Equation \ref{eq:emergentStressEnergyConservation}, but Equation \ref{eq:bianchiIdentity} will not work to prove that topological charge is conserved. Instead, we will look at the Abelian projection of the field $\mathcal{F}_{\rho\sigma}$ and define an arbitrary topological current $J^\mu$ as the dual divergence of this field. Since the CGD universe is fundamentally smooth, we can use Clairaut's theorem \cite{rudin1976principles} to guarantee that this current is conserved.
 \begin{equation}
     J^\mu = \epsilon^{\mu\nu\rho\sigma} \partial_\nu \mathcal{F}_{\rho\sigma} \implies \partial_\mu J^\mu = 0
     \quad \leanref{CGD.Foundations.kinematicChargeConservation}
     \label{eq:kinematicChargeConservation}
 \end{equation}
-\todo{Cite Litlib Dependency: \cite{rudin1976principles} for the multidimensional Clairaut partial derivative symmetry bounds.}
+
+We will show in Section \ref{sec:Matter} that this charge conservation gives rise to the electro-dynamic property.

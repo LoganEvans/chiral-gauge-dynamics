@@ -1,5 +1,8 @@
 -- FILENAME: CGD/Foundations/Bianchi.lean
 
+import Litlib.Core
+import CGD.Axioms.Ontology
+import CGD.Foundations.Math
 import CGD.Foundations.Calculus
 import CGD.Foundations.Charge
 import CGD.Foundations.TensorCalculus.DifferentialRules
@@ -156,15 +159,11 @@ lemma partialDerivSl2c_comm
     exact partialDeriv_comm_real (fun p => ((A p).val i j).im) (h_smooth_im i j) μ ν x (h_diff_fderiv_im i j)
 
 /--
-The Differential Bianchi Identity.
-D_ρ F_μν + D_μ F_νρ + D_ν F_ρμ = 0
-
-Strictly proven from fundamental Lie algebra rules and Clairaut's theorem, 
-leaving no mathematical loopholes. The proof maps the topological constraints 
-down to matrix multiplication, simultaneously performing the d^2=0 and 
-Jacobi cancellations algebraically.
+Mathematical primitive for the Bianchi Identity.
+Evaluates the Lie algebra rules directly but exposes the 14 ugly calculus bounds 
+required to verify differentiability step-by-step.
 -/
-theorem cgd_bianchi_identity
+theorem mathBianchiIdentity
   [clairaut : Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional]
   (A : Fin 4 → SpacetimePoint → SL2C) (ρ μ ν : Fin 4) (x : SpacetimePoint)
   (h_diff_dmu_Anu : ∀ i j, DifferentiableAt ℝ (fun p => (partialDerivSl2c μ (A ν) p).val i j) x)
@@ -210,5 +209,92 @@ theorem cgd_bianchi_identity
 
   simp only [h_val_add, h_val_sub, h_val_br, h_val_zero, mul_add, add_mul, mul_sub, sub_mul, Matrix.mul_assoc]
   abel
+
+Litlib.theorem
+  description "Kinematic Bianchi Identity"
+/--
+The Differential Bianchi Identity.
+D_ρ F_μν + D_μ F_νρ + D_ν F_ρμ = 0
+
+Strictly proven from fundamental Lie algebra rules and Clairaut's theorem, 
+leaving no mathematical loopholes. The proof maps the topological constraints 
+down to matrix multiplication, simultaneously performing the d^2=0 and 
+Jacobi cancellations algebraically.
+
+This theorem automatically proves all 14 required calculus differentiability 
+bounds by natively resolving them against the `is_smooth` foundational axiom 
+of the generic smooth background gauge field.
+-/
+theorem kinematicBianchiIdentity
+  [clairaut : Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional]
+  (A : CGD.Axioms.Sl2cGaugeField) (ρ μ ν : Fin 4) (x : SpacetimePoint) :
+  covariantDeriv A ρ μ ν x +
+  covariantDeriv A μ ν ρ x +
+  covariantDeriv A ν ρ μ x = 0 := by
+  
+  have h_diffA : ∀ σ p i j, DifferentiableAt ℝ (fun p' => (A σ p').val i j) p := 
+    fun σ p i j => (A.is_smooth σ i j).differentiable (by decide) p
+    
+  have h_val_pd_eq : ∀ α β p i j, (partialDerivSl2c α (A β) p).val i j = partialDeriv α (fun p' => (A β p').val i j) p := by
+    intro α β p i j
+    have h_mat := partialDerivSl2c_eq_mat (A β) α p (h_diffA β p)
+    have h_eval : (partialDerivMat α (fun p' => (A β p').val) p) i j = partialDeriv α (fun p' => (A β p').val i j) p := rfl
+    rw [h_mat, h_eval]
+
+  have h_smooth_pd : ∀ α β i j, ContDiff ℝ ⊤ (fun p => (partialDerivSl2c α (A β) p).val i j) := by
+    intro α β i j
+    have h_eq : (fun p => (partialDerivSl2c α (A β) p).val i j) = fun p => partialDeriv α (fun p' => (A β p').val i j) p := by
+      ext p; exact h_val_pd_eq α β p i j
+    rw [h_eq]
+    exact contDiff_partialDeriv_complex α _ (A.is_smooth β i j)
+
+  have h_diff_pd : ∀ α β i j, DifferentiableAt ℝ (fun p => (partialDerivSl2c α (A β) p).val i j) x := 
+    fun α β i j => (h_smooth_pd α β i j).differentiable (by decide) x
+
+  have h_val_br_eq : ∀ α β p i j, ⁅A α p, A β p⁆.val i j = ((A α p).val * (A β p).val - (A β p).val * (A α p).val) i j := fun α β p i j => rfl
+
+  have h_smooth_br : ∀ α β i j, ContDiff ℝ ⊤ (fun p => ⁅A α p, A β p⁆.val i j) := by
+    intro α β i j
+    have h_eq : (fun p => ⁅A α p, A β p⁆.val i j) = fun p => 
+      ((A α p).val i 0 * (A β p).val 0 j + (A α p).val i 1 * (A β p).val 1 j) -
+      ((A β p).val i 0 * (A α p).val 0 j + (A β p).val i 1 * (A α p).val 1 j) := by
+      ext p
+      rw [h_val_br_eq, Matrix.sub_apply, mul_2x2, mul_2x2]
+    rw [h_eq]
+    exact (((A.is_smooth α i 0).mul (A.is_smooth β 0 j)).add ((A.is_smooth α i 1).mul (A.is_smooth β 1 j))).sub (((A.is_smooth β i 0).mul (A.is_smooth α 0 j)).add ((A.is_smooth β i 1).mul (A.is_smooth α 1 j)))
+
+  have h_diff_br : ∀ α β i j, DifferentiableAt ℝ (fun p => ⁅A α p, A β p⁆.val i j) x := 
+    fun α β i j => (h_smooth_br α β i j).differentiable (by decide) x
+
+  have h_smooth_re : ∀ σ i j, ContDiffOn ℝ 2 (fun p => ((A σ p).val i j).re) Set.univ := by
+    intro σ i j
+    let Lre : ℂ →L[ℝ] ℝ := { toFun := Complex.re, map_add' := Complex.add_re, map_smul' := fun r c => by simp, cont := Complex.continuous_re }
+    have h_top := ContDiff.comp (g := Complex.re) (f := fun p => (A σ p).val i j) Lre.contDiff (A.is_smooth σ i j)
+    exact ContDiff.contDiffOn (ContDiff.of_le h_top le_top)
+    
+  have h_smooth_im : ∀ σ i j, ContDiffOn ℝ 2 (fun p => ((A σ p).val i j).im) Set.univ := by
+    intro σ i j
+    let Lim : ℂ →L[ℝ] ℝ := { toFun := Complex.im, map_add' := Complex.add_im, map_smul' := fun r c => by simp, cont := Complex.continuous_im }
+    have h_top := ContDiff.comp (g := Complex.im) (f := fun p => (A σ p).val i j) Lim.contDiff (A.is_smooth σ i j)
+    exact ContDiff.contDiffOn (ContDiff.of_le h_top le_top)
+
+  have h_diff_fderiv_re : ∀ σ i j, DifferentiableAt ℝ (fderiv ℝ (fun p => ((A σ p).val i j).re)) x := by
+    intro σ i j
+    let Lre : ℂ →L[ℝ] ℝ := { toFun := Complex.re, map_add' := Complex.add_re, map_smul' := fun r c => by simp, cont := Complex.continuous_re }
+    have h_top := ContDiff.comp (g := Complex.re) (f := fun p => (A σ p).val i j) Lre.contDiff (A.is_smooth σ i j)
+    have h_fd := contDiff_fderiv_of_contDiff_real h_top
+    exact (h_fd.differentiable (by decide) x)
+    
+  have h_diff_fderiv_im : ∀ σ i j, DifferentiableAt ℝ (fderiv ℝ (fun p => ((A σ p).val i j).im)) x := by
+    intro σ i j
+    let Lim : ℂ →L[ℝ] ℝ := { toFun := Complex.im, map_add' := Complex.add_im, map_smul' := fun r c => by simp, cont := Complex.continuous_im }
+    have h_top := ContDiff.comp (g := Complex.im) (f := fun p => (A σ p).val i j) Lim.contDiff (A.is_smooth σ i j)
+    have h_fd := contDiff_fderiv_of_contDiff_real h_top
+    exact (h_fd.differentiable (by decide) x)
+
+  exact mathBianchiIdentity A ρ μ ν x 
+    (h_diff_pd μ ν) (h_diff_pd ν μ) (h_diff_pd ν ρ) (h_diff_pd ρ ν) (h_diff_pd ρ μ) (h_diff_pd μ ρ)
+    (h_diff_br μ ν) (h_diff_br ν ρ) (h_diff_br ρ μ)
+    h_diffA h_smooth_re h_smooth_im h_diff_fderiv_re h_diff_fderiv_im
 
 end CGD.Foundations

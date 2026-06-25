@@ -2,6 +2,7 @@
 
 import CGD.Axioms.PhysicalUniverse
 import CGD.Foundations.Action
+import CGD.Foundations.Bianchi
 import CGD.Foundations.Calculus
 import CGD.Foundations.Charge
 import CGD.Foundations.ChiralDecomposition
@@ -34,6 +35,7 @@ physical universe, the following core foundational phenomena emerge simultaneous
 2. The unified 4D topology algebraically decomposes into independent left/right chiral sectors.
 3. The antisymmetric Pontryagin topological density is the unique quadratic Lagrangian.
 4. The classical action is topologically degenerate, ensuring its functional variation is exactly zero.
+5. The geometry strictly obeys the differential Bianchi identity, guaranteeing non-tearing topological evolution.
 -/
 theorem foundationsSummary
   (pu : CGD.Axioms.PhysicalUniverse)
@@ -84,12 +86,20 @@ theorem foundationsSummary
   (∀ (v : ℝ → CGD.Axioms.PhysicalUniverse)
     [Litlib.Y1965.spivak1965calculus.DivergenceTheoremR4Compact (fun x mu => variationCurrent v 0 mu x)]
     [Litlib.Y1976.rudin1976principles.LeibnizIntegralRule (fun s x => lagrangianDensity (fun mu nu => curvature (fun m p => (v s).toUniverse.spin4c_connection m p) mu nu x))],
-    isValidPhysicalVariation v → deriv (fun t => physicalUniverseAction (v t)) 0 = 0) := by
+    isValidPhysicalVariation v → deriv (fun t => physicalUniverseAction (v t)) 0 = 0)
+  ∧
+
+  -- Conjunct 5: Kinematic Bianchi Identity
+  -- Proved by `kinematicBianchiIdentity` in `CGD.Foundations.Bianchi`
+  -- Proves that the geometry is strictly forbidden from tearing, guaranteeing classical conservation.
+  (∀ (A : CGD.Axioms.Sl2cGaugeField) (ρ μ ν : Fin 4) (x : SpacetimePoint),
+    covariantDeriv A ρ μ ν x + covariantDeriv A μ ν ρ x + covariantDeriv A ν ρ μ x = 0) := by
   exact ⟨
     kinematicChargeConservation pu,
     algebraicChiralDecomposition pu,
     topologicalLagrangianUniqueness,
-    topologicalActionVariationZero
+    topologicalActionVariationZero,
+    fun A ρ μ ν x => kinematicBianchiIdentity A ρ μ ν x
   ⟩
 
 end CGD.Foundations
