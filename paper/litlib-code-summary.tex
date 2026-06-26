@@ -749,6 +749,47 @@ theorem §\phantomsection\label{lean:CGD.Gravity.dynamicExactAbelianSolution}§C
     (∃ x, §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ u.sd_sector 1 2 x ≠ 0)
 
 
+-- MODULE: CGD.Gravity.ExactSolutions.CDJEvaluation
+--------------------------------------------------------------------
+lemma §\phantomsection\label{lean:CGD.Gravity.CDJ_constraint_holds}§CGD.Gravity.CDJ_constraint_holds :
+  (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, §\hyperref[lean:CGD.Gravity.epsilon4]{\detokenize{epsilon4}}§ μ ν ρ σ • (§\hyperref[lean:CGD.Gravity.adj_F]{\detokenize{adj_F}}§ μ ν * §\hyperref[lean:CGD.Gravity.adj_F]{\detokenize{adj_F}}§ ρ σ)) = 
+  ((∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, §\hyperref[lean:CGD.Gravity.epsilon4]{\detokenize{epsilon4}}§ μ ν ρ σ • (§\hyperref[lean:CGD.Gravity.adj_F]{\detokenize{adj_F}}§ μ ν * §\hyperref[lean:CGD.Gravity.adj_F]{\detokenize{adj_F}}§ ρ σ)).trace / 3) • 1
+
+
+-- MODULE: CGD.Gravity.ExactSolutions.LorentzianAnsatz
+--------------------------------------------------------------------
+noncomputable def §\phantomsection\label{lean:CGD.Gravity.F_origin_val}§CGD.Gravity.F_origin_val (mu nu : Fin 4) : Matrix (Fin 2) (Fin 2) ℂ :=
+  if mu = 0 ∧ nu = 1 then -§\hyperref[lean:CGD.Foundations.sigmaX]{\detokenize{sigmaX}}§
+  else if mu = 0 ∧ nu = 2 then -sigmaY
+  else if mu = 0 ∧ nu = 3 then -§\hyperref[lean:CGD.Foundations.sigmaZ]{\detokenize{sigmaZ}}§
+  else if mu = 1 ∧ nu = 0 then §\hyperref[lean:CGD.Foundations.sigmaX]{\detokenize{sigmaX}}§
+  else if mu = 2 ∧ nu = 0 then sigmaY
+  else if mu = 3 ∧ nu = 0 then §\hyperref[lean:CGD.Foundations.sigmaZ]{\detokenize{sigmaZ}}§
+  else if mu = 1 ∧ nu = 2 then Complex.I • §\hyperref[lean:CGD.Foundations.sigmaZ]{\detokenize{sigmaZ}}§
+  else if mu = 2 ∧ nu = 1 then -Complex.I • §\hyperref[lean:CGD.Foundations.sigmaZ]{\detokenize{sigmaZ}}§
+  else if mu = 1 ∧ nu = 3 then -Complex.I • sigmaY
+  else if mu = 3 ∧ nu = 1 then Complex.I • sigmaY
+  else if mu = 2 ∧ nu = 3 then Complex.I • §\hyperref[lean:CGD.Foundations.sigmaX]{\detokenize{sigmaX}}§
+  else if mu = 3 ∧ nu = 2 then -Complex.I • §\hyperref[lean:CGD.Foundations.sigmaX]{\detokenize{sigmaX}}§
+  else 0
+
+noncomputable def §\phantomsection\label{lean:CGD.Gravity.adj_F}§CGD.Gravity.adj_F (mu nu : Fin 4) : Matrix (Fin 3) (Fin 3) ℂ :=
+  extractAdjoint (§\hyperref[lean:CGD.Gravity.F_origin_val]{\detokenize{F_origin_val}}§ mu nu)
+
+
+-- MODULE: CGD.Gravity.ExactSolutions.LorentzianEval
+--------------------------------------------------------------------
+lemma §\phantomsection\label{lean:CGD.Gravity.F_origin_val_eq_map}§CGD.Gravity.F_origin_val_eq_map (m n : Fin 4) : §\hyperref[lean:CGD.Gravity.F_origin_val]{\detokenize{F_origin_val}}§ m n = §\hyperref[lean:CGD.Gravity.F_val_map]{\detokenize{F_val_map}}§ m n
+
+noncomputable def §\phantomsection\label{lean:CGD.Gravity.F_val_map}§CGD.Gravity.F_val_map (m n : Fin 4) : Matrix (Fin 2) (Fin 2) ℂ :=
+  match m, n with
+  | 0, 1 => -§\hyperref[lean:CGD.Foundations.sigmaX]{\detokenize{sigmaX}}§ | 0, 2 => -sigmaY | 0, 3 => -§\hyperref[lean:CGD.Foundations.sigmaZ]{\detokenize{sigmaZ}}§
+  | 1, 0 => §\hyperref[lean:CGD.Foundations.sigmaX]{\detokenize{sigmaX}}§  | 1, 2 => Complex.I • §\hyperref[lean:CGD.Foundations.sigmaZ]{\detokenize{sigmaZ}}§ | 1, 3 => -Complex.I • sigmaY
+  | 2, 0 => sigmaY  | 2, 1 => -Complex.I • §\hyperref[lean:CGD.Foundations.sigmaZ]{\detokenize{sigmaZ}}§ | 2, 3 => Complex.I • §\hyperref[lean:CGD.Foundations.sigmaX]{\detokenize{sigmaX}}§
+  | 3, 0 => §\hyperref[lean:CGD.Foundations.sigmaZ]{\detokenize{sigmaZ}}§  | 3, 1 => Complex.I • sigmaY | 3, 2 => -Complex.I • §\hyperref[lean:CGD.Foundations.sigmaX]{\detokenize{sigmaX}}§
+  | _, _ => 0
+
+
 -- MODULE: CGD.Gravity.ExactSolutions.MainTheorem
 --------------------------------------------------------------------
 /--

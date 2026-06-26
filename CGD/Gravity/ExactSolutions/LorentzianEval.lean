@@ -19,6 +19,8 @@ noncomputable def F_val_map (m n : Fin 4) : Matrix (Fin 2) (Fin 2) ℂ :=
   | 3, 0 => sigmaZ  | 3, 1 => Complex.I • sigmaY | 3, 2 => -Complex.I • sigmaX
   | _, _ => 0
 
+Litlib.theorem
+  description "Exact Lorentzian Field Curvature At Origin"
 lemma F_origin_val_eq_map (m n : Fin 4) : F_origin_val m n = F_val_map m n := by
   fin_cases m <;> fin_cases n <;> { unfold F_origin_val F_val_map; simp }
 

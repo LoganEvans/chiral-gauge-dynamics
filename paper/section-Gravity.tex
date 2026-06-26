@@ -11,83 +11,99 @@ Order of theorems covered:
 7. dynamicMatterExistence: A non-zero Anti-Self-Dual curvature rigorously evaluates as physical matter via the Plebanski coupling.
 Nuances: Emphasize that we do not 'quantize gravity' here. Gravity is simply the macroscopic, low-energy bulk of the connection.}
 
-\todo{Author: Review and rename section title if desired.}
 \section{Gravity: The Emergence of Spacetime}
 \label{sec:Gravity}
 
-\todo{Author: Review and rename subsection title if desired.}
-\subsection{Unimodular CDJ Gravity}
-\label{subsec:unimodular_cdj}
+In 1919, Albert Einstein created the idea of unimodular gravity \cite{weinberg1989cosmological}. The essential idea behind unimodular gravity is that the metric tensor $g_{\nu \mu}$ defining the 4-dimensional spacetime must have a constant non-zero determinant, meaning that the volume must be constant. This has been an active field of research ever since its introduction in part because it provides a natural explanation for the cosmological constant $\Lambda$ without needing to invoke dark energy. In CGD, we will not touch on these implications of unimodular gravity; instead, we will focus on showing that our axiom basis mathematically forces the universe to possess unimodular gravity.
 
-\todo{Author: Introduce the Capovilla-Dell-Jacobson (CDJ) algebraic constraint framework. Explain that the metric determinant natively emerges as the Unimodular scalar constraint.}
+The crux of our proof that gravity emerges in CGD depends on the Urbantke metric \cite{urbantke1984integrability}. The Urbantke metric performs a profound unification: it demonstrates that the geometry of spacetime and the gauge fields that live inside it are not separate things. In the Standard Model, spacetime is a pre-existing stage described with a Minkowski metric and particles are placed on this stage.
 
+More formally, the Urbantke metric constructs a 4-dimensional conformal (scale-free) metric from the wedge product
+\begin{align}
+    \sqrt{-g} \, g_{\mu\nu}
+    &= \frac{1}{6} \epsilon^{\alpha\beta\gamma\delta} \mathrm{Tr}\Big( F_{\mu\alpha} [F_{\beta\gamma}, F_{\delta\nu}] \Big) \nonumber \\
+    &= \frac{1}{6} \epsilon^{\alpha\beta\gamma\delta} F_{\mu\alpha}^i F_{\beta\gamma}^j F_{\delta\nu}^k \, \mathrm{Tr}\Big( T_i [T_j, T_k] \Big) \nonumber \\
+    &= \frac{c}{6} \epsilon_{ijk} \epsilon^{\alpha\beta\gamma\delta} F_{\mu\alpha}^i F_{\beta\gamma}^j F_{\delta\nu}^k .
+\label{eq:urbantkeMetric}
+\end{align}
+\noindent Here, the gauge field generators $(T_i, T_j, T_k)$ are mapped onto the independent 2-forms (planes of rotation) of the 4-dimensional spacetime represented by the antisymmetric tensor $\epsilon^{\alpha\beta\gamma\delta}$.
+
+This metric contains two separate filters that can prevent a gauge field from possessing an Urbantke metric. First, the Lie bracket $[F_{\beta\gamma}, F_{\delta\nu}]$ means that if we attempted to use an Abelian field such as $U(1)$, the matrices commute and so the macroscopic volume will collapse to 0.
+
+The second filter deals with how the trace of the generators $\mathrm{Tr}( T_i [T_j, T_k] )$ evaluates to the antisymmetric structure constant $\epsilon_{ijk}$. This tensor requires exactly 3 internal gauge indices $(i, j, k)$ to map to the spacetime indices. The gauge group $SU(2)$ is generated from 3 rotations, so it possesses a well-defined Urbantke metric. The \slTwoC gauge group is generated from 3 rotations and 3 boosts, and while this requires 6 numbers to write down $(a_1 + b_1 i, a_2 + b_2 i, a_3 + b_3 i)$, this is still 3 algebraic generators, so it also possesses a well-defined Urbantke metric. Krasnov noted in \cite{krasnov2011plebanski} that this mapping relies on an accidental mathematical isomorphism that is unique to 4-dimensional geometry, so \suTwo and \slTwoC are the only gauge groups that can natively construct a 4-dimensional macroscopic metric.
+
+In \cite{capovilla1989general, capovilla1991pure}, \citeauthor{capovilla1989general} (CDJ) developed the algebraic constraint framework to determine the behavior of emergent spacetime that uses the Urbantke metric. In their work, CDJ used a specific dynamical action that produced the Einstein Field Equations. However, as we showed in Equation \ref{eq:topologicalActionVariationZero}, CGD does not possess equations of motion, so it does not share this dynamical action. Instead, we explore the emergent spacetime of CGD by using Equation \ref{eq:algebraicChiralDecomposition} to obtain one of the two \slTwoC chiral halves of \spinFourC and applying the unimodular constraint from Axiom \ref{eq:unimodularVacuumAxiom} to obtain the metric determinant. This leads to
 \begin{equation}
     \left(\sqrt{-g(x)}\right)^2 = \mu(x)^2
     \quad \leanref{CGD.Gravity.macroscopicVacuumEmergence}
     \label{eq:macroscopicVacuumEmergence}
 \end{equation}
-\todo{Cite Litlib Dependency: \cite{capovilla1991pure} for the volume element identity (Eq 2.21).}
-
-\todo{Author: Explain that in the pure vacuum limit (outside of topological defects), the CDJ constraints natively generate Ricci-flat geometries.}
-
+\noindent Here, $\mu(x)$ is the CDJ scalar density. Since this density cannot warp, we are able to prove:
 \begin{equation}
-    R_{\mu\nu} = 0 \quad \text{for } x \in \text{Bulk Vacuum}
+    R_{\mu\nu} = 0 \quad \text{for } x \in \mathcal{B},
     \quad \leanref{CGD.Gravity.macroscopicRicciFlatEmergence}
     \label{eq:macroscopicRicciFlatEmergence}
 \end{equation}
-\todo{Cite Litlib Dependency: \cite{capovilla1991pure} for the CDJ constraints 2.2b, 2.2c, and the Ricci-flat equivalence.}
+which shows that within the bulk $\mathcal{B}$, the vacuum is the Ricci-flat vacuum required for the Einstein Field Equations.
 
-\todo{Author: Review and rename subsection title if desired.}
-\subsection{Exact Macroscopic Solutions}
-\label{subsec:exact_solutions}
-
-\todo{Author: Present the exact analytical solutions proving that the CGD ontology is not a vacuous toy model. First, the Abelian plane wave.}
-
+Now that we have shown Ricci-flatness, the remaining element required to prove the emergence of General Relativity is stress-energy conservation. We proved in Equation \ref{eq:topologicalActionVariationZero} that CGD possesses no equations of motion, so we are unable to use Noether's Theorem to prove the conservation of energy. Instead, we will use the Bianchi identity that we formalized and presented in Equation \ref{eq:bianchiIdentity}. By showing that the Urbantke metric satisfies the Bianchi identity, we are able to demonstrate the emergence of stress-energy conservation within CGD:
 \begin{equation}
-    \mathcal{F} \wedge \mathcal{F} = 0, \quad \mathcal{F}_{12} = c \sigma_x \neq 0
-    \quad \leanref{CGD.Gravity.dynamicExactAbelianSolution}
-    \label{eq:dynamicExactAbelianSolution}
-\end{equation}
-
-\todo{Author: Present the Capstone Witness. We have analytically verified an exact SU(2) gauge configuration that yields a strictly non-degenerate, negative determinant, Lorentzian spacetime metric at the origin.}
-
-\begin{equation}
-    \Sigma^{ab} - \frac{1}{3}\delta^{ab}\text{Tr}(\Sigma) = 0 \quad \text{and} \quad \det(g_{\mu\nu}) < 0
-    \quad \leanref{CGD.Gravity.dynamicExactLorentzianSolution}
-    \label{eq:dynamicExactLorentzianSolution}
-\end{equation}
-
-\todo{Author: Review and rename subsection title if desired.}
-\subsection{Conservation and Machian Motion}
-\label{subsec:machian_motion}
-
-\todo{Author: Address the physicist's critique: if the topological action's variation is zero, how do things move? Explain that the emergent Urbantke metric satisfies the Bianchi identities, guaranteeing energy conservation in the bulk.}
-
-\begin{equation}
-    \nabla_\mu T^{\mu\nu} = 0
+    \nabla_\mu T^{\mu\nu} = 0 .
     \quad \leanref{CGD.Gravity.emergentStressEnergyConservation}
     \label{eq:emergentStressEnergyConservation}
 \end{equation}
-\todo{Cite Litlib Dependency: \cite{nakahara2003geometry} for the contracted Bianchi identity, and \cite{urbantke1984integrability} for the metric symmetry bounds.}
+\noindent This proof depends upon the metric symmetry bounds established in \cite{urbantke1984integrability} and the geometric constraints of the contracted Bianchi identity \cite{nakahara2003geometry}.
 
-\todo{Author: Explain that because energy is conserved, the Mathisson-Papapetrou equations dictate that a localized, single-pole topological defect is mathematically forced to travel along a complex geodesic of the dynamically emergent geometry.}
-
+At this point, we have shown that General Relativity emerges from one of the two \slTwoC chiral halves of \spinFourC. Even though we have no equations of motion, we can explore motion within this system. In \cite{papapetrou1951spinning}, \citeauthor{papapetrou1951spinning} showed that for a localized, single-pole topological defect (in other words, a localized mass without spin), the conservation of stress-energy forces particles to move along geodesics. We are able to use this proof to demonstrate that within CGD,
 \begin{equation}
-    \frac{d u^\alpha}{ds} + \Gamma^\alpha_{\mu\nu} u^\mu u^\nu = 0
+    \frac{d u^\alpha}{ds} + \Gamma^\alpha_{\mu\nu} u^\mu u^\nu = 0 .
     \quad \leanref{CGD.Gravity.machianTopologicalDefectMotion}
     \label{eq:machianTopologicalDefectMotion}
 \end{equation}
-\todo{Cite Litlib Dependency: \cite{papapetrou1951spinning} for the single-pole geodesic derivation.}
+\noindent In other words, even without standard equations of motion, we are able to prove that objects within CGD move, and that they move according to the geodesic paths described in General Relativity.
 
-\todo{Author: Review and rename subsection title if desired.}
-\subsection{Dynamic Matter Generation}
-\label{subsec:matter_generation}
+\subsection{Exact Macroscopic Solutions}
 
-\todo{Author: Transition into the nature of matter. Explain that using the Plebanski coupling, a non-zero Anti-Self-Dual curvature natively acts as a source term for the macroscopic stress-energy tensor. Matter is geometry.}
+At this point, we have demonstrated that General Relativity mathematically emerges from CGD. However, the geometry is highly constrained, and highly constrained geometric systems risk being vacuous, where the only solution is the trivial vacuum ($A = 0$). In order to show that the geometry of CGD is not vacuous, we need to demonstrate that some non-trivial solution exists. As long as we can prove that some non-empty witness solution exists, that witness will serve as a sanity check to demonstrate that our axiom basis is not contradictory.
 
+However, a relevant physics theory does not need just an arbitrary non-vacuous solution to the geometric constraints. Our universe is Lorentzian, so while a Euclidean solution is mathematically interesting, it isn't of must use to physics research. The problem of finding a Lorentzian solution has plagued connection gravity research since its inception. As \citeauthor{capovilla1991pure} noted, ``For the case of Lorentz signature, one has to pay with unwieldy reality conditions for the use of self-dual 2-forms as basic variables for GR.''
+
+The reality conditions made it appear that deeper research into pure connection gravity was a dead end. According to \citeauthor{thiemann2007modern} \cite{thiemann2007modern}:
+\begin{quote}
+The original motivation to introduce the new variables was that for the quantization of general relativity it seemed mandatory to simplify the algebraic sructure of the Hamiltonian constraint which for $s = −1$ requires $\beta = \pm i/2$ since then the constraint becomes polynomial after multiplying by a factor proportional to $\sqrt{\det(q)}$. On the other hand, then the reality conditions become non-polynomial. Finally, if one wants polynomial reality conditions then one must have $\beta$ real and then the Hamiltonian constraint is still complicated. Thus it becomes questionable what has been gained.
+\end{quote}
+\noindent \citeauthor{thiemann2007modern} continued to explain why the compromise of the reality conditions made it so that any attempt at canonical quantization would require breaking background independence. However, in CGD, we do not attempt to perform canonical quantization. This issue is the exact fork in the road where CGD takes a different path from loop-quantum-gravity.
+
+Since we are using one of the two \slTwoC chiral halves of \spinFourC, we must show that despite this field being defined using complex numbers, a real Lorentzian metric metric natively emerges without imposing the ``unwieldy'' reality conditions manually. We begin by using a linear-in-coordinates $\mathfrak{sl}(2, \mathbb{C})$ ansatz:
+\begin{align}
+    A_0(x) &= 0 \nonumber \\
+    A_1(x) &= -x^0 \sigma_x + x^3 \frac{i}{2} \sigma_y - x^2 \frac{i}{2} \sigma_z \nonumber \\
+    A_2(x) &= -x^0 \sigma_y + x^1 \frac{i}{2} \sigma_z - x^3 \frac{i}{2} \sigma_x \\
+    A_3(x) &= -x^0 \sigma_z + x^2 \frac{i}{2} \sigma_x - x^1 \frac{i}{2} \sigma_y \nonumber \\
+    &\quad \leanref{CGD.Gravity.exactLorentzianField} \nonumber
+\end{align}
+
+In order to test if this configuration satisfies the geometric constraints, we evaluate the strength tensor (curvature) at the origin ($x = 0$). Once we take the gauge-covariant derivative, we obtain a complex-valued curvature tensor. By evaluating the temporal and spatial components, we obtain:
 \begin{equation}
-    \mathcal{F}^{(R)}_{\mu\nu} \neq 0 \implies T_{\mu\nu} \neq 0
-    \quad \leanref{CGD.Particles.dynamicMatterExistence}
-    \label{eq:dynamicMatterExistence}
+    F_{0j}\big|_{x=0} = -\sigma_j, \quad F_{jk}\big|_{x=0} = i \epsilon_{jkl} \sigma_l .
+    \quad \leanref{CGD.Gravity.F_origin_val_eq_map}
 \end{equation}
-\todo{Cite Litlib Dependency: \cite{krasnov2011plebanski} for the Plebanski matter coupling constraints.}
+
+Next, we check this against the trace-free algebraic constraints \cite{capovilla1991pure}. By evaluating the sum over the Levi-Civita symbol, we obtain a matrix that is proportional to the identity matrix, meaning that its trace-free part is exactly zero:
+\begin{equation}
+    \Sigma = \epsilon^{\mu\nu\rho\sigma} F_{\mu\nu} F_{\rho\sigma} = 16i \cdot \mathbb{I}_{3\times3} \implies \Sigma - \frac{1}{3}\text{Tr}(\Sigma)\mathbb{I} = 0 .
+    \quad \leanref{CGD.Gravity.CDJ_constraint_holds}
+\end{equation}
+
+Since this curvature is valid, we next map it through the Urbantke metric and obtain
+\begin{equation}
+    g_{\mu\nu}\big|_{x=0} = \text{diag}(-12, 12, 12, 12), \quad \det(g_{\mu\nu}) = -20736 < 0
+    \quad \leanref{CGD.Gravity.dynamicExactLorentzianSolution}
+    \label{eq:dynamicExactLorentzianSolution}
+\end{equation}
+\noindent This demonstrates that the metric possesses a $(-1, 1, 1, 1)$ Lorentzian signature.
+
+This shows that a dynamic, causal, and purely real Lorentzian universe mathematically exists within an unquantized \spinFourC universe. It is worth noting that the CGD axioms may allow for an infinite number of geometric solutions, and with our axiom basis, we cannot prove that this one must arise. In Section \ref{sec:Cosmology}, we will explore initial boundary conditions that give rise to this Lorentzian solution, but we will not impose an additional axiom that selects a specific geometry. This is similar to how standard General Relativity handles the issue of the geometry, where Minkowski, Schwarzschild, FLRW, and Kerr metrics provide independent solutions to the geometry.
+
+So far, we have focused only on one of the two \slTwoC chiral halves of \spinFourC that we obtained in Equation \ref{eq:algebraicChiralDecomposition}. In Section \ref{sec:Matter}, we will consider the other chiral half and will see not only how discrete particles emerge from this purely classical field, but how the geometries of the two chiral halves interact with each other.
+
