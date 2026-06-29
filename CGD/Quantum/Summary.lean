@@ -38,8 +38,6 @@ open Litlib.Y1989.arnold1989mathematical
 
 namespace CGD.Quantum
 
-Litlib.theorem
-  description "Quantum Summary"
 /--
 This theorem aggregates all quantum mechanical properties of the CGD framework 
 into a single rigorous conjunction. It mathematically proves that for any well-defined 

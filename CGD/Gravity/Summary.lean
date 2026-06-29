@@ -24,8 +24,6 @@ open Complex Matrix CGD.Foundations CGD.Axioms CGD.Gravity
 
 namespace CGD.Gravity
 
-Litlib.theorem
-  description "Gravity Summary"
 /--
 This theorem aggregates all macroscopic gravitational properties of the CGD framework 
 into a single rigorous conjunction. It mathematically proves that for any well-defined 

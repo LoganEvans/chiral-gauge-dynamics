@@ -25,8 +25,6 @@ open Complex Matrix
 
 namespace CGD.Foundations
 
-Litlib.theorem
-  description "Foundations Summary"
 /--
 This theorem aggregates all foundational mathematical properties of the CGD framework 
 into a single rigorous conjunction. It mathematically proves that for any well-defined 

@@ -21,8 +21,6 @@ open Complex Matrix CGD.Foundations CGD.Axioms CGD.Gravity CGD.Particles
 
 namespace CGD.Particles
 
-Litlib.theorem
-  description "Particles Summary"
 /--
 This theorem aggregates all particle and topological defect properties of the CGD framework 
 into a single rigorous conjunction. It mathematically proves that for any well-defined 

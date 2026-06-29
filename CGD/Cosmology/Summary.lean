@@ -19,8 +19,6 @@ open Complex Matrix CGD.Foundations CGD.Axioms CGD.Gravity CGD.Particles
 
 namespace CGD.Cosmology
 
-Litlib.theorem
-  description "Cosmology Summary"
 /--
 This theorem aggregates all cosmological properties of the CGD framework 
 into a single rigorous conjunction. It mathematically proves that for any well-defined 

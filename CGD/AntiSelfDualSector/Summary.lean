@@ -17,8 +17,6 @@ open Complex Matrix CGD.Foundations CGD.Axioms CGD.Gravity
 
 namespace CGD.AntiSelfDualSector
 
-Litlib.theorem
-  description "AntiSelfDualSector Summary"
 /--
 This theorem aggregates all foundational properties of the Anti-Self-Dual (ASD) sector 
 within the CGD framework. It mathematically proves that for any well-defined physical universe:

@@ -14,8 +14,6 @@ open Complex Matrix CGD.Foundations CGD.Axioms
 namespace CGD.Phenomenology
 
 /--
-@Litlib.theorem
-
 This theorem aggregates all phenomenological properties of the CGD framework 
 into a single rigorous conjunction. It mathematically proves that for any well-defined 
 physical universe, the following phenomena naturally emerge:

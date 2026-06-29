@@ -86,8 +86,6 @@ open Litlib.Y1989.arnold1989mathematical
 
 namespace CGD
 
-Litlib.theorem
-  description "The Theory of Chiral Gauge Dynamics"
 /--
 # The Theory of Chiral Gauge Dynamics
 This capstone theorem aggregates the entirety of the CGD framework into a single, 
