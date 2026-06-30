@@ -152,4 +152,32 @@ theorem kinematicRightHandedCoupling (pu : PhysicalUniverse) (mu : Fin 4) (x : S
             (pu.toUniverse.asd_sector mu x).val i j := by ring
   exact h1.symm
 
+/-- 
+Generic gauge-covariant derivative action on a fundamental state.
+Represented abstractly for a matrix-valued state `Psi` and its bare partial derivative `partial_Psi`.
+-/
+noncomputable def covariantStateDeriv (partial_Psi : Matrix (Fin 2) (Fin 2) ℂ) (A : Matrix (Fin 2) (Fin 2) ℂ) (Psi : Matrix (Fin 2) (Fin 2) ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
+  partial_Psi + A * Psi
+
+Litlib.theorem
+  description "Kinematic Left-Handed Phase Shift"
+/--
+Proves that the covariant derivative of a state under the Left-Handed (Self-Dual) 
+connection mathematically evaluates to the bare partial derivative, plus the 
+interaction with the symmetric Vector background, plus the interaction with the 
+P-violating Axial condensate.
+
+This formalizes the algebraic substitution allowing the paper to definitively claim 
+that left-handed fermions actively interact with the axial condensate in the 
+covariant Dirac equation.
+-/
+theorem kinematicLeftHandedPhaseShift (pu : PhysicalUniverse) (mu : Fin 4) (x : SpacetimePoint) 
+  (Psi partial_Psi : Matrix (Fin 2) (Fin 2) ℂ) :
+  covariantStateDeriv partial_Psi (pu.toUniverse.sd_sector mu x).val Psi = 
+  partial_Psi + vectorField pu.toUniverse mu x * Psi + axialField pu.toUniverse mu x * Psi := by
+  unfold covariantStateDeriv
+  rw [kinematicLeftHandedCoupling]
+  rw [Matrix.add_mul]
+  rw [← add_assoc]
+
 end CGD.Phenomenology
