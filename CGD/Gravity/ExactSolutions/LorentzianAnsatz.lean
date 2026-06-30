@@ -11,6 +11,8 @@ open CGD.Axioms
 
 namespace CGD.Gravity
 
+Litlib.definition
+    description "Linear-In-Coordinates Lorentzian Matrix Ansatz"
 noncomputable def exactLorentzianL (mu : Fin 4) (x : SpacetimePoint) : Matrix (Fin 2) (Fin 2) ℂ :=
   if mu = 1 then - (x 0 : ℝ) • sigmaX + (x 3 : ℝ) • ((Complex.I / 2) • sigmaY) - (x 2 : ℝ) • ((Complex.I / 2) • sigmaZ)
   else if mu = 2 then - (x 0 : ℝ) • sigmaY + (x 1 : ℝ) • ((Complex.I / 2) • sigmaZ) - (x 3 : ℝ) • ((Complex.I / 2) • sigmaX)

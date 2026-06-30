@@ -23,7 +23,7 @@ Axiom \ref{eq:spinFourCAxiom} requires some initial conditions. To begin with, w
     \quad \leanref{CGD.Axioms.MacroscopicVolume}
     \label{eq:macroscopicVolumeAxiom}
 \end{equation}
-\noindent This axiom doesn't require that everything within the universe has non-zero volume. In fact, exploring scenarios where the volume collapses leads to several interesting observations, as we will see in Sections \ref{sec:Matter} and \ref{sec:Quantum}.
+\noindent This axiom doesn't require that everything within the universe has non-zero volume. In fact, exploring scenarios where the volume collapses leads to several interesting observations, as we will see in Sections \ref{sec:Particles} and \ref{sec:Quantum}.
 
 While Axiom \ref{eq:macroscopicVolumeAxiom} largely serves to allow the Lean 4 formalization to ignore trivial solutions, our final axiom does some heavy lifting. Without any additional constraints, \spinFourC may lack isotropy. Among other things, a lack of isotropy would warp spacetime and effectively create matter and gravity out of otherwise empty space. In order avoid this situation, we require a third axiom that enforces a smooth background vacuum when no matter is present. Formally, we state
 \begin{equation}
@@ -57,7 +57,7 @@ The CGD Lagrangian is built from the trace of the curvature squared. Because the
     \mathrm{Tr}\left( (F^{(L)} + F^{(R)}) \wedge (F^{(L)} + F^{(R)}) \right) = \mathrm{Tr}(F^{(L)} \wedge F^{(L)}) + \mathrm{Tr}(F^{(R)} \wedge F^{(R)})
     \label{eq:chiralTraceSplit}
 \end{equation}
-\noindent The geometry of the self-dual (L) sector does not algebraically interact with the geometry of the anti-self-dual (R) sector. As we will see in Sections \ref{sec:Gravity} and \ref{sec:Matter}, this will lead to the observation that gravity and matter couple geometrically, but not algebraically. They can coexist in a volume without sharing energy through the action.
+\noindent The geometry of the self-dual (L) sector does not algebraically interact with the geometry of the anti-self-dual (R) sector. As we will see in Sections \ref{sec:Gravity} and \ref{sec:Particles}, this will lead to the observation that gravity and matter couple geometrically, but not algebraically. They can coexist in a volume without sharing energy through the action.
 
 To construct a gauge-invariant Lagrangian, we need to build a scalar density that is quadritic in the field strength tensor. In \cite{utiyama1956invariant}, Utiyama showed that the only possible invariant scalars are the Yang-Mills term $\mathrm{Tr}(F_{\mu\nu} F^{\mu\nu})$ or the Pontryagin density $\epsilon^{\mu\nu\rho\sigma}\mathrm{Tr}(F_{\mu\nu} F_{\rho\sigma})$. However, as shown in \cite{nakahara2003geometry}, the Yang-Mills term requires an independent background metric, so CGD must use the Pontryagin density.
 
@@ -91,4 +91,4 @@ Another consequence of missing equations of motion is that we cannot use Noether
     \label{eq:kinematicChargeConservation}
 \end{equation}
 
-We will show in Section \ref{sec:Matter} that this charge conservation gives rise to the electro-dynamic property.
+We will show in Section \ref{sec:Particles} that this charge conservation gives rise to the electro-dynamic property.
