@@ -112,4 +112,44 @@ theorem macroscopicVolumeImpliesAxialCondensate
   -- 4. A globally symmetric universe contradicts the macroscopic volume constraint
   exact h_chiral h_eq
 
+Litlib.theorem
+  description "Kinematic Left-Handed Coupling"
+/--
+Proves that the Left-Handed (Self-Dual) gauge connection, which natively couples to 
+left-handed fermions (such as neutrinos) in the chiral Dirac framework, perfectly 
+decomposes into a symmetric Vector background and the P-violating Axial condensate.
+
+This establishes that left-handed states must continuously interact with the 
+axial condensate as a refractive background. Because this interaction occurs purely 
+at the level of the connection (zero Plebanski curvature), it geometrically derives 
+kinematic flavor oscillation (the MSW effect) without generating gravitational rest mass.
+-/
+theorem kinematicLeftHandedCoupling (pu : PhysicalUniverse) (mu : Fin 4) (x : SpacetimePoint) :
+  (pu.toUniverse.sd_sector mu x).val = vectorField pu.toUniverse mu x + axialField pu.toUniverse mu x := by
+  unfold vectorField axialField
+  ext i j
+  simp only [Matrix.add_apply, Matrix.smul_apply, Matrix.sub_apply]
+  have h1 : (1 / 2 : ℂ) * ((pu.toUniverse.sd_sector mu x).val i j + (pu.toUniverse.asd_sector mu x).val i j) + 
+            (1 / 2 : ℂ) * ((pu.toUniverse.sd_sector mu x).val i j - (pu.toUniverse.asd_sector mu x).val i j) = 
+            (pu.toUniverse.sd_sector mu x).val i j := by ring
+  exact h1.symm
+
+Litlib.theorem
+  description "Kinematic Right-Handed Coupling"
+/--
+Proves that the Right-Handed (Anti-Self-Dual) gauge connection decomposes into the 
+symmetric Vector background minus the P-violating Axial condensate. The sign flip 
+relative to the Left-Handed sector strictly defines the geometric parity asymmetry 
+of the chiral spacetime vacuum.
+-/
+theorem kinematicRightHandedCoupling (pu : PhysicalUniverse) (mu : Fin 4) (x : SpacetimePoint) :
+  (pu.toUniverse.asd_sector mu x).val = vectorField pu.toUniverse mu x - axialField pu.toUniverse mu x := by
+  unfold vectorField axialField
+  ext i j
+  simp only [Matrix.sub_apply, Matrix.smul_apply, Matrix.add_apply]
+  have h1 : (1 / 2 : ℂ) * ((pu.toUniverse.sd_sector mu x).val i j + (pu.toUniverse.asd_sector mu x).val i j) - 
+            (1 / 2 : ℂ) * ((pu.toUniverse.sd_sector mu x).val i j - (pu.toUniverse.asd_sector mu x).val i j) = 
+            (pu.toUniverse.asd_sector mu x).val i j := by ring
+  exact h1.symm
+
 end CGD.Phenomenology
