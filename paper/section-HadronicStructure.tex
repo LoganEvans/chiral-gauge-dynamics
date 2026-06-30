@@ -1,9 +1,12 @@
-% FILENAME: paper/section-ProtonRadius.tex
+% FILENAME: paper/section-HadronicStructure.tex
 
-\section{Phenomenological Implications: The Proton Radius}
-\label{sec:ProtonRadius}
+\section{Phenomenological Implications: Hadronic Structure}
+\label{sec:HadronicStructure}
 
-In this section, we will start by characterizing the CGD condensate and exploring the phenomenological implications related to the proton radius puzzle.
+In this section, we turn our focus to phenomenology. We will demonstrate how CGD natively produces testable predictions for hadronic observables without invoking external parameters or partonic factorizations. First, we examine the consequences of the vacuum chirality on the proton radius. Second, we show how the topological nature of the gauge connection mandates a sign flip in transverse momentum observables, natively deriving the Sivers effect.
+
+\subsection{The Proton Radius Puzzle}
+\label{subsec:ProtonRadius}
 
 To evaluate the proton radius, we first consider the empty vacuum where the anti-self-dual (ASD) sector's curvature is zero. If the self-dual (SD) sector were structurally equivalent to the ASD sector, then both sectors would be zero and thus the field would trivially commute with itself, meaning all fields would point in the same direction and the universe would only be capable of drawing a 1-dimensional object (Equation \ref{eq:kinematicSingleColorDegeneracy}). This would contradict the CGD Axiom \ref{eq:macroscopicVolumeAxiom} asserting that the universe has volume, so we conclude that the universe must have chirality
 
@@ -99,3 +102,51 @@ It's important to note that despite the statistical comparisons shown in Table \
 
 According to \citet{miller2026proton}, the Standard Model requires that we model the effects of both one-photon and two-photon exchange. However, with CGD, we didn't need to model the effects of two-photon exchange in order to reach high accuracy. Our theoretical basis is currently silent about whether two-photon exchange is important or not. The upcoming MUSE experiment \citet{cline2021muse} is exciting because if it shows that TPE is a much smaller effect than currently expected, then it will violate the lepton universality axiom of the Standard Model. In contrast, an anomalous MUSE result may be perfectly consistent with the CGD axioms.
 
+
+\subsection{The Kinematic Sivers Effect and Transverse Momentum}
+\label{subsec:SiversEffect}
+
+\todo{
+\textbf{Author Prompt (The Sivers Effect):}
+\begin{itemize}
+    \item Briefly introduce the Sivers effect: in standard QCD, the transverse momentum of quarks flips sign depending on whether the process is Semi-Inclusive Deep Inelastic Scattering (SIDIS - outgoing) or Drell-Yan (incoming).
+    \item Explain that standard perturbative QCD derives this by inserting "gauge links" by hand via the Factorization Theorem.
+    \item Describe how CGD derives this sign-flip \textit{natively} as a geometric necessity. Because the background topological flux tube is spatially uniform, the continuous path-ordered integration (the Wilson line) collapses into an exact matrix exponential. 
+    \item Conclude that reversing the trajectory path length ($L \to -L$) through the macroscopic SU(2) geometry rigorously inverts the sign of the transverse momentum kick.
+\end{itemize}
+}
+
+\begin{equation}
+    \langle \text{Kick}_{\text{Sivers}}(L) \rangle = - \langle \text{Kick}_{\text{Sivers}}(-L) \rangle
+    \quad \leanref{CGD.Phenomenology.kinematicSiversSignFlip}
+    \label{eq:kinematicSiversSignFlip}
+\end{equation}
+
+\todo{
+\textbf{Author Prompt (The Boer-Mulders Effect):}
+\begin{itemize}
+    \item Introduce the Boer-Mulders effect (the correlation between quark transverse spin and transverse momentum).
+    \item Explain that because this observable projects the orthogonal SU(2) topology (via $\sigma_z$ instead of $\sigma_x$), it obeys the exact same geometric sign-flip mechanism as the Sivers effect.
+\end{itemize}
+}
+
+\begin{equation}
+    \langle \text{Kick}_{\text{BM}}(L) \rangle = - \langle \text{Kick}_{\text{BM}}(-L) \rangle
+    \quad \leanref{CGD.Phenomenology.kinematicBoerMuldersSignFlip}
+    \label{eq:kinematicBoerMuldersSignFlip}
+\end{equation}
+
+\todo{
+\textbf{Author Prompt (The TMD Geometric Ratio - The Bombshell):}
+\begin{itemize}
+    \item Highlight that standard QCD treats Sivers and Boer-Mulders as independent empirical functions.
+    \item Explain the consequence of Equation \ref{eq:kinematicTmdRatio}: in CGD, they are geometrically locked together by the chiral phase angle $\alpha$ of the macroscopic flux tube.
+    \item Emphasize that predicting a flat kinematic ratio ($\frac{\text{BM}}{\text{Sivers}} = -\tan(\alpha)$) is a highly restrictive, testable, and falsifiable departure from standard phenomenological fits.
+\end{itemize}
+}
+
+\begin{equation}
+    \cos(\alpha) \langle \text{Kick}_{\text{BM}} \rangle = - \sin(\alpha) \langle \text{Kick}_{\text{Sivers}} \rangle
+    \quad \leanref{CGD.Phenomenology.kinematicTmdRatio}
+    \label{eq:kinematicTmdRatio}
+\end{equation}
