@@ -78,15 +78,15 @@ However, this is a purely topological Lagrangian, any classical action variation
 
 If CGD has no equations of motion, how does anything move? By expanding the covariant derivative of the field strength tensor into its fundamental matrix algebra, we derive the exact differential Bianchi identity
 \begin{equation}
-    D_\rho \mathcal{F}_{\mu\nu} + D_\mu \mathcal{F}_{\nu\rho} + D_\nu \mathcal{F}_{\rho\mu} = 0 .
+    D_\rho F_{\mu\nu} + D_\mu F_{\nu\rho} + D_\nu F_{\rho\mu} = 0 .
     \quad \leanref{CGD.Foundations.kinematicBianchiIdentity}
     \label{eq:bianchiIdentity}
 \end{equation}
 \noindent This equation shows that the geometry of CGD is conserved and that no operations exist that can tear the gauge field. In Section \ref{sec:Gravity}, we will show how this leads to the Einstein-Infeld-Hoffman mechanism \cite{papapetrou1951spinning} that replaces the standard equations of motion and causes objects to move along geodesics in 4-dimensional spacetime.
 
-Another consequence of missing equations of motion is that we cannot use Noether's Theorem \cite{nakahara2003geometry} to prove properties such as charge, angular momentum, or energy are conserved. Later in Section \ref{sec:Gravity}, we will use Equation \ref{eq:bianchiIdentity} to prove that stress-energy is conserved in Equation \ref{eq:emergentStressEnergyConservation}, but Equation \ref{eq:bianchiIdentity} will not work to prove that topological charge is conserved. Instead, we will look at the Abelian projection of the field $\mathcal{F}_{\rho\sigma}$ and define an arbitrary topological current $J^\mu$ as the dual divergence of this field. Since the CGD universe is fundamentally smooth, we can use Clairaut's theorem \cite{rudin1976principles} to guarantee that this current is conserved.
+Another consequence of missing equations of motion is that we cannot use Noether's Theorem \cite{nakahara2003geometry} to prove properties such as charge, angular momentum, or energy are conserved. Later in Section \ref{sec:Gravity}, we will use Equation \ref{eq:bianchiIdentity} to prove that stress-energy is conserved in Equation \ref{eq:emergentStressEnergyConservation}, but Equation \ref{eq:bianchiIdentity} will not work to prove that topological charge is conserved. Instead, we will look at the Abelian projection of the field $F_{\rho\sigma}$ and define an arbitrary topological current $J^\mu$ as the dual divergence of this field. Since the CGD universe is fundamentally smooth, we can use Clairaut's theorem \cite{rudin1976principles} to guarantee that this current is conserved.
 \begin{equation}
-    J^\mu = \epsilon^{\mu\nu\rho\sigma} \partial_\nu \mathcal{F}_{\rho\sigma} \implies \partial_\mu J^\mu = 0
+    J^\mu = \epsilon^{\mu\nu\rho\sigma} \partial_\nu F_{\rho\sigma} \implies \partial_\mu J^\mu = 0
     \quad \leanref{CGD.Foundations.kinematicChargeConservation}
     \label{eq:kinematicChargeConservation}
 \end{equation}

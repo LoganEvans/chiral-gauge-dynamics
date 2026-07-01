@@ -5,99 +5,55 @@
 
 Many attempts to create a unified field theory have failed because they cannot naturally generate matter. \citet{goenner2004history} notes that the classical attempts by Einstein, Weyl, and Eddington to build particles out of spacetime geometry collapsed, and that Einstein himself lamented ``the problem of matter and quanta makes the construction fall apart'' when describing his 5-dimensional metric. Modern, higher dimensional theories, such as Kaluza-Klein supergravity, fail to incorporate chiral fermions \citep{witten1981search}. Consequently, physicists usually bolt external matter fields onto the gravitational Lagrangian by hand.
 
-With CGD, particles are not fundamental points, but are instead knots within the connection itself. The self-dual (SD) chiral \slTwoC sector gives rise to gravity, but topological defects within the anti-self-dual (ASD) chiral \slTwoC sector gives rise to particles, while the curvature withing the ASD sector produces mass. We will show how the interraction between these two chiral halves within CGD produces inertial.
+With CGD, particles are not fundamental points, but are instead knots within the connection itself. The self-dual (SD) chiral \slTwoC sector gives rise to gravity, but topological defects within the anti-self-dual (ASD) chiral \slTwoC sector gives rise to particles, while the curvature within the ASD sector produces mass. We will show how the interaction between these two chiral halves within CGD produces inertia.
 
-Conceptually, the idea of particles arising from the geometry of the universe was first seriously explored by \citet{wheeler1955geons}. He argued, ``Space time is not an arena for physics, it is all of classical physics'' \citep{wheeler1957nature}. \citet{wheeler1955geon} tried to build his particle, the ``geon'', out of the metric tensor and the electrodynamic field. This approach ultimately failed to produce fermions, or particles with spin $1/2$, and because the particles he could describe lacked confinement.
+Conceptually, \citet{wheeler1955geons} was the first to explore the idea of particles arising from the geometry of the universe. \citeauthor{wheeler1955geons} argued, ``Space time is not an arena for physics, it is all of classical physics'' \citep{wheeler1957nature}. He tried to build the ``geon'' out of the metric tensor and the electrodynamic field, but this approach ultimately failed to produce fermions or confinement.
 
-In \citet{thooft1974magnetic} and \citet{belavin1975pseudoparticle} \todo{what did they do? They continued the "spiritual" idea of particles from topology, but what specific happened here?}.
-
+\citet{thooft1974magnetic} and \citet{belavin1975pseudoparticle} moved away from Abelian fields and worked with Yang-Mills theories. They found solutions that looked like particles. Then, \citet{belavin1975pseudoparticle} discovered the BPST instanton, which are lumps of pure Yang-Mills fields that exhibit topological stability and confinement, although the BPST instanton strictly require Euclidean space. In this paper we will show the existence of topologically stable particles within Lorentzian space.
 
 One of the biggest concerns with producing particles from a \spinFourC ontology is that this seems to cause a conflict with the strong-force. That is, the Standard Model describes the strong force using \suThree, and \suThree cannot be embedded within \spinFourC. In this section, we will address this problem by showing that CGD mathematically produces three ``colors'' and confinement. We also show that due to how CGD particles are defined as part of the topology and cannot be separated from the Urbantke metric, CGD possesses a geometric mass gap.
 
-
-
-\todo{
-This is the order I hinted about results, but is this the order to actually cover things? Should we even cover some of these things in this section?
-
-\begin{itemize}
-    \item Skymions
-    \item Origin of mass
-    \item Origin of inertia
-    \item Three colors (and how quarks in isolation have no crosssection or something like that?)
-    \item Confinement
-    \item Mass Gap
-\end{itemize}
-}
-
-\todo{
-\textbf{Author Prompt (Matter Generation \& Color):}
-\begin{itemize}
-    \item Explain the Plebanski coupling: a non-zero Anti-Self-Dual (ASD) curvature natively acts as a source term for the macroscopic stress-energy tensor.
-    \item Then, explain why a U(1) Abelian field (like pure electromagnetism) cannot create space on its own. Show how commuting matrices force the volume determinant to zero.
-    \item Conclude that the universe \textit{absolutely requires} non-Abelian fields (color) to expand into a macroscopic geometry.
-\end{itemize}
-}
-
+We will begin our investigation into particles by considering a topological defect $(F^{(R)}_{\mu\nu} \neq 0)$ and then ask what this defect looks like to a macroscopic observer. In the Einstein Field Equations $(G_{\mu\nu} = 8 \pi G T_{\mu\nu})$, the $T_{\mu\nu}$ term is the stress-energy tensor. We will assume, in order to reach a contradiction, that this topological defect possess no mass or energy, giving $T_{\mu\nu} = 0$. However, \citet{krasnov2011plebanski} showed that if $T_{\mu\nu} = 0$, then the ASD curvature must be completely flat. However, this is a contradiction, because we begin our proof by assuming that a knot exists by stating $F^{(R)}_{\mu\nu} \neq 0$. Therefore, we conclude
 \begin{equation}
-    \mathcal{F}^{(R)}_{\mu\nu} \neq 0 \implies T_{\mu\nu} \neq 0
+    F^{(R)}_{\mu\nu} \neq 0 \implies T_{\mu\nu} \neq 0 .
     \quad \leanref{CGD.Particles.dynamicMatterExistence}
     \label{eq:dynamicMatterExistence}
 \end{equation}
 
-\todo{Cite Litlib Dependency: \cite{krasnov2011plebanski} for the Plebanski matter coupling constraints.}
-
+In CGD, we must build particles out of \spinFourC somehow, but this leaves us with several options. \uOne is the simplest non-empty subgroup, but this immediately runs into problems because \uOne is commutative. When we plug a commutative field into the Urbantke Metric (Equation \ref{eq:urbantkeMetric}), we see that the volume collapses, which would mean that no particles experience time or even relative distance. This means
 \begin{equation}
-    [\mathcal{F}_{\mu\nu}, \mathcal{F}_{\rho\sigma}] = 0 \implies \det(g_{\mu\nu}) = 0
+    [F_{\mu\nu}, F_{\rho\sigma}] = 0 \implies \det(g_{\mu\nu}) = 0 .
     \quad \leanref{CGD.Particles.kinematicSingleColorDegeneracy}
     \label{eq:kinematicSingleColorDegeneracy}
 \end{equation}
-
+\noindent We can strengthen this result by showing that no Abelian field can describe particles
 \begin{equation}
-    \det(g_{\mu\nu}) \neq 0 \implies \text{Field is strictly Non-Abelian}
+    \det(g_{\mu\nu}) \neq 0 \implies \text{Field is strictly Non-Abelian} .
     \quad \leanref{CGD.Particles.kinematicMultiColorRequirement}
     \label{eq:kinematicMultiColorRequirement}
 \end{equation}
 
-\todo{
-\textbf{Author Prompt (Stability and the Mass Gap):}
-\begin{itemize}
-    \item Now that we know matter is a non-Abelian knot, explain that these particles are stable topological knots (instantons) in the gauge field. 
-    \item Introduce the Cartan-Maurer degree / Belavin bounds to explain why these knots cannot mathematically decay or unwrap into the trivial vacuum.
-    \item Finally, explain how the trace of the SU(2) curvature defect mathematically forces the inertial mass of these knots to be strictly positive, proving the Mass Gap strictly from geometry.
-\end{itemize}
-}
-
+Let us next consider defects in the ASD chiral sector. This is a \slTwoC gauge field, but topological winding numbers \todo{wtf? I never introduced that concept, did I?} are described by the \suTwo subgroup. If a particle exists in \suTwo, it is a non-Abelian knot, and \citet{belavin1975pseudoparticle} proved that knots in \suTwo cannot decay or unwrap into the trivial vacuum. We can extend these results to show that they also apply within CGD:
 \begin{equation}
-    \int_{S^3} \text{Cartan-Maurer Form} \neq 0 \implies \mathcal{A} \text{ cannot continuously decay to } 0
+    \int_{S^3} \mathrm{Tr}\left(\mathcal{A} \wedge d\mathcal{A} + \frac{2}{3} \mathcal{A} \wedge \mathcal{A} \wedge \mathcal{A}\right) \neq 0 \implies \mathcal{A} \text{ cannot continuously decay to } 0.
     \quad \leanref{CGD.Particles.kinematicTopologicalStability}
     \label{eq:kinematicTopologicalStability}
 \end{equation}
 
-\todo{Cite Litlib Dependency: \cite{belavin1975pseudoparticle} for the topological energy bounds and \cite{nakahara2003geometry} for the Cartan-Maurer degree.}
-
+Next, we use the existence of the Lorentzian Witness (Equation \ref{eq:dynamicExactLorentzianSolution}) to perform an analysis that has not previously been possible. In \citet{belavin1975pseudoparticle}, particles were strictly in an Euclidean field. However, since a Euclidean field does not possess \todo{something?}, \todo{something something BPST particles can't have stress-energy?} \cite{nakahara2003geometry}. Since CGD lives within a Lorentzian space, we can show
 \begin{equation}
-    \text{Tr}(\mathcal{F}^{(R)}_{\mu\nu} \mathcal{F}^{(R)\mu\nu}) \neq 0 \implies m_{\text{inertial}} > 0
+    \mathrm{Tr}(F^{(R)}_{\mu\nu} F^{(R)\mu\nu}) \neq 0 \implies m_{\text{inertial}} > 0
     \quad \leanref{CGD.Particles.topologicalMassGap}
     \label{eq:topologicalMassGap}
 \end{equation}
 
+Now, it's important to emphasize that this is not the Millenium Prize Problem \citep{jaffe2006quantum}. The proof for Equation \ref{eq:topologicalMassGap} is a simple matrix identity proof, and it is only possible because the metric in CGD is inseparable from the topology.
 
-% ---------------------------------------------------------
-% THE BOMBSHELL SUBSECTION
-% ---------------------------------------------------------
-\subsection{Geometric Confinement and the SU(3) Problem}
-\label{subsec:geometric_confinement}
-
-\todo{
-\textbf{Author Prompt (The Confinement Bombshell):}
-\begin{itemize}
-    \item Explain the reduction in Equation \ref{eq:kinematicStringConfinement}. How do these multi-color components natively crush into 1D topological flux tubes (strings)?
-    \item Address the ``SU(3) Problem'': Phenomenologically, the Standard Model requires SU(3) for the strong force. Explain why, in CGD, the Strong Force emerges geometrically from SU(2) topology without needing a fundamental SU(3) gauge group.
-\end{itemize}
-}
-
+Based on Equation \ref{eq:kinematicMultiColorRequirement}, we must have multiple ``color'' components so that $g_{\mu\nu}$ contains no zeros along the diagonal of the matrix. However, what happens when one of these components is crushed into a 1-dimensional topological flux tube? We are able to prove
 \begin{equation}
-    \mathcal{H}_{3D} \rightarrow \frac{1}{2} E_z^2 + \frac{1}{2} \text{Tr}(B^2) \quad \text{(1D Confinement Reduction)}
+    \mathcal{H}_{3D} \rightarrow \frac{1}{2} E_z^2 + \frac{1}{2} \text{Tr}(B^2) \quad \text{(1D Confinement Reduction)} .
     \quad \leanref{CGD.Particles.kinematicStringConfinement}
     \label{eq:kinematicStringConfinement}
 \end{equation}
+
+\todo{I need a lot more description of stuff, don't I...}
