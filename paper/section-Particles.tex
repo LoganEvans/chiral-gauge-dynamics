@@ -26,28 +26,30 @@ In CGD, we must build particles out of \spinFourC somehow, but this leaves us wi
     \quad \leanref{CGD.Particles.kinematicSingleColorDegeneracy}
     \label{eq:kinematicSingleColorDegeneracy}
 \end{equation}
-\noindent We can strengthen this result by showing that no Abelian field can describe particles
+\noindent More generally, if the field does not have enough ``color charges'' to fill in all of the diagonals of the $3 \times 3$ matrix $g_{\mu\nu}$, then the volume will collapse. We can strengthen this result by showing that no Abelian field can describe particles
 \begin{equation}
     \det(g_{\mu\nu}) \neq 0 \implies \text{Field is strictly Non-Abelian} .
     \quad \leanref{CGD.Particles.kinematicMultiColorRequirement}
     \label{eq:kinematicMultiColorRequirement}
 \end{equation}
 
-Let us next consider defects in the ASD chiral sector. This is a \slTwoC gauge field, but topological winding numbers \todo{wtf? I never introduced that concept, did I?} are described by the \suTwo subgroup. If a particle exists in \suTwo, it is a non-Abelian knot, and \citet{belavin1975pseudoparticle} proved that knots in \suTwo cannot decay or unwrap into the trivial vacuum. We can extend these results to show that they also apply within CGD:
+Let us next consider defects in the ASD chiral sector. In topology, the Cartan-Maurer degree, or winding number, counts how many times a field wraps around a gauge group \citep{nakahara2003geometry}. Since \citet{krasnov2011plebanski} proved that only \suTwo and \slTwoC are capable of generating the Urbantke Metric, then for CGD we only need to only consider the ASD chiral \slTwoC gauge field, where the topological winding numbers are described by the \suTwo subgroup. If a particle exists in \suTwo, it is a non-Abelian knot, and \citet{belavin1975pseudoparticle} proved that knots in \suTwo cannot decay or unwrap into the trivial vacuum. We can extend these results to show that they also apply within CGD:
 \begin{equation}
     \int_{S^3} \mathrm{Tr}\left(\mathcal{A} \wedge d\mathcal{A} + \frac{2}{3} \mathcal{A} \wedge \mathcal{A} \wedge \mathcal{A}\right) \neq 0 \implies \mathcal{A} \text{ cannot continuously decay to } 0.
     \quad \leanref{CGD.Particles.kinematicTopologicalStability}
     \label{eq:kinematicTopologicalStability}
 \end{equation}
 
-Next, we use the existence of the Lorentzian Witness (Equation \ref{eq:dynamicExactLorentzianSolution}) to perform an analysis that has not previously been possible. In \citet{belavin1975pseudoparticle}, particles were strictly in an Euclidean field. However, since a Euclidean field does not possess \todo{something?}, \todo{something something BPST particles can't have stress-energy?} \cite{nakahara2003geometry}. Since CGD lives within a Lorentzian space, we can show
+Next, we use the existence of the Lorentzian Witness (Equation \ref{eq:dynamicExactLorentzianSolution}) to perform an analysis that has not previously been possible. In \citet{belavin1975pseudoparticle}, particles strictly existed in an Euclidean field. However, since a Euclidean field does not possess a time dimension, these topological defects possess an `action' but they cannot possess a rest mass or energy. Since CGD dynamically generates a Lorentzian space, defects persist through the time dimension and the topological curvature evaluates as a strictly positive rest mass, allowing us to show
 \begin{equation}
-    \mathrm{Tr}(F^{(R)}_{\mu\nu} F^{(R)\mu\nu}) \neq 0 \implies m_{\text{inertial}} > 0
+    \mathrm{Tr}(F^{(R)}_{\mu\nu} F^{(R)\mu\nu}) \neq 0 \implies m_{\text{inertial}} > 0 .
     \quad \leanref{CGD.Particles.topologicalMassGap}
     \label{eq:topologicalMassGap}
 \end{equation}
 
-Now, it's important to emphasize that this is not the Millenium Prize Problem \citep{jaffe2006quantum}. The proof for Equation \ref{eq:topologicalMassGap} is a simple matrix identity proof, and it is only possible because the metric in CGD is inseparable from the topology.
+It's important to emphasize that this is not the Millennium Prize Problem \citep{jaffe2006quantum}. The proof for Equation \ref{eq:topologicalMassGap} is a simple matrix identity proof, and it is only possible because the metric in CGD is inseparable from the topology. While we are able to show that a mass gap exists in CGD, this proof shows nothing about the similar problem of proving a mass gap for any theory, such as the Standard Model, that possesses an independent metric background.
+
+We have resolved that \suTwo particles in CGD require more than a single color, that these particles do not decay into the vacuum, and that a mass gap forces these particles to possess gravitational stress energy \todo{is that worded badly?}. This can characterize the stability of an electron, but hadrons also possess confinement, \todo{wtf... why is kinematicStringConfinement even necessary?}
 
 Based on Equation \ref{eq:kinematicMultiColorRequirement}, we must have multiple ``color'' components so that $g_{\mu\nu}$ contains no zeros along the diagonal of the matrix. However, what happens when one of these components is crushed into a 1-dimensional topological flux tube? We are able to prove
 \begin{equation}
