@@ -34,6 +34,8 @@ noncomputable def covariantSpinorDeriv (u : Universe) (x : SpacetimePoint) (mu n
   let comm := bracket (u.spin4c_connection mu x) (extractSpinorMode u x nu)
   dA_nu + (embedSelfDual (chiralProject comm).self_dual + embedAntiSelfDual (chiralProject comm).anti_self_dual)
 
+Litlib.definition
+  description "Emergent Dirac Operator"
 /--
 The true background-independent Emergent Dirac Operator.
 It strictly contracts the local covariant spinor derivatives using the dynamically 
@@ -121,6 +123,8 @@ lemma isOdd_smul (c : Complex) (M : Matrix (Fin 4) (Fin 4) Complex) (hM : isOdd 
   intros i j hij
   rw [Matrix.smul_apply, hM i j hij, smul_zero]
 
+Litlib.theorem
+  description "Kinematic Dirac Operator Grading"
 /--
 The covariant Dirac operator mathematically preserves the strict odd/even grading of the spinor algebra for any orientation vector.
 -/

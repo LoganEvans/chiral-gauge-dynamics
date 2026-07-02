@@ -14,9 +14,12 @@ open CGD.Axioms
 namespace CGD.Quantum
 
 Litlib.theorem
-  description "Entanglement Metric Rank Deficiency"
+  description "Witness for Degenerate Entanglement Channels"
 /--
-The spatial metric defining the wormhole channel connecting entangled particles has a rigorously zero determinant, confirming its non-local, degenerate topology.
+Evaluates the macroscopic metric of the `fluxTubeFrame` witness to prove that if two 
+particles are connected by such a 1D uniform gauge connection, the metric determinant 
+rigorously vanishes. This confirms that non-local, degenerate wormhole topologies 
+mathematically exist as non-vacuous solutions within the Spin(4,C) geometry.
 -/
 theorem kinematicEntanglementWormhole (pu : PhysicalUniverse) :
   ∀ (x y : SpacetimePoint) (theta : ℝ),

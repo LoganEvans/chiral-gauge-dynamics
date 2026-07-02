@@ -28,7 +28,7 @@ noncomputable def siversTransverseKick (U U_inv : Matrix (Fin 2) (Fin 2) ℂ) : 
 /-- 
 The Boer-Mulders effect observable (Quark Transverse Spin vs Quark Transverse Momentum).
 Projects the orthogonal SU(2) topology via sigmaX.
-Geometrically identical to the Sivers projection in the macroscopic limit.
+Geometrically identical to the Sivers projection.
 -/
 noncomputable def boerMuldersTransverseKick (U U_inv : Matrix (Fin 2) (Fin 2) ℂ) : ℂ :=
   Matrix.trace (U * explicitSigmaX * U_inv * explicitSigmaY)
@@ -197,7 +197,11 @@ lemma kinematicTmdRatioAlgebra (c s A B : ℂ) :
   ring_nf
 
 Litlib.theorem
-  description "Kinematic Sivers Sign Flip"
+  description "Kinematic Sivers Sign Flip Witness"
+/--
+Evaluating the Sivers observable upon the `fluxTubeFrame` ansatz natively forces an exact geometric sign-flip upon path inversion (L -> -L). 
+While standard perturbative QCD derivations require external factorized gauge links to explain this effect, this theorem acts as an explicit constructive witness demonstrating that the continuous macroscopic gauge geometry intrinsically contains the parity-inverted mechanisms required for the Sivers effect.
+-/
 theorem kinematicSiversSignFlip (pu : CGD.Axioms.PhysicalUniverse) :
   ∀ (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
     [Litlib.Y2000.hall2000elementary.DerivativeExponential (Fin 2) matrixExp]
@@ -217,7 +221,10 @@ theorem kinematicSiversSignFlip (pu : CGD.Axioms.PhysicalUniverse) :
   exact kinematicSiversAlgebra (Complex.cos ↑L) (Complex.sin ↑L) (obs_M_A alpha) (obs_M_B alpha)
 
 Litlib.theorem
-  description "Kinematic Worm-Gear Sign Flip"
+  description "Kinematic Worm-Gear Sign Flip Witness"
+/--
+Evaluating the Worm-Gear observable upon the `fluxTubeFrame` ansatz establishes that it obeys the exact same geometric sign-flip mechanics as the Sivers effect.
+-/
 theorem kinematicWormGearSignFlip (pu : CGD.Axioms.PhysicalUniverse) :
   ∀ (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
     [Litlib.Y2000.hall2000elementary.DerivativeExponential (Fin 2) matrixExp]
@@ -237,15 +244,12 @@ theorem kinematicWormGearSignFlip (pu : CGD.Axioms.PhysicalUniverse) :
   exact kinematicWormGearAlgebra (Complex.cos ↑L) (Complex.sin ↑L) (obs_M_A alpha) (obs_M_B alpha)
 
 Litlib.theorem
-  description "Kinematic Sivers and Boer-Mulders Equivalence"
+  description "Kinematic Sivers and Boer-Mulders Equivalence Witness"
 /-- 
-Proves that in the continuous geometric limit, the Sivers and Boer-Mulders effects are 
-topologically identical observables. 
+Proves that when evaluating continuous non-Abelian geometry, the Sivers and Boer-Mulders effects yield topologically identical observables. 
 
 While perturbative QCD treats them as independent non-perturbative functions, phenomenological 
-models (like Large-Nc and lattice QCD) observe strong proportionalities. CGD natively 
-explains this: the macroscopic SU(2) holonomy is strictly blind to the composite vs. bare 
-nature of the initial state, resolving both to the exact same geometric projection.
+models (like Large-Nc and lattice QCD) observe strong proportionalities. This witness demonstrates how continuous background geometries intrinsically explain this: the macroscopic SU(2) holonomy is strictly blind to the composite vs. bare nature of the initial state, resolving both to the exact same geometric projection.
 -/
 theorem kinematicSiversBoerMuldersEquivalence (pu : CGD.Axioms.PhysicalUniverse) :
   ∀ (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
@@ -261,18 +265,17 @@ theorem kinematicSiversBoerMuldersEquivalence (pu : CGD.Axioms.PhysicalUniverse)
   rfl
 
 Litlib.theorem
-  description "Topological TMD Geometric Ratio"
+  description "Topological TMD Geometric Ratio Witness"
 /-- 
-The Topological TMD Geometric Ratio.
+The Topological TMD Geometric Ratio Witness.
 
-This theorem rigorously proves that the Worm-Gear and Sivers observables are not 
-independent empirical functions, but are geometrically locked by the chiral phase angle 
-`alpha` of the macroscopic flux tube. Specifically:
+By evaluating the `fluxTubeFrame` ansatz, this theorem acts as a constructive witness proving that the Worm-Gear and Sivers observables can natively become geometrically locked by the chiral phase angle 
+`alpha` of the macroscopic connection. Specifically:
 `cos(alpha) * WormGear = - sin(alpha) * Sivers`
 
 Because the observables are defined natively as geometric integrals without any 
-collisional momentum variables, this geometric lock rigorously dictates that their ratio 
-is a flat kinematic constant (-tan(alpha)), reproducing global supercomputer fits.
+collisional momentum variables, this geometric lock demonstrates a framework mechanism where their ratio 
+resolves as a flat kinematic constant (-tan(alpha)), reproducing global supercomputer fits.
 -/
 theorem kinematicTmdRatio (pu : CGD.Axioms.PhysicalUniverse) :
   ∀ (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)

@@ -29,6 +29,11 @@ open CGD.Axioms Litlib.Y1973.nielsen1973vortex
 
 namespace CGD.Quantum
 
+/--
+Mathematically enforces a strictly static (∂_t A = 0), purely magnetic (electric curvature F_{0ν} = 0) configuration. 
+Phenomenologically, this represents the minimal energy ground state of a flux tube. Geometrically, 
+it simply isolates a static background topology.
+-/
 def satisfies1DMinimalEnergyBound (A : Fin 4 → SpacetimePoint → SL2C) (x : SpacetimePoint) : Prop :=
   (∀ nu, curvatureSl2c A 0 nu x = 0) ∧
   (∀ nu, partialDerivSl2c 0 (A nu) x = 0)
@@ -123,7 +128,7 @@ lemma fluxTube_curvature_congruence (A B : Fin 4 → SpacetimePoint → SL2C) (x
   rw[h_deriv mu nu, h_deriv nu mu, h_val mu, h_val nu]
 
 /--
-Proves that the classical flux tube geometry exactly satisfies the 1D minimal energy differential boundary conditions.
+Proves that the exact `fluxTubeFrame` witness natively satisfies the static, purely magnetic boundary conditions.
 -/
 theorem fluxTubeIsMinimal : ∀ x, satisfies1DMinimalEnergyBound fluxTubeFrame x := by
   intro x; unfold satisfies1DMinimalEnergyBound; apply And.intro
@@ -131,9 +136,9 @@ theorem fluxTubeIsMinimal : ∀ x, satisfies1DMinimalEnergyBound fluxTubeFrame x
   · intro nu; exact math_partialDerivSl2c_fluxTube_time nu x
 
 Litlib.theorem
-  description "Degeneracy of the Flux Tube Metric"
+  description "Witness for Degenerate Entanglement Channels"
 /--
-Demonstrates that the spatial metric describing an isolated 1D flux tube has a strictly zero determinant, indicating that it represents a degenerate, non-macroscopic topological background.
+Demonstrates that the macroscopic metric of the `fluxTubeFrame` witness possesses a strictly zero determinant. This proves that a 1D uniform gauge connection natively represents a degenerate, non-macroscopic topological background (det(g) = 0), serving as the formal witness that non-local ER=EPR wormhole channels mathematically exist within the Spin(4,C) geometry.
 -/
 theorem kinematicFluxTubeStability (pu : PhysicalUniverse) :
   ∀ (x : SpacetimePoint),

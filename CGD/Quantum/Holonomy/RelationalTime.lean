@@ -13,6 +13,8 @@ set_option linter.unusedSimpArgs false
 
 namespace CGD.Quantum.Holonomy
 
+Litlib.definition
+  description "Unitary Time Evolution Operator"
 /-- Standard quantum mechanical time-evolution operator U(t) = exp(-i H t) -/
 noncomputable def unitaryTimeEvolution 
   (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
@@ -20,15 +22,16 @@ noncomputable def unitaryTimeEvolution
   matrixExp ((-Complex.I * (t : ℂ)) • Hamiltonian)
 
 Litlib.theorem
-  description "Relational Time Emergence via Geometric Holonomy"
+  description "Witness for Relational Time Emergence"
 /--
-This theorem rigorously proves Relational Time Emergence without external symplectic tautologies.
-It demonstrates that computing the geometric holonomy (spatial parallel transport) along the 
-U(1) core of a topological defect is mathematically identical to applying the Schrödinger 
+Using an exact analytical witness representing the U(1) core of a topological defect 
+(`Complex.I • sigmaZ`), this theorem demonstrates that computing the geometric holonomy 
+(spatial parallel transport) is mathematically identical to applying the Schrödinger 
 time-evolution operator. 
 
-Thus, traversal along the defect's boundary internal phase space physically manifests 
-as the passage of time for the localized state. Time is the relational geometric phase.
+This proves that traversal along a defect's internal spatial phase space can physically 
+manifest as the passage of time, demonstrating that relational geometric phase 
+mathematically satisfies the role of time evolution.
 -/
 theorem relationalTimeEmergence
   (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)

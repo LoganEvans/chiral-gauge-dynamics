@@ -24,6 +24,8 @@ lemma embed_mul_eq_zero (L R : SL2C) : embedSelfDual L * embedAntiSelfDual R = 0
   intro k _
   cases chiralIso.symm i <;> cases chiralIso.symm j <;> cases chiralIso.symm k <;> simp
 
+Litlib.theorem
+  description "Algebraic Chiral Orthogonalization"
 /--
 Demonstrates that the self-dual and anti-self-dual spin connection components 
 natively mathematically decouple under the geometric trace metric because their 
@@ -49,6 +51,8 @@ lemma star_sin_real (x : ℝ) : star (Complex.sin (x:ℂ)) = Complex.sin (x:ℂ)
   · rfl
   · exact neg_zero
 
+Litlib.theorem
+  description "Geometric Holonomy Integration"
 /--
 Demonstrates that the geometric path-ordered integration of a purely spatial 
 SU(2) flux tube connection evaluates strictly to a unitary holonomy within 
@@ -106,9 +110,9 @@ theorem geometricHolonomyIntegration (θ : ℝ) :
           
   exact ⟨h_unit, h_det⟩
 
+Litlib.definition
+  description "Geometric Bell Correlation"
 /-- 
-Geometric Bell Correlation
-
 The exact quantum correlation natively emerges from the Cartan-Killing metric 
 of the SU(2) group. For unitary SU(2) elements, 1/2 Tr(A B†) perfectly recovers 
 the cosine of the angle between them.

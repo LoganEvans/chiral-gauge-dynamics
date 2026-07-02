@@ -32,13 +32,6 @@ noncomputable def homogeneousChaosAnsatz (mu : Fin 4) (x : SpacetimePoint) : SL2
   else 0
 
 /--
-Mathematically enforces that a 1D string is defined by a geometric vector-tensor outer product,
-rather than trivially hardcoding matrix elements to zero.
--/
-def isCrushedString (E : Matrix (Fin 3) (Fin 3) ℂ) (E_z : ℂ) : Prop :=
-  ∃ (v : Fin 3 → ℂ), (∀ i j, E i j = E_z * v i * v j) ∧ (v 0 * v 0 + v 1 * v 1 + v 2 * v 2 = 1)
-
-/--
 Defines a single-color (Abelian) condensate where all components of the curvature tensor commute, constraining the field to a single U(1) Cartan subalgebra.
 -/
 def isSingleColor (F : Fin 4 -> Fin 4 -> SL2C) : Prop :=
