@@ -862,21 +862,6 @@ theorem §\phantomsection\label{lean:CGD.Particles.kinematicSingleColorDegenerac
     (§\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{urbantkeMetric}}§ F).det = 0
 
 
--- MODULE: CGD.Particles.Confinement
---------------------------------------------------------------------
-noncomputable def §\phantomsection\label{lean:CGD.Particles.densitizedHamiltonian}§CGD.Particles.densitizedHamiltonian (E B : Matrix (Fin 3) (Fin 3) ℂ) : ℂ := 
-  (1 / 2 : ℂ) * ∑ a : Fin 3, ∑ b : Fin 3, (E a b * E a b + B a b * B a b)
-
-/--
-Establishes that when the continuous electric field geometrically collapses into a 1D string aligned along an arbitrary axis, the 3D densitized Hamiltonian precisely reduces to the exact 1D confinement Hamiltonian.
--/
-theorem §\phantomsection\label{lean:CGD.Particles.kinematicStringConfinement}§CGD.Particles.kinematicStringConfinement :
-  ∀ (E B : Matrix (Fin 3) (Fin 3) ℂ) (E_z : ℂ),
-    §\hyperref[lean:CGD.Particles.isCrushedString]{\detokenize{isCrushedString}}§ E E_z →
-    ∃ (v : Fin 3 → ℂ), (∑ i : Fin 3, v i * v i = 1) ∧
-      §\hyperref[lean:CGD.Particles.densitizedHamiltonian]{\detokenize{densitizedHamiltonian}}§ E B = (1 / 2 : ℂ) * E_z^2 + (1 / 2 : ℂ) * ∑ a : Fin 3, ∑ b : Fin 3, B a b * B a b
-
-
 -- MODULE: CGD.Particles.Definitions
 --------------------------------------------------------------------
 /-- 
@@ -897,13 +882,6 @@ noncomputable def §\phantomsection\label{lean:CGD.Particles.homogeneousChaosAns
   if mu = 1 then (Complex.I * (x 1 : ℂ)) • sigma1
   else if mu = 2 then (Complex.I * (x 2 : ℂ)) • sigma2
   else 0
-
-/--
-Mathematically enforces that a 1D string is defined by a geometric vector-tensor outer product,
-rather than trivially hardcoding matrix elements to zero.
--/
-def §\phantomsection\label{lean:CGD.Particles.isCrushedString}§CGD.Particles.isCrushedString (E : Matrix (Fin 3) (Fin 3) ℂ) (E_z : ℂ) : Prop :=
-  ∃ (v : Fin 3 → ℂ), (∀ i j, E i j = E_z * v i * v j) ∧ (v 0 * v 0 + v 1 * v 1 + v 2 * v 2 = 1)
 
 /--
 Defines a single-color (Abelian) condensate where all components of the curvature tensor commute, constraining the field to a single U(1) Cartan subalgebra.
@@ -1142,19 +1120,16 @@ theorem §\phantomsection\label{lean:CGD.Phenomenology.macroscopicVolumeImpliesC
 /-- 
 The Boer-Mulders effect observable (Quark Transverse Spin vs Quark Transverse Momentum).
 Projects the orthogonal SU(2) topology via sigmaX.
-Geometrically identical to the Sivers projection in the macroscopic limit.
+Geometrically identical to the Sivers projection.
 -/
 noncomputable def §\phantomsection\label{lean:CGD.Phenomenology.boerMuldersTransverseKick}§CGD.Phenomenology.boerMuldersTransverseKick (U U_inv : Matrix (Fin 2) (Fin 2) ℂ) : ℂ :=
   Matrix.trace (U * explicitSigmaX * U_inv * explicitSigmaY)
 
 /-- 
-Proves that in the continuous geometric limit, the Sivers and Boer-Mulders effects are 
-topologically identical observables. 
+Proves that when evaluating continuous non-Abelian geometry, the Sivers and Boer-Mulders effects yield topologically identical observables. 
 
 While perturbative QCD treats them as independent non-perturbative functions, phenomenological 
-models (like Large-Nc and lattice QCD) observe strong proportionalities. CGD natively 
-explains this: the macroscopic SU(2) holonomy is strictly blind to the composite vs. bare 
-nature of the initial state, resolving both to the exact same geometric projection.
+models (like Large-Nc and lattice QCD) observe strong proportionalities. This witness demonstrates how continuous background geometries intrinsically explain this: the macroscopic SU(2) holonomy is strictly blind to the composite vs. bare nature of the initial state, resolving both to the exact same geometric projection.
 -/
 theorem §\phantomsection\label{lean:CGD.Phenomenology.kinematicSiversBoerMuldersEquivalence}§CGD.Phenomenology.kinematicSiversBoerMuldersEquivalence (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{CGD.Axioms.PhysicalUniverse}}§) :
   ∀ (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
@@ -1167,6 +1142,10 @@ theorem §\phantomsection\label{lean:CGD.Phenomenology.kinematicSiversBoerMulder
       (§\hyperref[lean:CGD.Quantum.macroscopicObservable]{\detokenize{CGD.Quantum.macroscopicObservable}}§ (§\hyperref[lean:CGD.Quantum.holonomy]{\detokenize{CGD.Quantum.holonomy}}§ matrixExp) (fun mu p => §\hyperref[lean:CGD.Quantum.rotateYAxis]{\detokenize{CGD.Quantum.rotateYAxis}}§ (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 L)
       (§\hyperref[lean:CGD.Quantum.macroscopicObservable]{\detokenize{CGD.Quantum.macroscopicObservable}}§ (§\hyperref[lean:CGD.Quantum.holonomy]{\detokenize{CGD.Quantum.holonomy}}§ matrixExp) (fun mu p => §\hyperref[lean:CGD.Quantum.rotateYAxis]{\detokenize{CGD.Quantum.rotateYAxis}}§ (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 (-L))
 
+/--
+Evaluating the Sivers observable upon the `fluxTubeFrame` ansatz natively forces an exact geometric sign-flip upon path inversion (L -> -L). 
+While standard perturbative QCD derivations require external factorized gauge links to explain this effect, this theorem acts as an explicit constructive witness demonstrating that the continuous macroscopic gauge geometry intrinsically contains the parity-inverted mechanisms required for the Sivers effect.
+-/
 theorem §\phantomsection\label{lean:CGD.Phenomenology.kinematicSiversSignFlip}§CGD.Phenomenology.kinematicSiversSignFlip (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{CGD.Axioms.PhysicalUniverse}}§) :
   ∀ (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
     [§\hyperref[lean:Litlib.Y2000.hall2000elementary.DerivativeExponential]{\detokenize{Litlib.Y2000.hall2000elementary.DerivativeExponential}}§ (Fin 2) matrixExp]
@@ -1180,16 +1159,15 @@ theorem §\phantomsection\label{lean:CGD.Phenomenology.kinematicSiversSignFlip}�
       (§\hyperref[lean:CGD.Quantum.macroscopicObservable]{\detokenize{CGD.Quantum.macroscopicObservable}}§ (§\hyperref[lean:CGD.Quantum.holonomy]{\detokenize{CGD.Quantum.holonomy}}§ matrixExp) (fun mu p => §\hyperref[lean:CGD.Quantum.rotateYAxis]{\detokenize{CGD.Quantum.rotateYAxis}}§ (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 L)
 
 /-- 
-The Topological TMD Geometric Ratio.
+The Topological TMD Geometric Ratio Witness.
 
-This theorem rigorously proves that the Worm-Gear and Sivers observables are not 
-independent empirical functions, but are geometrically locked by the chiral phase angle 
-`alpha` of the macroscopic flux tube. Specifically:
+By evaluating the `fluxTubeFrame` ansatz, this theorem acts as a constructive witness proving that the Worm-Gear and Sivers observables can natively become geometrically locked by the chiral phase angle 
+`alpha` of the macroscopic connection. Specifically:
 `cos(alpha) * WormGear = - sin(alpha) * Sivers`
 
 Because the observables are defined natively as geometric integrals without any 
-collisional momentum variables, this geometric lock rigorously dictates that their ratio 
-is a flat kinematic constant (-tan(alpha)), reproducing global supercomputer fits.
+collisional momentum variables, this geometric lock demonstrates a framework mechanism where their ratio 
+resolves as a flat kinematic constant (-tan(alpha)), reproducing global supercomputer fits.
 -/
 theorem §\phantomsection\label{lean:CGD.Phenomenology.kinematicTmdRatio}§CGD.Phenomenology.kinematicTmdRatio (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{CGD.Axioms.PhysicalUniverse}}§) :
   ∀ (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
@@ -1203,6 +1181,9 @@ theorem §\phantomsection\label{lean:CGD.Phenomenology.kinematicTmdRatio}§CGD.P
       (§\hyperref[lean:CGD.Quantum.macroscopicObservable]{\detokenize{CGD.Quantum.macroscopicObservable}}§ (§\hyperref[lean:CGD.Quantum.holonomy]{\detokenize{CGD.Quantum.holonomy}}§ matrixExp) (fun mu p => §\hyperref[lean:CGD.Quantum.rotateYAxis]{\detokenize{CGD.Quantum.rotateYAxis}}§ (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 L)
       (§\hyperref[lean:CGD.Quantum.macroscopicObservable]{\detokenize{CGD.Quantum.macroscopicObservable}}§ (§\hyperref[lean:CGD.Quantum.holonomy]{\detokenize{CGD.Quantum.holonomy}}§ matrixExp) (fun mu p => §\hyperref[lean:CGD.Quantum.rotateYAxis]{\detokenize{CGD.Quantum.rotateYAxis}}§ (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 (-L))
 
+/--
+Evaluating the Worm-Gear observable upon the `fluxTubeFrame` ansatz establishes that it obeys the exact same geometric sign-flip mechanics as the Sivers effect.
+-/
 theorem §\phantomsection\label{lean:CGD.Phenomenology.kinematicWormGearSignFlip}§CGD.Phenomenology.kinematicWormGearSignFlip (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{CGD.Axioms.PhysicalUniverse}}§) :
   ∀ (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
     [§\hyperref[lean:Litlib.Y2000.hall2000elementary.DerivativeExponential]{\detokenize{Litlib.Y2000.hall2000elementary.DerivativeExponential}}§ (Fin 2) matrixExp]
@@ -1258,8 +1239,9 @@ theorem §\phantomsection\label{lean:CGD.Quantum.kinematicActionQuantization}§C
 --------------------------------------------------------------------
 /-- 
 Identifies an ER=EPR entangled bridge. Two spatial boundaries are entangled 
-if there exists a continuous topological flux tube connecting them, twisted 
-by a relative gauge holonomy `theta`.
+if there exists a continuous degenerate connection between them. This definition 
+uses the exact `fluxTubeFrame` witness to mathematically guarantee that evaluating 
+such a channel does not result in a vacuous truth.
 -/
 def §\phantomsection\label{lean:CGD.Quantum.areEntangled}§CGD.Quantum.areEntangled (A : Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§) (x y : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (theta : ℝ) : Prop :=
   ∃ (γ : ℝ → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (θ : ℝ → ℝ),
@@ -1270,13 +1252,16 @@ def §\phantomsection\label{lean:CGD.Quantum.areEntangled}§CGD.Quantum.areEntan
       (∀ mu nu, partialDerivSl2c nu (A mu) (γ t) = partialDerivSl2c nu (§\hyperref[lean:CGD.Quantum.rotateYAxis]{\detokenize{rotateYAxis}}§ §\hyperref[lean:CGD.Quantum.fluxTubeFrame]{\detokenize{fluxTubeFrame}}§ (θ t) mu) (γ t))
 
 /-- 
-The baseline unbroken topology of a 1D string defect along the z-axis.
+A Constructive Witness for an unbroken 1D string defect along the z-axis.
+Rather than a unique dynamic solution, this provides an exact analytical ansatz 
+(a uniform, constant non-Abelian magnetic field) to rigorously prove the non-vacuous 
+existence of degenerate topological states without relying on empty sets.
 -/
 noncomputable def §\phantomsection\label{lean:CGD.Quantum.fluxTubeFrame}§CGD.Quantum.fluxTubeFrame (mu : Fin 4) (_x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) : §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§ :=
   §\hyperref[lean:CGD.Foundations.toSl2c]{\detokenize{toSl2c}}§ (if mu = 0 then 0 else if mu = 1 then (Complex.I:ℂ) • sigma3.val else if mu = 2 then (Complex.I:ℂ) • sigma1.val else (Complex.I:ℂ) • sigma2.val)
 
 /-- 
-Mathematically identifies a local defect as an unbroken flux tube.
+Identifies a field configuration matching the exact analytical witness of an unbroken flux tube.
 -/
 def §\phantomsection\label{lean:CGD.Quantum.isFluxTube}§CGD.Quantum.isFluxTube (A : Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) : Prop :=
   (∀ mu, A mu x = §\hyperref[lean:CGD.Quantum.fluxTubeFrame]{\detokenize{fluxTubeFrame}}§ mu x) ∧
@@ -1301,6 +1286,9 @@ emergent macroscopic TetradField (Vielbein) rather than assuming a flat-space me
 noncomputable def §\phantomsection\label{lean:CGD.Quantum.emergentDiracOperator}§CGD.Quantum.emergentDiracOperator (u : §\hyperref[lean:CGD.Axioms.Universe]{\detokenize{Universe}}§) (e : §\hyperref[lean:CGD.Gravity.TetradField]{\detokenize{TetradField}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (nu : Fin 4) : Matrix (Fin 4) (Fin 4) Complex :=
   ∑ mu, ∑ a, (e a mu x) • (§\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ a * covariantSpinorDeriv u x mu nu)
 
+noncomputable def §\phantomsection\label{lean:CGD.Quantum.extractSpinorMode}§CGD.Quantum.extractSpinorMode (u : §\hyperref[lean:CGD.Axioms.Universe]{\detokenize{Universe}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (nu : Fin 4) : Matrix (Fin 4) (Fin 4) Complex :=
+  u.spin4c_connection nu x
+
 /--
 Recovers the standard textbook Dirac-Yang-Mills equivalence under the physical assumption that 
 the spacetime background is locally stationary with respect to the mode propagation direction.
@@ -1323,35 +1311,22 @@ theorem §\phantomsection\label{lean:CGD.Quantum.generalizedDynamicDiracEquation
   ∑ mu, ∑ a, (e a mu x) • (§\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ a * §\hyperref[lean:CGD.Foundations.curvature]{\detokenize{curvature}}§ (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) + 
   ∑ mu, ∑ a, (e a mu x) • (§\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ a * §\hyperref[lean:CGD.Foundations.partialDerivChiral]{\detokenize{partialDerivChiral}}§ nu (fun p => pu.toUniverse.spin4c_connection mu p) x)
 
-
--- MODULE: CGD.Quantum.Entanglement.Basic
---------------------------------------------------------------------
-def §\phantomsection\label{lean:CGD.Quantum.isGlobalMinimum}§CGD.Quantum.isGlobalMinimum {α : Type*} (Energy : α → ℝ) (state : α) : Prop :=
-  ∀ (other : α), Energy state ≤ Energy other
-
-
--- MODULE: CGD.Quantum.Entanglement.Decay
---------------------------------------------------------------------
 /--
-A direct consequence of the algebraic crossover mapping: when the spatial distance exceeds the 
-crossover bound, the intact flux tube drops out of the global minimum. 
+The covariant Dirac operator mathematically preserves the strict odd/even grading of the spinor algebra for any orientation vector.
 -/
-theorem §\phantomsection\label{lean:CGD.Quantum.algebraicStringBreakingLimit}§CGD.Quantum.algebraicStringBreakingLimit
-  (energyFunc : (Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§) → ℝ)
-  (intactState snappedState : ℝ → Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§)
-  {sigma M : ℝ} [eb : §\hyperref[lean:Litlib.Y2001.bali2001qcd.FluxTubeStringBreaking]{\detokenize{FluxTubeStringBreaking}}§ (Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§) energyFunc intactState snappedState sigma M]
-  (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§)
-  (L : ℝ)
-  (h_L_pos : L > 0)
-  (h_intact : pu.toUniverse.sd_sector = intactState L)
-  (h_L_crossover : L > (2 * M) / sigma) :
-  ¬ §\hyperref[lean:CGD.Quantum.isGlobalMinimum]{\detokenize{isGlobalMinimum}}§ energyFunc pu.toUniverse.sd_sector
+theorem §\phantomsection\label{lean:CGD.Quantum.kinematicDiracOperatorGrading}§CGD.Quantum.kinematicDiracOperatorGrading (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) :
+  ∀ (m : Complex) (e : §\hyperref[lean:CGD.Gravity.TetradField]{\detokenize{TetradField}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (nu : Fin 4),
+    §\hyperref[lean:Litlib.Math.Dirac.isOdd]{\detokenize{isOdd}}§ (§\hyperref[lean:CGD.Quantum.emergentDiracOperator]{\detokenize{emergentDiracOperator}}§ pu.toUniverse e x nu) ∧ 
+    §\hyperref[lean:Litlib.Math.Dirac.isOdd]{\detokenize{isOdd}}§ (m • (§\hyperref[lean:CGD.Quantum.extractSpinorMode]{\detokenize{extractSpinorMode}}§ pu.toUniverse x nu * §\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ nu))
 
 
 -- MODULE: CGD.Quantum.Entanglement.Wormhole
 --------------------------------------------------------------------
 /--
-The spatial metric defining the wormhole channel connecting entangled particles has a rigorously zero determinant, confirming its non-local, degenerate topology.
+Evaluates the macroscopic metric of the `fluxTubeFrame` witness to prove that if two 
+particles are connected by such a 1D uniform gauge connection, the metric determinant 
+rigorously vanishes. This confirms that non-local, degenerate wormhole topologies 
+mathematically exist as non-vacuous solutions within the Spin(4,C) geometry.
 -/
 theorem §\phantomsection\label{lean:CGD.Quantum.kinematicEntanglementWormhole}§CGD.Quantum.kinematicEntanglementWormhole (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) :
   ∀ (x y : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (theta : ℝ),
@@ -1363,7 +1338,7 @@ theorem §\phantomsection\label{lean:CGD.Quantum.kinematicEntanglementWormhole}�
 -- MODULE: CGD.Quantum.FluxTube
 --------------------------------------------------------------------
 /--
-Demonstrates that the spatial metric describing an isolated 1D flux tube has a strictly zero determinant, indicating that it represents a degenerate, non-macroscopic topological background.
+Demonstrates that the macroscopic metric of the `fluxTubeFrame` witness possesses a strictly zero determinant. This proves that a 1D uniform gauge connection natively represents a degenerate, non-macroscopic topological background (det(g) = 0), serving as the formal witness that non-local ER=EPR wormhole channels mathematically exist within the Spin(4,C) geometry.
 -/
 theorem §\phantomsection\label{lean:CGD.Quantum.kinematicFluxTubeStability}§CGD.Quantum.kinematicFluxTubeStability (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) :
   ∀ (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§),
@@ -1374,10 +1349,10 @@ theorem §\phantomsection\label{lean:CGD.Quantum.kinematicFluxTubeStability}§CG
 -- MODULE: CGD.Quantum.Holonomy.Evaluation
 --------------------------------------------------------------------
 /--
-Proves that path-integrating the local spatial gauge connection of an unbroken 
-topological flux tube perfectly constructs the macroscopic observable for a Bell test.
-The result intrinsically maps SU(2) holonomy parameters directly to the 
-trigonometric coefficients of the quantum state vectors.
+Evaluates the path-ordered integral of the exact `fluxTubeFrame` spatial gauge connection witness. 
+This explicitly demonstrates that evaluating an SU(2) holonomy natively maps geometric 
+parameters directly to the trigonometric coefficients of standard quantum state vectors, 
+proving that the geometry can natively reproduce quantum observables.
 -/
 theorem §\phantomsection\label{lean:CGD.Quantum.fluxTubeHolonomyEvaluation}§CGD.Quantum.fluxTubeHolonomyEvaluation
   (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
@@ -1407,15 +1382,32 @@ noncomputable def §\phantomsection\label{lean:CGD.Quantum.straightLinePath}§CG
 
 -- MODULE: CGD.Quantum.Holonomy.Geometric
 --------------------------------------------------------------------
-/-- 
-Geometric Bell Correlation
+/--
+Demonstrates that the self-dual and anti-self-dual spin connection components 
+natively mathematically decouple under the geometric trace metric because their 
+underlying 4x4 matrix embeddings occupy perfectly disjoint sub-blocks. 
+The geometry requires no artificial truncation to separate chiral sectors.
+-/
+theorem §\phantomsection\label{lean:CGD.Quantum.algebraicChiralOrthogonalization}§CGD.Quantum.algebraicChiralOrthogonalization (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (μ ν ρ σ : Fin 4) :
+  Matrix.trace (§\hyperref[lean:CGD.Foundations.embedSelfDual]{\detokenize{embedSelfDual}}§ (§\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{CGD.Foundations.curvatureSl2c}}§ pu.toUniverse.sd_sector μ ν x) * 
+                §\hyperref[lean:CGD.Foundations.embedAntiSelfDual]{\detokenize{embedAntiSelfDual}}§ (§\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{CGD.Foundations.curvatureSl2c}}§ pu.toUniverse.asd_sector ρ σ x)) = 0
 
+/-- 
 The exact quantum correlation natively emerges from the Cartan-Killing metric 
 of the SU(2) group. For unitary SU(2) elements, 1/2 Tr(A B†) perfectly recovers 
 the cosine of the angle between them.
 -/
 noncomputable def §\phantomsection\label{lean:CGD.Quantum.geometricBellCorrelation}§CGD.Quantum.geometricBellCorrelation (A B : §\hyperref[lean:CGD.Foundations.SU2Group]{\detokenize{SU2Group}}§) : ℂ :=
   (1 / 2 : ℂ) * Matrix.trace (A.val * B.val.conjTranspose)
+
+/--
+Demonstrates that the geometric path-ordered integration of a purely spatial 
+SU(2) flux tube connection evaluates strictly to a unitary holonomy within 
+the SU(2) group manifold.
+-/
+theorem §\phantomsection\label{lean:CGD.Quantum.geometricHolonomyIntegration}§CGD.Quantum.geometricHolonomyIntegration (θ : ℝ) :
+  let U := Matrix.of ![![Complex.cos (θ/2), -Complex.sin (θ/2)], ![Complex.sin (θ/2), Complex.cos (θ/2)]];
+  U * U.conjTranspose = 1 ∧ Matrix.det U = 1
 
 /--
 Geometric Tsirelson Bound
@@ -1434,13 +1426,14 @@ theorem §\phantomsection\label{lean:CGD.Quantum.geometricHolonomyTsirelsonBound
 -- MODULE: CGD.Quantum.Holonomy.RelationalTime
 --------------------------------------------------------------------
 /--
-This theorem rigorously proves Relational Time Emergence without external symplectic tautologies.
-It demonstrates that computing the geometric holonomy (spatial parallel transport) along the 
-U(1) core of a topological defect is mathematically identical to applying the Schrödinger 
+Using an exact analytical witness representing the U(1) core of a topological defect 
+(`Complex.I • sigmaZ`), this theorem demonstrates that computing the geometric holonomy 
+(spatial parallel transport) is mathematically identical to applying the Schrödinger 
 time-evolution operator. 
 
-Thus, traversal along the defect's boundary internal phase space physically manifests 
-as the passage of time for the localized state. Time is the relational geometric phase.
+This proves that traversal along a defect's internal spatial phase space can physically 
+manifest as the passage of time, demonstrating that relational geometric phase 
+mathematically satisfies the role of time evolution.
 -/
 theorem §\phantomsection\label{lean:CGD.Quantum.Holonomy.relationalTimeEmergence}§CGD.Quantum.Holonomy.relationalTimeEmergence
   (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
@@ -1457,16 +1450,6 @@ noncomputable def §\phantomsection\label{lean:CGD.Quantum.Holonomy.unitaryTimeE
   matrixExp ((-Complex.I * (t : ℂ)) • Hamiltonian)
 
 
--- MODULE: CGD.Quantum.Measurement.Attractors
---------------------------------------------------------------------
-/--
-Defines the separatrix condition where the boundary interaction energy exactly equals 
-the Bali (2001) String Breaking threshold (2M).
--/
-noncomputable def §\phantomsection\label{lean:CGD.Quantum.Measurement.isSeparatrixBoundary}§CGD.Quantum.Measurement.isSeparatrixBoundary (E_0 M : ℝ) (A B : §\hyperref[lean:CGD.Foundations.SU2Group]{\detokenize{SU2Group}}§) : Prop :=
-  boundaryInteractionEnergy E_0 A B = 2 * M
-
-
 -- MODULE: CGD.Quantum.Measurement.BornRule
 --------------------------------------------------------------------
 /--
@@ -1479,22 +1462,31 @@ noncomputable def §\phantomsection\label{lean:CGD.Quantum.Measurement.hopfVolum
   - Real.cos theta
 
 /--
-The Physical Born Rule
-Connects the purely geometric volume calculation directly to the topological 
-Yang-Mills interaction energy of the Universe's self-dual boundary sector.
+The Kinematic Born Rule Equivalence.
+Demonstrates that in Chiral Gauge Dynamics, the phase-space volume fraction 
+(calculated strictly via the invariant Hopf metric primitive) bounded by the 
+geometric correlation between the Physical Universe's gauge state and a 
+macroscopic detector frame mathematically evaluates exactly to the quantum 
+mechanical Born rule projection.
+
+This derives the fundamental mechanism of quantum probability directly from 
+the macroscopic continuous geometry of the gauge field, without requiring 
+wave-function collapse or arbitrary dynamic thresholds.
 -/
-theorem §\phantomsection\label{lean:CGD.Quantum.Measurement.physicalBornRule}§CGD.Quantum.Measurement.physicalBornRule
+theorem §\phantomsection\label{lean:CGD.Quantum.Measurement.kinematicBornRuleEquivalence}§CGD.Quantum.Measurement.kinematicBornRuleEquivalence
   (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§)
   (evaluateBoundary : §\hyperref[lean:CGD.Axioms.Sl2cGaugeField]{\detokenize{Sl2cGaugeField}}§ → §\hyperref[lean:CGD.Foundations.SU2Group]{\detokenize{SU2Group}}§)
-  (detector_state : §\hyperref[lean:CGD.Foundations.SU2Group]{\detokenize{SU2Group}}§)
-  (E_0 M : ℝ) (hE0 : E_0 ≠ 0)
-  (theta_separatrix : ℝ)
-  -- Coordinate Definition: theta_separatrix is the angle parameterized by the geometric correlation
-  (h_angle : Real.cos theta_separatrix = (§\hyperref[lean:CGD.Quantum.geometricBellCorrelation]{\detokenize{geometricBellCorrelation}}§ (evaluateBoundary pu.toUniverse.sd_sector) detector_state).re)
-  -- The physical state lies exactly on the dynamical string-breaking separatrix
-  (h_separatrix : §\hyperref[lean:CGD.Quantum.Measurement.isSeparatrixBoundary]{\detokenize{isSeparatrixBoundary}}§ E_0 M (evaluateBoundary pu.toUniverse.sd_sector) detector_state) :
-  (§\hyperref[lean:CGD.Quantum.Measurement.hopfVolumePrimitive]{\detokenize{hopfVolumePrimitive}}§ Real.pi - §\hyperref[lean:CGD.Quantum.Measurement.hopfVolumePrimitive]{\detokenize{hopfVolumePrimitive}}§ theta_separatrix) / 
-  (§\hyperref[lean:CGD.Quantum.Measurement.hopfVolumePrimitive]{\detokenize{hopfVolumePrimitive}}§ Real.pi - §\hyperref[lean:CGD.Quantum.Measurement.hopfVolumePrimitive]{\detokenize{hopfVolumePrimitive}}§ 0) = 1 - M / E_0
+  (detector_frame : §\hyperref[lean:CGD.Foundations.SU2Group]{\detokenize{SU2Group}}§)
+  (theta : ℝ)
+  -- The physical angle is strictly defined by the SU(2) trace metric between the universe and the detector
+  (h_angle : Real.cos theta = (§\hyperref[lean:CGD.Quantum.geometricBellCorrelation]{\detokenize{geometricBellCorrelation}}§ (evaluateBoundary pu.toUniverse.sd_sector) detector_frame).re) :
+  -- The phase-space volume fraction of the universe...
+  (§\hyperref[lean:CGD.Quantum.Measurement.hopfVolumePrimitive]{\detokenize{hopfVolumePrimitive}}§ Real.pi - §\hyperref[lean:CGD.Quantum.Measurement.hopfVolumePrimitive]{\detokenize{hopfVolumePrimitive}}§ theta) / 
+  (§\hyperref[lean:CGD.Quantum.Measurement.hopfVolumePrimitive]{\detokenize{hopfVolumePrimitive}}§ Real.pi - §\hyperref[lean:CGD.Quantum.Measurement.hopfVolumePrimitive]{\detokenize{hopfVolumePrimitive}}§ 0) = 
+  -- ...is mathematically identical to the linear projection...
+  (1 + (§\hyperref[lean:CGD.Quantum.geometricBellCorrelation]{\detokenize{geometricBellCorrelation}}§ (evaluateBoundary pu.toUniverse.sd_sector) detector_frame).re) / 2 ∧
+  -- ...which identically equals the quantum mechanical Born rule probability projection
+  (1 + (§\hyperref[lean:CGD.Quantum.geometricBellCorrelation]{\detokenize{geometricBellCorrelation}}§ (evaluateBoundary pu.toUniverse.sd_sector) detector_frame).re) / 2 = (Real.cos (theta / 2))^2
 
 
 -- MODULE: CGD.Quantum.Measurement.Ensemble
@@ -1570,6 +1562,26 @@ noncomputable def §\phantomsection\label{lean:CGD.Quantum.spatialDiracOp}§CGD.
   §\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ 1 * dPsi 1 + §\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ 2 * dPsi 2 + §\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ 3 * dPsi 3
 
 
+-- MODULE: CGD.Quantum.StateExclusion
+--------------------------------------------------------------------
+§\phantomsection\label{lean:CGD.Quantum.geometricStateExclusion}§theorem CGD.Quantum.geometricStateExclusion :
+  ∀ (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{CGD.Axioms.PhysicalUniverse}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{CGD.Foundations.SpacetimePoint}}§)
+  (F1 F2 : Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{CGD.Foundations.SL2C}}§),
+  §\hyperref[lean:CGD.Quantum.isColorAligned]{\detokenize{CGD.Quantum.isColorAligned}}§ F1 F2 →
+    (∀ (mu nu : Fin 4),
+        Eq (§\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{CGD.Foundations.curvatureSl2c}}§ pu.toUniverse.sd_sector.val mu nu x) (instHAdd.hAdd (F1 mu nu) (F2 mu nu))) →
+      Eq (§\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ fun mu nu => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{CGD.Foundations.curvatureSl2c}}§ pu.toUniverse.sd_sector.val mu nu x).det
+        0
+
+§\phantomsection\label{lean:CGD.Quantum.isColorAligned}§def CGD.Quantum.isColorAligned :
+  (Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{CGD.Foundations.SL2C}}§) → (Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{CGD.Foundations.SL2C}}§) → Prop :=
+  fun F1 F2 =>
+  Exists fun T =>
+    ∀ (mu nu : Fin 4),
+      Exists fun c1 =>
+        Exists fun c2 => And (Eq (F1 mu nu) (instHSMul.hSMul c1 T)) (Eq (F2 mu nu) (instHSMul.hSMul c2 T))
+
+
 -- MODULE: CGD.Quantum.Vacuum
 --------------------------------------------------------------------
 /--
@@ -1613,6 +1625,13 @@ noncomputable def §\phantomsection\label{lean:Litlib.Math.Dirac.gammaVec}§Litl
   | 2 => gammaSpatial 1
   | 3 => gammaSpatial 2
   | _ => 0
+
+/--
+Physical Interpretation:
+A matrix operator is "Odd" if it flips the chiral parity of the spinor it acts upon (e.g., mapping left-to-right).
+-/
+def §\phantomsection\label{lean:Litlib.Math.Dirac.isOdd}§Litlib.Math.Dirac.isOdd (M : Matrix (Fin 4) (Fin 4) Complex) : Prop :=
+  ∀ i j, isLight i = isLight j → M i j = 0
 
 
 -- MODULE: Litlib.Y1951.papapetrou1951spinning.Signature
@@ -2013,31 +2032,6 @@ class §\phantomsection\label{lean:Litlib.Y2000.hall2000elementary.DerivativeExp
       
   deriv_exp_zero : 
     ∀ X : Matrix n n ℂ, deriv (fun (s : ℝ) => exp ((s : ℂ) • X)) 0 = X
-
-
--- MODULE: Litlib.Y2001.bali2001qcd.Signature
---------------------------------------------------------------------
-class §\phantomsection\label{lean:Litlib.Y2001.bali2001qcd.FluxTubeStringBreaking}§Litlib.Y2001.bali2001qcd.FluxTubeStringBreaking§\textsuperscript{\pdftooltip{\cite{bali2001qcd}}{Reference: bali2001qcd}}§ 
-    (FluxTubeState : Type*)
-    (spatialEnergy : FluxTubeState → ℝ)
-    (intactFluxTube : ℝ → FluxTubeState)
-    (snappedFluxTube : ℝ → FluxTubeState)
-    (sigma M : ℝ) where
-  /-- Mass Positivity Constraint: The string tension and meson masses must be strictly positive. -/
-  h_sigma_pos : sigma > 0
-  h_M_pos : M > 0
-  
-  intactEnergy : ∀ r > 0, spatialEnergy (intactFluxTube r) = sigma * r
-  snappedEnergy : ∀ r > 0, spatialEnergy (snappedFluxTube r) = 2 * M
-  
-  /--
-  # Phenomenology: Flux Tube String Breaking
-  **Literature:** Bali 2001, String Breaking, Page 45.
-  **Physical Interpretation:** In full QCD with dynamical sea quarks, the colour flux tube between heavy static sources will spontaneously "break" when the stored string energy exceeds the rest mass threshold to create a pair of static-light mesons. 
-  **Mathematical Boundaries:** The physical ground state energy is the minimum of the available topological states. This limit rigorously asserts that the physical ground state saturates at $2M$ as the spatial separation $r \to \infty$, precluding an infinitely rising potential in the unquenched regime.
-  -/
-  ground_state_energy_limit : 
-    Tendsto (fun r => min (spatialEnergy (intactFluxTube r)) (spatialEnergy (snappedFluxTube r))) atTop (nhds (2 * M))
 
 
 -- MODULE: Litlib.Y2003.nakahara2003geometry.Chapter07.Sec04_LeviCivita

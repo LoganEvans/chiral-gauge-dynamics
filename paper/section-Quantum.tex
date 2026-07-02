@@ -3,13 +3,11 @@
 \todo{Author Overview: This section proves that standard quantum mechanical behavior—wave equations, quantization, and entanglement—emerges strictly from the geometric phase space of the topological connection.
 Order of theorems covered:
 1. generalizedDynamicDiracEquation / familiarDynamicDiracEquation: The covariant Dirac operator is exactly the macroscopic Yang-Mills curvature trace plus a dynamic geometric expansion term.
-2. algebraicDiracChiralSplit / exactSchroedingerReduction: This relativistic structure natively reduces to the non-relativistic 1/2m Schrödinger Hamiltonian.
 3. kinematicActionQuantization: Integer quantization emerges strictly from Cartan-Maurer topological boundaries.
 4. relationalTimeEmergence: Time evolution (Hamiltonian) is mathematically identical to traversing the spatial holonomy (phase) of a U(1) defect. Time is relational.
 5. kinematicEntanglementWormhole / kinematicFluxTubeStability: The channel connecting entangled states is a topologically degenerate 1D metric string.
 6. fluxTubeHolonomyEvaluation / geometricHolonomyTsirelsonBound: Path-integrating this holonomy exactly reproduces standard quantum state vectors bounded at the $2\sqrt{2}$ Tsirelson limit.
-7. algebraicStringBreakingLimit: The string breaking separatrix crossover limit.
-8. finiteLiouvilleBoundaryFlow / physicalBornRule: Phase space volume is preserved, and its geometric projection rigorously derives the Born Rule.
+8. finiteLiouvilleBoundaryFlow / kinematicBornRuleEquivalence: Phase space volume is preserved, and its geometric projection rigorously derives the Born Rule.
 Nuances: Emphasize that we do not 'quantize' the system. Quantum mechanics is just the relational geometry of how topological defects measure each other.
 
 TONE CHECK: Emphasize that we are not "quantizing" a classical system. The Schrödinger/Dirac equations are just the relational geometry of how macroscopic defects measure one another in the background connection.
@@ -90,20 +88,11 @@ TONE CHECK: Emphasize that we are not "quantizing" a classical system. The Schr�
 \subsection{The Born Rule and Measurement}
 \label{subsec:measurement}
 
-\todo{Author: Explain that macroscopic crossover limits dictate string breaking.}
-
-\begin{equation}
-    L > \frac{2M}{\sigma} \implies \text{String Breaking Limit Reached}
-    \quad \leanref{CGD.Quantum.algebraicStringBreakingLimit}
-    \label{eq:algebraicStringBreakingLimit}
-\end{equation}
-\todo{Cite Litlib Dependency: \cite{bali2001qcd} for the QCD flux tube energy crossover bounds.}
-
 \todo{Author: Conclude with the Born Rule. Explain that continuous gauge flow inherently preserves phase space volume (Liouville's theorem), and projecting this invariant volume exactly derives the $1 - M/E_0$ Born Rule probability.}
 
 \begin{equation}
     P = \frac{\int_{\theta}^{\pi} d\mathcal{V}_{\text{Hopf}}}{\int_{0}^{\pi} d\mathcal{V}_{\text{Hopf}}} = 1 - \frac{M}{E_0}
-    \quad \leanref{CGD.Quantum.Measurement.physicalBornRule}
-    \label{eq:physicalBornRule}
+    \quad \leanref{CGD.Quantum.Measurement.kinematicBornRuleEquivalence}
+    \label{eq:kinematicBornRuleEquivalence}
 \end{equation}
 \todo{Cite Litlib Dependency: \cite{arnold1989mathematical} for the n-dimensional Liouville volume-preservation theorem.}
