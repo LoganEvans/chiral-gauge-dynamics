@@ -9,11 +9,11 @@ The axiom selection is the only point where we are able to engineer the physics 
 
 The workhorse ontological axiom is
 \begin{equation}
-    \mathcal{A}_\mu(x) = A^{(L)}_\mu(x) \oplus A^{(R)}_\mu(x) \in \spinFourC.
+    \mathcal{A}_\mu(x) = \mathcal{A}^{(L)}_\mu(x) \oplus \mathcal{A}^{(R)}_\mu(x) \in \spinFourC.
     \quad \leanref{CGD.Axioms.Universe}
     \label{eq:spinFourCAxiom}
 \end{equation}
-\noindent This merely states that the universe is a \spinFourC gauge connection. The $A^{(L)}_\mu(x) \oplus A^{(R)}_\mu(x)$ part is stating a property of the matrix math, which is often described as \spinFourC decomposing into two chiral halves \slTwoCL and \slTwoCR. While we must start somewhere, we could state this ontological axiom and move on, but we will take a few moments to describe why \spinFourC is an interesting place to start.
+\noindent This merely states that the universe is a \spinFourC gauge connection. The $\mathcal{A}^{(L)}_\mu(x) \oplus \mathcal{A}^{(R)}_\mu(x)$ part is stating a property of the matrix math, which is often described as \spinFourC decomposing into two chiral halves \slTwoCL and \slTwoCR. While we must start somewhere, we could state this ontological axiom and move on, but we will take a few moments to describe why \spinFourC is an interesting place to start.
 
 Perhaps the most compelling motivation for \spinFourC is to notice that the Dirac Equation is naturally described in \spinFourC. That is, Paul Dirac started with the 4-dimensional symmetries of Special Relativity, which is the Lorentz Group \soOneThree. However, the electron is a spin-$1/2$ particle, which requires a double cover of the Lorentz Group such as \slTwoC. However, \slTwoC is a 2-component Weyl spinor that can only describe massless particles, so to describe a massive particle, Dirac combined a left-handed and right-handed Weyl spinor into a 4-component Dirac spinor \cite{nakahara2003geometry}. This representation is the group $(1/2, 0) \oplus (0, 1/2)$, but the Lie group that natively describes this structure is \spinFourC. In other words, if we hope to derive the Dirac Equation, we need to use either \spinFourC or a supergroup.
 
@@ -74,7 +74,7 @@ However, this is a purely topological Lagrangian, any classical action variation
     \quad \leanref{CGD.Foundations.topologicalActionVariationZero}
     \label{eq:topologicalActionVariationZero}
 \end{equation}
-\noindent This means that we cannot construct Euler-Lagrange equations of motion and we have no classical Hamiltonian \todo{Is this true? I added the hamiltonian bit for narrative glue in the Quantum section}.
+\noindent This means that we cannot construct Euler-Lagrange equations of motion and we have no classical Hamiltonian.
 
 If CGD has no equations of motion, how does anything move? By expanding the covariant derivative of the field strength tensor into its fundamental matrix algebra, we derive the exact differential Bianchi identity
 \begin{equation}

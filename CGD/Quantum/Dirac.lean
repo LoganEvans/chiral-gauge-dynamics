@@ -146,6 +146,8 @@ theorem kinematicDiracOperatorGrading (pu : PhysicalUniverse) :
     · exact isEven_extractSpinorMode pu.toUniverse x nu
     · exact Litlib.Math.Dirac.hestenesIsomorphism nu
 
+Litlib.theorem
+  description "Gauge-Covariant Spinor Derivative Identity"
 lemma covariantSpinorDeriv_eq_curvature_plus_deriv (u : Universe) (x : SpacetimePoint) (mu nu : Fin 4) :
   covariantSpinorDeriv u x mu nu = 
   curvature (fun m p => u.spin4c_connection m p) mu nu x + partialDerivChiral nu (fun p => u.spin4c_connection mu p) x := by

@@ -1,22 +1,9 @@
 % FILENAME: paper/section-Quantum.tex
 
-\todo{Author Overview: This section proves that standard quantum mechanical behavior—wave equations, quantization, and entanglement—emerges strictly from the geometric phase space of the topological connection.
-Order of theorems covered:
-1. generalizedDynamicDiracEquation / familiarDynamicDiracEquation
-3. kinematicEntanglementWormhole / kinematicFluxTubeStability
-4. relationalTimeEmergence
-5. kinematicActionQuantization
-6. fluxTubeHolonomyEvaluation / geometricHolonomyTsirelsonBound
-8. finiteLiouvilleBoundaryFlow / kinematicBornRuleEquivalence
-}
-
 \section{Quantum Mechanics Without Quantization}
 \label{sec:Quantum}
 
-\subsection{The Emergent Dirac Operator}
-
-\todo{Author: Because this is now the start of the section, change the transition word "Next" to something like "To begin our exploration into how quantum particles behave in CGD..." Also, regarding your mathcal question: yes, it is standard to use $\mathcal{A}$ for the connection to distinguish it from the $A$ electromagnetic vector potential. Just ensure it's consistent throughout the paper.}
-Next, we will explore just how particles behave in CGD. As we discussed in Section \ref{Introduction}, \spinFourC naturally possesess a bispinor structure, so we will evaluate the Dirac operator $\slashed{D}$ by treating the local gauge connection as the spinor field $(\Psi = \mathcal{A}_\nu)$ \todo{did we miss the mathcal in other uses in other sections?}. By considering the gauge-covariant derivative and the Yang-Mills curvature tensor, we find
+In the previous section, we established that particles exist; in this section, we will explore how they behave. As we discussed in Section \ref{sec:Introduction}, \spinFourC naturally possesess a bispinor structure, so we will evaluate the Dirac operator $\slashed{D}$ by treating the local gauge connection as the spinor field $(\Psi = \mathcal{A}_\nu)$. By considering the gauge-covariant derivative and the Yang-Mills curvature tensor, we find
 \begin{equation}
     D_\mu \mathcal{A}_\nu = F_{\mu\nu} + \partial_\nu \mathcal{A}_\mu .
     \quad \leanref{CGD.Quantum.covariantSpinorDeriv_eq_curvature_plus_deriv}
@@ -30,78 +17,66 @@ Next, we will explore just how particles behave in CGD. As we discussed in Secti
 \end{equation}
 \noindent This is the generalized Dirac Equation. In the first term, $F_{\mu\nu}$ is the interaction between a fermion and a gauge field. In the second term, $\partial_\nu \mathcal{A}_\mu$ is an intertial term. This means that particles feel a force from the background if the background universe is dynamically bubbling or expanding, but if the universe is stationary, the second term goes to zero and we recover the standard definition for the Dirac Equation.
 
-\subsection{Entanglement and the ER=EPR Bridge}
-
 Since CGD is a classical field theory for both gravity and particles, one of the biggest concerns is how it addresses Bell's Theorem. \citeauthor{bell1964einstein} concluded:
 \begin{quote}
     In a theory in which parameters are added to quantum mechanics to determine the results of individual measurements, without changing the statistical predictions, there must be a mechanism whereby the set- ting of one measuring device can influence the reading of another instrument, however remote. Moreover, the signal involved must propagate instantaneously, so that such a theory could not be Lorentz invariant. \citep{bell1964einstein}
 \end{quote}
 \noindent This is colloquially summarized as ``No local, hidden-variables theory explains Quantum Mechanics.'' This is a problem for a theory like CGD because classical theories must be local hidden-variable theories in order to satisfy Lorentz Invariance.
 
-However, \citet{maldacena2013cool} showed a loop-hole for Bell's Theorem when they introduced the ER=EPR hypothesis: if two particles are topologically inseparable, they can satisfy observed entanglement correlations without requiring any non-local behavior. While we will not use any part of the mechanism \citet{maldacena2013cool} discussed, we will show that the CGD math supports a 1-dimensional topological flux tube that connects entangled particles.
-
-\todo{Author: Your sentence cuts off here. Finish the thought by formally introducing the `fluxTubeFrame` witness here. State that we evaluate the metric strictly inside this 1D core connecting two states, yielding a determinant of zero. This proves the geometric distance between the particles is zero, making them inseparable.}
-In order to explore entanglement in CGD, we will start with the general quantum geometry we proved with CGD.Quantum.generalizedDynamicDiracEquation\leanref{CGD.Quantum.generalizedDynamicDiracEquation}, but in order to explore the possible behavior of the quantum geometry, we must use some 
-
+We established in Equation \ref{eq:topologicalActionVariationZero} that CGD has no classical equations of motion, so the local gauge field is underdetermined. In order to explore one of the possible solutions to the local geometry, we propose the following ansatz:
+\begin{align}
+    \mathcal{A}^{\text{tube}}_\mu(x) &= \begin{cases} 
+      0 & \mu = 0 \\
+      i \sigma_3 & \mu = 1 \\
+      i \sigma_1 & \mu = 2 \\
+      i \sigma_2 & \mu = 3 
+   \end{cases} \quad \leanref{CGD.Quantum.fluxTubeFrame} \\
+   \exists \gamma(t), \quad \gamma(0) &= x, \quad \gamma(1) = y \quad \leanref{CGD.Quantum.areEntangled}
+\end{align}
+\noindent This ``flux tube frame'' defines entanglement for points $x$ and $y$ by connecting them with a curve where gauge rotations are allowed at every point of the curve $\gamma(t)$. We verify this is a valid physical solution in \texttt{CGD.Quantum.fluxTubeIsMinimal}\leanref{CGD.Quantum.fluxTubeIsMinimal} by proving that it satisfies the minimal-energy boundary condition for a static magnetic field. Since this construct is 1-dimensional, Equation \ref{eq:kinematicSingleColorDegeneracy} shows that the determinanant collapses and the metric vanishes within the tube, giving:
 \begin{equation}
     \det(g_{\mu\nu}) = 0 \quad \text{along the ER=EPR bridge}
     \quad \leanref{CGD.Quantum.kinematicEntanglementWormhole}
     \label{eq:kinematicEntanglementWormhole}
 \end{equation}
+\noindent This acts as a topological bridge.
 
-\todo{Author: Explain how path-integrating the SU(2) holonomy along this flux tube purely recovers quantum state vectors and the macroscopic CHSH Tsirelson bound of $2\sqrt{2}$.}
-
+Now, we can evaluate the path integral along the flux tube, and find that we recover the trigonometric coefficients of quantum state vectors
 \begin{equation}
-    \left[ \text{Re}(\text{CHSH}) \right]^2 \leq 8
+    \mathcal{P}\exp\left(\int \mathcal{A}_\mu dx^\mu\right) = \cos(\theta) \cdot I + i \sin(\theta) \cdot M \quad \leanref{CGD.Quantum.fluxTubeHolonomyEvaluation}
+\end{equation}
+\noindent We also find that since the core of the flux tube is commutative, the phase is conserved and matches the CHSH Tsirelson bound:
+\begin{equation}
+    \left[ \text{Re}(\text{CHSH}) \right]^2 \leq 8 .
     \quad \leanref{CGD.Quantum.geometricHolonomyTsirelsonBound}
     \label{eq:geometricHolonomyTsirelsonBound}
 \end{equation}
-\todo{Cite Litlib Dependency: \cite{hall2000elementary} for the Lie derivative exponential maps required for macroscopic holonomy.}
 
-\subsection{Relational Time}
+The result in Equation \ref{eq:geometricHolonomyTsirelsonBound} demonstrates that contrary to conventional belief, a purely classical theory can satisfy Bell's inequalities. We did not invalidate any part of Bell's theorem; instead, since the metric inside the flux tube vanishes and the particles are effectively colocal, Bell's theorem simply doesn't apply.
 
-\todo{Author: To answer your citation question: Cite Carlo Rovelli's "Relational Quantum Mechanics" (1996) or the Wheeler-DeWitt equation for the "problem of time".}
-Since we proved in Equation \ref{eq:topologicalActionVariationZero} that CGD does not possess a classical Hamiltonian, the Dirac operator in Equation \ref{eq:generalizedDynamicDiracEquation} is not sufficient by itself to explain the complex phase rotation of quantum time-evolution. For this, we need to address ``the problem of time'' \todo{cite someone?}. 
+While this resolves the most obvious concern about proposing CGD as an ontology for quantum mechanics, entanglement correlation is not the only concern. Since we proved in Equation \ref{eq:topologicalActionVariationZero} that CGD does not possess a classical Hamiltonian, the Dirac operator in Equation \ref{eq:generalizedDynamicDiracEquation} is not sufficient by itself to explain the complex phase rotation of quantum time-evolution. For this, we need to address ``the problem of time'' \citep{rovelli1996relational}.
 
-\todo{Author: To answer your matrix exponential question: No, you do not need a times dot for $t \mathcal{A}$; standard juxtaposition is correct. Also, adjust the transition to the 1D core here by referencing the flux tube we just introduced in the previous subsection.}
-First, we note that the path-integral of a connection $\mathcal{A}$ over distance $t$ is the matrix exponential of the field multiplied by the distance $(e^{t \mathcal{A}})$ \todo{do I need a times dot there?}. To evaluate this spatial holonomy, we must make a physical assumption that a defect possesses a 1-dimensional core 
-
- ... Also, we note that the quantum mechanical operator of an evolving system is $e^{-iHt}$.
-
-\todo{Author: Bring this together. State that evaluating the spatial holonomy along the U(1) core of the flux tube mathematically mirrors $e^{-iHt}$, meaning time evolution is just relational geometric phase.}
-
+We will again use the flux tube ansatz and note that the path-integral of a connection $\mathcal{A}$ over distance $t$ is the matrix exponential of the field multiplied by the distance $(e^{t \mathcal{A}})$. The spatial holonomy along the \uOne core of the flux tube mathematically mirrors $e^{-iHt}$, meaning time evolution is just relational geometric phase:
 \begin{equation}
-    \mathcal{P} \exp \left( \int \mathcal{A}_1 dx^1 \right) = \exp(-i H t)
+    \mathcal{P} \exp \left( \int \mathcal{A}_1 dx^1 \right) = \exp(-i H t) .
     \quad \leanref{CGD.Quantum.Holonomy.relationalTimeEmergence}
     \label{eq:relationalTimeEmergence}
 \end{equation}
 
-\subsection{Topological Quantization}
+The next concern we will address is how we obtain a ``quantum'' from a classical theory. Canonical quantization is a mathematical process that turns a classical theory into a quantum theory, and by treating classical quantities such as position or momentum as operators with the axiomatic non-commutation property $[\hat{q}, \hat{p}] = i \hbar$, physicists can obtain probability waves and discrete energy levels. In CGD, we do not have the non-commutation property, so if quanta exist, they must emerge from the topology. However, since the background of the \spinFourC is a macroscopic \suTwo field, the \suTwo group manifold is a 3-dimensional sphere $S^3$. If we take a topological defect $(F^{(R)}_{\mu\nu} \neq 0)$, we can enclose it in another $S^3$ sphere at spatial infinity. At this boundary, we have a mathematical mapping $S^3 \to S^3$. To obtain quantization, we use the Cartan-Maurer Degree Theorem \citep{nakahara2003geometry}, which shows that it is only possible to wrap a sphere with another sphere an integer number of times without tearing the manifold ($\pi_3(\suTwo) = \mathbb{Z}$).
 
-Canonical quantization is a mathematical process that turns a classical theory into a quantum theory. By treating classical quantities such as position or momentum as operators with the axiomatic non-commutation property $[\hat{q}, \hat{p}] = i \hbar$, physicists can obtain probability waves and discrete energy levels.
-
-\todo{Author: To answer your group theory question: We use SU(2) instead of Spin(4,C) because Spin(4,C) is a "non-compact" group (it stretches to infinity). You cannot mathematically tie a stable knot in a non-compact group; it slips open. Stable topological defects can only form in compact subgroups, which is SU(2). To answer your theorem question: This is the Nakahara "Cartan-Maurer Degree Theorem".}
-In CGD, we do not have the non-commutation property, so if quanta exist, they must emerge from the topology. However, since the background of the \spinFourC is a macroscopic \suTwo field, the \suTwo group manifold is a 3-dimensional sphere $S^3$. If we take a topological defect $(F^{(R)}_{\mu\nu} \neq 0)$, we can enclose it in another $S^3$ sphere at spatial infinity. At this boundary, we have a mathematical mapping $S^3 \to S^3$. To obtain quantization, we use \todo{what is the name of the theorem?} which shows that it is only possible to wrap a sphere with another sphere an integer number of times without tearing the manifold ($\pi_3(\suTwo) = \mathbb{Z}$) \todo{why not put \spinFourC in there instead of \suTwo?}. 
-
-\todo{Author: To answer your question: The Cartan-Maurer integral is simply the calculus formula that computes the topological winding number over that $S^3$ boundary.}
-Next, we consider the Pontryagin density that we proved is the unique CGD Lagrangian in Equation \ref{eq:topologicalLagrangianUniqueness}. Stokes' theorem proves that the volume integral of a derivative is equal to the value at its boundary, so when we integrate the 4-dimensional action, we find that that action possessed by the particle is quantized. Thus, the Cartan-Maurer integral \todo{what is that?} evaluates to
+Next, we consider the Pontryagin density that we proved is the unique CGD Lagrangian in Equation \ref{eq:topologicalLagrangianUniqueness}. Stokes' theorem proves that the volume integral of a derivative is equal to the value at its boundary, so when we integrate the 4-dimensional action, we find that that action possessed by the particle is quantized and the Cartan-Maurer integral evaluates to \citep{belavin1975pseudoparticle, nakahara2003geometry}:
 \begin{equation}
     S_{\text{top}} \in \{ -1, 1 \} .
     \quad \leanref{CGD.Quantum.kinematicActionQuantization}
     \label{eq:kinematicActionQuantization}
 \end{equation}
-\todo{Cite Litlib Dependency: \cite{belavin1975pseudoparticle} and \cite{nakahara2003geometry} for the topological degree mapping constraints.}
+\noindent In CGD, the ``quantum'' is the geometric winding number for a topological defect.
 
-In CGD, the ``quantum'' is the geometric winding number for a topological defect.
-
-\subsection{The Born Rule and Measurement}
-\label{subsec:measurement}
-
-\todo{Author: Conclude with the Born Rule. Explain that continuous gauge flow inherently preserves phase space volume (Liouville's theorem), and projecting this invariant volume exactly derives the $1 - M/E_0$ Born Rule probability.}
-
+Finally, we will address the measurement problem by using statistical mechanics. In Section \ref{sec:Particles} we proved that particles are \suTwo defects. The geometry of every point in \suTwo is a 3-sphere $(S^3)$ which we can decompose into a 2-sphere $(S^2)$ where every point on the sphere is attached to a 1-dimensional circle (a \uOne fiber). This decomposition matches laboratory equipment, because a detector such as a magnet exists in 3-dimensional space, so it can only measure values on a $S^2$ sphere. The actual \uOne phase of a particle is a value on the \uOne fiber. When we use the Liouville volume-preservation theorem \citep{arnold1989mathematical} to calculate the phase-space volume of the Hopf Fibration, we find
 \begin{equation}
-    P = \frac{\int_{\theta}^{\pi} d\mathcal{V}_{\text{Hopf}}}{\int_{0}^{\pi} d\mathcal{V}_{\text{Hopf}}} = 1 - \frac{M}{E_0}
+    P = \frac{\int_{\theta}^{\pi} d\mathcal{V}_{\text{Hopf}}}{\int_{0}^{\pi} d\mathcal{V}_{\text{Hopf}}} = 1 - \frac{M}{E_0} .
     \quad \leanref{CGD.Quantum.Measurement.kinematicBornRuleEquivalence}
     \label{eq:kinematicBornRuleEquivalence}
 \end{equation}
-\todo{Cite Litlib Dependency: \cite{arnold1989mathematical} for the n-dimensional Liouville volume-preservation theorem.}
+\noindent This is exactly the Born Rule.

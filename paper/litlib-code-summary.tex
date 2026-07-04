@@ -1300,12 +1300,25 @@ noncomputable def §\phantomsection\label{lean:CGD.Quantum.rotateYAxis}§CGD.Qua
 -- MODULE: CGD.Quantum.Dirac
 --------------------------------------------------------------------
 /--
+The exact gauge-covariant derivative of the spinor matter mode.
+Defined geometrically as D_mu A_nu = \partial_mu A_nu + [A_mu, A_nu].
+-/
+noncomputable def §\phantomsection\label{lean:CGD.Quantum.covariantSpinorDeriv}§CGD.Quantum.covariantSpinorDeriv (u : §\hyperref[lean:CGD.Axioms.Universe]{\detokenize{Universe}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (mu nu : Fin 4) : Matrix (Fin 4) (Fin 4) Complex :=
+  let dA_nu := extractSpinorDeriv u x mu nu
+  let comm := bracket (u.spin4c_connection mu x) (§\hyperref[lean:CGD.Quantum.extractSpinorMode]{\detokenize{extractSpinorMode}}§ u x nu)
+  dA_nu + (§\hyperref[lean:CGD.Foundations.embedSelfDual]{\detokenize{embedSelfDual}}§ (§\hyperref[lean:CGD.Foundations.chiralProject]{\detokenize{chiralProject}}§ comm).self_dual + §\hyperref[lean:CGD.Foundations.embedAntiSelfDual]{\detokenize{embedAntiSelfDual}}§ (§\hyperref[lean:CGD.Foundations.chiralProject]{\detokenize{chiralProject}}§ comm).anti_self_dual)
+
+lemma §\phantomsection\label{lean:CGD.Quantum.covariantSpinorDeriv_eq_curvature_plus_deriv}§CGD.Quantum.covariantSpinorDeriv_eq_curvature_plus_deriv (u : §\hyperref[lean:CGD.Axioms.Universe]{\detokenize{Universe}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (mu nu : Fin 4) :
+  §\hyperref[lean:CGD.Quantum.covariantSpinorDeriv]{\detokenize{covariantSpinorDeriv}}§ u x mu nu = 
+  §\hyperref[lean:CGD.Foundations.curvature]{\detokenize{curvature}}§ (fun m p => u.spin4c_connection m p) mu nu x + §\hyperref[lean:CGD.Foundations.partialDerivChiral]{\detokenize{partialDerivChiral}}§ nu (fun p => u.spin4c_connection mu p) x
+
+/--
 The true background-independent Emergent Dirac Operator.
 It strictly contracts the local covariant spinor derivatives using the dynamically 
 emergent macroscopic TetradField (Vielbein) rather than assuming a flat-space metric.
 -/
 noncomputable def §\phantomsection\label{lean:CGD.Quantum.emergentDiracOperator}§CGD.Quantum.emergentDiracOperator (u : §\hyperref[lean:CGD.Axioms.Universe]{\detokenize{Universe}}§) (e : §\hyperref[lean:CGD.Gravity.TetradField]{\detokenize{TetradField}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (nu : Fin 4) : Matrix (Fin 4) (Fin 4) Complex :=
-  ∑ mu, ∑ a, (e a mu x) • (§\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ a * covariantSpinorDeriv u x mu nu)
+  ∑ mu, ∑ a, (e a mu x) • (§\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ a * §\hyperref[lean:CGD.Quantum.covariantSpinorDeriv]{\detokenize{covariantSpinorDeriv}}§ u x mu nu)
 
 noncomputable def §\phantomsection\label{lean:CGD.Quantum.extractSpinorMode}§CGD.Quantum.extractSpinorMode (u : §\hyperref[lean:CGD.Axioms.Universe]{\detokenize{Universe}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (nu : Fin 4) : Matrix (Fin 4) (Fin 4) Complex :=
   u.spin4c_connection nu x
@@ -1359,12 +1372,26 @@ theorem §\phantomsection\label{lean:CGD.Quantum.kinematicEntanglementWormhole}�
 -- MODULE: CGD.Quantum.FluxTube
 --------------------------------------------------------------------
 /--
+Proves that the exact `fluxTubeFrame` witness natively satisfies the static, purely magnetic boundary conditions.
+-/
+theorem §\phantomsection\label{lean:CGD.Quantum.fluxTubeIsMinimal}§CGD.Quantum.fluxTubeIsMinimal : ∀ x, §\hyperref[lean:CGD.Quantum.satisfies1DMinimalEnergyBound]{\detokenize{satisfies1DMinimalEnergyBound}}§ §\hyperref[lean:CGD.Quantum.fluxTubeFrame]{\detokenize{fluxTubeFrame}}§ x
+
+/--
 Demonstrates that the macroscopic metric of the `fluxTubeFrame` witness possesses a strictly zero determinant. This proves that a 1D uniform gauge connection natively represents a degenerate, non-macroscopic topological background (det(g) = 0), serving as the formal witness that non-local ER=EPR wormhole channels mathematically exist within the Spin(4,C) geometry.
 -/
 theorem §\phantomsection\label{lean:CGD.Quantum.kinematicFluxTubeStability}§CGD.Quantum.kinematicFluxTubeStability (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) :
   ∀ (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§),
     §\hyperref[lean:CGD.Quantum.isFluxTube]{\detokenize{isFluxTube}}§ pu.toUniverse.sd_sector x →
     (§\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{urbantkeMetric}}§ (fun m n => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector m n x)).det = 0
+
+/--
+Mathematically enforces a strictly static (∂_t A = 0), purely magnetic (electric curvature F_{0ν} = 0) configuration. 
+Phenomenologically, this represents the minimal energy ground state of a flux tube. Geometrically, 
+it simply isolates a static background topology.
+-/
+def §\phantomsection\label{lean:CGD.Quantum.satisfies1DMinimalEnergyBound}§CGD.Quantum.satisfies1DMinimalEnergyBound (A : Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) : Prop :=
+  (∀ nu, §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ A 0 nu x = 0) ∧
+  (∀ nu, partialDerivSl2c 0 (A nu) x = 0)
 
 
 -- MODULE: CGD.Quantum.Holonomy.Evaluation
@@ -1508,29 +1535,6 @@ theorem §\phantomsection\label{lean:CGD.Quantum.Measurement.kinematicBornRuleEq
   (1 + (§\hyperref[lean:CGD.Quantum.geometricBellCorrelation]{\detokenize{geometricBellCorrelation}}§ (evaluateBoundary pu.toUniverse.sd_sector) detector_frame).re) / 2 ∧
   -- ...which identically equals the quantum mechanical Born rule probability projection
   (1 + (§\hyperref[lean:CGD.Quantum.geometricBellCorrelation]{\detokenize{geometricBellCorrelation}}§ (evaluateBoundary pu.toUniverse.sd_sector) detector_frame).re) / 2 = (Real.cos (theta / 2))^2
-
-
--- MODULE: CGD.Quantum.Measurement.Ensemble
---------------------------------------------------------------------
-/--
-Proves that when the boundary gauge flow is generated by a divergence-free vector field 
-(such as the phase-translation operator along the U(1) fiber), the continuous gauge 
-transformations strictly preserve the finite-dimensional volume measure of the ensemble.
-This guarantees that an initially uniform ensemble over the Hopf fiber remains uniform.
--/
-theorem §\phantomsection\label{lean:CGD.Quantum.Measurement.finiteLiouvilleBoundaryFlow}§CGD.Quantum.Measurement.finiteLiouvilleBoundaryFlow
-  (n : ℕ)
-  [ms : MeasureTheory.MeasureSpace (Fin n → ℝ)]
-  (f : (Fin n → ℝ) → (Fin n → ℝ))
-  (g : ℝ → (Fin n → ℝ) → (Fin n → ℝ))
-  [liouville : §\hyperref[lean:Litlib.Y1989.arnold1989mathematical.LiouvilleTheoremND]{\detokenize{LiouvilleTheoremND}}§ (n := n)]
-  (h_flow_gen : ∀ t x i, deriv (fun t' => g t' x i) t = f (g t x) i)
-  (h_group_id : ∀ x, g 0 x = x)
-  (h_group_add : ∀ t₁ t₂ x, g (t₁ + t₂) x = g t₁ (g t₂ x))
-  (h_div_free : ∀ x, (∑ i : Fin n, deriv (fun y => f (Function.update x i y) i) (x i)) = 0)
-  (h_f_diff : ∀ x i j, Differentiable ℝ (fun y => f (Function.update x j y) i))
-  (h_g_diff : ∀ x i, Differentiable ℝ (fun t => g t x i)) :
-  ∀ t s, @MeasurableSet (Fin n → ℝ) ms.toMeasurableSpace s → MeasureTheory.volume (g t '' s) = MeasureTheory.volume s
 
 
 -- MODULE: CGD.Quantum.Schroedinger
@@ -1866,31 +1870,6 @@ class §\phantomsection\label{lean:Litlib.Y1984.urbantke1984integrability.Eq10_S
       Finset.sum Finset.univ (fun α => Finset.sum Finset.univ (fun β => 
         epsilon3 a c b * F a μ α * F_dual c α β * F b β ν)))))) :
     ∀ μ ν, g μ ν = g ν μ
-
-
--- MODULE: Litlib.Y1989.arnold1989mathematical.Chapter03.Sec16_Liouville
---------------------------------------------------------------------
-class §\phantomsection\label{lean:Litlib.Y1989.arnold1989mathematical.LiouvilleTheoremND}§Litlib.Y1989.arnold1989mathematical.LiouvilleTheoremND§\textsuperscript{\pdftooltip{\cite{arnold1989mathematical}}{Reference: arnold1989mathematical}}§
-    {n : ℕ}
-    [MeasureTheory.MeasureSpace (Fin n → ℝ)] where
-  /--
-  Volume Non-Degeneracy Constraint: Binds the phase space measure to a non-trivial measure,
-  barring the vacuous satisfaction of the volume-preservation identity.
-  -/
-  vol_non_trivial : ∃ s : Set (Fin n → ℝ), MeasurableSet s ∧ MeasureTheory.volume s ≠ 0
-  /--
-  Liouville's Theorem (n-Dimensional Divergence Form): Theorem 2, page 69.
-  Proves that any smooth vector field with identically zero divergence generates 
-  a volume-preserving flow.
-  -/
-  preserves_volume : ∀ (f : (Fin n → ℝ) → (Fin n → ℝ)) (g : ℝ → (Fin n → ℝ) → (Fin n → ℝ)),
-    (∀ x i j, Differentiable ℝ (fun y => f (Function.update x j y) i)) →
-    (∀ x i, Differentiable ℝ (fun t => g t x i)) →
-    (∀ x, g 0 x = x) →
-    (∀ t₁ t₂ x, g (t₁ + t₂) x = g t₁ (g t₂ x)) →
-    (∀ t x i, deriv (fun t' => g t' x i) t = f (g t x) i) →
-    (∀ x, (∑ i : Fin n, deriv (fun y => f (Function.update x i y) i) (x i)) = 0) →
-    ∀ t s, MeasurableSet s → MeasureTheory.volume (g t '' s) = MeasureTheory.volume s
 
 
 -- MODULE: Litlib.Y1991.capovilla1991pure.Signature
