@@ -26,11 +26,11 @@ In CGD, we must build particles out of \spinFourC somehow, but this leaves us wi
     \quad \leanref{CGD.Particles.kinematicSingleColorDegeneracy}
     \label{eq:kinematicSingleColorDegeneracy}
 \end{equation}
-\noindent More generally, if the field does not have enough ``color charges'' to fill in all of the diagonals of the $3 \times 3$ matrix $g_{\mu\nu}$, then the volume will collapse. We can strengthen this result by showing that no Abelian field can describe particles
+\noindent More generally, if the field does not have enough independent Lie algebra generators, or ``colors'', to fill in all of the diagonals of the $3 \times 3$ matrix $g_{\mu\nu}$, then the volume will collapse. We can use this observation to show that particles require exactly three colors
 \begin{equation}
-    \det(g_{\mu\nu}) \neq 0 \implies \text{Field is strictly Non-Abelian} .
-    \quad \leanref{CGD.Particles.kinematicMultiColorRequirement}
-    \label{eq:kinematicMultiColorRequirement}
+    \det(g_{\mu\nu}) \neq 0 \implies \big( [F_{\mu\nu}, F_{\rho\sigma}] \neq 0 \big) \land \big( \forall a \in \{1,2,3\}, \, F^a_{\mu\nu} \not\equiv 0 \big) .
+    \quad \leanref{CGD.Particles.kinematicThreeColorRequirement}
+    \label{eq:kinematicThreeColorRequirement}
 \end{equation}
 
 Let us next consider defects in the ASD chiral sector. In topology, the Cartan-Maurer degree, or winding number, counts how many times a field wraps around a gauge group \citep{nakahara2003geometry}. Since \citet{krasnov2011plebanski} proved that only \suTwo and \slTwoC are capable of generating the Urbantke Metric, then for CGD we only need to only consider the ASD chiral \slTwoC gauge field, where the topological winding numbers are described by the \suTwo subgroup. If a particle exists in \suTwo, it is a non-Abelian knot, and \citet{belavin1975pseudoparticle} proved that knots in \suTwo cannot decay or unwrap into the trivial vacuum. We can extend these results to show that they also apply within CGD:

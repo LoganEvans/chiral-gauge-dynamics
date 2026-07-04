@@ -15,8 +15,6 @@ namespace CGD.Gravity
 Litlib.theorem
   description "Exact Non-Abelian Lorentzian Macroscopic Witness"
 /--
-The CAPSTONE WITNESS for CGD-VAC-001.
-
 This formally constructs an exact analytical non-Abelian $SU(2)$ gauge configuration 
 that simultaneously satisfies the trace-free Capovilla CDJ constraint at the spatial 
 origin, and produces a non-degenerate, strictly real, negative-determinant 

@@ -270,4 +270,143 @@ theorem kinematicMultiColorRequirement :
   have h_zero := kinematicSingleColorDegeneracy F h_single
   exact h_vol h_zero
 
+/--
+Defines a gauge field that is constrained to a lower-dimensional Lie subalgebra, 
+missing at least one of the three internal color generators.
+-/
+def isColorDeficient (F : Fin 4 → Fin 4 → SL2C) (color : Fin 3) : Prop :=
+  ∀ mu nu, project F color mu nu = 0
+
+lemma missing_color_triple_product_zero (F : Fin 4 → Fin 4 → SL2C)
+  (color : Fin 3) (h : ∀ mu alpha, project F color mu alpha = 0)
+  (mu nu : Fin 4) (alpha beta gamma delta : Fin 4) :
+  ∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3,
+    epsilon3 a b c * project F a mu alpha * project F b nu beta * project F c gamma delta = 0 := by
+  have h_assoc : (∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3, epsilon3 a b c * project F a mu alpha * project F b nu beta * project F c gamma delta) =
+                 (∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3, epsilon3 a b c * (project F a mu alpha * project F b nu beta * project F c gamma delta)) := by
+    apply Finset.sum_congr rfl; intro a _
+    apply Finset.sum_congr rfl; intro b _
+    apply Finset.sum_congr rfl; intro c _
+    ring
+  rw [h_assoc]
+  have h_sum := triple_sum_eps (fun a b c => project F a mu alpha * project F b nu beta * project F c gamma delta)
+  rw [h_sum]
+  fin_cases color
+  · have h1 : project F 0 mu alpha = 0 := h mu alpha
+    have h2 : project F 0 nu beta = 0 := h nu beta
+    have h3 : project F 0 gamma delta = 0 := h gamma delta
+    calc project F 0 mu alpha * project F 1 nu beta * project F 2 gamma delta -
+         project F 0 mu alpha * project F 2 nu beta * project F 1 gamma delta -
+         project F 1 mu alpha * project F 0 nu beta * project F 2 gamma delta +
+         project F 1 mu alpha * project F 2 nu beta * project F 0 gamma delta +
+         project F 2 mu alpha * project F 0 nu beta * project F 1 gamma delta -
+         project F 2 mu alpha * project F 1 nu beta * project F 0 gamma delta
+      _ = 0 * project F 1 nu beta * project F 2 gamma delta -
+          0 * project F 2 nu beta * project F 1 gamma delta -
+          project F 1 mu alpha * 0 * project F 2 gamma delta +
+          project F 1 mu alpha * project F 2 nu beta * 0 +
+          project F 2 mu alpha * 0 * project F 1 gamma delta -
+          project F 2 mu alpha * project F 1 nu beta * 0 := by rw [h1, h2, h3]
+      _ = 0 := by ring
+  · have h1 : project F 1 mu alpha = 0 := h mu alpha
+    have h2 : project F 1 nu beta = 0 := h nu beta
+    have h3 : project F 1 gamma delta = 0 := h gamma delta
+    calc project F 0 mu alpha * project F 1 nu beta * project F 2 gamma delta -
+         project F 0 mu alpha * project F 2 nu beta * project F 1 gamma delta -
+         project F 1 mu alpha * project F 0 nu beta * project F 2 gamma delta +
+         project F 1 mu alpha * project F 2 nu beta * project F 0 gamma delta +
+         project F 2 mu alpha * project F 0 nu beta * project F 1 gamma delta -
+         project F 2 mu alpha * project F 1 nu beta * project F 0 gamma delta
+      _ = project F 0 mu alpha * 0 * project F 2 gamma delta -
+          project F 0 mu alpha * project F 2 nu beta * 0 -
+          0 * project F 0 nu beta * project F 2 gamma delta +
+          0 * project F 2 nu beta * project F 0 gamma delta +
+          project F 2 mu alpha * project F 0 nu beta * 0 -
+          project F 2 mu alpha * 0 * project F 0 gamma delta := by rw [h1, h2, h3]
+      _ = 0 := by ring
+  · have h1 : project F 2 mu alpha = 0 := h mu alpha
+    have h2 : project F 2 nu beta = 0 := h nu beta
+    have h3 : project F 2 gamma delta = 0 := h gamma delta
+    calc project F 0 mu alpha * project F 1 nu beta * project F 2 gamma delta -
+         project F 0 mu alpha * project F 2 nu beta * project F 1 gamma delta -
+         project F 1 mu alpha * project F 0 nu beta * project F 2 gamma delta +
+         project F 1 mu alpha * project F 2 nu beta * project F 0 gamma delta +
+         project F 2 mu alpha * project F 0 nu beta * project F 1 gamma delta -
+         project F 2 mu alpha * project F 1 nu beta * project F 0 gamma delta
+      _ = project F 0 mu alpha * project F 1 nu beta * 0 -
+          project F 0 mu alpha * 0 * project F 1 gamma delta -
+          project F 1 mu alpha * project F 0 nu beta * 0 +
+          project F 1 mu alpha * 0 * project F 0 gamma delta +
+          0 * project F 0 nu beta * project F 1 gamma delta -
+          0 * project F 1 nu beta * project F 0 gamma delta := by rw [h1, h2, h3]
+      _ = 0 := by ring
+
+lemma missing_color_space_term_zero (F : Fin 4 -> Fin 4 -> SL2C) (color : Fin 3) (h : ∀ mu alpha, project F color mu alpha = 0) (mu nu : Fin 4) :
+  (∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3, epsilon3 a b c * ∑ alpha : Fin 4, ∑ beta : Fin 4, ∑ gamma : Fin 4, ∑ delta : Fin 4, epsilon4 alpha beta gamma delta * project F a mu alpha * project F b nu beta * project F c gamma delta) = 0 := by
+  simp_rw [Finset.mul_sum]
+  simp_rw [sum_swap_3_4]
+
+  have h_zero : ∀ alpha beta gamma delta,
+    (∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3, epsilon3 a b c * (epsilon4 alpha beta gamma delta * project F a mu alpha * project F b nu beta * project F c gamma delta)) = 0 := by
+    intros alpha beta gamma delta
+    have h_inner := missing_color_triple_product_zero F color h mu nu alpha beta gamma delta
+
+    calc (∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3, epsilon3 a b c * (epsilon4 alpha beta gamma delta * project F a mu alpha * project F b nu beta * project F c gamma delta))
+      _ = (∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3, epsilon4 alpha beta gamma delta * (epsilon3 a b c * project F a mu alpha * project F b nu beta * project F c gamma delta)) := by
+        apply Finset.sum_congr rfl; intro a _
+        apply Finset.sum_congr rfl; intro b _
+        apply Finset.sum_congr rfl; intro c _
+        ring
+      _ = epsilon4 alpha beta gamma delta * (∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3, epsilon3 a b c * project F a mu alpha * project F b nu beta * project F c gamma delta) := by
+        simp_rw[← Finset.mul_sum]
+      _ = epsilon4 alpha beta gamma delta * 0 := by rw[h_inner]
+      _ = 0 := by ring
+
+  apply Finset.sum_eq_zero; intro alpha _
+  apply Finset.sum_eq_zero; intro beta _
+  apply Finset.sum_eq_zero; intro gamma _
+  apply Finset.sum_eq_zero; intro delta _
+  exact h_zero alpha beta gamma delta
+
+lemma missing_color_metric_eq_zero_matrix (F : Fin 4 -> Fin 4 -> SL2C) (color : Fin 3) (h : ∀ mu nu, project F color mu nu = 0) :
+  urbantkeMetric F = 0 := by
+  ext mu nu
+  unfold urbantkeMetric
+  exact missing_color_space_term_zero F color h mu nu
+
+Litlib.theorem
+  description "Geometric Degeneracy of Color-Deficient Fields"
+/--
+Demonstrates that if any of the three internal Lie algebra generators (colors) are missing from the gauge field, the scalar triple product natively vanishes, mathematically forcing the macroscopic spacetime volume to zero. A stable spacetime geometry mathematically requires the interaction of exactly all three SU(2) colors.
+-/
+theorem kinematicColorDeficientDegeneracy :
+  ∀ (F : Fin 4 → Fin 4 → SL2C) (color : Fin 3),
+    isColorDeficient F color →
+    (urbantkeMetric F).det = 0 := by
+  intro F color h_def
+  have h_zero := missing_color_metric_eq_zero_matrix F color h_def
+  rw[h_zero]
+  exact Matrix.det_zero ⟨0⟩
+
+Litlib.theorem
+  description "Kinematic Three-Color Requirement"
+/--
+Demonstrates that a non-zero macroscopic spacetime volume strictly requires non-Abelian fields spanning exactly three active color generators. One or two colors is mathematically insufficient to sustain spacetime volume, natively bounding the minimum unbroken gauge symmetry required for macroscopic existence.
+-/
+theorem kinematicThreeColorRequirement :
+  ∀ (F : Fin 4 → Fin 4 → SL2C),
+    (urbantkeMetric F).det ≠ 0 →
+    ¬ isSingleColor F ∧ (∀ color, ¬ isColorDeficient F color) := by
+  intro F h_vol
+  constructor
+  · intro h_single
+    have h_zero := metric_eq_zero_matrix F h_single
+    have h_det_zero : (urbantkeMetric F).det = 0 := by
+      rw [h_zero]
+      exact Matrix.det_zero ⟨0⟩
+    exact h_vol h_det_zero
+  · intro color h_def
+    have h_zero := kinematicColorDeficientDegeneracy F color h_def
+    exact h_vol h_zero
+
 end CGD.Particles

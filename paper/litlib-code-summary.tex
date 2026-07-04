@@ -612,8 +612,6 @@ noncomputable def §\phantomsection\label{lean:CGD.Gravity.F_val_map}§CGD.Gravi
 -- MODULE: CGD.Gravity.ExactSolutions.MainTheorem
 --------------------------------------------------------------------
 /--
-The CAPSTONE WITNESS for CGD-VAC-001.
-
 This formally constructs an exact analytical non-Abelian $SU(2)$ gauge configuration 
 that simultaneously satisfies the trace-free Capovilla CDJ constraint at the spatial 
 origin, and produces a non-degenerate, strictly real, negative-determinant 
@@ -846,6 +844,21 @@ instance §\phantomsection\label{lean:CGD.Gravity.instPhysicalUniverseBulkNonemp
 -- MODULE: CGD.Particles.Color
 --------------------------------------------------------------------
 /--
+Defines a gauge field that is constrained to a lower-dimensional Lie subalgebra, 
+missing at least one of the three internal color generators.
+-/
+def §\phantomsection\label{lean:CGD.Particles.isColorDeficient}§CGD.Particles.isColorDeficient (F : Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§) (color : Fin 3) : Prop :=
+  ∀ mu nu, project F color mu nu = 0
+
+/--
+Demonstrates that if any of the three internal Lie algebra generators (colors) are missing from the gauge field, the scalar triple product natively vanishes, mathematically forcing the macroscopic spacetime volume to zero. A stable spacetime geometry mathematically requires the interaction of exactly all three SU(2) colors.
+-/
+theorem §\phantomsection\label{lean:CGD.Particles.kinematicColorDeficientDegeneracy}§CGD.Particles.kinematicColorDeficientDegeneracy :
+  ∀ (F : Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§) (color : Fin 3),
+    §\hyperref[lean:CGD.Particles.isColorDeficient]{\detokenize{isColorDeficient}}§ F color →
+    (§\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{urbantkeMetric}}§ F).det = 0
+
+/--
 Demonstrates that a non-zero macroscopic spacetime volume strictly requires non-Abelian fields.
 -/
 theorem §\phantomsection\label{lean:CGD.Particles.kinematicMultiColorRequirement}§CGD.Particles.kinematicMultiColorRequirement :
@@ -860,6 +873,14 @@ theorem §\phantomsection\label{lean:CGD.Particles.kinematicSingleColorDegenerac
   ∀ (F : Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§),
     §\hyperref[lean:CGD.Particles.isSingleColor]{\detokenize{isSingleColor}}§ F →
     (§\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{urbantkeMetric}}§ F).det = 0
+
+/--
+Demonstrates that a non-zero macroscopic spacetime volume strictly requires non-Abelian fields spanning exactly three active color generators. One or two colors is mathematically insufficient to sustain spacetime volume, natively bounding the minimum unbroken gauge symmetry required for macroscopic existence.
+-/
+theorem §\phantomsection\label{lean:CGD.Particles.kinematicThreeColorRequirement}§CGD.Particles.kinematicThreeColorRequirement :
+  ∀ (F : Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§),
+    (§\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{urbantkeMetric}}§ F).det ≠ 0 →
+    ¬ §\hyperref[lean:CGD.Particles.isSingleColor]{\detokenize{isSingleColor}}§ F ∧ (∀ color, ¬ §\hyperref[lean:CGD.Particles.isColorDeficient]{\detokenize{isColorDeficient}}§ F color)
 
 
 -- MODULE: CGD.Particles.Definitions
@@ -1560,26 +1581,6 @@ noncomputable def §\phantomsection\label{lean:CGD.Quantum.modulatedTemporalDeri
 
 noncomputable def §\phantomsection\label{lean:CGD.Quantum.spatialDiracOp}§CGD.Quantum.spatialDiracOp (dPsi : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) : Matrix (Fin 4) (Fin 4) Complex :=
   §\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ 1 * dPsi 1 + §\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ 2 * dPsi 2 + §\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ 3 * dPsi 3
-
-
--- MODULE: CGD.Quantum.StateExclusion
---------------------------------------------------------------------
-§\phantomsection\label{lean:CGD.Quantum.geometricStateExclusion}§theorem CGD.Quantum.geometricStateExclusion :
-  ∀ (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{CGD.Axioms.PhysicalUniverse}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{CGD.Foundations.SpacetimePoint}}§)
-  (F1 F2 : Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{CGD.Foundations.SL2C}}§),
-  §\hyperref[lean:CGD.Quantum.isColorAligned]{\detokenize{CGD.Quantum.isColorAligned}}§ F1 F2 →
-    (∀ (mu nu : Fin 4),
-        Eq (§\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{CGD.Foundations.curvatureSl2c}}§ pu.toUniverse.sd_sector.val mu nu x) (instHAdd.hAdd (F1 mu nu) (F2 mu nu))) →
-      Eq (§\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ fun mu nu => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{CGD.Foundations.curvatureSl2c}}§ pu.toUniverse.sd_sector.val mu nu x).det
-        0
-
-§\phantomsection\label{lean:CGD.Quantum.isColorAligned}§def CGD.Quantum.isColorAligned :
-  (Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{CGD.Foundations.SL2C}}§) → (Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{CGD.Foundations.SL2C}}§) → Prop :=
-  fun F1 F2 =>
-  Exists fun T =>
-    ∀ (mu nu : Fin 4),
-      Exists fun c1 =>
-        Exists fun c2 => And (Eq (F1 mu nu) (instHSMul.hSMul c1 T)) (Eq (F2 mu nu) (instHSMul.hSMul c2 T))
 
 
 -- MODULE: CGD.Quantum.Vacuum
