@@ -16,6 +16,25 @@ The majority of this whitepaper is focused on showing that \spinFourC reproduces
     \label{eq:macroscopicVolumeImpliesAxialCondensate}
 \end{equation}
 
+The SD and ASD chiral sectors decompose into symmetric vector $(\mathcal{V})$ and axial $(\mathcal{A}^{\text{axial}})$ background fields:
+\begin{align}
+    \mathcal{A}^{(L)}_\mu(x) &= \mathcal{V}_\mu(x) + \mathcal{A}^{\text{axial}}_\mu(x)
+    \quad \leanref{CGD.Phenomenology.kinematicLeftHandedCoupling}
+    \label{eq:kinematicLeftHandedCoupling} \\
+    \mathcal{A}^{(R)}_\mu(x) &= \mathcal{V}_\mu(x) - \mathcal{A}^{\text{axial}}_\mu(x) .
+    \quad \leanref{CGD.Phenomenology.kinematicRightHandedCoupling}
+    \label{eq:kinematicRightHandedCoupling}
+\end{align}
+\noindent This property is the source of the parity asymmetry of the vacuum.
+
+When we evaluate the gauge-covariant derivative of the fermion state $\Psi$ in the SD sector, we find that the particle interacts with both the vector and axial background fields:
+\begin{equation}
+    D^{(L)}_\mu \Psi = \partial_\mu \Psi + \mathcal{V}_\mu \Psi + \mathcal{A}^{\text{axial}}_\mu \Psi .
+    \quad \leanref{CGD.Phenomenology.kinematicLeftHandedPhaseShift}
+    \label{eq:kinematicLeftHandedPhaseShift}
+\end{equation}
+\noindent This shows why the universe cares about the chirality of particles. In contrast, the Standard Model added the bespoke term $\frac{1}{2}(1 - \gamma^5$ \citep{feynman1958theory} into the weak interaction current portion of its Lagrangian to describe the chirality discovered in \citet{wu1957experimental}.
+
 We can further characterize the condensate by observing that both the SD and ASD Lie algebras are restricted to \slTwoCAlg, so they are traceless matrices. Since a traceless matrix corresponds with a vector field, the condensate is isovector
 \begin{equation}
     \mathrm{Tr}(\mathcal{A}^{\mathrm{axial}}_\mu(x)) = 0 .
@@ -82,77 +101,32 @@ It's important to note that despite the statistical comparisons shown in Table \
 
 According to \citet{miller2026proton}, the Standard Model requires that we model the effects of both one-photon and two-photon exchange. However, with CGD, we didn't need to model the effects of two-photon exchange in order to reach high accuracy. Our theoretical basis is currently silent about whether two-photon exchange is important or not. The upcoming MUSE experiment \citet{cline2021muse} is exciting because if it shows that TPE is a much smaller effect than currently expected, then it will violate the lepton universality axiom of the Standard Model. In contrast, an anomalous MUSE result may be perfectly consistent with the CGD axioms.
 
-The prediction of an axial condensate goes beyond the proton radius puzzle. Next, we will demonstrate how the axial condensate produces the $V-A$ chiral interaction. The SD and ASD chiral sectors decompose into symmetric vector $(\mathcal{V})$ and axial $(\matchcal{A}^{\text{axial}})$ background fields:
-\begin{align}
-    \mathcal{A}^{(L)}_\mu(x) &= \mathcal{V}_\mu(x) + \mathcal{A}^{\text{axial}}_\mu(x)
-    \quad \leanref{CGD.Phenomenology.kinematicLeftHandedCoupling}
-    \label{eq:kinematicLeftHandedCoupling} \\
-    \mathcal{A}^{(R)}_\mu(x) &= \mathcal{V}_\mu(x) - \mathcal{A}^{\text{axial}}_\mu(x) .
-    \quad \leanref{CGD.Phenomenology.kinematicRightHandedCoupling}
-    \label{eq:kinematicRightHandedCoupling}
-\end{align}
-\noindent This property is the source of the parity asymmetry of the vacuum.
+The prediction of an axial condensate also has implications for transverse momentum-dependent distributions (TMD). These are effects where the internal structure of a proton is measured by bombarding the hadron with an electron and measuring the byproducts. Eight total TMDs exist, but three of them (Sivers, Boer-Mulders, and the Worm-Gear) are simple enough mathematically that we can explore them analytically.
 
-When we evaluate the gauge-covariant derivative of the fermion state $\Psi$ in the SD sector, we find that the particle interacts with both the vector and axial background fields:
+The Sivers effect is a phenomenon where the transverse momentum of quarks depends on the spin of the proton. We will conjecture that a flux tube (Equation \ref{eq:fluxTubeFrame}) connects the internal topological poles (aka quarks). By evaluating the Wilson line, we find that the path integral collapses into a matrix exponential. This implies that reversing the limits of integration will invert the sign of the transverse momentum kick:
 \begin{equation}
-    D^{(L)}_\mu \Psi = \partial_\mu \Psi + \mathcal{V}_\mu \Psi + \mathcal{A}^{\text{axial}}_\mu \Psi .
-    \quad \leanref{CGD.Phenomenology.kinematicLeftHandedPhaseShift}
-    \label{eq:kinematicLeftHandedPhaseShift}
-\end{equation}
-
-This observation leads us to look for... something about the TMD effects?
-
-
-\subsection{The Kinematic Sivers Effect and Transverse Momentum}
-\label{subsec:SiversEffect}
-
-\todo{
-\textbf{Author Prompt (The Sivers Effect):}
-\begin{itemize}
-    \item Briefly introduce the Sivers effect: in standard QCD, the transverse momentum of quarks flips sign depending on whether the process is Semi-Inclusive Deep Inelastic Scattering (SIDIS - outgoing) or Drell-Yan (incoming).
-    \item Explain that standard perturbative QCD derives this by inserting "gauge links" by hand via the Factorization Theorem.
-    \item Describe how CGD derives this sign-flip \textit{natively} as a geometric necessity. Because the background topological flux tube is spatially uniform, the continuous path-ordered integration (the Wilson line) collapses into an exact matrix exponential. 
-    \item Conclude that reversing the trajectory path length ($L \to -L$) through the macroscopic SU(2) geometry rigorously inverts the sign of the transverse momentum kick.
-\end{itemize}
-}
-
-\begin{equation}
-    \langle \text{Kick}_{\text{Sivers}}(L) \rangle = - \langle \text{Kick}_{\text{Sivers}}(-L) \rangle
+    \langle \text{Kick}_{\text{Sivers}}(L) \rangle = - \langle \text{Kick}_{\text{Sivers}}(-L) \rangle .
     \quad \leanref{CGD.Phenomenology.kinematicSiversSignFlip}
     \label{eq:kinematicSiversSignFlip}
 \end{equation}
 
-\todo{
-\textbf{Author Prompt (The Worm-Gear and Boer-Mulders Effects):}
-\begin{itemize}
-    \item Introduce the Worm-Gear effect (the correlation between quark \textit{longitudinal} spin and transverse momentum). Explain that this observable projects the orthogonal SU(2) topology via $\sigma_z$, obeying the exact same geometric sign-flip mechanism as the Sivers effect.
-    \item Introduce the Boer-Mulders effect (the correlation between quark \textit{transverse} spin and transverse momentum). Explain that because it relies on the same $\sigma_x$ transverse projection as Sivers, CGD natively proves they are geometrically identical observables in the macroscopic limit.
-\end{itemize}
-}
-
+When we model the Boer-Mulders effect, which measures the momentum kick of a spinning quark instead of the spinning proton in the Sivers Effect, we find that the model produces the same transverse projection as with the Sivers effect:
 \begin{equation}
-    \langle \text{Kick}_{\text{WormGear}}(L) \rangle = - \langle \text{Kick}_{\text{WormGear}}(-L) \rangle
+    \langle \text{Kick}_{\text{BM}}(L) \rangle = \langle \text{Kick}_{\text{Sivers}}(L) \rangle .
+    \quad \leanref{CGD.Phenomenology.kinematicSiversBoerMuldersEquivalence}
+    \label{eq:kinematicSiversBoerMuldersEquivalence}
+\end{equation}
+\noindent Finally, when we consider the Worm-Gear effect, which measures the correlation between a quark spinning on a longitudinal axis and its trasnfers kick, we find:
+\begin{equation}
+    \langle \text{Kick}_{\text{WormGear}}(L) \rangle = - \langle \text{Kick}_{\text{WormGear}}(-L) \rangle .
     \quad \leanref{CGD.Phenomenology.kinematicWormGearSignFlip}
     \label{eq:kinematicWormGearSignFlip}
 \end{equation}
 
-\begin{equation}
-    \langle \text{Kick}_{\text{BM}}(L) \rangle = \langle \text{Kick}_{\text{Sivers}}(L) \rangle
-    \quad \leanref{CGD.Phenomenology.kinematicSiversBoerMuldersEquivalence}
-    \label{eq:kinematicSiversBoerMuldersEquivalence}
-\end{equation}
-
-\todo{
-\textbf{Author Prompt (The TMD Geometric Ratio - The Bombshell):}
-\begin{itemize}
-    \item Highlight that standard QCD treats Sivers and Worm-Gear as independent empirical functions.
-    \item Explain the consequence of Equation \ref{eq:kinematicTmdRatio}: in CGD, they are geometrically locked together by the chiral phase angle $\alpha$ of the macroscopic flux tube.
-    \item Emphasize that predicting a flat kinematic ratio ($\frac{\text{WormGear}}{\text{Sivers}} = -\tan(\alpha)$) is a highly restrictive, testable, and falsifiable departure from standard phenomenological fits.
-\end{itemize}
-}
-
+All together, this means that CGD predicts that the ratios of these kicks are tightly linked to each other:
 \begin{equation}
     \cos(\alpha) \langle \text{Kick}_{\text{WormGear}} \rangle = - \sin(\alpha) \langle \text{Kick}_{\text{Sivers}} \rangle
     \quad \leanref{CGD.Phenomenology.kinematicTmdRatio}
     \label{eq:kinematicTmdRatio}
 \end{equation}
+

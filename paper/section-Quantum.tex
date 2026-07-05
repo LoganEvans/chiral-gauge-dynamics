@@ -30,8 +30,8 @@ We established in Equation \ref{eq:topologicalActionVariationZero} that CGD has 
       i \sigma_3 & \mu = 1 \\
       i \sigma_1 & \mu = 2 \\
       i \sigma_2 & \mu = 3 
-   \end{cases} \quad \leanref{CGD.Quantum.fluxTubeFrame} \\
-   \exists \gamma(t), \quad \gamma(0) &= x, \quad \gamma(1) = y \quad \leanref{CGD.Quantum.areEntangled}
+   \end{cases} \quad \leanref{CGD.Quantum.fluxTubeFrame} \label{eq:fluxTubeFrame} \\
+   \exists \gamma(t), \quad \gamma(0) &= x, \quad \gamma(1) = y \quad \leanref{CGD.Quantum.areEntangled} \label{eq:areEntangled}
 \end{align}
 \noindent This ``flux tube frame'' defines entanglement for points $x$ and $y$ by connecting them with a curve where gauge rotations are allowed at every point of the curve $\gamma(t)$. We verify this is a valid physical solution in \texttt{CGD.Quantum.fluxTubeIsMinimal}\leanref{CGD.Quantum.fluxTubeIsMinimal} by proving that it satisfies the minimal-energy boundary condition for a static magnetic field. Since this construct is 1-dimensional, Equation \ref{eq:kinematicSingleColorDegeneracy} shows that the determinanant collapses and the metric vanishes within the tube, giving:
 \begin{equation}
