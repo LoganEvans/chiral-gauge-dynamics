@@ -3,68 +3,51 @@
 \section{Phenomenological Implications: Hadronic Structure}
 \label{sec:HadronicStructure}
 
-In this section, we turn our focus to phenomenology. We will demonstrate how CGD natively produces testable predictions for hadronic observables without invoking external parameters or partonic factorizations. First, we examine the consequences of the vacuum chirality on the proton radius. Second, we show how the topological nature of the gauge connection mandates a sign flip in transverse momentum observables, natively deriving the Sivers effect.
-
-To evaluate the proton radius, we first consider the empty vacuum where the anti-self-dual (ASD) sector's curvature is zero. If the self-dual (SD) sector were structurally equivalent to the ASD sector, then both sectors would be zero and thus the field would trivially commute with itself, meaning all fields would point in the same direction and the universe would only be capable of drawing a 1-dimensional object (Equation \ref{eq:kinematicSingleColorDegeneracy}). This would contradict the CGD Axiom \ref{eq:macroscopicVolumeAxiom} asserting that the universe has volume, so we conclude that the universe must have chirality
-
+The majority of this whitepaper is focused on showing that \spinFourC reproduces various aspects of standard physics, but in this section we will explore a consequence of CGD that is drastically different from the Standard Model. For this investigation, we first consider the empty vacuum where the anti-self-dual (ASD) sector's curvature is zero. If the self-dual (SD) sector were structurally equivalent to the ASD sector, then both sectors would be zero and thus the field would trivially commute with itself, meaning all fields would point in the same direction and the universe would only be capable of creating a 1-dimensional object (Equation \ref{eq:kinematicSingleColorDegeneracy}). This would contradict the CGD Axiom \ref{eq:macroscopicVolumeAxiom} asserting that the universe has volume, so we conclude that the universe must have chirality:
 \begin{equation}
     \left( \forall \mu, \nu, \ F^{(R)}_{\mu\nu}(x) = 0 \right) \implies \mathcal{A}^{(L)} \neq \mathcal{A}^{(R)}.
     \quad \leanref{CGD.Phenomenology.macroscopicVolumeImpliesChirality}
     \label{eq:macroscopicVolumeImpliesChirality}
 \end{equation}
-
-\noindent Furthermore, by looking at the definition of an axial field, $\mathcal{A}_{\text{axial}} = \frac{1}{2}(\mathcal{A}^{(L)} - \mathcal{A}^{(R)})$, we see that since chirality exists throughout the vacuum, a non-zero axial background condensate must exist
-
+\noindent Furthermore, by looking at the definition of an axial field, $\mathcal{A}_{\text{axial}} = \frac{1}{2}(\mathcal{A}^{(L)} - \mathcal{A}^{(R)})$, we see that since chirality exists throughout the vacuum, a non-zero axial background condensate must exist:
 \begin{equation}
     \left( \forall \mu, \nu, \ F^{(R)}_{\mu\nu}(x) = 0 \right) \implies \exists y, \mu \text{ s.t. } \mathcal{A}^{\text{axial}}_\mu(y) \neq 0.
     \quad \leanref{CGD.Phenomenology.macroscopicVolumeImpliesAxialCondensate}
     \label{eq:macroscopicVolumeImpliesAxialCondensate}
 \end{equation}
 
-We can further characterize the condensate by observing that both the SD and ASD Lie algebras are restricted to \slTwoCAlg, so they are traceless matrices by definition. Since a traceless matrix corresponds with a vector field, the condensate is isovector
-
+We can further characterize the condensate by observing that both the SD and ASD Lie algebras are restricted to \slTwoCAlg, so they are traceless matrices. Since a traceless matrix corresponds with a vector field, the condensate is isovector
 \begin{equation}
     \mathrm{Tr}(\mathcal{A}^{\mathrm{axial}}_\mu(x)) = 0 .
     \quad \leanref{CGD.Phenomenology.axialIsIsovector}
     \label{eq:axialIsIsovector}
 \end{equation}
-
 \noindent We can also consider what happens when we invert the parity of the field $\mathcal{P}(\mathcal{A}_{\text{axial}}) = \mathcal{P}\left[ \frac{1}{2}(\mathcal{A}^{(L)} - \mathcal{A}^{(R)}) \right]$. This simplifies to $\mathcal{P}(\mathcal{A}_{\text{axial}}) = - \mathcal{A}_{\text{axial}}$, which means
-
 \begin{equation}
     \mathcal{A}^{\mathrm{axial}}_\mu(\mathcal{P}x) = - \mathcal{A}^{\mathrm{axial}}_\mu(x).
     \quad \leanref{CGD.Phenomenology.axialIsParityOdd}
     \label{eq:axialIsParityOdd}
 \end{equation}
-
 \noindent All together, we can characterize the quantum numbers of the condensate as $I^G(J^{PC}) = 1^{-}(1^{++})$.
 
-This mathematical necessity of CGD is the crux of why CGD predicts a different interaction model for protons and electrons: in the Standard Model, no axial-vector condensate exists.
-
-\subsubsection{Phenomenological Model}
+This mathematical necessity of CGD is the crux of why CGD makes novel predictions; in the Standard Model, no axial-vector condensate exists.
 
 At this point, we will stray away from theoretical formalization to look at phenomenological implication of an isovector axial-vector condensate. Only one particle family matches the axial-vector isovector quantum numbers: the $a_1$ meson \citep{pdg2024}, so if we are going to guess that the characteristic particle of the CGD condensate has already been discovered, this is our only choice.
 
-Now that we have characterized the CGD condensate, let us consider how a $a_1$ condensate would impact the proton radius puzzle.
+Now that we have characterized the CGD condensate, let us consider how an $a_1$ condensate would impact the proton radius puzzle.
 
-\citet{pohl2010size} showed that measuring the proton radius using muonic hydrogen differed by 5.0 standard deviations compared to the atomic hydrogen measurements. \citet{miller2026proton} argues that newer atomic hydrogen experiments have resolved the discrepancy. \citet{maisenbacher2026sub} used the 2S-6P transition of atomic hydrogen to obtain the measurement of $r_p = 0.8406(15)$ fm, which is consistent with muonic hydrogen measurements.
-
-However, this brings up the question of why older atomic hydrogen experiments measured a different value. Physicists have not identified any technical problems for all of the older atomic hydrogen experiments, so in order to declare the proton radius solved, the Standard Model must ignore this data.
+\citet{pohl2010size} showed that measuring the proton radius using muonic hydrogen differed by 5.0 standard deviations compared to the atomic hydrogen measurements. \citet{miller2026proton} argues that newer atomic hydrogen experiments have resolved the discrepancy because \citet{maisenbacher2026sub} used the 2S-6P transition of atomic hydrogen to obtain the measurement of $r_p = 0.8406(15)$ fm, which is consistent with muonic hydrogen measurements. However, this brings up the question of why older atomic hydrogen experiments measured a different value. Physicists have not identified any technical problems for all of the older atomic hydrogen experiments, so in order to declare the proton radius solved, the Standard Model must ignore this data.
 
 Based on QFT, if we bombard a proton with an electron, we need to compute the probability amplitude that the two particles will interact. In the presence of an axial-vector condensate, this amplitude is the product of the bare interaction $G_{Dipole}(Q^2, r_{core})$ (the probability of interacting due to the electron interacting with the proton core) and the vacuum corrections $1 - F_{Axial}(Q^2, \kappa_E)$ (which is the influence of the $a_1$ condensate):
-
 \begin{equation}
     G_E(Q^2) = G_{Dipole}(Q^2, r_{core}) \times ( 1 - F_{Axial}(Q^2, \kappa_E) ).
 \end{equation}
-
 \noindent We can then use the standard phenomenological model of Vector Meson Dominance (VMD) \citep{bodek2008vector}, where we observe that when a photon interracts with a proton, it often acts like a short-lived meson. We describe the core interaction using
-
 \begin{equation}
     G_{Dipole}(Q^2, r) = \left( 1 + \frac{Q^2}{12 / (r / \hbar c)^2} \right)^{-2}.
 \end{equation}
 
 This leaves us needing to describe the influence of the axial-vector condensate in the $F_{Axial}(Q^2, \kappa_E)$ equation. This is the product of three components: the massive propagator $Q^2 / (Q^2 + m_{a_1}^2)$ associated with the probability amplitude that a virtual photon will resolve into an $a_1$ meson state \citep{guichon1983axial}, the loop screening term $\ln(1 + Q^2 / (m_{a_1}^2 - m_\rho^2))$ which describes the mass gap between the vector environment of the proton and the axial-vector state of the $a_1$ condensate \citep{coleman1973radiative, gross1973asymptotically}, and finally the Weinberg mixing angle \citep{weinberg1967precise} which describes the strength at which the vector and axial-vector environments mix. Putting this together we have
-
 \begin{equation}
     F_{Axial}(Q^2, \kappa_E) = \frac{Q^2}{Q^2 + m_{a_1}^2} \times \ln\left( 1 + \frac{Q^2}{m_{a_1}^2 - m_\rho^2} \right) \times \left( \frac{m_\rho}{m_{a_1}} \right)^2 .
 \end{equation}
@@ -99,44 +82,26 @@ It's important to note that despite the statistical comparisons shown in Table \
 
 According to \citet{miller2026proton}, the Standard Model requires that we model the effects of both one-photon and two-photon exchange. However, with CGD, we didn't need to model the effects of two-photon exchange in order to reach high accuracy. Our theoretical basis is currently silent about whether two-photon exchange is important or not. The upcoming MUSE experiment \citet{cline2021muse} is exciting because if it shows that TPE is a much smaller effect than currently expected, then it will violate the lepton universality axiom of the Standard Model. In contrast, an anomalous MUSE result may be perfectly consistent with the CGD axioms.
 
-\subsection{Geometric Origin of the V-A Weak Interaction}
-\label{subsec:VAWeakInteraction}
-
-In the Standard Model, the weak interaction is known to violate parity maximally. To match experimental observations, physicists modeled this using a Vector minus Axial-Vector ($V-A$) coupling structure. However, this structure is an empirical input rather than a derived mathematical necessity of the gauge group.
-
-\todo{
-\textbf{Author Prompt (The V-A Structure):}
-\begin{itemize}
-    \item Explain that the geometric Left and Right chiral connections seamlessly decompose into symmetric Vector ($V$) and anti-symmetric Axial ($A$) background fields.
-    \item Emphasize that the sign flip between the Left and Right coupling natively defines the geometric parity asymmetry of the vacuum.
-\end{itemize}
-}
-
-\begin{equation}
-    \mathcal{A}^{(L)}_\mu(x) = \mathcal{V}_\mu(x) + \mathcal{A}^{\text{axial}}_\mu(x)
+The prediction of an axial condensate goes beyond the proton radius puzzle. Next, we will demonstrate how the axial condensate produces the $V-A$ chiral interaction. The SD and ASD chiral sectors decompose into symmetric vector $(\mathcal{V})$ and axial $(\matchcal{A}^{\text{axial}})$ background fields:
+\begin{align}
+    \mathcal{A}^{(L)}_\mu(x) &= \mathcal{V}_\mu(x) + \mathcal{A}^{\text{axial}}_\mu(x)
     \quad \leanref{CGD.Phenomenology.kinematicLeftHandedCoupling}
-    \label{eq:kinematicLeftHandedCoupling}
-\end{equation}
-
-\begin{equation}
-    \mathcal{A}^{(R)}_\mu(x) = \mathcal{V}_\mu(x) - \mathcal{A}^{\text{axial}}_\mu(x)
+    \label{eq:kinematicLeftHandedCoupling} \\
+    \mathcal{A}^{(R)}_\mu(x) &= \mathcal{V}_\mu(x) - \mathcal{A}^{\text{axial}}_\mu(x) .
     \quad \leanref{CGD.Phenomenology.kinematicRightHandedCoupling}
     \label{eq:kinematicRightHandedCoupling}
-\end{equation}
+\end{align}
+\noindent This property is the source of the parity asymmetry of the vacuum.
 
-\todo{
-\textbf{Author Prompt (Covariant Coupling and Parity Violation):}
-\begin{itemize}
-    \item Show that a fundamental fermion state governed by the chiral connection actively interacts with both the Vector and Axial fields through the covariant derivative.
-    \item Conclude that because macroscopic spacetime volume guarantees $\mathcal{A}^{\text{axial}} \neq 0$ (Equation \ref{eq:macroscopicVolumeImpliesAxialCondensate}), any particle coupling to the weak force unavoidably experiences this parity-violating $V\pm A$ interaction. Maximal parity violation is a strict geometric necessity of a universe possessing non-zero volume.
-\end{itemize}
-}
-
+When we evaluate the gauge-covariant derivative of the fermion state $\Psi$ in the SD sector, we find that the particle interacts with both the vector and axial background fields:
 \begin{equation}
-    D^{(L)}_\mu \Psi = \partial_\mu \Psi + \mathcal{V}_\mu \Psi + \mathcal{A}^{\text{axial}}_\mu \Psi
+    D^{(L)}_\mu \Psi = \partial_\mu \Psi + \mathcal{V}_\mu \Psi + \mathcal{A}^{\text{axial}}_\mu \Psi .
     \quad \leanref{CGD.Phenomenology.kinematicLeftHandedPhaseShift}
     \label{eq:kinematicLeftHandedPhaseShift}
 \end{equation}
+
+This observation leads us to look for... something about the TMD effects?
+
 
 \subsection{The Kinematic Sivers Effect and Transverse Momentum}
 \label{subsec:SiversEffect}
