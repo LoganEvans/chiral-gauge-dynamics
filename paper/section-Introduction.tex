@@ -22,14 +22,12 @@ The mathematical insight that makes CGD possible is the astonishingly elegant Ur
 The work first introduced in \citet{capovilla1989general} and later expanded in \citet{capovilla1991pure} took the Urbantke metric and showed that for a \suTwo pure gauge connection, General Relativity emerges without depending on a separate axiom for a background metric. We extend this result by showing that General Relativity also emerges from a \spinFourC pure gauge connection. However, while a universe composed only of a \suTwo connection contains General Relativity, it does not natively contain particles. In contrast, a universe composed of only a \spinFourC connection contains General Relativity as well as particles.
 
 In Section \ref{sec:Foundations}, we will lay out the three CGD axioms:
-
-\begin{itemize}
-    \item Axiom 1: The universe is a classical \spinFourC gauge connection.
-    \item Axiom 2: Macroscopic volume exists. This is a mathematical necessity for the Lean 4 formalization to ignore trivial solutions. Conceptually it says, "There universe contains \textit{something} rather than \textit{nothing}."
-    \item Axiom 3: The vacuum is unimodular. Tensor transformations, such as stretching, twisting, and compression, do not change the volume of spacetime.
-\end{itemize}
-
-\noindent In this section, we will also derive the Lagrangian and the Bianchi identities that govern stress-energy conservation and motion.
+\begin{enumerate}[label=\textbf{Axiom \arabic*:}, ref=\arabic*, labelindent=\parindent, leftmargin=*]
+    \item \label{ax:spinFourCAxiom} The universe is a classical \spinFourC gauge connection (Equation \ref{eq:spinFourCAxiom}).
+    \item \label{ax:macroscopicVolumeAxiom} Macroscopic volume exists (Equation \ref{eq:macroscopicVolumeAxiom}).
+    \item \label{ax:unimodularVacuumAxiom} The vacuum is unimodular (Equation \ref{eq:unimodularVacuumAxiom}).
+\end{enumerate}
+\noindent We will also derive the Lagrangian and the Bianchi identities that govern stress-energy conservation and motion.
 
 In Section \ref{sec:Gravity} we will prove that \spinFourC gives rise to General Relativity. This derivation takes us through the CDJ constraints \citep{capovilla1991pure}, Ricci-flat emergent spacetime, and stress-energy conservation.
 

@@ -40,6 +40,7 @@
             amsfonts
             graphics
             xcolor
+            enumitem
 
             # Bibliography
             biblatex
