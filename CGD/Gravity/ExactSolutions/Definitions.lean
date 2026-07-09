@@ -1,4 +1,4 @@
--- FILENAME: CGD/Gravity/RealityFilters/Definitions.lean
+-- FILENAME: CGD/Gravity/ExactSolutions/Definitions.lean
 
 import CGD.Axioms.PhysicalUniverse
 import CGD.Foundations.Calculus
@@ -6,7 +6,7 @@ import CGD.Gravity.Geometry
 
 open CGD.Axioms CGD.Foundations CGD.Gravity
 
-namespace CGD.Gravity.RealityFilters
+namespace CGD.Gravity.ExactSolutions
 
 /--
 A Physical Universe natively satisfies the kinematic reality conditions if and only if
@@ -20,4 +20,4 @@ any non-polynomial differential constraints.
 def SatisfiesRealityConditions (pu : PhysicalUniverse) : Prop :=
   ∀ x ∈ pu.bulk, isLorentzian (urbantkeMetric (fun μ ν => curvatureSl2c pu.toUniverse.sd_sector.val μ ν x))
 
-end CGD.Gravity.RealityFilters
+end CGD.Gravity.ExactSolutions

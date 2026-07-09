@@ -1,4 +1,4 @@
--- FILENAME: CGD/Gravity/RealityFilters/FLRW.lean
+-- FILENAME: CGD/Gravity/ExactSolutions/FLRW.lean
 
 import CGD.Foundations.Calculus
 import CGD.Gravity.Geometry
@@ -6,8 +6,8 @@ import Mathlib.Analysis.Calculus.FDeriv.Comp
 import Mathlib.Analysis.Calculus.FDeriv.Linear
 import Mathlib.Analysis.Calculus.FDeriv.Mul
 import Mathlib.Analysis.Calculus.ContDiff.Basic
-import CGD.Gravity.RealityFilters.Definitions
-import CGD.Gravity.RealityFilters.AlgebraicForms
+import CGD.Gravity.ExactSolutions.Definitions
+import CGD.Gravity.ExactSolutions.AlgebraicForms
 
 set_option linter.unusedSimpArgs false
 set_option linter.unusedTactic false
@@ -17,7 +17,7 @@ open CGD.Axioms CGD.Foundations Complex Matrix CGD.Gravity BigOperators
 
 set_option linter.unreachableTactic false
 
-namespace CGD.Gravity.RealityFilters
+namespace CGD.Gravity.ExactSolutions
 
 /-!
 # FLRW (Isotropic) Reality Filter
@@ -1294,4 +1294,4 @@ theorem flrw_satisfies_reality (pu : PhysicalUniverse) (h_typeO : IsTypeOForm pu
   
   exact ⟨h_im_zero, h_signs.2, h_signs.1⟩
 
-end CGD.Gravity.RealityFilters
+end CGD.Gravity.ExactSolutions

@@ -1,11 +1,11 @@
--- FILENAME: CGD/Gravity/RealityFilters/AlgebraicForms.lean
+-- FILENAME: CGD/Gravity/ExactSolutions/AlgebraicForms.lean
 
 import CGD.Axioms.PhysicalUniverse
 import CGD.Foundations.Calculus
 
 open CGD.Axioms CGD.Foundations Complex Matrix
 
-namespace CGD.Gravity.RealityFilters
+namespace CGD.Gravity.ExactSolutions
 
 /--
 Type O (Isotropic / FLRW Cosmological Vacuum)
@@ -87,4 +87,4 @@ def IsTypeIForm (pu : PhysicalUniverse) : Prop :=
   ∃ A : Fin 4 → SpacetimePoint → SL2C, ∀ x : SpacetimePoint, ∀ μ : Fin 4,
     pu.toUniverse.sd_sector.val μ x = A μ x
 
-end CGD.Gravity.RealityFilters
+end CGD.Gravity.ExactSolutions
