@@ -27,16 +27,17 @@ def IsTypeOForm (pu : PhysicalUniverse) : Prop :=
 
 /--
 Type N (Nilpotent / Gravitational pp-waves)
-Algebraic Form: A_μ = A^(vac)_μ + f(t-z) v_μ (σ_x + iσ_y)
+Algebraic Form: A_μ = A^(vac)_μ + f(t-z) k_μ (σ_x + iσ_y)
 Embedded over the Type O axial condensate to prevent macroscopic volume degeneracy.
+The wave strictly propagates along the null vector k = (1, 0, 0, -1).
 -/
 def IsTypeNForm (pu : PhysicalUniverse) : Prop :=
-  ∃ a f : ℝ → ℂ, ∃ v : Fin 4 → ℂ, ∀ x : SpacetimePoint,
+  ∃ a : ℝ → ℂ, ∃ f : ℝ → ℝ, ∀ x : SpacetimePoint,
     (a (x 0)).im = 0 ∧ (fderiv ℝ a (x 0) 1).im = 0 ∧ a (x 0) ≠ 0 ∧ fderiv ℝ a (x 0) 1 ≠ 0 ∧
-    pu.toUniverse.sd_sector.val 0 x = toSl2c ((f (x 0 - x 3) * v 0) • (sigma1.val + Complex.I • sigma2.val)) ∧
-    pu.toUniverse.sd_sector.val 1 x = toSl2c (a (x 0) • sigma1.val + (f (x 0 - x 3) * v 1) • (sigma1.val + Complex.I • sigma2.val)) ∧
-    pu.toUniverse.sd_sector.val 2 x = toSl2c (a (x 0) • sigma2.val + (f (x 0 - x 3) * v 2) • (sigma1.val + Complex.I • sigma2.val)) ∧
-    pu.toUniverse.sd_sector.val 3 x = toSl2c (a (x 0) • sigma3.val + (f (x 0 - x 3) * v 3) • (sigma1.val + Complex.I • sigma2.val))
+    pu.toUniverse.sd_sector.val 0 x = toSl2c ((f (x 0 - x 3) : ℂ) • (sigma1.val + Complex.I • sigma2.val)) ∧
+    pu.toUniverse.sd_sector.val 1 x = toSl2c (a (x 0) • sigma1.val) ∧
+    pu.toUniverse.sd_sector.val 2 x = toSl2c (a (x 0) • sigma2.val) ∧
+    pu.toUniverse.sd_sector.val 3 x = toSl2c (a (x 0) • sigma3.val - (f (x 0 - x 3) : ℂ) • (sigma1.val + Complex.I • sigma2.val))
 
 /--
 Type D (Kerr-Schild / Isolated Mass Defect / Black Hole)
