@@ -66,12 +66,11 @@ lemma metric_inv_symm (g : Matrix (Fin 4) (Fin 4) ℂ) (hSymm : ∀ i j, g i j =
 noncomputable def bulkDeriv (pu : PhysicalUniverse) (mu : Fin 4) (f : pu.bulk → ℂ) (x : pu.bulk) : ℂ :=
   partialDeriv mu (fun p => if h : p ∈ pu.bulk then f ⟨p, h⟩ else 0) x.val
 
-Litlib.theorem
-  description "Emergent Stress-Energy Conservation"
 /-- 
 The emergent Stress-Energy tensor (defined as the Einstein tensor of the dynamically emergent Urbantke metric) is covariantly conserved with respect to its own Levi-Civita connection.
 This fundamentally restricts the conservation to the macroscopic bulk where det g ≠ 0.
 -/
+@[litlib_track "Emergent Stress-Energy Conservation"]
 theorem emergentStressEnergyConservation
   (pu : PhysicalUniverse)
   (isSmooth : (pu.bulk → ℂ) → Prop)

@@ -134,11 +134,10 @@ lemma math_su2_commutator_squared_trace (A B : Matrix (Fin 2) (Fin 2) ℂ) (hA :
   have hC_eq_0 := c_eq_zero_of_trace_sq_zero _ hC_su2.1 hC_su2.2 hZ
   exact hNz hC_eq_0
 
-Litlib.theorem
-  description "Anti-Self-Dual Matter Trace Constraint"
 /-- 
 This theorem proves that non-commuting SU(2) fields (which correspond to non-trivial matter) natively expand into non-zero topological density traces without needing a background metric.
 -/
+@[litlib_track "Anti-Self-Dual Matter Trace Constraint"]
 theorem kinematicSIDMTrace (pu : PhysicalUniverse)
   (x : SpacetimePoint) (μ ν : Fin 4)
   (h_anti_self_dual_su2 : ∀ m p, isSu2 (pu.toUniverse.asd_sector m p).val)

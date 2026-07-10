@@ -137,11 +137,10 @@ lemma uniqueness_master_lemma
 variable [ue : Litlib.Y1956.utiyama1956invariant.AppendixI_Expansion.{0}]
 variable [bi : Litlib.Y1956.utiyama1956invariant.AppendixI_BilinearForm.{0}]
 
-Litlib.theorem
-  description "Topological Lagrangian Uniqueness"
 /-- 
 The fully antisymmetric Pontryagin topological density is mathematically the unique quadratic, gauge-invariant Lagrangian density that can be constructed without a pre-existing background metric.
 -/
+@[litlib_track "Topological Lagrangian Uniqueness"]
 theorem topologicalLagrangianUniqueness 
   (L : ((Fin 4 → Fin 4 → ChiralM) → Complex))
   (h_inv : ∀ F U, (∀ μ ν, isSpin4cAlgebra (F μ ν)) → 

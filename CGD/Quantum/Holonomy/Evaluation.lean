@@ -19,15 +19,13 @@ noncomputable def obs_M (alpha : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
   let R_inv := Matrix.of ![![Complex.cos (alpha/2), Complex.sin (alpha/2)], ![-Complex.sin (alpha/2), Complex.cos (alpha/2)]]
   R * sigma3.val * R_inv
 
-Litlib.definition
-  description "Geometric Holonomy"
+@[litlib_track "Geometric Holonomy"]
 -- NATIVE EVALUATION: The exact path-ordered exponential for a constant field
 noncomputable def holonomy (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
   (A : ℝ → Matrix (Fin 2) (Fin 2) ℂ) (t0 t1 : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
   matrixExp ((t1 - t0 : ℂ) • A t0)
 
-Litlib.definition
-  description "Macroscopic Observable"
+@[litlib_track "Macroscopic Observable"]
 noncomputable def macroscopicObservable 
   (holonomy : (ℝ → Matrix (Fin 2) (Fin 2) ℂ) → ℝ → ℝ → Matrix (Fin 2) (Fin 2) ℂ)
   (A : Fin 4 → SpacetimePoint → SL2C) 
@@ -116,14 +114,13 @@ lemma fluxTubeFrame_one_val (t : ℝ) : (fluxTubeFrame 1 (straightLinePath t)).v
     simp [toSl2c, sigma3, sigmaZ, mkMat, Matrix.trace, Matrix.diag, Matrix.smul_apply, h_sum2] 
   }
 
-Litlib.theorem
-  description "Macroscopic Spin State Witness"
 /--
 Evaluates the path-ordered integral of the exact `fluxTubeFrame` spatial gauge connection witness. 
 This explicitly demonstrates that evaluating an SU(2) holonomy natively maps geometric 
 parameters directly to the trigonometric coefficients of standard quantum state vectors, 
 proving that the geometry can natively reproduce quantum observables.
 -/
+@[litlib_track "Macroscopic Spin State Witness"]
 theorem fluxTubeHolonomyEvaluation
   (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
   [DerivativeExponential (Fin 2) matrixExp]

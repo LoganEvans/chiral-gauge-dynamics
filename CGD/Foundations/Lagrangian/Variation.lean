@@ -101,8 +101,6 @@ lemma deriv_action (v : ℝ → PhysicalUniverse) (t : ℝ)
   unfold complexVolumeIntegral
   exact lr.leibniz_commute t
 
-Litlib.theorem
-  description "Topological Action Variation"
 /-- 
 The Capstone Theorem. 
 Because the action is the topological Pontryagin density, its functional variation with respect 
@@ -110,6 +108,7 @@ to compactly supported, smooth gauge field perturbations is identically zero.
 This proves strictly that every continuous non-degenerate configuration is an exact vacuum state, 
 mandating that macroscopic spacetime strictly emerges from local matter topological defects.
 -/
+@[litlib_track "Topological Action Variation"]
 theorem topologicalActionVariationZero 
   (v : ℝ → PhysicalUniverse)
   [dt : Litlib.Y1965.spivak1965calculus.DivergenceTheoremR4Compact (fun x mu => variationCurrent v 0 mu x)]

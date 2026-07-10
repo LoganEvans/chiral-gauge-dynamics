@@ -210,8 +210,6 @@ theorem mathBianchiIdentity
   simp only [h_val_add, h_val_sub, h_val_br, h_val_zero, mul_add, add_mul, mul_sub, sub_mul, Matrix.mul_assoc]
   abel
 
-Litlib.theorem
-  description "Kinematic Bianchi Identity"
 /--
 The Differential Bianchi Identity.
 D_ρ F_μν + D_μ F_νρ + D_ν F_ρμ = 0
@@ -225,6 +223,7 @@ This theorem automatically proves all 14 required calculus differentiability
 bounds by natively resolving them against the `is_smooth` foundational axiom 
 of the generic smooth background gauge field.
 -/
+@[litlib_track "Kinematic Bianchi Identity"]
 theorem kinematicBianchiIdentity
   [clairaut : Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional]
   (A : CGD.Axioms.Sl2cGaugeField) (ρ μ ν : Fin 4) (x : SpacetimePoint) :

@@ -13,16 +13,13 @@ set_option linter.unusedSimpArgs false
 
 namespace CGD.Quantum.Holonomy
 
-Litlib.definition
-  description "Unitary Time Evolution Operator"
 /-- Standard quantum mechanical time-evolution operator U(t) = exp(-i H t) -/
+@[litlib_track "Unitary Time Evolution Operator"]
 noncomputable def unitaryTimeEvolution 
   (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
   (Hamiltonian : Matrix (Fin 2) (Fin 2) ℂ) (t : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
   matrixExp ((-Complex.I * (t : ℂ)) • Hamiltonian)
 
-Litlib.theorem
-  description "Witness for Relational Time Emergence"
 /--
 Using an exact analytical witness representing the U(1) core of a topological defect 
 (`Complex.I • sigmaZ`), this theorem demonstrates that computing the geometric holonomy 
@@ -33,6 +30,7 @@ This proves that traversal along a defect's internal spatial phase space can phy
 manifest as the passage of time, demonstrating that relational geometric phase 
 mathematically satisfies the role of time evolution.
 -/
+@[litlib_track "Witness for Relational Time Emergence"]
 theorem relationalTimeEmergence
   (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
   (pu : PhysicalUniverse) 

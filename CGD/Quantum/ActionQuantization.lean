@@ -19,13 +19,12 @@ open CGD.Axioms Litlib.Y2003.nakahara2003geometry Litlib.Y1975.belavin1975pseudo
 
 namespace CGD.Quantum
 
-Litlib.theorem
-  description "Topological Action Quantization"
 /-- 
 If a physical connection yields an asymptotic boundary map that is a topological homeomorphism to the gauge group, its Cartan-Maurer topological charge strictly evaluates to an integer quantization bound (±1).
 
 Here we explicitly invoke the Nakahara (2003) Cartan-Maurer degree theorem and the Belavin (1975) topological bounds.
 -/
+@[litlib_track "Topological Action Quantization"]
 theorem kinematicActionQuantization
   {BoundaryManifold : Type*} [TopologicalSpace BoundaryManifold] [Nonempty BoundaryManifold]
   (boundaryMap : (Fin 4 → SpacetimePoint → SL2C) → BoundaryManifold → SU2Group)

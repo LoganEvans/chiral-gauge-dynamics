@@ -18,14 +18,13 @@ open Topology CGD.Axioms Litlib.Y1951.papapetrou1951spinning
 
 namespace CGD.Gravity
 
-Litlib.theorem
-  description "Machian Motion of Topological Defects"
 /--
 Using the rigorous Papapetrou (1951) theorem, we prove that a localized topological defect 
 (a single-pole singularity in the gauge curvature) must travel along a complex geodesic of the 
 dynamically emergent Urbantke geometry. This natively utilizes the exact complex covariant 
 conservation of the emergent Stress-Energy tensor, evaluating strictly inside the macroscopic bulk.
 -/
+@[litlib_track "Machian Motion of Topological Defects"]
 theorem machianTopologicalDefectMotion
   (pu : PhysicalUniverse)
   (isSmooth : (pu.bulk → ℂ) → Prop)

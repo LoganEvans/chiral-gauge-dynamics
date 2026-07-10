@@ -133,13 +133,12 @@ lemma ricci_locality_open (g1 g2 : Fin 4 → Fin 4 → SpacetimePoint → ℂ) (
 -- MAIN THEOREMS
 -- ==========================================
 
-Litlib.theorem
-  description "Macroscopic Unimodular Vacuum Emergence"
 /--
 In the Capovilla formulation, the Unimodular constraint is governed by the scalar density μ. 
 This theorem rigorously applies the literature identity to prove that the fundamental volume element 
 of the emergent spacetime metric (sqrt_g) squared is strictly equal to the Unimodular multiplier μ squared.
 -/
+@[litlib_track "Macroscopic Unimodular Vacuum Emergence"]
 theorem macroscopicVacuumEmergence 
   (pu : PhysicalUniverse)
   (sqrt_g mu eta : SpacetimePoint → ℂ)
@@ -149,11 +148,10 @@ theorem macroscopicVacuumEmergence
   intro x _
   exact vol_id.volume_element_identity x
 
-Litlib.theorem
-  description "Macroscopic Ricci-Flat Emergence"
 /--
 A parallel theorem for the pure GR vacuum limit ($\Lambda = 0$) evaluated on the open bulk manifold subspace outside a topological defect. Because the domain is open, the mapping is mathematically exact for local derivatives.
 -/
+@[litlib_track "Macroscopic Ricci-Flat Emergence"]
 theorem macroscopicRicciFlatEmergence
   (pu : PhysicalUniverse)
   (urbantke_tetrad : TetradField)

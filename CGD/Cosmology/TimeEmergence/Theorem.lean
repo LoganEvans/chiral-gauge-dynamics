@@ -103,11 +103,10 @@ lemma math_TimeIsChiralPhase_det (F : Fin 4 → Fin 4 → SL2C)
   have h_pos : 0 ≤ c.re^4 := Even.pow_nonneg h_even c.re
   linarith
 
-Litlib.theorem
-  description "Time Emergence via Symmetry Breaking"
 /--
 A fully 4D symmetric field tensor naturally yields a metric with a Euclidean or degenerate signature, forbidding the unique odd-sign axis required for a Lorentzian signature. Therefore, the Lorentzian time dimension emerges geometrically only when the gauge field spontaneously breaks 4D Euclidean (SO(4)) symmetry.
 -/
+@[litlib_track "Time Emergence via Symmetry Breaking"]
 theorem kinematicTimeEmergence (pu : PhysicalUniverse) (phaseRegion : Set SpacetimePoint)
   (h_symm : ∀ x ∈ phaseRegion, isFully4DSymmetric (fun mu nu => curvatureSl2c pu.toUniverse.sd_sector mu nu x)) :
   ∀ x ∈ phaseRegion,

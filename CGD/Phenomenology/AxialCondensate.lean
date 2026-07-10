@@ -34,12 +34,11 @@ spacetime manifold by swapping the Chiral left (self-dual) and right (anti-self-
 noncomputable def paritySwap (u : Universe) : Universe :=
   universeEquiv.symm (u.asd_sector, u.sd_sector)
 
-Litlib.theorem
-  description "Axial Is Parity Odd"
 /--
 Proves that the Axial field behaves strictly as a pseudo-vector (parity-odd). 
 When the geometry is parity-inverted, the Axial field exactly flips its algebraic sign.
 -/
+@[litlib_track "Axial Is Parity Odd"]
 theorem axialIsParityOdd (pu : PhysicalUniverse) (mu : Fin 4) (x : SpacetimePoint) :
   axialField (paritySwap pu.toUniverse) mu x = - axialField pu.toUniverse mu x := by
   unfold axialField paritySwap
@@ -59,13 +58,12 @@ theorem axialIsParityOdd (pu : PhysicalUniverse) (mu : Fin 4) (x : SpacetimePoin
   simp only [Matrix.smul_apply, Matrix.sub_apply, Matrix.neg_apply, smul_eq_mul]
   ring
 
-Litlib.theorem
-  description "Axial Is Isovector"
 /--
 Proves that the Axial field is strictly an isovector (isospin 1).
 It inherits the exact traceless property of the SL(2,C) algebra constituents,
 confining it to the adjoint representation of the SU(2) color group.
 -/
+@[litlib_track "Axial Is Isovector"]
 theorem axialIsIsovector (pu : PhysicalUniverse) (mu : Fin 4) (x : SpacetimePoint) :
   Matrix.trace (axialField pu.toUniverse mu x) = 0 := by
   unfold axialField
@@ -77,14 +75,13 @@ theorem axialIsIsovector (pu : PhysicalUniverse) (mu : Fin 4) (x : SpacetimePoin
   rw [h_sd, h_asd]
   simp only [sub_self, smul_zero]
 
-Litlib.theorem
-  description "Macroscopic Volume Implies Axial Condensate"
 /--
 Because the macroscopic volume emergent metric strictly forbids global chiral symmetry 
 (via `macroscopicVolumeImpliesChirality`), this mathematically guarantees that the spacetime 
 background is natively populated by a strictly non-zero Axial-Vector condensate. Empty 
 space spontaneously generates the axial field to preserve its volume.
 -/
+@[litlib_track "Macroscopic Volume Implies Axial Condensate"]
 theorem macroscopicVolumeImpliesAxialCondensate 
   (pu : PhysicalUniverse) (x : SpacetimePoint) (hx : x ∈ pu.bulk)
   (h_vacuum : ∀ μ ν, curvatureSl2c pu.toUniverse.asd_sector.val μ ν x = 0) :
@@ -112,8 +109,6 @@ theorem macroscopicVolumeImpliesAxialCondensate
   -- 4. A globally symmetric universe contradicts the macroscopic volume constraint
   exact h_chiral h_eq
 
-Litlib.theorem
-  description "Kinematic Left-Handed Coupling"
 /--
 Proves that the Left-Handed (Self-Dual) gauge connection, which natively couples to 
 left-handed fermions (such as neutrinos) in the chiral Dirac framework, perfectly 
@@ -124,6 +119,7 @@ axial condensate as a refractive background. Because this interaction occurs pur
 at the level of the connection (zero Plebanski curvature), it geometrically derives 
 kinematic flavor oscillation (the MSW effect) without generating gravitational rest mass.
 -/
+@[litlib_track "Kinematic Left-Handed Coupling"]
 theorem kinematicLeftHandedCoupling (pu : PhysicalUniverse) (mu : Fin 4) (x : SpacetimePoint) :
   (pu.toUniverse.sd_sector mu x).val = vectorField pu.toUniverse mu x + axialField pu.toUniverse mu x := by
   unfold vectorField axialField
@@ -134,14 +130,13 @@ theorem kinematicLeftHandedCoupling (pu : PhysicalUniverse) (mu : Fin 4) (x : Sp
             (pu.toUniverse.sd_sector mu x).val i j := by ring
   exact h1.symm
 
-Litlib.theorem
-  description "Kinematic Right-Handed Coupling"
 /--
 Proves that the Right-Handed (Anti-Self-Dual) gauge connection decomposes into the 
 symmetric Vector background minus the P-violating Axial condensate. The sign flip 
 relative to the Left-Handed sector strictly defines the geometric parity asymmetry 
 of the chiral spacetime vacuum.
 -/
+@[litlib_track "Kinematic Right-Handed Coupling"]
 theorem kinematicRightHandedCoupling (pu : PhysicalUniverse) (mu : Fin 4) (x : SpacetimePoint) :
   (pu.toUniverse.asd_sector mu x).val = vectorField pu.toUniverse mu x - axialField pu.toUniverse mu x := by
   unfold vectorField axialField
@@ -159,8 +154,6 @@ Represented abstractly for a matrix-valued state `Psi` and its bare partial deri
 noncomputable def covariantStateDeriv (partial_Psi : Matrix (Fin 2) (Fin 2) ℂ) (A : Matrix (Fin 2) (Fin 2) ℂ) (Psi : Matrix (Fin 2) (Fin 2) ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
   partial_Psi + A * Psi
 
-Litlib.theorem
-  description "Kinematic Left-Handed Phase Shift"
 /--
 Proves that the covariant derivative of a state under the Left-Handed (Self-Dual) 
 connection mathematically evaluates to the bare partial derivative, plus the 
@@ -171,6 +164,7 @@ This formalizes the algebraic substitution allowing the paper to definitively cl
 that left-handed fermions actively interact with the axial condensate in the 
 covariant Dirac equation.
 -/
+@[litlib_track "Kinematic Left-Handed Phase Shift"]
 theorem kinematicLeftHandedPhaseShift (pu : PhysicalUniverse) (mu : Fin 4) (x : SpacetimePoint) 
   (Psi partial_Psi : Matrix (Fin 2) (Fin 2) ℂ) :
   covariantStateDeriv partial_Psi (pu.toUniverse.sd_sector mu x).val Psi = 

@@ -17,11 +17,10 @@ open CGD.Axioms CGD.Foundations
 
 namespace CGD.Cosmology
 
-Litlib.theorem
-  description "Big Bang Singularity Resolution (Euclidean Bounce)"
 /--
 By enforcing a topological initial condition, the Big Bang manifests as a pure Euclidean SO(4) instanton rather than a mathematical singularity. Provided the bouncing instanton is topologically non-degenerate (metric determinant is non-zero), it forms a strictly non-zero, macroscopic Euclidean scale state.
 -/
+@[litlib_track "Big Bang Singularity Resolution (Euclidean Bounce)"]
 theorem kinematicBigBang (pu : PhysicalUniverse) (phaseRegion : Set SpacetimePoint)
   (h_subset : phaseRegion ⊆ pu.bulk)
   (h_symm : ∀ x ∈ phaseRegion, isFully4DSymmetric (fun mu nu => curvatureSl2c pu.toUniverse.sd_sector mu nu x)) :
@@ -96,11 +95,10 @@ lemma det_zero_of_row_zero (M : Matrix (Fin 4) (Fin 4) Complex)
   rw [h_prod]
   exact smul_zero _
 
-Litlib.theorem
-  description "Static Universe Degeneracy"
 /--
 In pure connection gravity, 4D spacetime volume geometrically requires time-evolution. A completely static universe (where electric/temporal components of the field strength are zero) cannot sustain a macroscopic 4D metric and topologically collapses, forcing the metric determinant to zero.
 -/
+@[litlib_track "Static Universe Degeneracy"]
 theorem kinematicStaticUniverseDegeneracy (pu : PhysicalUniverse) :
   isStaticUniverse pu.toUniverse →
   ∀ x, (urbantkeMetric (fun mu nu => curvatureSl2c pu.toUniverse.sd_sector mu nu x)).det = 0 := by

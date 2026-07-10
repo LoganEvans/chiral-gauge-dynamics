@@ -40,9 +40,8 @@ lemma commutator_is_su2 (M N : Matrix (Fin 2) (Fin 2) ℂ) (hM : isSu2 M) (hN : 
     simp only [neg_mul_neg]
     exact neg_sub (M * N) (N * M) |>.symm
 
-Litlib.theorem
-  description "Emergent Dark Matter Profile"
 /-- A pure non-Abelian defect mathematically requires inertial mass > 0, and guarantees a strictly non-zero self-interaction topological density. -/
+@[litlib_track "Emergent Dark Matter Profile"]
 theorem emergentDarkMatterProfile (pu : PhysicalUniverse) :
   ∀ (x : SpacetimePoint),
   (∀ μ p, isSu2 (pu.toUniverse.asd_sector.val μ p).val) →

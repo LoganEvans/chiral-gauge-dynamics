@@ -157,13 +157,12 @@ lemma partialDeriv_comm_real
   rw [hr2, hr1] at hc_clairaut
   exact hc_clairaut
 
-Litlib.theorem
-  description "Topological Charge Conservation"
 /--
 Because the emergent current is purely topological (defined via the Levi-Civita symbol),
 its divergence strictly vanishes due to the commutativity of partial derivatives,
 justified natively via n-dimensional Clairaut theorem on the Abelian field strength.
 -/
+@[litlib_track "Topological Charge Conservation"]
 theorem topologicalChargeConservation 
   [clairaut : Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional]
   (F : Fin 4 → Fin 4 → SpacetimePoint → ℂ)
@@ -415,13 +414,12 @@ lemma diff_fderiv_im_afs (pu : PhysicalUniverse) (i j μ ν : Fin 4) (x : Spacet
   have h_diff := ContDiff.differentiable h_fderiv hn
   exact h_diff x
 
-Litlib.theorem
-  description "Kinematic Charge Conservation"
 /-- 
 Because the physical Universe is axiomatically a smooth Spin(4,C) connection, 
 its emergent Abelian projection natively satisfies the n-dimensional Clairaut theorem, 
 guaranteeing exact topological charge conservation without further assumptions.
 -/
+@[litlib_track "Kinematic Charge Conservation"]
 theorem kinematicChargeConservation 
   [clairaut : Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional]
   (pu : PhysicalUniverse) (i j : Fin 4) :

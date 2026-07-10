@@ -134,12 +134,11 @@ lemma curvature_const_supp (c : ℂ) (μ ν : Fin 4) :
   · right; right; exact h2
   · left; rfl
 
-Litlib.theorem
-  description "Exact Abelian Macroscopic Solution"
 /--
 Provides an exact analytical solution for an Abelian plane wave satisfying the pure CDJ 
 constraint equation (F ∧ F = 0).
 -/
+@[litlib_track "Exact Abelian Macroscopic Solution"]
 theorem dynamicExactAbelianSolution (c : ℂ) (hc : c ≠ 0) :
   ∃ (u : Universe), 
     CGD.Gravity.satisfiesPureCdjConstraint (fun p m n => cgdAdjointCurvature u m n p) ∧ 

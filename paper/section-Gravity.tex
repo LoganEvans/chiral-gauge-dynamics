@@ -61,12 +61,12 @@ The original motivation to introduce the new variables was that for the quantiza
 \end{quote}
 \noindent \citeauthor{thiemann2007modern} continued to explain why the compromise of the reality conditions made it so that any attempt at canonical quantization would require breaking background independence. However, in CGD, we do not attempt to perform canonical quantization. This issue is the exact fork in the road where CGD takes a different path from loop-quantum-gravity.
 
-Since we are using one of the two \slTwoC chiral halves of \spinFourC, we must show that despite this field being defined using complex numbers, a real Lorentzian metric metric natively emerges without imposing the ``unwieldy'' reality conditions manually. We begin by using a linear-in-coordinates $\mathfrak{sl}(2, \mathbb{C})$ ansatz:
+Since we are using one of the two \slTwoC chiral halves of \spinFourC, we must show that despite this field being defined using complex numbers, a real Lorentzian metric natively emerges without imposing the ``unwieldy'' reality conditions manually. We begin by using a linear-in-coordinates $\mathfrak{sl}(2, \mathbb{C})$ ansatz:
 \begin{align}
-    A_0(x) &= 0 \nonumber \\
-    A_1(x) &= -x^0 \sigma_x + x^3 \frac{i}{2} \sigma_y - x^2 \frac{i}{2} \sigma_z \nonumber \\
-    A_2(x) &= -x^0 \sigma_y + x^1 \frac{i}{2} \sigma_z - x^3 \frac{i}{2} \sigma_x \\
-    A_3(x) &= -x^0 \sigma_z + x^2 \frac{i}{2} \sigma_x - x^1 \frac{i}{2} \sigma_y \quad \leanref{CGD.Gravity.exactLorentzianL} \nonumber \nonumber
+    \mathcal{A}_0(x) &= 0 \nonumber \\
+    \mathcal{A}_1(x) &= -x^0 \sigma_x + x^3 \frac{i}{2} \sigma_y - x^2 \frac{i}{2} \sigma_z \nonumber \\
+    \mathcal{A}_2(x) &= -x^0 \sigma_y + x^1 \frac{i}{2} \sigma_z - x^3 \frac{i}{2} \sigma_x \label{eq:exactLorentzianL} \\
+    \mathcal{A}_3(x) &= -x^0 \sigma_z + x^2 \frac{i}{2} \sigma_x - x^1 \frac{i}{2} \sigma_y \quad \leanref{CGD.Gravity.exactLorentzianL} \nonumber
 \end{align}
 
 In order to test if this configuration satisfies the geometric constraints, we evaluate the strength tensor (curvature) at the origin ($x = 0$). Once we take the gauge-covariant derivative, we obtain a complex-valued curvature tensor. By evaluating the temporal and spatial components, we obtain:
@@ -77,19 +77,69 @@ In order to test if this configuration satisfies the geometric constraints, we e
 
 Next, we check this against the trace-free algebraic constraints \cite{capovilla1991pure}. By evaluating the sum over the Levi-Civita symbol, we obtain a matrix that is proportional to the identity matrix, meaning that its trace-free part is exactly zero:
 \begin{equation}
-    \Sigma = \epsilon^{\mu\nu\rho\sigma} F_{\mu\nu} F_{\rho\sigma} = 16i \cdot \mathbb{I}_{3\times3} \implies \Sigma - \frac{1}{3}\text{Tr}(\Sigma)\mathbb{I} = 0 .
+    \Sigma = \epsilon^{\mu\nu\rho\sigma} F_{\mu\nu} F_{\rho\sigma} = 16i \cdot \mathbb{I}_{3\times3} \implies \Sigma - \frac{1}{3}\mathrm{Tr}(\Sigma)\mathbb{I} = 0 .
     \quad \leanref{CGD.Gravity.CDJ_constraint_holds}
 \end{equation}
 
 Since this curvature is valid, we next map it through the Urbantke metric and obtain
 \begin{equation}
-    g_{\mu\nu}\big|_{x=0} = \text{diag}(-12, 12, 12, 12), \quad \det(g_{\mu\nu}) = -20736 < 0
+    g_{\mu\nu}\big|_{x=0} = \mathrm{diag}(-12, 12, 12, 12), \quad \det(g_{\mu\nu}) = -20736 < 0
     \quad \leanref{CGD.Gravity.dynamicExactLorentzianSolution}
     \label{eq:dynamicExactLorentzianSolution}
 \end{equation}
 \noindent This demonstrates that the metric possesses a $(-1, 1, 1, 1)$ Lorentzian signature.
 
+\todo{Author: Transition from the linear witness to the exact cosmological solutions. 
+\begin{itemize}
+    \item Frame the previous linear ansatz (Eq \ref{eq:exactLorentzianL}) as a localized toy model of a completely ``empty'' universe (meaning a pure vacuum devoid of topological defects).
+    \item State that we must now test if CGD can produce globally relevant physics, specifically an isotropic expanding universe (FLRW).
+    \item Introduce the Type O (Isotropic) gauge configuration algebraically.
+\end{itemize}
+}
+
+\begin{equation}
+    \mathcal{A}_0(x) = 0, \quad \mathcal{A}_j(x) = a(x^0) \sigma_j 
+    \quad \leanref{CGD.Gravity.ExactSolutions.IsTypeOForm}
+\end{equation}
+
+\todo{Author: Explain the physical significance of the scale factor $a(t)$. Mention that as long as $a(t)$ is strictly real and non-static ($\partial_t a(t) \neq 0$), the metric remains non-degenerate. Then, introduce the resulting capstone theorem: this topology intrinsically satisfies the historically problematic reality conditions without any non-polynomial reality assumptions.}
+
+\begin{equation}
+    \text{FLRW Type O} \implies \text{Strictly Real, Lorentzian } (\det(g_{\mu\nu}) < 0)
+    \quad \leanref{CGD.Gravity.ExactSolutions.flrw_satisfies_reality}
+\end{equation}
+
+\todo{Author: Pivot to the Singularity Crisis.
+\begin{itemize}
+    \item Note that standard General Relativity inevitably leads to singularities (e.g., Big Bang, black holes) where the metric breaks down.
+    \item Explain that in CGD, because particles/matter are topological defects (Solitons) in the gauge field rather than point masses, the geometry behaves differently.
+    \item Introduce the \texttt{dynamicExactSolitonSolution}. Explain that we have found a continuous \spinFourC gauge profile that generates a perfect macroscopic Ricci-Flat vacuum while maintaining a strictly non-degenerate Lorentzian metric.
+\end{itemize}
+}
+
+\begin{equation}
+    K_c(x) = \frac{-1}{(x^1)^2 + (x^2)^2 + (x^3)^2 + 2} \quad \leanref{CGD.Gravity.ExactSolutions.solitonK}
+\end{equation}
+\begin{align}
+    \mathcal{A}_0(x) &= 0 \nonumber \\
+    \mathcal{A}_1(x) &= -x^0 \sigma_x - K_c x^3 (i \sigma_y) + K_c x^2 (i \sigma_z) \nonumber \\
+    \mathcal{A}_2(x) &= K_c x^3 (i \sigma_x) - x^0 \sigma_y - K_c x^1 (i \sigma_z) \label{eq:solitonAnsatz} \\
+    \mathcal{A}_3(x) &= -K_c x^2 (i \sigma_x) + K_c x^1 (i \sigma_y) - x^0 \sigma_z \quad \leanref{CGD.Gravity.ExactSolutions.solitonAnsatzVal} \nonumber
+\end{align}
+
+\begin{align}
+    \Sigma - \frac{1}{3}\mathrm{Tr}(\Sigma)\mathbb{I} &= 0 \nonumber \\
+    \det(g_{\mu\nu}(x)) &< 0 \quad \leanref{CGD.Gravity.ExactSolutions.dynamicExactSolitonSolution}
+\end{align}
+
+\todo{Author: Conclude Section III. Adapt the paragraphs below into a summary of what we've achieved here:
+\begin{itemize}
+    \item We didn't just find a trivial vacuum; we found exact analytic solutions for FLRW expansion and non-singular solitons.
+    \item Emphasize that these bypass the traditional reality conditions that stalled pure connection gravity in the 1990s.
+    \item Segue into Section IV by noting that since we have proven the existence of these stable topological solitons, we must now examine their physical properties as particles.
+\end{itemize}
+}
+
 This shows that a dynamic, causal, and purely real Lorentzian universe mathematically exists within an unquantized \spinFourC universe. It is worth noting that the CGD axioms may allow for an infinite number of geometric solutions, and with our axiom basis, we cannot prove that this one must arise. In Section \ref{sec:Cosmology}, we will explore initial boundary conditions that give rise to this Lorentzian solution, but we will not impose an additional axiom that selects a specific geometry. This is similar to how standard General Relativity handles the issue of the geometry, where Minkowski, Schwarzschild, FLRW, and Kerr metrics provide independent solutions to the geometry.
 
 So far, we have focused only on one of the two \slTwoC chiral halves of \spinFourC that we obtained in Equation \ref{eq:algebraicChiralDecomposition}. In Section \ref{sec:Particles}, we will consider the other chiral half and will see not only how discrete particles emerge from this purely classical field, but how the geometries of the two chiral halves interact with each other.
-

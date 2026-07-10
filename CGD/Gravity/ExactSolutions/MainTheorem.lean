@@ -12,8 +12,6 @@ open CGD.Axioms
 
 namespace CGD.Gravity
 
-Litlib.theorem
-  description "Exact Non-Abelian Lorentzian Macroscopic Witness"
 /--
 This formally constructs an exact analytical non-Abelian $SU(2)$ gauge configuration 
 that simultaneously satisfies the trace-free Capovilla CDJ constraint at the spatial 
@@ -23,6 +21,7 @@ Lorentzian metric (det g < 0) at x = 0.
 This mathematically proves that the foundational vacuum geometry of Chiral Gauge Dynamics 
 is strictly non-vacuous.
 -/
+@[litlib_track "Exact Non-Abelian Lorentzian Macroscopic Witness"]
 theorem dynamicExactLorentzianSolution :
   ∃ (u : Universe) (x : SpacetimePoint), 
     (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,

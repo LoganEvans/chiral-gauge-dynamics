@@ -14,8 +14,6 @@ set_option linter.unusedSimpArgs false
 
 namespace CGD.AntiSelfDualSector
 
-Litlib.theorem
-  description "Topological Collapse of the Anti-Self-Dual Vacuum"
 /--
 Demonstrates the topological collapse of the Anti-Self-Dual vacuum.
 If the ASD sector of the universe remains in the trivial vacuum state (zero gauge field),
@@ -23,6 +21,7 @@ its resulting emergent Urbantke metric mathematically degenerates to a zero dete
 This strictly enforces that macroscopic spacetime can only emerge from non-trivial, 
 non-Abelian gauge condensates, cementing the geometric chirality of the universe.
 -/
+@[litlib_track "Topological Collapse of the Anti-Self-Dual Vacuum"]
 theorem kinematicAsdVacuumDegeneracy (pu : PhysicalUniverse) :
   pu.toUniverse.asd_sector.val = (fun _ _ => (0 : SL2C)) →
   ∀ x, (urbantkeMetric (fun m n => curvatureSl2c pu.toUniverse.asd_sector m n x)).det = 0 := by

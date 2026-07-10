@@ -243,11 +243,10 @@ lemma metric_eq_zero_matrix (F : Fin 4 -> Fin 4 -> SL2C) (h : isSingleColor F) :
   unfold urbantkeMetric
   exact single_color_space_term_zero F h mu nu
 
-Litlib.theorem
-  description "Metric Confinement of Abelian Fields"
 /--
 Demonstrates that the Urbantke metric determinant fundamentally requires non-commuting Lie algebra generators. For an Abelian (single-color) field, the Lie bracket vanishes, algebraically forcing the macroscopic spacetime volume to zero. Physical spacetime geometries therefore require non-Abelian fields (such as multi-color hadrons) to expand into stable configurations, geometrically manifesting color confinement.
 -/
+@[litlib_track "Metric Confinement of Abelian Fields"]
 theorem kinematicSingleColorDegeneracy :
   ∀ (F : Fin 4 → Fin 4 → SL2C),
     isSingleColor F →
@@ -257,11 +256,10 @@ theorem kinematicSingleColorDegeneracy :
   rw[h_zero]
   exact Matrix.det_zero ⟨0⟩
 
-Litlib.theorem
-  description "Kinematic Multi-Color Requirement"
 /--
 Demonstrates that a non-zero macroscopic spacetime volume strictly requires non-Abelian fields.
 -/
+@[litlib_track "Kinematic Multi-Color Requirement"]
 theorem kinematicMultiColorRequirement :
   ∀ (F : Fin 4 → Fin 4 → SL2C),
     (urbantkeMetric F).det ≠ 0 →
@@ -374,11 +372,10 @@ lemma missing_color_metric_eq_zero_matrix (F : Fin 4 -> Fin 4 -> SL2C) (color : 
   unfold urbantkeMetric
   exact missing_color_space_term_zero F color h mu nu
 
-Litlib.theorem
-  description "Geometric Degeneracy of Color-Deficient Fields"
 /--
 Demonstrates that if any of the three internal Lie algebra generators (colors) are missing from the gauge field, the scalar triple product natively vanishes, mathematically forcing the macroscopic spacetime volume to zero. A stable spacetime geometry mathematically requires the interaction of exactly all three SU(2) colors.
 -/
+@[litlib_track "Geometric Degeneracy of Color-Deficient Fields"]
 theorem kinematicColorDeficientDegeneracy :
   ∀ (F : Fin 4 → Fin 4 → SL2C) (color : Fin 3),
     isColorDeficient F color →
@@ -388,11 +385,10 @@ theorem kinematicColorDeficientDegeneracy :
   rw[h_zero]
   exact Matrix.det_zero ⟨0⟩
 
-Litlib.theorem
-  description "Kinematic Three-Color Requirement"
 /--
 Demonstrates that a non-zero macroscopic spacetime volume strictly requires non-Abelian fields spanning exactly three active color generators. One or two colors is mathematically insufficient to sustain spacetime volume, natively bounding the minimum unbroken gauge symmetry required for macroscopic existence.
 -/
+@[litlib_track "Kinematic Three-Color Requirement"]
 theorem kinematicThreeColorRequirement :
   ∀ (F : Fin 4 → Fin 4 → SL2C),
     (urbantkeMetric F).det ≠ 0 →

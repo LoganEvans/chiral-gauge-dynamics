@@ -1226,12 +1226,11 @@ lemma flrw_A_eq (pu : PhysicalUniverse) (a : ℝ → ℂ)
   · change pu.toUniverse.sd_sector.val 3 p = flrw_A a 3 p
     rw [h3 p, flrw_A_eval_3]
 
-Litlib.theorem
-  description "FLRW connections produce real Lorentzian metrics"
 /--
 CAPSTONE THEOREM: FLRW (Isotropic) spacetimes intrinsically satisfy the non-degenerate 
 Lorentzian Reality Conditions natively from the SU(2) topology, requiring no exact scalar field assumptions.
 -/
+@[litlib_track "FLRW connections produce real Lorentzian metrics"]
 theorem flrw_satisfies_reality (pu : PhysicalUniverse) (h_typeO : IsTypeOForm pu) :
   SatisfiesRealityConditions pu := by
   

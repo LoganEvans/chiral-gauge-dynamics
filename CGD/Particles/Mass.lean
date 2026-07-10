@@ -355,9 +355,8 @@ lemma curvature_is_su2 (pu : PhysicalUniverse) (x : SpacetimePoint) (μ ν : Fin
     rw [hd_nu, hd_mu, h_comm]
     ring
 
-Litlib.theorem
-  description "Topological Mass Gap"
 /-- By applying the positive definite trace property to the SU(2) curvature defect, we prove the topological origin of strictly positive inertial mass. -/
+@[litlib_track "Topological Mass Gap"]
 theorem topologicalMassGap (pu : PhysicalUniverse) :
   ∀ (x : SpacetimePoint),
   (∀ μ p, isSu2 (pu.toUniverse.asd_sector.val μ p).val) →

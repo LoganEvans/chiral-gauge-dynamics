@@ -17,11 +17,10 @@ open CGD.Axioms
 
 namespace CGD.Quantum
 
-Litlib.theorem
-  description "Yang-Mills Chaos Bound"
 /--
 Evaluates the chaotic non-linear self-interaction of the homogenous gauge field ansatz.
 -/
+@[litlib_track "Yang-Mills Chaos Bound"]
 theorem kinematicYangMillsChaos :
   ∀ (x : SpacetimePoint),
     Matrix.trace (⁅homogeneousChaosAnsatz 1 x, homogeneousChaosAnsatz 2 x⁆.val *

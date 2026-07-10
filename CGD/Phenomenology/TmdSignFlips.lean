@@ -196,12 +196,11 @@ lemma kinematicTmdRatioAlgebra (c s A B : ℂ) :
   repeat rw [smul_eq_mul]
   ring_nf
 
-Litlib.theorem
-  description "Kinematic Sivers Sign Flip Witness"
 /--
 Evaluating the Sivers observable upon the `fluxTubeFrame` ansatz natively forces an exact geometric sign-flip upon path inversion (L -> -L). 
 While standard perturbative QCD derivations require external factorized gauge links to explain this effect, this theorem acts as an explicit constructive witness demonstrating that the continuous macroscopic gauge geometry intrinsically contains the parity-inverted mechanisms required for the Sivers effect.
 -/
+@[litlib_track "Kinematic Sivers Sign Flip Witness"]
 theorem kinematicSiversSignFlip (pu : CGD.Axioms.PhysicalUniverse) :
   ∀ (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
     [Litlib.Y2000.hall2000elementary.DerivativeExponential (Fin 2) matrixExp]
@@ -220,11 +219,10 @@ theorem kinematicSiversSignFlip (pu : CGD.Axioms.PhysicalUniverse) :
   rw [obs_M_eq alpha]
   exact kinematicSiversAlgebra (Complex.cos ↑L) (Complex.sin ↑L) (obs_M_A alpha) (obs_M_B alpha)
 
-Litlib.theorem
-  description "Kinematic Worm-Gear Sign Flip Witness"
 /--
 Evaluating the Worm-Gear observable upon the `fluxTubeFrame` ansatz establishes that it obeys the exact same geometric sign-flip mechanics as the Sivers effect.
 -/
+@[litlib_track "Kinematic Worm-Gear Sign Flip Witness"]
 theorem kinematicWormGearSignFlip (pu : CGD.Axioms.PhysicalUniverse) :
   ∀ (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
     [Litlib.Y2000.hall2000elementary.DerivativeExponential (Fin 2) matrixExp]
@@ -243,14 +241,13 @@ theorem kinematicWormGearSignFlip (pu : CGD.Axioms.PhysicalUniverse) :
   rw [obs_M_eq alpha]
   exact kinematicWormGearAlgebra (Complex.cos ↑L) (Complex.sin ↑L) (obs_M_A alpha) (obs_M_B alpha)
 
-Litlib.theorem
-  description "Kinematic Sivers and Boer-Mulders Equivalence Witness"
 /-- 
 Proves that when evaluating continuous non-Abelian geometry, the Sivers and Boer-Mulders effects yield topologically identical observables. 
 
 While perturbative QCD treats them as independent non-perturbative functions, phenomenological 
 models (like Large-Nc and lattice QCD) observe strong proportionalities. This witness demonstrates how continuous background geometries intrinsically explain this: the macroscopic SU(2) holonomy is strictly blind to the composite vs. bare nature of the initial state, resolving both to the exact same geometric projection.
 -/
+@[litlib_track "Kinematic Sivers and Boer-Mulders Equivalence Witness"]
 theorem kinematicSiversBoerMuldersEquivalence (pu : CGD.Axioms.PhysicalUniverse) :
   ∀ (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
     [Litlib.Y2000.hall2000elementary.DerivativeExponential (Fin 2) matrixExp]
@@ -264,8 +261,6 @@ theorem kinematicSiversBoerMuldersEquivalence (pu : CGD.Axioms.PhysicalUniverse)
   intros
   rfl
 
-Litlib.theorem
-  description "Topological TMD Geometric Ratio Witness"
 /-- 
 The Topological TMD Geometric Ratio Witness.
 
@@ -277,6 +272,7 @@ Because the observables are defined natively as geometric integrals without any
 collisional momentum variables, this geometric lock demonstrates a framework mechanism where their ratio 
 resolves as a flat kinematic constant (-tan(alpha)), reproducing global supercomputer fits.
 -/
+@[litlib_track "Topological TMD Geometric Ratio Witness"]
 theorem kinematicTmdRatio (pu : CGD.Axioms.PhysicalUniverse) :
   ∀ (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
     [Litlib.Y2000.hall2000elementary.DerivativeExponential (Fin 2) matrixExp]

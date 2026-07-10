@@ -34,8 +34,6 @@ lemma zero_curvature_single_color (F : Fin 4 → Fin 4 → SL2C) (h_zero : ∀ �
 -- THEOREM CAPSTONE
 --------------------------------------------------------------------
 
-Litlib.theorem
-  description "Macroscopic volume must have chirality"
 /--
 Proves that a perfectly symmetric, non-chiral universe mathematically destroys itself.
 
@@ -45,6 +43,7 @@ extinguished. A zero gravity curvature generates a zero Urbantke metric, which a
 forces det(g) = 0. This strictly violates the Macroscopic Volume axiom. 
 Therefore, empty space must be chiral.
 -/
+@[litlib_track "Macroscopic volume must have chirality"]
 theorem macroscopicVolumeImpliesChirality 
   (pu : PhysicalUniverse) 
   (x : SpacetimePoint) 

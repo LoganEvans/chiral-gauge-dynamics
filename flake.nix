@@ -75,6 +75,8 @@
             scipy
             sympy
             matplotlib
+            jax
+            optax
 
             # Utils & Formatting
             black

@@ -24,14 +24,13 @@ lemma embed_mul_eq_zero (L R : SL2C) : embedSelfDual L * embedAntiSelfDual R = 0
   intro k _
   cases chiralIso.symm i <;> cases chiralIso.symm j <;> cases chiralIso.symm k <;> simp
 
-Litlib.theorem
-  description "Algebraic Chiral Orthogonalization"
 /--
 Demonstrates that the self-dual and anti-self-dual spin connection components 
 natively mathematically decouple under the geometric trace metric because their 
 underlying 4x4 matrix embeddings occupy perfectly disjoint sub-blocks. 
 The geometry requires no artificial truncation to separate chiral sectors.
 -/
+@[litlib_track "Algebraic Chiral Orthogonalization"]
 theorem algebraicChiralOrthogonalization (pu : PhysicalUniverse) (x : SpacetimePoint) (μ ν ρ σ : Fin 4) :
   Matrix.trace (embedSelfDual (CGD.Foundations.curvatureSl2c pu.toUniverse.sd_sector μ ν x) * 
                 embedAntiSelfDual (CGD.Foundations.curvatureSl2c pu.toUniverse.asd_sector ρ σ x)) = 0 := by
@@ -51,13 +50,12 @@ lemma star_sin_real (x : ℝ) : star (Complex.sin (x:ℂ)) = Complex.sin (x:ℂ)
   · rfl
   · exact neg_zero
 
-Litlib.theorem
-  description "Geometric Holonomy Integration"
 /--
 Demonstrates that the geometric path-ordered integration of a purely spatial 
 SU(2) flux tube connection evaluates strictly to a unitary holonomy within 
 the SU(2) group manifold.
 -/
+@[litlib_track "Geometric Holonomy Integration"]
 theorem geometricHolonomyIntegration (θ : ℝ) :
   let U := Matrix.of ![![Complex.cos (θ/2), -Complex.sin (θ/2)], ![Complex.sin (θ/2), Complex.cos (θ/2)]];
   U * U.conjTranspose = 1 ∧ Matrix.det U = 1 := by
@@ -110,13 +108,12 @@ theorem geometricHolonomyIntegration (θ : ℝ) :
           
   exact ⟨h_unit, h_det⟩
 
-Litlib.definition
-  description "Geometric Bell Correlation"
 /-- 
 The exact quantum correlation natively emerges from the Cartan-Killing metric 
 of the SU(2) group. For unitary SU(2) elements, 1/2 Tr(A B†) perfectly recovers 
 the cosine of the angle between them.
 -/
+@[litlib_track "Geometric Bell Correlation"]
 noncomputable def geometricBellCorrelation (A B : SU2Group) : ℂ :=
   (1 / 2 : ℂ) * Matrix.trace (A.val * B.val.conjTranspose)
 
@@ -298,8 +295,6 @@ lemma chsh_real_bound (x1 x2 x3 x4 z1 z2 z3 z4 y11 y12 y13 y14 y21 y22 y23 y24 :
   rw [h_UV, hy1, hy2] at h_bound
   linarith
 
-Litlib.theorem
-  description "Geometric Tsirelson Bound"
 /--
 Geometric Tsirelson Bound
 
@@ -307,6 +302,7 @@ The CHSH correlation is purely a geometric topological feature of the macroscopi
 SU(2) spatial geometry, mathematically bounded natively by 2√2 without invoking 
 abstract Hilbert spaces, measurement operators, or magical integration lengths.
 -/
+@[litlib_track "Geometric Tsirelson Bound"]
 theorem geometricHolonomyTsirelsonBound 
   (A1 A2 B1 B2 : SU2Group) :
   let chsh := geometricBellCorrelation A1 B1 + geometricBellCorrelation A1 B2 + 

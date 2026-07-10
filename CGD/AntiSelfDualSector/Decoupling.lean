@@ -44,13 +44,12 @@ lemma action_vacuum_congr (F1 F2 : Fin 4 -> Fin 4 -> ChiralM)
 
   rw[h_eq1, h_eq2, h_sum]
 
-Litlib.theorem
-  description "Anti-Self-Dual Matter Decoupling"
 /-- 
 This theorem asserts that the topological vacuum action is completely 
 insensitive to the Anti-Self-Dual gauge field connection, securing 
 the chiral asymmetry of the geometry.
 -/
+@[litlib_track "Anti-Self-Dual Matter Decoupling"]
 theorem algebraicAntiSelfDualSectorDecoupling (pu : PhysicalUniverse)
   (A_R_alt : Sl2cGaugeField) (x : SpacetimePoint) :
   actionVacuum (fun mu nu => curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) =

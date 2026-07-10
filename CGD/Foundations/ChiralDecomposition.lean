@@ -163,11 +163,10 @@ lemma curvature_embed_eq (u : Universe) (mu nu : Fin 4) (x : SpacetimePoint) :
 -- THE DECOMPOSITION THEOREM
 -- ==============================================================================
 
-Litlib.theorem
-  description "Topological Chiral Decomposition"
 /--
 The topological Pontryagin action strictly preserves the chiral split. Because the cross terms vanish orthogonally, the 4D spacetime topology cleanly factorizes into a self-dual topological charge and an anti-self-dual topological charge.
 -/
+@[litlib_track "Topological Chiral Decomposition"]
 theorem algebraicChiralDecomposition (pu : PhysicalUniverse) (x : SpacetimePoint) :
   lagrangianDensity (fun mu nu => curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) =
   actionVacuum (fun mu nu => curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) +

@@ -27,8 +27,6 @@ This natively acts as the F_bar_ij coefficient matrix in the Plebanski formulati
 noncomputable def cgdAdjointCurvatureAsd (u : Universe) (μ ν : Fin 4) (x : SpacetimePoint) : Matrix (Fin 3) (Fin 3) ℂ :=
   extractAdjoint (curvatureSl2c u.asd_sector μ ν x).val
 
-Litlib.theorem
-  description "Dynamic Matter Existence"
 /--
 Proves that the CGD ontology is not an empty vacuum. A topological connection 
 with a non-zero anti-self-dual curvature natively generates a strictly non-zero 
@@ -38,6 +36,7 @@ This relies strictly on the Plebanski expansion, proving that if the physical
 energy-momentum tensor vanishes, the anti-self-dual expansion coefficients vanish,
 extinguishing the topological matter field entirely.
 -/
+@[litlib_track "Dynamic Matter Existence"]
 theorem dynamicMatterExistence
   (pu : PhysicalUniverse)
   (x : SpacetimePoint)

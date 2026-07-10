@@ -95,11 +95,10 @@ lemma P_F_eq (F P_F : Fin 4 → Fin 4 → SL2C)
     have h_nu : ν ≠ 0 := h3
     exact h_parity_ij μ ν h_mu h_nu
 
-Litlib.theorem
-  description "Geometric Parity Inversion"
 /--
 Negating the electric (temporal) components of the field strength tensor while preserving the magnetic (spatial) components inverts the sign of the fully antisymmetric topological density. This directly links the parity inversion of the local geometry to the negation of the topological charge (Pontryagin density), seamlessly mapping the geometric arrow of time to matter/antimatter asymmetry.
 -/
+@[litlib_track "Geometric Parity Inversion"]
 theorem kinematicParityInversion (pu : PhysicalUniverse) :
   ∀ (x : SpacetimePoint) (P_F : Fin 4 → Fin 4 → SL2C),
     isParityInvertedTensor (fun m n => curvatureSl2c pu.toUniverse.sd_sector m n x) P_F x →

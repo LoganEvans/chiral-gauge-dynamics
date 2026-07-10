@@ -187,8 +187,7 @@ theorem right_inv_su2_s3 (M : SU2Group) : bpstAsymptoticMap (su2ToS3 M) = M := b
 
 noncomputable instance : TopologicalSpace SU2Group := instTopologicalSpaceSubtype
 
-Litlib.theorem
-  description "BPST Instanton Is Homeomorphism"
+@[litlib_track "BPST Instanton Is Homeomorphism"]
 theorem bpst_is_homeomorphism : IsHomeomorphism bpstAsymptoticMap := by
   apply IsHomeomorphism.mk
   · constructor
@@ -604,11 +603,10 @@ def isHomotopicConnection (A0 A1 : Fin 4 → SpacetimePoint → SL2C) : Prop :=
     (∀ mu i j, ContDiff ℝ ⊤ (fun (tx : ℝ × SpacetimePoint) => (H tx.1 mu tx.2).val i j)) ∧
     (Continuous (fun t => geometricBoundaryProjection (H t)))
 
-Litlib.theorem
-  description "Topological Stability of the Instanton"
 /--
 Establishes the absolute topological stability of the instanton configuration. Because the boundary mapping of the instanton constitutes a topological homeomorphism to the SU(2) gauge group, its Cartan-Maurer mapping degree must be strictly non-zero. Consequently, the state is topologically protected and cannot continuously decay into the trivial vacuum.
 -/
+@[litlib_track "Topological Stability of the Instanton"]
 theorem kinematicTopologicalStability 
   (windingNumber : (S3 → SU2Group) → ℤ)
   (cartanMaurerIntegral : (S3 → SU2Group) → ℝ)

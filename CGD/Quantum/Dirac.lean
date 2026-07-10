@@ -34,13 +34,12 @@ noncomputable def covariantSpinorDeriv (u : Universe) (x : SpacetimePoint) (mu n
   let comm := bracket (u.spin4c_connection mu x) (extractSpinorMode u x nu)
   dA_nu + (embedSelfDual (chiralProject comm).self_dual + embedAntiSelfDual (chiralProject comm).anti_self_dual)
 
-Litlib.definition
-  description "Emergent Dirac Operator"
 /--
 The true background-independent Emergent Dirac Operator.
 It strictly contracts the local covariant spinor derivatives using the dynamically 
 emergent macroscopic TetradField (Vielbein) rather than assuming a flat-space metric.
 -/
+@[litlib_track "Emergent Dirac Operator"]
 noncomputable def emergentDiracOperator (u : Universe) (e : TetradField) (x : SpacetimePoint) (nu : Fin 4) : Matrix (Fin 4) (Fin 4) Complex :=
   ∑ mu, ∑ a, (e a mu x) • (gammaVec a * covariantSpinorDeriv u x mu nu)
 
@@ -123,11 +122,10 @@ lemma isOdd_smul (c : Complex) (M : Matrix (Fin 4) (Fin 4) Complex) (hM : isOdd 
   intros i j hij
   rw [Matrix.smul_apply, hM i j hij, smul_zero]
 
-Litlib.theorem
-  description "Kinematic Dirac Operator Grading"
 /--
 The covariant Dirac operator mathematically preserves the strict odd/even grading of the spinor algebra for any orientation vector.
 -/
+@[litlib_track "Kinematic Dirac Operator Grading"]
 theorem kinematicDiracOperatorGrading (pu : PhysicalUniverse) :
   ∀ (m : Complex) (e : TetradField) (x : SpacetimePoint) (nu : Fin 4),
     isOdd (emergentDiracOperator pu.toUniverse e x nu) ∧ 
@@ -146,8 +144,7 @@ theorem kinematicDiracOperatorGrading (pu : PhysicalUniverse) :
     · exact isEven_extractSpinorMode pu.toUniverse x nu
     · exact Litlib.Math.Dirac.hestenesIsomorphism nu
 
-Litlib.theorem
-  description "Gauge-Covariant Spinor Derivative Identity"
+@[litlib_track "Gauge-Covariant Spinor Derivative Identity"]
 lemma covariantSpinorDeriv_eq_curvature_plus_deriv (u : Universe) (x : SpacetimePoint) (mu nu : Fin 4) :
   covariantSpinorDeriv u x mu nu = 
   curvature (fun m p => u.spin4c_connection m p) mu nu x + partialDerivChiral nu (fun p => u.spin4c_connection mu p) x := by
@@ -157,14 +154,13 @@ lemma covariantSpinorDeriv_eq_curvature_plus_deriv (u : Universe) (x : Spacetime
   simp only [Matrix.add_apply, Matrix.sub_apply]
   ring
 
-Litlib.theorem
-  description "Generalized Dynamic Dirac Equation"
 /--
 The CAPSTONE Dirac equivalence.
 The fully covariant Dirac operator natively equals the macroscopic Yang-Mills curvature trace, 
 plus a geometric inertial term (\partial_nu A_mu) reflecting the dynamical evolution of the background geometry.
 Matter actively responds to the bubbling and expansion of spacetime without requiring a fixed coordinate frame.
 -/
+@[litlib_track "Generalized Dynamic Dirac Equation"]
 theorem generalizedDynamicDiracEquation 
   (pu : PhysicalUniverse) (e : TetradField) (x : SpacetimePoint) (nu : Fin 4) :
   emergentDiracOperator pu.toUniverse e x nu = 
@@ -207,12 +203,11 @@ theorem generalizedDynamicDiracEquation
   rw [h_outer]
   exact Finset.sum_add_distrib
 
-Litlib.theorem
-  description "Familiar Dynamic Dirac Equation Limit"
 /--
 Recovers the standard textbook Dirac-Yang-Mills equivalence under the physical assumption that 
 the spacetime background is locally stationary with respect to the mode propagation direction.
 -/
+@[litlib_track "Familiar Dynamic Dirac Equation Limit"]
 theorem familiarDynamicDiracEquation 
   (pu : PhysicalUniverse) (e : TetradField) (x : SpacetimePoint) (nu : Fin 4)
   (h_stationary : ∀ mu, partialDerivChiral nu (fun p => pu.toUniverse.spin4c_connection mu p) x = 0) :

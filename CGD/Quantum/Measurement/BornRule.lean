@@ -20,8 +20,6 @@ The strict analytical primitive (antiderivative) of sin(θ) evaluates to -cos(θ
 noncomputable def hopfVolumePrimitive (theta : ℝ) : ℝ :=
   - Real.cos theta
 
-Litlib.theorem
-  description "Kinematic Born Rule Equivalence"
 /--
 The Kinematic Born Rule Equivalence.
 Demonstrates that in Chiral Gauge Dynamics, the phase-space volume fraction 
@@ -34,6 +32,7 @@ This derives the fundamental mechanism of quantum probability directly from
 the macroscopic continuous geometry of the gauge field, without requiring 
 wave-function collapse or arbitrary dynamic thresholds.
 -/
+@[litlib_track "Kinematic Born Rule Equivalence"]
 theorem kinematicBornRuleEquivalence
   (pu : PhysicalUniverse)
   (evaluateBoundary : Sl2cGaugeField → SU2Group)

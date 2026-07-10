@@ -174,13 +174,12 @@ lemma P_minus_D_space (dPsi : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) :
   have h_assoc6 : (gammaVec 3 * P_plus) * dPsi 3 = gammaVec 3 * (P_plus * dPsi 3) := Matrix.mul_assoc _ _ _
   rw [h_assoc4, h_assoc5, h_assoc6]
 
-Litlib.theorem
-  description "Algebraic Dirac Chiral Split"
 /--
 The exact algebraic chiral split of the emergent Dirac equation.
 By applying the projection operators, the relativistic Dirac equation natively factors 
 into a coupled system for the large and small components.
 -/
+@[litlib_track "Algebraic Dirac Chiral Split"]
 theorem algebraicDiracChiralSplit (dPsi : Fin 4 → SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) 
   (Psi : SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) (m : Complex) (x : SpacetimePoint) :
   localDiracOp (fun a => dPsi a x) = m • Psi x →
@@ -233,8 +232,6 @@ theorem algebraicDiracChiralSplit (dPsi : Fin 4 → SpacetimePoint → Matrix (F
     simp [Matrix.add_apply, Matrix.smul_apply, Matrix.neg_apply]
     try ring
 
-Litlib.theorem
-  description "Exact Schroedinger Reduction"
 /--
 The Emergent Schrödinger/Pauli Reduction.
 Without making any approximations, the large component of the gauge-covariant Dirac field natively obeys 
@@ -242,6 +239,7 @@ a relation where its temporal variation is exactly sourced by the spatial Dirac 
 Because the small component is algebraically inversely proportional to the mass, this rigorously 
 yields the non-relativistic 1/2m Hamiltonian structure.
 -/
+@[litlib_track "Exact Schroedinger Reduction"]
 theorem exactSchroedingerReduction (dPsi : Fin 4 → SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) 
   (Psi : SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) (m : Complex) (x : SpacetimePoint) :
   localDiracOp (fun a => dPsi a x) = m • Psi x →

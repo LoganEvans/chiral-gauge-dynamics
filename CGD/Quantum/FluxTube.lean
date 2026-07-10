@@ -127,21 +127,19 @@ lemma fluxTube_curvature_congruence (A B : Fin 4 → SpacetimePoint → SL2C) (x
   intros mu nu; unfold curvatureSl2c
   rw[h_deriv mu nu, h_deriv nu mu, h_val mu, h_val nu]
 
-Litlib.theorem
-  description "The FluxTubeFrame is a valid physical solution"
 /--
 Proves that the exact `fluxTubeFrame` witness natively satisfies the static, purely magnetic boundary conditions.
 -/
+@[litlib_track "The FluxTubeFrame is a valid physical solution"]
 theorem fluxTubeIsMinimal : ∀ x, satisfies1DMinimalEnergyBound fluxTubeFrame x := by
   intro x; unfold satisfies1DMinimalEnergyBound; apply And.intro
   · intro nu; exact flux_tube_electric_zero_at nu x
   · intro nu; exact math_partialDerivSl2c_fluxTube_time nu x
 
-Litlib.theorem
-  description "Witness for Degenerate Entanglement Channels"
 /--
 Demonstrates that the macroscopic metric of the `fluxTubeFrame` witness possesses a strictly zero determinant. This proves that a 1D uniform gauge connection natively represents a degenerate, non-macroscopic topological background (det(g) = 0), serving as the formal witness that non-local ER=EPR wormhole channels mathematically exist within the Spin(4,C) geometry.
 -/
+@[litlib_track "Witness for Degenerate Entanglement Channels"]
 theorem kinematicFluxTubeStability (pu : PhysicalUniverse) :
   ∀ (x : SpacetimePoint),
     isFluxTube pu.toUniverse.sd_sector x →

@@ -12,14 +12,13 @@ open CGD.Axioms CGD.Foundations Matrix Complex
 
 namespace CGD.Quantum
 
-Litlib.definition
-  description "Flux Tube Frame Witness"
 /-- 
 A Constructive Witness for an unbroken 1D string defect along the z-axis.
 Rather than a unique dynamic solution, this provides an exact analytical ansatz 
 (a uniform, constant non-Abelian magnetic field) to rigorously prove the non-vacuous 
 existence of degenerate topological states without relying on empty sets.
 -/
+@[litlib_track "Flux Tube Frame Witness"]
 noncomputable def fluxTubeFrame (mu : Fin 4) (_x : SpacetimePoint) : SL2C :=
   toSl2c (if mu = 0 then 0 else if mu = 1 then (Complex.I:ℂ) • sigma3.val else if mu = 2 then (Complex.I:ℂ) • sigma1.val else (Complex.I:ℂ) • sigma2.val)
 
@@ -38,14 +37,13 @@ def isFluxTube (A : Fin 4 → SpacetimePoint → SL2C) (x : SpacetimePoint) : Pr
   (∀ mu, A mu x = fluxTubeFrame mu x) ∧
   (∀ mu nu, partialDerivSl2c nu (A mu) x = partialDerivSl2c nu (fluxTubeFrame mu) x)
 
-Litlib.definition
-  description "Entangled State Witness"
 /-- 
 Identifies an ER=EPR entangled bridge. Two spatial boundaries are entangled 
 if there exists a continuous degenerate connection between them. This definition 
 uses the exact `fluxTubeFrame` witness to mathematically guarantee that evaluating 
 such a channel does not result in a vacuous truth.
 -/
+@[litlib_track "Entangled State Witness"]
 def areEntangled (A : Fin 4 → SpacetimePoint → SL2C) (x y : SpacetimePoint) (theta : ℝ) : Prop :=
   ∃ (γ : ℝ → SpacetimePoint) (θ : ℝ → ℝ),
     γ 0 = x ∧ γ 1 = y ∧
