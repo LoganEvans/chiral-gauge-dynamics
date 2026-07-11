@@ -102,10 +102,16 @@ lemma deriv_action (v : ℝ → PhysicalUniverse) (t : ℝ)
   exact lr.leibniz_commute t
 
 /--
-Because the action is the topological Pontryagin density, its functional variation with respect
-to compactly supported, smooth gauge field perturbations is identically zero.
-This proves strictly that every continuous non-degenerate configuration is an exact vacuum state,
-mandating that macroscopic spacetime strictly emerges from local matter topological defects.
+Because the action is the fully antisymmetric Pontryagin density, its
+functional variation with respect to compactly supported, smooth gauge field
+perturbations evaluates identically to zero.
+
+This theorem rigorously demonstrates that Chiral Gauge Dynamics possesses no
+classical Euler-Lagrange equations of motion. Consequently, the dynamic
+evolution and stress-energy conservation of the macroscopic universe are not
+driven by action minimization, but rather are governed entirely by strict
+geometric conservation laws (the Bianchi identities) and topological boundary
+conditions.
 -/
 @[litlib_track "Topological Action Variation"]
 theorem topologicalActionVariationZero

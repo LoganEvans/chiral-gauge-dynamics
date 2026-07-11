@@ -233,11 +233,13 @@ theorem algebraicDiracChiralSplit (dPsi : Fin 4 → SpacetimePoint → Matrix (F
     try ring
 
 /--
-The Emergent Schrödinger/Pauli Reduction.
-Without making any approximations, the large component of the gauge-covariant Dirac field natively obeys
-a relation where its temporal variation is exactly sourced by the spatial Dirac operator acting on the small component.
-Because the small component is algebraically inversely proportional to the mass, this rigorously
-yields the non-relativistic 1/2m Hamiltonian structure.
+An algebraic decomposition of the emergent Dirac equation.
+
+By applying the standard chiral projection operators (P_plus, P_minus), the
+relativistic equation natively factors into coupled relations for the large and
+small components. This verifies that the standard algebraic structures required
+for non-relativistic limits (which produce the 1/2m Schrödinger/Pauli Hamiltonian)
+are natively supported by the macroscopic gauge-covariant geometry.
 -/
 @[litlib_track "Exact Schroedinger Reduction"]
 theorem exactSchroedingerReduction (dPsi : Fin 4 → SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex)

@@ -104,7 +104,14 @@ lemma math_TimeIsChiralPhase_det (F : Fin 4 → Fin 4 → SL2C)
   linarith
 
 /--
-A fully 4D symmetric field tensor naturally yields a metric with a Euclidean or degenerate signature, forbidding the unique odd-sign axis required for a Lorentzian signature. Therefore, the Lorentzian time dimension emerges geometrically only when the gauge field spontaneously breaks 4D Euclidean (SO(4)) symmetry.
+A geometric "no-go" theorem demonstrating that the Urbantke metric intrinsically
+rejects fully 4D symmetric (SO(4)) states as candidates for a physical spacetime. 
+
+If a field tensor possesses perfect 4D symmetry, its emergent macroscopic metric 
+is algebraically forced into a Euclidean or degenerate signature, mathematically 
+forbidding the unique odd-sign axis (-+++) required for macroscopic time. 
+Therefore, any valid Lorentzian spacetime strictly requires the background gauge 
+field to exist in a state of broken SO(4) symmetry.
 -/
 @[litlib_track "Time Emergence via Symmetry Breaking"]
 theorem kinematicTimeEmergence (pu : PhysicalUniverse) (phaseRegion : Set SpacetimePoint)

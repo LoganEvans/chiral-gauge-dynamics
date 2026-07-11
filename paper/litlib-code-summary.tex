@@ -4,9 +4,9 @@
 
 -- MODULE: CGD.AntiSelfDualSector.Decoupling
 --------------------------------------------------------------------
-/-- 
-This theorem asserts that the topological vacuum action is completely 
-insensitive to the Anti-Self-Dual gauge field connection, securing 
+/--
+This theorem asserts that the topological vacuum action is completely
+insensitive to the Anti-Self-Dual gauge field connection, securing
 the chiral asymmetry of the geometry.
 -/
 @[litlib_track "Anti-Self-Dual Matter Decoupling"]
@@ -18,7 +18,7 @@ theorem §\phantomsection\label{lean:CGD.AntiSelfDualSector.algebraicAntiSelfDua
 
 -- MODULE: CGD.AntiSelfDualSector.SelfInteracting
 --------------------------------------------------------------------
-/-- 
+/--
 This theorem proves that non-commuting SU(2) fields (which correspond to non-trivial matter) natively expand into non-zero topological density traces without needing a background metric.
 -/
 @[litlib_track "Anti-Self-Dual Matter Trace Constraint"]
@@ -36,7 +36,7 @@ theorem §\phantomsection\label{lean:CGD.AntiSelfDualSector.kinematicSIDMTrace}�
 Demonstrates the topological collapse of the Anti-Self-Dual vacuum.
 If the ASD sector of the universe remains in the trivial vacuum state (zero gauge field),
 its resulting emergent Urbantke metric mathematically degenerates to a zero determinant.
-This strictly enforces that macroscopic spacetime can only emerge from non-trivial, 
+This strictly enforces that macroscopic spacetime can only emerge from non-trivial,
 non-Abelian gauge condensates, cementing the geometric chirality of the universe.
 -/
 @[litlib_track "Topological Collapse of the Anti-Self-Dual Vacuum"]
@@ -47,45 +47,45 @@ theorem §\phantomsection\label{lean:CGD.AntiSelfDualSector.kinematicAsdVacuumDe
 
 -- MODULE: CGD.Axioms.MacroscopicVolume
 --------------------------------------------------------------------
-/-- 
+/--
 Axiom II: Macroscopic Existence (The "Non-Empty" Condition)
-We constrain the physics by demanding that the emergent metric is 
-non-degenerate over an open topological bulk. By defining the bulk as 
-an `IsOpen` set, we safely allow the volume to mathematically crash to zero 
-on its boundaries (the Big Bang) or at topological punctures (derived matter defects), 
+We constrain the physics by demanding that the emergent metric is
+non-degenerate over an open topological bulk. By defining the bulk as
+an `IsOpen` set, we safely allow the volume to mathematically crash to zero
+on its boundaries (the Big Bang) or at topological punctures (derived matter defects),
 without destroying the extended macroscopic spacetime.
 -/
 class §\phantomsection\label{lean:CGD.Axioms.MacroscopicVolume}§CGD.Axioms.MacroscopicVolume (u : §\hyperref[lean:CGD.Axioms.Universe]{\detokenize{Universe}}§) (bulk : Set §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) : Prop where
   h_bulk_open : IsOpen bulk
   h_bulk_nonempty : Set.Nonempty bulk
-  volume_exists : ∀ x ∈ bulk, 
+  volume_exists : ∀ x ∈ bulk,
     (§\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{urbantkeMetric}}§ (fun μ ν => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ u.sd_sector μ ν x)).det ≠ 0
 
 
 -- MODULE: CGD.Axioms.Ontology
 --------------------------------------------------------------------
-/-- 
-A smooth SL(2, C) gauge field. 
+/--
+A smooth SL(2, C) gauge field.
 As an abstract Lie algebra, it possesses no native spacetime chirality.
 -/
 structure §\phantomsection\label{lean:CGD.Axioms.Sl2cGaugeField}§CGD.Axioms.Sl2cGaugeField where
   val : Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{CGD.Foundations.SpacetimePoint}}§ → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§
   is_smooth : ∀ mu i j, ContDiff ℝ ⊤ (fun x => (val mu x).val i j)
 
-/-- 
+/--
 The Core Ontology: The Universe is a macroscopic Spin(4, C) connection.
-We define it strictly as a 4x4 continuous gauge field constrained to the 
+We define it strictly as a 4x4 continuous gauge field constrained to the
 6-dimensional Spin(4, C) Lie algebra.
 -/
 structure §\phantomsection\label{lean:CGD.Axioms.Universe}§CGD.Axioms.Universe where
   /-- The unified 4x4 Chiral Dirac field -/
   val : Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{CGD.Foundations.SpacetimePoint}}§ → §\hyperref[lean:CGD.Foundations.ChiralM]{\detokenize{ChiralM}}§
-  
+
   /-- The geometric constraint forcing the 16D GL(4,C) field into the 6D Spin(4,C) algebra -/
-  is_spin4c : ∀ mu x, val mu x = 
-    §\hyperref[lean:CGD.Foundations.embedSelfDual]{\detokenize{embedSelfDual}}§ (§\hyperref[lean:CGD.Foundations.chiralProject]{\detokenize{chiralProject}}§ (val mu x)).self_dual + 
+  is_spin4c : ∀ mu x, val mu x =
+    §\hyperref[lean:CGD.Foundations.embedSelfDual]{\detokenize{embedSelfDual}}§ (§\hyperref[lean:CGD.Foundations.chiralProject]{\detokenize{chiralProject}}§ (val mu x)).self_dual +
     §\hyperref[lean:CGD.Foundations.embedAntiSelfDual]{\detokenize{embedAntiSelfDual}}§ (§\hyperref[lean:CGD.Foundations.chiralProject]{\detokenize{chiralProject}}§ (val mu x)).anti_self_dual
-    
+
   /-- Smoothness conditions on the topological projections -/
   sd_is_smooth : ∀ mu i j, ContDiff ℝ ⊤ (fun x => (§\hyperref[lean:CGD.Foundations.chiralProject]{\detokenize{chiralProject}}§ (val mu x)).self_dual.val i j)
   asd_is_smooth : ∀ mu i j, ContDiff ℝ ⊤ (fun x => (§\hyperref[lean:CGD.Foundations.chiralProject]{\detokenize{chiralProject}}§ (val mu x)).anti_self_dual.val i j)
@@ -98,9 +98,9 @@ noncomputable def Universe.asd_sector (u : §\hyperref[lean:CGD.Axioms.Universe]
 noncomputable def Universe.sd_sector (u : §\hyperref[lean:CGD.Axioms.Universe]{\detokenize{Universe}}§) : §\hyperref[lean:CGD.Axioms.Sl2cGaugeField]{\detokenize{Sl2cGaugeField}}§ :=
   ⟨fun mu x => (§\hyperref[lean:CGD.Foundations.chiralProject]{\detokenize{chiralProject}}§ (u.val mu x)).self_dual, u.sd_is_smooth⟩
 
-§\phantomsection\label{lean:CGD.Axioms.Universe.spin4c_connection}§/-- 
+§\phantomsection\label{lean:CGD.Axioms.Universe.spin4c_connection}§/--
 The Spin(4, C) 4x4 Dirac Representation.
-This definition evaluates to the raw 4x4 field, but its underlying 
+This definition evaluates to the raw 4x4 field, but its underlying
 algebra guarantees it matches the spacetime chiral sum exactly.
 -/
 noncomputable def Universe.spin4c_connection (u : §\hyperref[lean:CGD.Axioms.Universe]{\detokenize{Universe}}§) (mu : Fin 4) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{CGD.Foundations.SpacetimePoint}}§) : §\hyperref[lean:CGD.Foundations.ChiralM]{\detokenize{ChiralM}}§ :=
@@ -109,10 +109,10 @@ noncomputable def Universe.spin4c_connection (u : §\hyperref[lean:CGD.Axioms.Un
 
 -- MODULE: CGD.Axioms.PhysicalUniverse
 --------------------------------------------------------------------
-/-- 
+/--
 The Comprehensive Physical Reality.
-Bundles the foundational ontology with the topological bulk and its required physical mixins. 
-Matter is never inputted as an assumption; it exists entirely as the topological complement 
+Bundles the foundational ontology with the topological bulk and its required physical mixins.
+Matter is never inputted as an assumption; it exists entirely as the topological complement
 of the macroscopic bulk.
 -/
 structure §\phantomsection\label{lean:CGD.Axioms.PhysicalUniverse}§CGD.Axioms.PhysicalUniverse where
@@ -124,18 +124,18 @@ structure §\phantomsection\label{lean:CGD.Axioms.PhysicalUniverse}§CGD.Axioms.
 
 -- MODULE: CGD.Axioms.UnimodularVacuum
 --------------------------------------------------------------------
-/-- 
+/--
 Axiom III: Unimodular Vacuum Isotropy (Unbroken Gauge Symmetry)
-Because the `bulk` is defined as the region where det g ≠ 0, it natively 
+Because the `bulk` is defined as the region where det g ≠ 0, it natively
 excludes all topological defects. Therefore, the entire `bulk` is the pure vacuum.
 
-This constraint mathematically enforces that the pure vacuum spacetime must not 
-spontaneously break its internal SU(2) unimodular symmetry. The only symmetric 
+This constraint mathematically enforces that the pure vacuum spacetime must not
+spontaneously break its internal SU(2) unimodular symmetry. The only symmetric
 tensor invariant under local SO(3) rotations is a multiple of the identity matrix.
 This natively bounds the field to generate an Einstein manifold.
 -/
 class §\phantomsection\label{lean:CGD.Axioms.UnimodularVacuum}§CGD.Axioms.UnimodularVacuum (u : §\hyperref[lean:CGD.Axioms.Universe]{\detokenize{Universe}}§) (bulk : Set §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) : Prop where
-  vacuum_equipartition : ∀ x ∈ bulk, 
+  vacuum_equipartition : ∀ x ∈ bulk,
     let F_adj := fun m n => §\hyperref[lean:CGD.Gravity.cgdAdjointCurvature]{\detokenize{cgdAdjointCurvature}}§ u m n x;
     let Sigma := ∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
       §\hyperref[lean:CGD.Gravity.epsilon4]{\detokenize{epsilon4}}§ μ ν ρ σ • (F_adj μ ν * F_adj ρ σ);
@@ -162,29 +162,11 @@ theorem §\phantomsection\label{lean:CGD.Cosmology.kinematicStaticUniverseDegene
   ∀ x, (§\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{urbantkeMetric}}§ (fun mu nu => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector mu nu x)).det = 0
 
 
--- MODULE: CGD.Cosmology.DarkMatter
---------------------------------------------------------------------
-/--
-A purely non-Abelian defect (lacking a stable U(1) Abelian projection) possesses no electric charge. However, it mathematically requires an inertial mass > 0 and guarantees a non-zero self-interaction topological density, matching the phenomenological profile of Self-Interacting Dark Matter (SIDM).
--/
-@[litlib_track "Emergent Dark Matter Profile"]
-theorem §\phantomsection\label{lean:CGD.Cosmology.emergentDarkMatterProfile}§CGD.Cosmology.emergentDarkMatterProfile (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) :
-  ∀ (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§),
-  (∀ μ p, §\hyperref[lean:CGD.Foundations.isSu2]{\detokenize{isSu2}}§ (pu.toUniverse.asd_sector.val μ p).val) →
-  §\hyperref[lean:CGD.Cosmology.isPureNonAbelian]{\detokenize{isPureNonAbelian}}§ (fun m n => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.asd_sector.val m n x) →
-  §\hyperref[lean:CGD.Particles.inertialMass]{\detokenize{inertialMass}}§ pu x > 0 ∧
-  ∃ α β γ δ, Matrix.trace (⁅§\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.asd_sector.val α β x, §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.asd_sector.val γ δ x⁆.val *
-                ⁅§\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.asd_sector.val α β x, §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.asd_sector.val γ δ x⁆.val) ≠ 0
-
-def §\phantomsection\label{lean:CGD.Cosmology.isPureNonAbelian}§CGD.Cosmology.isPureNonAbelian (F : Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§) : Prop :=
-  ∃ μ ν ρ σ, ⁅F μ ν, F ρ σ⁆ ≠ 0
-
-
 -- MODULE: CGD.Cosmology.Definitions
 --------------------------------------------------------------------
 /--
 Time Emergence: A mathematically rigorous definition of pre-time SO(4) Euclidean symmetry.
-Instead of setting time components to zero, we define the symmetric state as a strictly 
+Instead of setting time components to zero, we define the symmetric state as a strictly
 self-dual configuration.
 -/
 def §\phantomsection\label{lean:CGD.Cosmology.isFully4DSymmetric}§CGD.Cosmology.isFully4DSymmetric (F : Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§) : Prop :=
@@ -264,7 +246,7 @@ A physically valid universe variation is mathematically constrained:
 1. It must be a smooth path through configuration space.
 2. It must have uniform compact support (vanish at spatial infinity consistently across the perturbation).
 3. The underlying physical Lagrangian density must be Lebesgue Integrable.
-4. It must map `ℝ → PhysicalUniverse` to ensure the macroscopic volume and vacuum 
+4. It must map `ℝ → PhysicalUniverse` to ensure the macroscopic volume and vacuum
    constraints are not violated during the perturbation.
 -/
 def §\phantomsection\label{lean:CGD.Foundations.isValidPhysicalVariation}§CGD.Foundations.isValidPhysicalVariation (v : ℝ → §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) : Prop :=
@@ -313,60 +295,10 @@ noncomputable def §\phantomsection\label{lean:CGD.Foundations.curvatureSl2c}§C
   let comm  := ⁅A mu x, A nu x⁆
   dA_nu - dA_mu + comm
 
-noncomputable def §\phantomsection\label{lean:CGD.Foundations.partialDeriv}§CGD.Foundations.partialDeriv {E : Type*}[NormedAddCommGroup E][NormedSpace ℝ E] (μ : Fin 4) (f : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → E) : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → E :=
-  fun x => fderiv ℝ f x ((Pi.single μ (1 : ℝ)) : Fin 4 → ℝ)
-
 noncomputable def §\phantomsection\label{lean:CGD.Foundations.partialDerivChiral}§CGD.Foundations.partialDerivChiral (μ : Fin 4) (f : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → §\hyperref[lean:CGD.Foundations.ChiralM]{\detokenize{ChiralM}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) : §\hyperref[lean:CGD.Foundations.ChiralM]{\detokenize{ChiralM}}§ :=
   let L_A := fun p => §\hyperref[lean:CGD.Foundations.toSl2c]{\detokenize{toSl2c}}§ (fun i j => f p (chiralIso (Sum.inl i)) (chiralIso (Sum.inl j)))
   let R_A := fun p => §\hyperref[lean:CGD.Foundations.toSl2c]{\detokenize{toSl2c}}§ (fun i j => f p (chiralIso (Sum.inr i)) (chiralIso (Sum.inr j)))
   §\hyperref[lean:CGD.Foundations.embedSelfDual]{\detokenize{embedSelfDual}}§ (partialDerivSl2c μ L_A x) + §\hyperref[lean:CGD.Foundations.embedAntiSelfDual]{\detokenize{embedAntiSelfDual}}§ (partialDerivSl2c μ R_A x)
-
-
--- MODULE: CGD.Foundations.Charge
---------------------------------------------------------------------
-noncomputable def §\phantomsection\label{lean:CGD.Foundations.abelianFieldStrength}§CGD.Foundations.abelianFieldStrength (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) (i j : Fin 4) (μ ν : Fin 4) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) : ℂ :=
-  §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ μ (fun p => connectionComponent pu i j ν p) x - §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ ν (fun p => connectionComponent pu i j μ p) x
-
-/-- 
-The emergent U(1) current based on the Duan-Ge (1979) topological decomposition.
-Defined as the dual divergence of the Abelian field strength tensor F_ρσ.
-J^μ = ε^{μνρσ} ∂_ν F_ρσ
--/
-noncomputable def §\phantomsection\label{lean:CGD.Foundations.emergentElectricCurrent}§CGD.Foundations.emergentElectricCurrent 
-  (F : Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → ℂ) 
-  (μ : Fin 4) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) : ℂ :=
-  ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
-    §\hyperref[lean:CGD.Gravity.epsilon4]{\detokenize{epsilon4}}§ μ ν ρ σ * §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ ν (fun p => F ρ σ p) x
-
-/-- 
-Because the physical Universe is axiomatically a smooth Spin(4,C) connection, 
-its emergent Abelian projection natively satisfies the n-dimensional Clairaut theorem, 
-guaranteeing exact topological charge conservation without further assumptions.
--/
-@[litlib_track "Kinematic Charge Conservation"]
-theorem §\phantomsection\label{lean:CGD.Foundations.kinematicChargeConservation}§CGD.Foundations.kinematicChargeConservation 
-  [clairaut : §\hyperref[lean:Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional]{\detokenize{Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional}}§]
-  (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) (i j : Fin 4) :
-  ∀ x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§, 
-    ∑ μ : Fin 4, §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ μ (fun p => §\hyperref[lean:CGD.Foundations.emergentElectricCurrent]{\detokenize{emergentElectricCurrent}}§ (§\hyperref[lean:CGD.Foundations.abelianFieldStrength]{\detokenize{abelianFieldStrength}}§ pu i j) μ p) x = 0
-
-/--
-Because the emergent current is purely topological (defined via the Levi-Civita symbol),
-its divergence strictly vanishes due to the commutativity of partial derivatives,
-justified natively via n-dimensional Clairaut theorem on the Abelian field strength.
--/
-@[litlib_track "Topological Charge Conservation"]
-theorem §\phantomsection\label{lean:CGD.Foundations.topologicalChargeConservation}§CGD.Foundations.topologicalChargeConservation 
-  [clairaut : §\hyperref[lean:Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional]{\detokenize{Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional}}§]
-  (F : Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → ℂ)
-  (h_smooth_re : ∀ ρ σ, ContDiffOn ℝ 2 (fun p => (F ρ σ p).re) Set.univ)
-  (h_smooth_im : ∀ ρ σ, ContDiffOn ℝ 2 (fun p => (F ρ σ p).im) Set.univ)
-  (h_diff_F : ∀ ρ σ x, DifferentiableAt ℝ (fun p => F ρ σ p) x)
-  (h_diff : ∀ ν ρ σ x, DifferentiableAt ℝ (fun p => §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ ν (fun p' => F ρ σ p') p) x)
-  (h_diff_fderiv_re : ∀ ρ σ x, DifferentiableAt ℝ (fderiv ℝ (fun p => (F ρ σ p).re)) x)
-  (h_diff_fderiv_im : ∀ ρ σ x, DifferentiableAt ℝ (fderiv ℝ (fun p => (F ρ σ p).im)) x) :
-  ∀ x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§, 
-    ∑ μ : Fin 4, §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ μ (fun p => §\hyperref[lean:CGD.Foundations.emergentElectricCurrent]{\detokenize{emergentElectricCurrent}}§ F μ p) x = 0
 
 
 -- MODULE: CGD.Foundations.ChiralDecomposition
@@ -403,7 +335,7 @@ noncomputable def §\phantomsection\label{lean:CGD.Foundations.embedSelfDual}§C
 
 §\phantomsection\label{lean:CGD.Foundations.instOneSU2Group}§instance : One §\hyperref[lean:CGD.Foundations.SU2Group]{\detokenize{SU2Group}}§
 
-def §\phantomsection\label{lean:CGD.Foundations.isSu2}§CGD.Foundations.isSu2 (M : Matrix (Fin 2) (Fin 2) Complex) : Prop := 
+def §\phantomsection\label{lean:CGD.Foundations.isSu2}§CGD.Foundations.isSu2 (M : Matrix (Fin 2) (Fin 2) Complex) : Prop :=
   Matrix.trace M = 0 ∧ M.conjTranspose = -M
 
 noncomputable def §\phantomsection\label{lean:CGD.Foundations.sigmaX}§CGD.Foundations.sigmaX : Matrix (Fin 2) (Fin 2) ℂ := mkMat 0 1 1 0
@@ -418,32 +350,32 @@ noncomputable def §\phantomsection\label{lean:CGD.Foundations.toSl2c}§CGD.Foun
 
 -- MODULE: CGD.Foundations.Lagrangian.Basic
 --------------------------------------------------------------------
-def §\phantomsection\label{lean:CGD.Foundations.isSpin4cAlgebra}§CGD.Foundations.isSpin4cAlgebra (M : §\hyperref[lean:CGD.Foundations.ChiralM]{\detokenize{ChiralM}}§) : Prop := 
+def §\phantomsection\label{lean:CGD.Foundations.isSpin4cAlgebra}§CGD.Foundations.isSpin4cAlgebra (M : §\hyperref[lean:CGD.Foundations.ChiralM]{\detokenize{ChiralM}}§) : Prop :=
   ∃ (L R : §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§), M = §\hyperref[lean:CGD.Foundations.embedSelfDual]{\detokenize{embedSelfDual}}§ L + §\hyperref[lean:CGD.Foundations.embedAntiSelfDual]{\detokenize{embedAntiSelfDual}}§ R
 
 
 -- MODULE: CGD.Foundations.Lagrangian.Uniqueness
 --------------------------------------------------------------------
-/-- 
+/--
 The fully antisymmetric Pontryagin topological density is mathematically the unique quadratic, gauge-invariant Lagrangian density that can be constructed without a pre-existing background metric.
 -/
 @[litlib_track "Topological Lagrangian Uniqueness"]
-theorem §\phantomsection\label{lean:CGD.Foundations.topologicalLagrangianUniqueness}§CGD.Foundations.topologicalLagrangianUniqueness 
+theorem §\phantomsection\label{lean:CGD.Foundations.topologicalLagrangianUniqueness}§CGD.Foundations.topologicalLagrangianUniqueness
   (L : ((Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.ChiralM]{\detokenize{ChiralM}}§) → Complex))
-  (h_inv : ∀ F U, (∀ μ ν, §\hyperref[lean:CGD.Foundations.isSpin4cAlgebra]{\detokenize{isSpin4cAlgebra}}§ (F μ ν)) → 
-    (∀ μ ν, §\hyperref[lean:CGD.Foundations.isSpin4cAlgebra]{\detokenize{isSpin4cAlgebra}}§ (U * F μ ν * U⁻¹)) → 
+  (h_inv : ∀ F U, (∀ μ ν, §\hyperref[lean:CGD.Foundations.isSpin4cAlgebra]{\detokenize{isSpin4cAlgebra}}§ (F μ ν)) →
+    (∀ μ ν, §\hyperref[lean:CGD.Foundations.isSpin4cAlgebra]{\detokenize{isSpin4cAlgebra}}§ (U * F μ ν * U⁻¹)) →
     L (fun μ ν => U * F μ ν * U⁻¹) = L F)
-  (h_topological : ∀ Λ : Matrix (Fin 4) (Fin 4) ℂ, 
-    (∀ μ ν ρ σ, ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4, 
+  (h_topological : ∀ Λ : Matrix (Fin 4) (Fin 4) ℂ,
+    (∀ μ ν ρ σ, ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4,
       Λ α μ * Λ β ν * Λ γ ρ * Λ δ σ * §\hyperref[lean:CGD.Gravity.epsilon4]{\detokenize{CGD.Gravity.epsilon4}}§ α β γ δ = Matrix.det Λ * §\hyperref[lean:CGD.Gravity.epsilon4]{\detokenize{CGD.Gravity.epsilon4}}§ μ ν ρ σ) →
-    ∀ F, (∀ μ ν, §\hyperref[lean:CGD.Foundations.isSpin4cAlgebra]{\detokenize{isSpin4cAlgebra}}§ (F μ ν)) → 
-    (∀ μ ν, §\hyperref[lean:CGD.Foundations.isSpin4cAlgebra]{\detokenize{isSpin4cAlgebra}}§ (∑ α : Fin 4, ∑ β : Fin 4, (Λ μ α * Λ ν β) • F α β)) → 
+    ∀ F, (∀ μ ν, §\hyperref[lean:CGD.Foundations.isSpin4cAlgebra]{\detokenize{isSpin4cAlgebra}}§ (F μ ν)) →
+    (∀ μ ν, §\hyperref[lean:CGD.Foundations.isSpin4cAlgebra]{\detokenize{isSpin4cAlgebra}}§ (∑ α : Fin 4, ∑ β : Fin 4, (Λ μ α * Λ ν β) • F α β)) →
     L (fun μ ν => ∑ α : Fin 4, ∑ β : Fin 4, (Λ μ α * Λ ν β) • F α β) = Matrix.det Λ * L F)
-  (hLQuadScale : ∀ (c : ℂ) (F : Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.ChiralM]{\detokenize{ChiralM}}§), 
+  (hLQuadScale : ∀ (c : ℂ) (F : Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.ChiralM]{\detokenize{ChiralM}}§),
     (∀ μ ν, §\hyperref[lean:CGD.Foundations.isSpin4cAlgebra]{\detokenize{isSpin4cAlgebra}}§ (F μ ν)) → L (fun μ ν => c • F μ ν) = c^2 * L F)
-  (hLQuadAdd : ∀ (F G : Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.ChiralM]{\detokenize{ChiralM}}§), 
-    (∀ μ ν, §\hyperref[lean:CGD.Foundations.isSpin4cAlgebra]{\detokenize{isSpin4cAlgebra}}§ (F μ ν)) → (∀ μ ν, §\hyperref[lean:CGD.Foundations.isSpin4cAlgebra]{\detokenize{isSpin4cAlgebra}}§ (G μ ν)) → 
-    L (fun μ ν => F μ ν + G μ ν) + L (fun μ ν => F μ ν - G μ ν) = 2 * L F + 2 * L G) : 
+  (hLQuadAdd : ∀ (F G : Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.ChiralM]{\detokenize{ChiralM}}§),
+    (∀ μ ν, §\hyperref[lean:CGD.Foundations.isSpin4cAlgebra]{\detokenize{isSpin4cAlgebra}}§ (F μ ν)) → (∀ μ ν, §\hyperref[lean:CGD.Foundations.isSpin4cAlgebra]{\detokenize{isSpin4cAlgebra}}§ (G μ ν)) →
+    L (fun μ ν => F μ ν + G μ ν) + L (fun μ ν => F μ ν - G μ ν) = 2 * L F + 2 * L G) :
   ∃ c : ℂ, ∀ F, (∀ μ ν, §\hyperref[lean:CGD.Foundations.isSpin4cAlgebra]{\detokenize{isSpin4cAlgebra}}§ (F μ ν)) → L F = c * ∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, §\hyperref[lean:CGD.Gravity.epsilon4]{\detokenize{CGD.Gravity.epsilon4}}§ μ ν ρ σ * Matrix.trace (F μ ν * F ρ σ)
 
 
@@ -481,19 +413,10 @@ noncomputable def §\phantomsection\label{lean:CGD.Foundations.variationCurrent}
     §\hyperref[lean:CGD.Gravity.epsilon4]{\detokenize{CGD.Gravity.epsilon4}}§ mu nu rho sigma * Matrix.trace (dA_dt nu x * F rho sigma x)
 
 
--- MODULE: CGD.Foundations.Math
---------------------------------------------------------------------
-noncomputable instance §\phantomsection\label{lean:CGD.Foundations.matNormedAddCommGroup}§CGD.Foundations.matNormedAddCommGroup : NormedAddCommGroup (Matrix (Fin 2) (Fin 2) ℂ) :=
-  inferInstanceAs (NormedAddCommGroup (Fin 2 → Fin 2 → ℂ))
-
-noncomputable instance §\phantomsection\label{lean:CGD.Foundations.matNormedSpaceR}§CGD.Foundations.matNormedSpaceR : NormedSpace ℝ (Matrix (Fin 2) (Fin 2) ℂ) :=
-  inferInstanceAs (NormedSpace ℝ (Fin 2 → Fin 2 → ℂ))
-
-
 -- MODULE: CGD.Foundations.Spacetime
 --------------------------------------------------------------------
-/-- 
-The Spacetime Manifold is defined as a map `Fin 4 → ℝ`. 
+/--
+The Spacetime Manifold is defined as a map `Fin 4 → ℝ`.
 This instantiates the standard `NormedAddCommGroup` and `NormedSpace ℝ` required for rigorous calculus of variations over the manifold.
 -/
 abbrev §\phantomsection\label{lean:CGD.Foundations.SpacetimePoint}§CGD.Foundations.SpacetimePoint := Fin 4 → ℝ
@@ -501,7 +424,7 @@ abbrev §\phantomsection\label{lean:CGD.Foundations.SpacetimePoint}§CGD.Foundat
 
 -- MODULE: CGD.Foundations.TensorCalculus.DifferentialRules
 --------------------------------------------------------------------
-/-- True geometric definition of the gauge covariant derivative of the field strength tensor: 
+/-- True geometric definition of the gauge covariant derivative of the field strength tensor:
     D_α F_βγ = ∂_α F_βγ + [A_α, F_βγ] -/
 noncomputable def §\phantomsection\label{lean:CGD.Foundations.covariantDeriv}§CGD.Foundations.covariantDeriv (A : Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§) (alpha beta gamma : Fin 4) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) : §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§ :=
   let dF := partialDerivSl2c alpha (fun p => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ A beta gamma p) x
@@ -529,29 +452,29 @@ theorem §\phantomsection\label{lean:CGD.Gravity.macroscopicRicciFlatEmergence}�
   (Psi : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → Fin 2 → Fin 2 → Fin 2 → Fin 2 → ℂ)
   [eq2_2b : §\hyperref[lean:Litlib.Y1991.capovilla1991pure.Eq2_2b]{\detokenize{Eq2_2b}}§ §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ (§\hyperref[lean:CGD.Gravity.cgd_dSigma]{\detokenize{cgd_dSigma}}§ urbantke_tetrad) (§\hyperref[lean:CGD.Gravity.cgd_omega]{\detokenize{cgd_omega}}§ pu.toUniverse) (§\hyperref[lean:CGD.Gravity.cgd_Sigma]{\detokenize{cgd_Sigma}}§ urbantke_tetrad) §\hyperref[lean:CGD.Gravity.cgd_eps2_up]{\detokenize{cgd_eps2_up}}§]
   [eq2_2c : §\hyperref[lean:Litlib.Y1991.capovilla1991pure.Eq2_2c]{\detokenize{Eq2_2c}}§ §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ (§\hyperref[lean:CGD.Gravity.cgd_R]{\detokenize{cgd_R}}§ pu.toUniverse) Psi (§\hyperref[lean:CGD.Gravity.cgd_Sigma]{\detokenize{cgd_Sigma}}§ urbantke_tetrad)]
-  [th_ricci : §\hyperref[lean:Litlib.Y1991.capovilla1991pure.Theorem_Eq2_2c_RicciFlat]{\detokenize{Theorem_Eq2_2c_RicciFlat}}§ 
+  [th_ricci : §\hyperref[lean:Litlib.Y1991.capovilla1991pure.Theorem_Eq2_2c_RicciFlat]{\detokenize{Theorem_Eq2_2c_RicciFlat}}§
     (Spacetime := pu.bulk)
-    (theta := fun (x : pu.bulk) => §\hyperref[lean:CGD.Gravity.cgd_theta]{\detokenize{cgd_theta}}§ urbantke_tetrad x.val) 
-    (g := fun (x : pu.bulk) m n => §\hyperref[lean:CGD.Gravity.metricFromTetrad]{\detokenize{metricFromTetrad}}§ urbantke_tetrad m n x.val) 
+    (theta := fun (x : pu.bulk) => §\hyperref[lean:CGD.Gravity.cgd_theta]{\detokenize{cgd_theta}}§ urbantke_tetrad x.val)
+    (g := fun (x : pu.bulk) m n => §\hyperref[lean:CGD.Gravity.metricFromTetrad]{\detokenize{metricFromTetrad}}§ urbantke_tetrad m n x.val)
     (eps2_down := §\hyperref[lean:CGD.Gravity.cgd_eps2_down]{\detokenize{cgd_eps2_down}}§)
     (eps2_bar_down := §\hyperref[lean:CGD.Gravity.cgd_eps2_bar_down]{\detokenize{cgd_eps2_bar_down}}§)
     (eps2_right := §\hyperref[lean:CGD.Gravity.cgd_eps2_bar_down]{\detokenize{cgd_eps2_bar_down}}§)
     (eps2_up := §\hyperref[lean:CGD.Gravity.cgd_eps2_up]{\detokenize{cgd_eps2_up}}§)
-    (R := fun (x : pu.bulk) => §\hyperref[lean:CGD.Gravity.cgd_R]{\detokenize{cgd_R}}§ pu.toUniverse x.val) 
-    (Psi := fun (x : pu.bulk) => Psi x.val) 
-    (Sigma := fun (x : pu.bulk) => §\hyperref[lean:CGD.Gravity.cgd_Sigma]{\detokenize{cgd_Sigma}}§ urbantke_tetrad x.val) 
+    (R := fun (x : pu.bulk) => §\hyperref[lean:CGD.Gravity.cgd_R]{\detokenize{cgd_R}}§ pu.toUniverse x.val)
+    (Psi := fun (x : pu.bulk) => Psi x.val)
+    (Sigma := fun (x : pu.bulk) => §\hyperref[lean:CGD.Gravity.cgd_Sigma]{\detokenize{cgd_Sigma}}§ urbantke_tetrad x.val)
     (dSigma := fun (x : pu.bulk) => §\hyperref[lean:CGD.Gravity.cgd_dSigma]{\detokenize{cgd_dSigma}}§ urbantke_tetrad x.val)
     (omega := fun (x : pu.bulk) => §\hyperref[lean:CGD.Gravity.cgd_omega]{\detokenize{cgd_omega}}§ pu.toUniverse x.val)
     (isRicciFlat := fun (g : pu.bulk → Fin 4 → Fin 4 → ℂ) => ∀ (x : pu.bulk) μ ν, §\hyperref[lean:CGD.Gravity.ricciTensor]{\detokenize{CGD.Gravity.ricciTensor}}§ (§\hyperref[lean:CGD.Gravity.extendMetric]{\detokenize{extendMetric}}§ pu.bulk g) μ ν x.val = 0)] :
   ∀ x ∈ pu.bulk, ∀ μ ν, §\hyperref[lean:CGD.Gravity.ricciTensor]{\detokenize{ricciTensor}}§ (§\hyperref[lean:CGD.Gravity.extendMetric]{\detokenize{extendMetric}}§ pu.bulk (fun y m n => §\hyperref[lean:CGD.Gravity.metricFromTetrad]{\detokenize{metricFromTetrad}}§ urbantke_tetrad m n y.val)) μ ν x = 0
 
 /--
-In the Capovilla formulation, the Unimodular constraint is governed by the scalar density μ. 
-This theorem rigorously applies the literature identity to prove that the fundamental volume element 
+In the Capovilla formulation, the Unimodular constraint is governed by the scalar density μ.
+This theorem rigorously applies the literature identity to prove that the fundamental volume element
 of the emergent spacetime metric (sqrt_g) squared is strictly equal to the Unimodular multiplier μ squared.
 -/
 @[litlib_track "Macroscopic Unimodular Vacuum Emergence"]
-theorem §\phantomsection\label{lean:CGD.Gravity.macroscopicVacuumEmergence}§CGD.Gravity.macroscopicVacuumEmergence 
+theorem §\phantomsection\label{lean:CGD.Gravity.macroscopicVacuumEmergence}§CGD.Gravity.macroscopicVacuumEmergence
   (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§)
   (sqrt_g mu eta : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → ℂ)
   (Psi_3x3 M_3x3 : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → Matrix (Fin 3) (Fin 3) ℂ)
@@ -562,13 +485,13 @@ theorem §\phantomsection\label{lean:CGD.Gravity.macroscopicVacuumEmergence}§CG
 -- MODULE: CGD.Gravity.ExactSolutions.Abelian
 --------------------------------------------------------------------
 /--
-Provides an exact analytical solution for an Abelian plane wave satisfying the pure CDJ 
+Provides an exact analytical solution for an Abelian plane wave satisfying the pure CDJ
 constraint equation (F ∧ F = 0).
 -/
 @[litlib_track "Exact Abelian Macroscopic Solution"]
 theorem §\phantomsection\label{lean:CGD.Gravity.dynamicExactAbelianSolution}§CGD.Gravity.dynamicExactAbelianSolution (c : ℂ) (hc : c ≠ 0) :
-  ∃ (u : §\hyperref[lean:CGD.Axioms.Universe]{\detokenize{Universe}}§), 
-    §\hyperref[lean:CGD.Gravity.satisfiesPureCdjConstraint]{\detokenize{CGD.Gravity.satisfiesPureCdjConstraint}}§ (fun p m n => §\hyperref[lean:CGD.Gravity.cgdAdjointCurvature]{\detokenize{cgdAdjointCurvature}}§ u m n p) ∧ 
+  ∃ (u : §\hyperref[lean:CGD.Axioms.Universe]{\detokenize{Universe}}§),
+    §\hyperref[lean:CGD.Gravity.satisfiesPureCdjConstraint]{\detokenize{CGD.Gravity.satisfiesPureCdjConstraint}}§ (fun p m n => §\hyperref[lean:CGD.Gravity.cgdAdjointCurvature]{\detokenize{cgdAdjointCurvature}}§ u m n p) ∧
     (∀ x, §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ u.sd_sector 1 2 x = c • §\hyperref[lean:CGD.Foundations.toSl2c]{\detokenize{toSl2c}}§ §\hyperref[lean:CGD.Foundations.sigmaX]{\detokenize{sigmaX}}§) ∧
     (∃ x, §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ u.sd_sector 1 2 x ≠ 0)
 
@@ -578,15 +501,15 @@ theorem §\phantomsection\label{lean:CGD.Gravity.dynamicExactAbelianSolution}§C
 /--
 Type O (Isotropic / FLRW Cosmological Vacuum)
 Algebraic Form: A_0 = 0, A_j(t) = a(t) σ_j
-All principal null directions are degenerate. 
+All principal null directions are degenerate.
 The scale factor `a(t)` must be strictly real and non-static to ensure a non-degenerate Lorentzian metric.
 Acts as the volume-generating Axial Condensate for all other Petrov types.
 -/
 def §\phantomsection\label{lean:CGD.Gravity.ExactSolutions.IsTypeOForm}§CGD.Gravity.ExactSolutions.IsTypeOForm (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) : Prop :=
   ∃ a : ℝ → ℂ, ∀ x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§,
-    (a (x 0)).im = 0 ∧ 
+    (a (x 0)).im = 0 ∧
     (fderiv ℝ a (x 0) 1).im = 0 ∧
-    a (x 0) ≠ 0 ∧ 
+    a (x 0) ≠ 0 ∧
     fderiv ℝ a (x 0) 1 ≠ 0 ∧
     pu.toUniverse.sd_sector.val 0 x = 0 ∧
     pu.toUniverse.sd_sector.val 1 x = §\hyperref[lean:CGD.Foundations.toSl2c]{\detokenize{toSl2c}}§ (a (x 0) • sigma1.val) ∧
@@ -598,7 +521,7 @@ def §\phantomsection\label{lean:CGD.Gravity.ExactSolutions.IsTypeOForm}§CGD.Gr
 --------------------------------------------------------------------
 @[litlib_track "CDJ constraint holds"]
 lemma §\phantomsection\label{lean:CGD.Gravity.CDJ_constraint_holds}§CGD.Gravity.CDJ_constraint_holds :
-  (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, §\hyperref[lean:CGD.Gravity.epsilon4]{\detokenize{epsilon4}}§ μ ν ρ σ • (§\hyperref[lean:CGD.Gravity.adj_F]{\detokenize{adj_F}}§ μ ν * §\hyperref[lean:CGD.Gravity.adj_F]{\detokenize{adj_F}}§ ρ σ)) = 
+  (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, §\hyperref[lean:CGD.Gravity.epsilon4]{\detokenize{epsilon4}}§ μ ν ρ σ • (§\hyperref[lean:CGD.Gravity.adj_F]{\detokenize{adj_F}}§ μ ν * §\hyperref[lean:CGD.Gravity.adj_F]{\detokenize{adj_F}}§ ρ σ)) =
   ((∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, §\hyperref[lean:CGD.Gravity.epsilon4]{\detokenize{epsilon4}}§ μ ν ρ σ • (§\hyperref[lean:CGD.Gravity.adj_F]{\detokenize{adj_F}}§ μ ν * §\hyperref[lean:CGD.Gravity.adj_F]{\detokenize{adj_F}}§ ρ σ)).trace / 3) • 1
 
 
@@ -672,19 +595,19 @@ noncomputable def §\phantomsection\label{lean:CGD.Gravity.F_val_map}§CGD.Gravi
 -- MODULE: CGD.Gravity.ExactSolutions.MainTheorem
 --------------------------------------------------------------------
 /--
-This formally constructs an exact analytical non-Abelian $SU(2)$ gauge configuration 
-that simultaneously satisfies the trace-free Capovilla CDJ constraint at the spatial 
-origin, and produces a non-degenerate, strictly real, negative-determinant 
+This formally constructs an exact analytical non-Abelian $SU(2)$ gauge configuration
+that simultaneously satisfies the trace-free Capovilla CDJ constraint at the spatial
+origin, and produces a non-degenerate, strictly real, negative-determinant
 Lorentzian metric (det g < 0) at x = 0.
 
-This mathematically proves that the foundational vacuum geometry of Chiral Gauge Dynamics 
+This mathematically proves that the foundational vacuum geometry of Chiral Gauge Dynamics
 is strictly non-vacuous.
 -/
 @[litlib_track "Exact Non-Abelian Lorentzian Macroscopic Witness"]
 theorem §\phantomsection\label{lean:CGD.Gravity.dynamicExactLorentzianSolution}§CGD.Gravity.dynamicExactLorentzianSolution :
-  ∃ (u : §\hyperref[lean:CGD.Axioms.Universe]{\detokenize{Universe}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§), 
+  ∃ (u : §\hyperref[lean:CGD.Axioms.Universe]{\detokenize{Universe}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§),
     (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
-      §\hyperref[lean:CGD.Gravity.epsilon4]{\detokenize{epsilon4}}§ μ ν ρ σ • (§\hyperref[lean:CGD.Gravity.cgdAdjointCurvature]{\detokenize{cgdAdjointCurvature}}§ u μ ν x * §\hyperref[lean:CGD.Gravity.cgdAdjointCurvature]{\detokenize{cgdAdjointCurvature}}§ u ρ σ x)) = 
+      §\hyperref[lean:CGD.Gravity.epsilon4]{\detokenize{epsilon4}}§ μ ν ρ σ • (§\hyperref[lean:CGD.Gravity.cgdAdjointCurvature]{\detokenize{cgdAdjointCurvature}}§ u μ ν x * §\hyperref[lean:CGD.Gravity.cgdAdjointCurvature]{\detokenize{cgdAdjointCurvature}}§ u ρ σ x)) =
     ((∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
       §\hyperref[lean:CGD.Gravity.epsilon4]{\detokenize{epsilon4}}§ μ ν ρ σ • (§\hyperref[lean:CGD.Gravity.cgdAdjointCurvature]{\detokenize{cgdAdjointCurvature}}§ u μ ν x * §\hyperref[lean:CGD.Gravity.cgdAdjointCurvature]{\detokenize{cgdAdjointCurvature}}§ u ρ σ x)).trace / 3) • 1 ∧
     §\hyperref[lean:CGD.Gravity.isLorentzian]{\detokenize{isLorentzian}}§ (§\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{urbantkeMetric}}§ (fun m n => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ u.sd_sector m n x))
@@ -782,9 +705,9 @@ noncomputable def §\phantomsection\label{lean:CGD.Gravity.ExactSolutions.testPo
 -- MODULE: CGD.Gravity.GeodesicMotion
 --------------------------------------------------------------------
 /--
-Using the rigorous Papapetrou (1951) theorem, we prove that a localized topological defect 
-(a single-pole singularity in the gauge curvature) must travel along a complex geodesic of the 
-dynamically emergent Urbantke geometry. This natively utilizes the exact complex covariant 
+Using the rigorous Papapetrou (1951) theorem, we prove that a localized topological defect
+(a single-pole singularity in the gauge curvature) must travel along a complex geodesic of the
+dynamically emergent Urbantke geometry. This natively utilizes the exact complex covariant
 conservation of the emergent Stress-Energy tensor, evaluating strictly inside the macroscopic bulk.
 -/
 @[litlib_track "Machian Motion of Topological Defects"]
@@ -797,7 +720,7 @@ theorem §\phantomsection\label{lean:CGD.Gravity.machianTopologicalDefectMotion}
   (isSinglePole : (Fin 4 → Fin 4 → pu.bulk → ℂ) → (ℂ → pu.bulk) → Prop)
   [general_bianchi : §\hyperref[lean:Litlib.Y2003.nakahara2003geometry.Theorem_ContractedBianchi]{\detokenize{Litlib.Y2003.nakahara2003geometry.Theorem_ContractedBianchi}}§ pu.bulk (Fin 4) isSmooth (§\hyperref[lean:CGD.Gravity.bulkDeriv]{\detokenize{bulkDeriv}}§ pu)]
   [symm_metric : §\hyperref[lean:Litlib.Y1984.urbantke1984integrability.Eq10_Symmetry]{\detokenize{Litlib.Y1984.urbantke1984integrability.Eq10_Symmetry}}§]
-  [papa : §\hyperref[lean:Litlib.Y1951.papapetrou1951spinning.Eq2_12]{\detokenize{Litlib.Y1951.papapetrou1951spinning.Eq2_12}}§ pu.bulk ℂ 
+  [papa : §\hyperref[lean:Litlib.Y1951.papapetrou1951spinning.Eq2_12]{\detokenize{Litlib.Y1951.papapetrou1951spinning.Eq2_12}}§ pu.bulk ℂ
     (fun p => Matrix.of (fun m n => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p.val) m n))
     (fun p => Matrix.of (fun m n => §\hyperref[lean:CGD.Gravity.matrixInv4x4]{\detokenize{CGD.Gravity.matrixInv4x4}}§ (fun a b => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p.val) a b) m n))
     (fun p rho mu nu => §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{CGD.Gravity.christoffel}}§ (fun m n p' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p') m n) rho mu nu p.val)
@@ -812,12 +735,12 @@ theorem §\phantomsection\label{lean:CGD.Gravity.machianTopologicalDefectMotion}
   (h_smooth_g : ∀ i j, isSmooth (fun p => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p.val) i j))
   (h_smooth_g_inv : ∀ i j, isSmooth (fun p => §\hyperref[lean:CGD.Gravity.matrixInv4x4]{\detokenize{CGD.Gravity.matrixInv4x4}}§ (fun m n => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p.val) m n) i j))
   (h_smooth_chris : ∀ rho mu nu, isSmooth (fun p => §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{CGD.Gravity.christoffel}}§ (fun m n p' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p') m n) rho mu nu p.val))
-  (h_chris_eq : ∀ p : pu.bulk, ∀ rho mu nu, §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{CGD.Gravity.christoffel}}§ (fun m n p' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p') m n) rho mu nu p.val = 
+  (h_chris_eq : ∀ p : pu.bulk, ∀ rho mu nu, §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{CGD.Gravity.christoffel}}§ (fun m n p' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p') m n) rho mu nu p.val =
     (1/2 : ℂ) * ∑ sigma : Fin 4, §\hyperref[lean:CGD.Gravity.matrixInv4x4]{\detokenize{CGD.Gravity.matrixInv4x4}}§ (fun m n => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p.val) m n) rho sigma * (
       §\hyperref[lean:CGD.Gravity.bulkDeriv]{\detokenize{bulkDeriv}}§ pu mu (fun p' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p'.val) sigma nu) p +
       §\hyperref[lean:CGD.Gravity.bulkDeriv]{\detokenize{bulkDeriv}}§ pu nu (fun p' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p'.val) mu sigma) p -
       §\hyperref[lean:CGD.Gravity.bulkDeriv]{\detokenize{bulkDeriv}}§ pu sigma (fun p' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p'.val) mu nu) p))
-  (h_ricci_eq : ∀ p : pu.bulk, ∀ mu nu, §\hyperref[lean:CGD.Gravity.ricciTensor]{\detokenize{CGD.Gravity.ricciTensor}}§ (fun m n p' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p') m n) mu nu p.val = 
+  (h_ricci_eq : ∀ p : pu.bulk, ∀ mu nu, §\hyperref[lean:CGD.Gravity.ricciTensor]{\detokenize{CGD.Gravity.ricciTensor}}§ (fun m n p' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p') m n) mu nu p.val =
     ∑ rho : Fin 4, (§\hyperref[lean:CGD.Gravity.bulkDeriv]{\detokenize{bulkDeriv}}§ pu rho (fun p' => §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{CGD.Gravity.christoffel}}§ (fun m n p'' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p'') m n) rho mu nu p'.val) p -
           §\hyperref[lean:CGD.Gravity.bulkDeriv]{\detokenize{bulkDeriv}}§ pu nu (fun p' => §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{CGD.Gravity.christoffel}}§ (fun m n p'' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p'') m n) rho mu rho p'.val) p +
           ∑ lambda : Fin 4, (§\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{CGD.Gravity.christoffel}}§ (fun m n p' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p') m n) rho lambda rho p.val * §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{CGD.Gravity.christoffel}}§ (fun m n p' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p') m n) lambda mu nu p.val -
@@ -836,7 +759,7 @@ abbrev §\phantomsection\label{lean:CGD.Gravity.TetradField}§CGD.Gravity.Tetrad
 
 noncomputable def §\phantomsection\label{lean:CGD.Gravity.christoffel}§CGD.Gravity.christoffel (g : §\hyperref[lean:CGD.Gravity.SpacetimeIndex]{\detokenize{SpacetimeIndex}}§ → §\hyperref[lean:CGD.Gravity.SpacetimeIndex]{\detokenize{SpacetimeIndex}}§ → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → Complex) (rho mu nu : §\hyperref[lean:CGD.Gravity.SpacetimeIndex]{\detokenize{SpacetimeIndex}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) : Complex :=
   let g_inv := §\hyperref[lean:CGD.Gravity.matrixInv4x4]{\detokenize{matrixInv4x4}}§ (fun i j => g i j x)
-  (1 / 2 : Complex) * ∑ sigma, g_inv rho sigma * (§\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ mu (fun p => g sigma nu p) x + §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ nu (fun p => g mu sigma p) x - §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ sigma (fun p => g mu nu p) x)
+  (1 / 2 : Complex) * ∑ sigma, g_inv rho sigma * (§\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ mu (fun p => g sigma nu p) x + §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ nu (fun p => g mu sigma p) x - §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ sigma (fun p => g mu nu p) x)
 
 /-- 4-dimensional Levi-Civita tensor cast to Complex -/
 noncomputable def §\phantomsection\label{lean:CGD.Gravity.epsilon4}§CGD.Gravity.epsilon4 (i j k l : Fin 4) : Complex := epsilon4_int i j k l
@@ -848,8 +771,8 @@ noncomputable def §\phantomsection\label{lean:CGD.Gravity.matrixInv4x4}§CGD.Gr
   (1 / M.det) • M.adjugate
 
 noncomputable def §\phantomsection\label{lean:CGD.Gravity.ricciTensor}§CGD.Gravity.ricciTensor (g : §\hyperref[lean:CGD.Gravity.SpacetimeIndex]{\detokenize{SpacetimeIndex}}§ → §\hyperref[lean:CGD.Gravity.SpacetimeIndex]{\detokenize{SpacetimeIndex}}§ → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → Complex) (mu nu : §\hyperref[lean:CGD.Gravity.SpacetimeIndex]{\detokenize{SpacetimeIndex}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) : Complex :=
-  ∑ rho, (§\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ rho (fun p => §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{christoffel}}§ g rho mu nu p) x
-        - §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ nu (fun p => §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{christoffel}}§ g rho mu rho p) x
+  ∑ rho, (§\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ rho (fun p => §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{christoffel}}§ g rho mu nu p) x
+        - §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ nu (fun p => §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{christoffel}}§ g rho mu rho p) x
         + ∑ lambda, (§\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{christoffel}}§ g rho lambda rho x * §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{christoffel}}§ g lambda mu nu x
                    - §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{christoffel}}§ g rho lambda nu x * §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{christoffel}}§ g lambda mu rho x))
 
@@ -890,7 +813,7 @@ def §\phantomsection\label{lean:CGD.Gravity.satisfiesPureCdjConstraint}§CGD.Gr
 --------------------------------------------------------------------
 /-- The exact partial derivative expansion of the derived soldering 2-form. -/
 noncomputable def §\phantomsection\label{lean:CGD.Gravity.cgd_dSigma}§CGD.Gravity.cgd_dSigma (e : §\hyperref[lean:CGD.Gravity.TetradField]{\detokenize{TetradField}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{CGD.Foundations.SpacetimePoint}}§) (μ ν ρ : Fin 4) (A B : Fin 2) : ℂ :=
-  §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{CGD.Foundations.partialDeriv}}§ ρ (fun p => §\hyperref[lean:CGD.Gravity.cgd_Sigma]{\detokenize{cgd_Sigma}}§ e p μ ν A B) x
+  §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{CGD.Math.partialDeriv}}§ ρ (fun p => §\hyperref[lean:CGD.Gravity.cgd_Sigma]{\detokenize{cgd_Sigma}}§ e p μ ν A B) x
 
 /-- The inverse Levi-Civita spinor metric (indices up). -/
 def §\phantomsection\label{lean:CGD.Gravity.cgd_eps2_up}§CGD.Gravity.cgd_eps2_up (A B : Fin 2) : ℂ := §\hyperref[lean:CGD.Gravity.cgd_eps2_down]{\detokenize{cgd_eps2_down}}§ A B
@@ -911,18 +834,18 @@ The dynamic self-dual soldering 2-form.
 Constructed exactly as $\Sigma_{\mu\nu}^{AB} = \frac{1}{2} \epsilon_{A'B'} \theta_{[\mu}^{AA'} \theta_{\nu]}^{BB'}$.
 -/
 noncomputable def §\phantomsection\label{lean:CGD.Gravity.cgd_Sigma}§CGD.Gravity.cgd_Sigma (e : §\hyperref[lean:CGD.Gravity.TetradField]{\detokenize{TetradField}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (μ ν : Fin 4) (A B : Fin 2) : ℂ :=
-  (1 / 2 : ℂ) * §\hyperref[lean:Litlib.Y1991.capovilla1991pure.sumFin2]{\detokenize{sumFin2}}§ fun A' => §\hyperref[lean:Litlib.Y1991.capovilla1991pure.sumFin2]{\detokenize{sumFin2}}§ fun B' => 
+  (1 / 2 : ℂ) * §\hyperref[lean:Litlib.Y1991.capovilla1991pure.sumFin2]{\detokenize{sumFin2}}§ fun A' => §\hyperref[lean:Litlib.Y1991.capovilla1991pure.sumFin2]{\detokenize{sumFin2}}§ fun B' =>
     §\hyperref[lean:CGD.Gravity.cgd_eps2_bar_down]{\detokenize{cgd_eps2_bar_down}}§ A' B' * (§\hyperref[lean:CGD.Gravity.cgd_theta]{\detokenize{cgd_theta}}§ e x μ A A' * §\hyperref[lean:CGD.Gravity.cgd_theta]{\detokenize{cgd_theta}}§ e x ν B B' - §\hyperref[lean:CGD.Gravity.cgd_theta]{\detokenize{cgd_theta}}§ e x ν A A' * §\hyperref[lean:CGD.Gravity.cgd_theta]{\detokenize{cgd_theta}}§ e x μ B B')
 
-/-- 
+/--
 The conjugate antisymmetric spinor metric.
-In the complexified CDJ GR framework, the conjugate metric is structurally 
+In the complexified CDJ GR framework, the conjugate metric is structurally
 identical to the primary spinor metric.
 -/
 def §\phantomsection\label{lean:CGD.Gravity.cgd_eps2_bar_down}§CGD.Gravity.cgd_eps2_bar_down (A' B' : Fin 2) : ℂ :=
   §\hyperref[lean:CGD.Gravity.cgd_eps2_down]{\detokenize{cgd_eps2_down}}§ A' B'
 
-/-- 
+/--
 The fully antisymmetric spinor metric (Levi-Civita symbol for SL(2,C) spinors).
 This mathematically anchors the internal geometry of the Capovilla framework.
 -/
@@ -939,7 +862,7 @@ noncomputable def §\phantomsection\label{lean:CGD.Gravity.cgd_theta}§CGD.Gravi
 --------------------------------------------------------------------
 /-- Project bulk derivatives into the spacetime coordinate system -/
 noncomputable def §\phantomsection\label{lean:CGD.Gravity.bulkDeriv}§CGD.Gravity.bulkDeriv (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) (mu : Fin 4) (f : pu.bulk → ℂ) (x : pu.bulk) : ℂ :=
-  §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ mu (fun p => if h : p ∈ pu.bulk then f ⟨p, h⟩ else 0) x.val
+  §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ mu (fun p => if h : p ∈ pu.bulk then f ⟨p, h⟩ else 0) x.val
 
 noncomputable def §\phantomsection\label{lean:CGD.Gravity.emergentStressEnergy}§CGD.Gravity.emergentStressEnergy (F : Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§) (mu nu : Fin 4) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) : ℂ :=
   let g := fun m n p => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => F a b p) m n
@@ -948,7 +871,7 @@ noncomputable def §\phantomsection\label{lean:CGD.Gravity.emergentStressEnergy}
   let R_scalar := ∑ alpha : Fin 4, ∑ beta : Fin 4, g_inv alpha beta * §\hyperref[lean:CGD.Gravity.ricciTensor]{\detokenize{CGD.Gravity.ricciTensor}}§ g alpha beta x
   R_mu_nu - (1/2 : ℂ) * g mu nu x * R_scalar
 
-/-- 
+/--
 The emergent Stress-Energy tensor (defined as the Einstein tensor of the dynamically emergent Urbantke metric) is covariantly conserved with respect to its own Levi-Civita connection.
 This fundamentally restricts the conservation to the macroscopic bulk where det g ≠ 0.
 -/
@@ -967,12 +890,12 @@ theorem §\phantomsection\label{lean:CGD.Gravity.emergentStressEnergyConservatio
   (h_smooth_g : ∀ i j, isSmooth (fun p => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p.val) i j))
   (h_smooth_g_inv : ∀ i j, isSmooth (fun p => §\hyperref[lean:CGD.Gravity.matrixInv4x4]{\detokenize{CGD.Gravity.matrixInv4x4}}§ (fun m n => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p.val) m n) i j))
   (h_smooth_chris : ∀ rho mu nu, isSmooth (fun p => §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{CGD.Gravity.christoffel}}§ (fun m n p' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p') m n) rho mu nu p.val))
-  (h_chris_eq : ∀ p : pu.bulk, ∀ rho mu nu, §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{CGD.Gravity.christoffel}}§ (fun m n p' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p') m n) rho mu nu p.val = 
+  (h_chris_eq : ∀ p : pu.bulk, ∀ rho mu nu, §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{CGD.Gravity.christoffel}}§ (fun m n p' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p') m n) rho mu nu p.val =
     (1/2 : ℂ) * ∑ sigma : Fin 4, §\hyperref[lean:CGD.Gravity.matrixInv4x4]{\detokenize{CGD.Gravity.matrixInv4x4}}§ (fun m n => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p.val) m n) rho sigma * (
       §\hyperref[lean:CGD.Gravity.bulkDeriv]{\detokenize{bulkDeriv}}§ pu mu (fun p' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p'.val) sigma nu) p +
       §\hyperref[lean:CGD.Gravity.bulkDeriv]{\detokenize{bulkDeriv}}§ pu nu (fun p' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p'.val) mu sigma) p -
       §\hyperref[lean:CGD.Gravity.bulkDeriv]{\detokenize{bulkDeriv}}§ pu sigma (fun p' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p'.val) mu nu) p))
-  (h_ricci_eq : ∀ p : pu.bulk, ∀ mu nu, §\hyperref[lean:CGD.Gravity.ricciTensor]{\detokenize{CGD.Gravity.ricciTensor}}§ (fun m n p' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p') m n) mu nu p.val = 
+  (h_ricci_eq : ∀ p : pu.bulk, ∀ mu nu, §\hyperref[lean:CGD.Gravity.ricciTensor]{\detokenize{CGD.Gravity.ricciTensor}}§ (fun m n p' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p') m n) mu nu p.val =
     ∑ rho : Fin 4, (§\hyperref[lean:CGD.Gravity.bulkDeriv]{\detokenize{bulkDeriv}}§ pu rho (fun p' => §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{CGD.Gravity.christoffel}}§ (fun m n p'' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p'') m n) rho mu nu p'.val) p -
           §\hyperref[lean:CGD.Gravity.bulkDeriv]{\detokenize{bulkDeriv}}§ pu nu (fun p' => §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{CGD.Gravity.christoffel}}§ (fun m n p'' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p'') m n) rho mu rho p'.val) p +
           ∑ lambda : Fin 4, (§\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{CGD.Gravity.christoffel}}§ (fun m n p' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p') m n) rho lambda rho p.val * §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{CGD.Gravity.christoffel}}§ (fun m n p' => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{CGD.Gravity.urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p') m n) lambda mu nu p.val -
@@ -984,7 +907,7 @@ theorem §\phantomsection\label{lean:CGD.Gravity.emergentStressEnergyConservatio
     let T := fun m n (p : pu.bulk) => §\hyperref[lean:CGD.Gravity.emergentStressEnergy]{\detokenize{emergentStressEnergy}}§ (fun a b p' => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p') m n p.val
     ∑ mu : Fin 4, ∑ alpha : Fin 4, g_inv mu alpha x * (
       §\hyperref[lean:CGD.Gravity.bulkDeriv]{\detokenize{bulkDeriv}}§ pu alpha (fun p => T mu nu p) x -
-      ∑ lambda : Fin 4, (chris lambda alpha mu x * T lambda nu x + 
+      ∑ lambda : Fin 4, (chris lambda alpha mu x * T lambda nu x +
                          chris lambda alpha nu x * T mu lambda x)
     ) = 0
 
@@ -993,10 +916,25 @@ instance §\phantomsection\label{lean:CGD.Gravity.instPhysicalUniverseBulkNonemp
   let ⟨x, hx⟩
 
 
+-- MODULE: CGD.Math.Calculus
+--------------------------------------------------------------------
+noncomputable def §\phantomsection\label{lean:CGD.Math.partialDeriv}§CGD.Math.partialDeriv {E : Type*}[NormedAddCommGroup E][NormedSpace ℝ E] (μ : Fin 4) (f : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → E) : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → E :=
+  fun x => fderiv ℝ f x ((Pi.single μ (1 : ℝ)) : Fin 4 → ℝ)
+
+
+-- MODULE: CGD.Math.Matrix
+--------------------------------------------------------------------
+noncomputable instance §\phantomsection\label{lean:CGD.Math.matNormedAddCommGroup}§CGD.Math.matNormedAddCommGroup : NormedAddCommGroup (Matrix (Fin 2) (Fin 2) ℂ) :=
+  inferInstanceAs (NormedAddCommGroup (Fin 2 → Fin 2 → ℂ))
+
+noncomputable instance §\phantomsection\label{lean:CGD.Math.matNormedSpaceR}§CGD.Math.matNormedSpaceR : NormedSpace ℝ (Matrix (Fin 2) (Fin 2) ℂ) :=
+  inferInstanceAs (NormedSpace ℝ (Fin 2 → Fin 2 → ℂ))
+
+
 -- MODULE: CGD.Particles.Color
 --------------------------------------------------------------------
 /--
-Defines a gauge field that is constrained to a lower-dimensional Lie subalgebra, 
+Defines a gauge field that is constrained to a lower-dimensional Lie subalgebra,
 missing at least one of the three internal color generators.
 -/
 def §\phantomsection\label{lean:CGD.Particles.isColorDeficient}§CGD.Particles.isColorDeficient (F : Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§) (color : Fin 3) : Prop :=
@@ -1041,7 +979,7 @@ theorem §\phantomsection\label{lean:CGD.Particles.kinematicThreeColorRequiremen
 
 -- MODULE: CGD.Particles.Definitions
 --------------------------------------------------------------------
-/-- 
+/--
 The 4D BPST Instanton in the regular gauge.
 Topologically localizes in both space and time via the 't Hooft symbols.
 Multiplied by Complex.I to map into the strictly anti-Hermitian su(2) Lie algebra.
@@ -1067,10 +1005,64 @@ def §\phantomsection\label{lean:CGD.Particles.isSingleColor}§CGD.Particles.isS
   ∀ mu nu rho sigma, ⁅F mu nu, F rho sigma⁆ = 0
 
 
+-- MODULE: CGD.Particles.Electromagnetism
+--------------------------------------------------------------------
+/--
+The true topological Abelian field strength tensor defined as a component
+of the full non-Abelian curvature. Incorporates both the curl and the commutator,
+enabling the dual divergence to measure the non-trivial topological magnetic current.
+F_{μν}^{ij} = ∂_μ A_ν^{ij} - ∂_ν A_μ^{ij} + [A_μ, A_ν]^{ij}
+-/
+noncomputable def §\phantomsection\label{lean:CGD.Particles.abelianFieldStrength}§CGD.Particles.abelianFieldStrength (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) (i j : Fin 4) (μ ν : Fin 4) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) : ℂ :=
+  (§\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ μ (fun p => connectionComponent pu i j ν p) x - §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ ν (fun p => connectionComponent pu i j μ p) x) +
+  ∑ k : Fin 4, (connectionComponent pu i k μ x * connectionComponent pu k j ν x - connectionComponent pu i k ν x * connectionComponent pu k j μ x)
+
+/--
+The emergent U(1) current based on the Duan-Ge (1979) topological decomposition.
+Defined as the dual divergence of the Abelian field strength tensor F_ρσ.
+J^μ = ε^{μνρσ} ∂_ν F_ρσ
+-/
+noncomputable def §\phantomsection\label{lean:CGD.Particles.emergentElectricCurrent}§CGD.Particles.emergentElectricCurrent
+  (F : Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → ℂ)
+  (μ : Fin 4) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) : ℂ :=
+  ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
+    §\hyperref[lean:CGD.Gravity.epsilon4]{\detokenize{epsilon4}}§ μ ν ρ σ * §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ ν (fun p => F ρ σ p) x
+
+/--
+Because the physical Universe is axiomatically a smooth Spin(4,C) connection,
+its emergent Abelian projection natively satisfies the n-dimensional Clairaut theorem,
+guaranteeing exact topological charge conservation without further assumptions.
+-/
+@[litlib_track "Kinematic Charge Conservation"]
+theorem §\phantomsection\label{lean:CGD.Particles.kinematicChargeConservation}§CGD.Particles.kinematicChargeConservation
+  [clairaut : §\hyperref[lean:Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional]{\detokenize{Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional}}§]
+  (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) (i j : Fin 4) :
+  ∀ x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§,
+    ∑ μ : Fin 4, §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ μ (fun p => §\hyperref[lean:CGD.Particles.emergentElectricCurrent]{\detokenize{emergentElectricCurrent}}§ (§\hyperref[lean:CGD.Particles.abelianFieldStrength]{\detokenize{abelianFieldStrength}}§ pu i j) μ p) x = 0
+
+/--
+Because the emergent current is purely topological (defined via the Levi-Civita symbol),
+its divergence strictly vanishes due to the commutativity of partial derivatives,
+justified natively via n-dimensional Clairaut theorem on the Abelian field strength.
+-/
+@[litlib_track "Topological Charge Conservation"]
+theorem §\phantomsection\label{lean:CGD.Particles.topologicalChargeConservation}§CGD.Particles.topologicalChargeConservation
+  [clairaut : §\hyperref[lean:Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional]{\detokenize{Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional}}§]
+  (F : Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → ℂ)
+  (h_smooth_re : ∀ ρ σ, ContDiffOn ℝ 2 (fun p => (F ρ σ p).re) Set.univ)
+  (h_smooth_im : ∀ ρ σ, ContDiffOn ℝ 2 (fun p => (F ρ σ p).im) Set.univ)
+  (h_diff_F : ∀ ρ σ x, DifferentiableAt ℝ (fun p => F ρ σ p) x)
+  (h_diff : ∀ ν ρ σ x, DifferentiableAt ℝ (fun p => §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ ν (fun p' => F ρ σ p') p) x)
+  (h_diff_fderiv_re : ∀ ρ σ x, DifferentiableAt ℝ (fderiv ℝ (fun p => (F ρ σ p).re)) x)
+  (h_diff_fderiv_im : ∀ ρ σ x, DifferentiableAt ℝ (fderiv ℝ (fun p => (F ρ σ p).im)) x) :
+  ∀ x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§,
+    ∑ μ : Fin 4, §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ μ (fun p => §\hyperref[lean:CGD.Particles.emergentElectricCurrent]{\detokenize{emergentElectricCurrent}}§ F μ p) x = 0
+
+
 -- MODULE: CGD.Particles.Mass
 --------------------------------------------------------------------
 noncomputable def §\phantomsection\label{lean:CGD.Particles.inertialMass}§CGD.Particles.inertialMass (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) : ℝ :=
-  ∑ μ : Fin 4, ∑ ν : Fin 4, - (Matrix.trace ((§\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.asd_sector.val μ ν x).val * 
+  ∑ μ : Fin 4, ∑ ν : Fin 4, - (Matrix.trace ((§\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.asd_sector.val μ ν x).val *
                                              (§\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.asd_sector.val μ ν x).val)).re
 
 /-- By applying the positive definite trace property to the SU(2) curvature defect, we prove the topological origin of strictly positive inertial mass. -/
@@ -1085,11 +1077,11 @@ theorem §\phantomsection\label{lean:CGD.Particles.topologicalMassGap}§CGD.Part
 -- MODULE: CGD.Particles.Matter
 --------------------------------------------------------------------
 /--
-Proves that the CGD ontology is not an empty vacuum. A topological connection 
-with a non-zero anti-self-dual curvature natively generates a strictly non-zero 
+Proves that the CGD ontology is not an empty vacuum. A topological connection
+with a non-zero anti-self-dual curvature natively generates a strictly non-zero
 physical Stress-Energy tensor (T_μν ≠ 0), representing the presence of matter.
 
-This relies strictly on the Plebanski expansion, proving that if the physical 
+This relies strictly on the Plebanski expansion, proving that if the physical
 energy-momentum tensor vanishes, the anti-self-dual expansion coefficients vanish,
 extinguishing the topological matter field entirely.
 -/
@@ -1098,37 +1090,37 @@ theorem §\phantomsection\label{lean:CGD.Particles.dynamicMatterExistence}§CGD.
   (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§)
   (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§)
   (Sigma Sigma_bar : Fin 3 → Fin 4 → Fin 4 → ℂ)
-  
+
   -- The true Plebanski expansion coefficients
   (F_ij F_bar_ij T_ij : Fin 3 → Fin 3 → ℂ)
-  
+
   (Lambda G T_scalar : ℂ)
   (plebanski_matter_eqs : Prop)
   (h_G : G ≠ 0)
-  
+
   -- Vector representation of the SL(2,C) curvature
   (eval_SL2C : §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§ → Fin 3 → ℂ)
   (h_eval_inj : ∀ A, (∀ i, eval_SL2C A i = 0) → A = 0)
-  
+
   -- Plebanski decomposition of the physical anti-self-dual curvature
   (h_F_asd_decomp : ∀ μ ν i, eval_SL2C (§\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.asd_sector μ ν x) i = ∑ j, F_bar_ij i j * Sigma_bar j μ ν)
-  
+
   -- The physics: Eq16 relates the emergent CGD Stress-Energy to the internal T_ij
-  (eq16 : §\hyperref[lean:Litlib.Y2011.krasnov2011plebanski.Eq16]{\detokenize{Eq16}}§ 
-    Sigma 
-    Sigma_bar 
+  (eq16 : §\hyperref[lean:Litlib.Y2011.krasnov2011plebanski.Eq16]{\detokenize{Eq16}}§
+    Sigma
+    Sigma_bar
     (fun μ ν => §\hyperref[lean:CGD.Gravity.matrixInv4x4]{\detokenize{matrixInv4x4}}§ (fun m n => §\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{urbantkeMetric}}§ (fun a b => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b x) m n) μ ν)
     (fun μ ν => §\hyperref[lean:CGD.Gravity.emergentStressEnergy]{\detokenize{emergentStressEnergy}}§ (fun a b p => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p) μ ν x)
     T_ij)
-    
+
   -- The physics: Eq17 directly binds the expansion coefficients to the Stress-Energy
-  (eq17 : §\hyperref[lean:Litlib.Y2011.krasnov2011plebanski.Eq17]{\detokenize{Eq17}}§ 
+  (eq17 : §\hyperref[lean:Litlib.Y2011.krasnov2011plebanski.Eq17]{\detokenize{Eq17}}§
     Lambda G F_ij F_bar_ij T_scalar T_ij plebanski_matter_eqs)
   (h_matter : plebanski_matter_eqs)
-  
+
   -- The non-vacuum condition: The physical matter curvature is non-zero
   (h_non_vacuum : ∃ μ ν, §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.asd_sector μ ν x ≠ 0) :
-  
+
   ∃ ρ μ, §\hyperref[lean:CGD.Gravity.emergentStressEnergy]{\detokenize{emergentStressEnergy}}§ (fun a b p => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector a b p) ρ μ x ≠ 0
 
 
@@ -1152,7 +1144,7 @@ noncomputable def §\phantomsection\label{lean:CGD.Particles.bpstAsymptoticMap}�
 
   let M : Matrix (Fin 2) (Fin 2) ℂ := !![a, b; -star b, star a]
   have h_prop : M * M.conjTranspose = 1 ∧ M.det = 1 := su2_matrix_prop a b h_sum
-  
+
   exact ⟨M, h_prop⟩
 
 @[litlib_track "BPST Instanton Is Homeomorphism"]
@@ -1180,10 +1172,10 @@ def §\phantomsection\label{lean:CGD.Particles.isHomotopicConnection}§CGD.Parti
 Establishes the absolute topological stability of the instanton configuration. Because the boundary mapping of the instanton constitutes a topological homeomorphism to the SU(2) gauge group, its Cartan-Maurer mapping degree must be strictly non-zero. Consequently, the state is topologically protected and cannot continuously decay into the trivial vacuum.
 -/
 @[litlib_track "Topological Stability of the Instanton"]
-theorem §\phantomsection\label{lean:CGD.Particles.kinematicTopologicalStability}§CGD.Particles.kinematicTopologicalStability 
+theorem §\phantomsection\label{lean:CGD.Particles.kinematicTopologicalStability}§CGD.Particles.kinematicTopologicalStability
   (windingNumber : (§\hyperref[lean:CGD.Foundations.S3]{\detokenize{S3}}§ → §\hyperref[lean:CGD.Foundations.SU2Group]{\detokenize{SU2Group}}§) → ℤ)
   (cartanMaurerIntegral : (§\hyperref[lean:CGD.Foundations.S3]{\detokenize{S3}}§ → §\hyperref[lean:CGD.Foundations.SU2Group]{\detokenize{SU2Group}}§) → ℝ)
-  [tc : §\hyperref[lean:Litlib.Y2003.nakahara2003geometry.CartanMaurerTopology]{\detokenize{CartanMaurerTopology}}§ (§\hyperref[lean:CGD.Foundations.S3]{\detokenize{S3}}§ → §\hyperref[lean:CGD.Foundations.SU2Group]{\detokenize{SU2Group}}§) Continuous windingNumber cartanMaurerIntegral] 
+  [tc : §\hyperref[lean:Litlib.Y2003.nakahara2003geometry.CartanMaurerTopology]{\detokenize{CartanMaurerTopology}}§ (§\hyperref[lean:CGD.Foundations.S3]{\detokenize{S3}}§ → §\hyperref[lean:CGD.Foundations.SU2Group]{\detokenize{SU2Group}}§) Continuous windingNumber cartanMaurerIntegral]
   [belavin : §\hyperref[lean:Litlib.Y1975.belavin1975pseudoparticle.Eq8]{\detokenize{Eq8}}§ §\hyperref[lean:CGD.Foundations.S3]{\detokenize{S3}}§ §\hyperref[lean:CGD.Foundations.SU2Group]{\detokenize{SU2Group}}§ Continuous windingNumber cartanMaurerIntegral]
   (integral_zero : cartanMaurerIntegral 1 = 0) :
   ¬ §\hyperref[lean:CGD.Particles.isHomotopicConnection]{\detokenize{isHomotopicConnection}}§ §\hyperref[lean:CGD.Particles.bpstInstanton]{\detokenize{bpstInstanton}}§ 0
@@ -1205,14 +1197,14 @@ theorem §\phantomsection\label{lean:CGD.Phenomenology.axialIsIsovector}§CGD.Ph
   Matrix.trace (§\hyperref[lean:CGD.Phenomenology.axialField]{\detokenize{axialField}}§ pu.toUniverse mu x) = 0
 
 /--
-Proves that the Axial field behaves strictly as a pseudo-vector (parity-odd). 
+Proves that the Axial field behaves strictly as a pseudo-vector (parity-odd).
 When the geometry is parity-inverted, the Axial field exactly flips its algebraic sign.
 -/
 @[litlib_track "Axial Is Parity Odd"]
 theorem §\phantomsection\label{lean:CGD.Phenomenology.axialIsParityOdd}§CGD.Phenomenology.axialIsParityOdd (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) (mu : Fin 4) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) :
   §\hyperref[lean:CGD.Phenomenology.axialField]{\detokenize{axialField}}§ (§\hyperref[lean:CGD.Phenomenology.paritySwap]{\detokenize{paritySwap}}§ pu.toUniverse) mu x = - §\hyperref[lean:CGD.Phenomenology.axialField]{\detokenize{axialField}}§ pu.toUniverse mu x
 
-/-- 
+/--
 Generic gauge-covariant derivative action on a fundamental state.
 Represented abstractly for a matrix-valued state `Psi` and its bare partial derivative `partial_Psi`.
 -/
@@ -1220,13 +1212,13 @@ noncomputable def §\phantomsection\label{lean:CGD.Phenomenology.covariantStateD
   partial_Psi + A * Psi
 
 /--
-Proves that the Left-Handed (Self-Dual) gauge connection, which natively couples to 
-left-handed fermions (such as neutrinos) in the chiral Dirac framework, perfectly 
+Proves that the Left-Handed (Self-Dual) gauge connection, which natively couples to
+left-handed fermions (such as neutrinos) in the chiral Dirac framework, perfectly
 decomposes into a symmetric Vector background and the P-violating Axial condensate.
 
-This establishes that left-handed states must continuously interact with the 
-axial condensate as a refractive background. Because this interaction occurs purely 
-at the level of the connection (zero Plebanski curvature), it geometrically derives 
+This establishes that left-handed states must continuously interact with the
+axial condensate as a refractive background. Because this interaction occurs purely
+at the level of the connection (zero Plebanski curvature), it geometrically derives
 kinematic flavor oscillation (the MSW effect) without generating gravitational rest mass.
 -/
 @[litlib_track "Kinematic Left-Handed Coupling"]
@@ -1234,25 +1226,25 @@ theorem §\phantomsection\label{lean:CGD.Phenomenology.kinematicLeftHandedCoupli
   (pu.toUniverse.sd_sector mu x).val = §\hyperref[lean:CGD.Phenomenology.vectorField]{\detokenize{vectorField}}§ pu.toUniverse mu x + §\hyperref[lean:CGD.Phenomenology.axialField]{\detokenize{axialField}}§ pu.toUniverse mu x
 
 /--
-Proves that the covariant derivative of a state under the Left-Handed (Self-Dual) 
-connection mathematically evaluates to the bare partial derivative, plus the 
-interaction with the symmetric Vector background, plus the interaction with the 
+Proves that the covariant derivative of a state under the Left-Handed (Self-Dual)
+connection mathematically evaluates to the bare partial derivative, plus the
+interaction with the symmetric Vector background, plus the interaction with the
 P-violating Axial condensate.
 
-This formalizes the algebraic substitution allowing the paper to definitively claim 
-that left-handed fermions actively interact with the axial condensate in the 
+This formalizes the algebraic substitution allowing the paper to definitively claim
+that left-handed fermions actively interact with the axial condensate in the
 covariant Dirac equation.
 -/
 @[litlib_track "Kinematic Left-Handed Phase Shift"]
-theorem §\phantomsection\label{lean:CGD.Phenomenology.kinematicLeftHandedPhaseShift}§CGD.Phenomenology.kinematicLeftHandedPhaseShift (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) (mu : Fin 4) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) 
+theorem §\phantomsection\label{lean:CGD.Phenomenology.kinematicLeftHandedPhaseShift}§CGD.Phenomenology.kinematicLeftHandedPhaseShift (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) (mu : Fin 4) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§)
   (Psi partial_Psi : Matrix (Fin 2) (Fin 2) ℂ) :
-  §\hyperref[lean:CGD.Phenomenology.covariantStateDeriv]{\detokenize{covariantStateDeriv}}§ partial_Psi (pu.toUniverse.sd_sector mu x).val Psi = 
+  §\hyperref[lean:CGD.Phenomenology.covariantStateDeriv]{\detokenize{covariantStateDeriv}}§ partial_Psi (pu.toUniverse.sd_sector mu x).val Psi =
   partial_Psi + §\hyperref[lean:CGD.Phenomenology.vectorField]{\detokenize{vectorField}}§ pu.toUniverse mu x * Psi + §\hyperref[lean:CGD.Phenomenology.axialField]{\detokenize{axialField}}§ pu.toUniverse mu x * Psi
 
 /--
-Proves that the Right-Handed (Anti-Self-Dual) gauge connection decomposes into the 
-symmetric Vector background minus the P-violating Axial condensate. The sign flip 
-relative to the Left-Handed sector strictly defines the geometric parity asymmetry 
+Proves that the Right-Handed (Anti-Self-Dual) gauge connection decomposes into the
+symmetric Vector background minus the P-violating Axial condensate. The sign flip
+relative to the Left-Handed sector strictly defines the geometric parity asymmetry
 of the chiral spacetime vacuum.
 -/
 @[litlib_track "Kinematic Right-Handed Coupling"]
@@ -1260,19 +1252,19 @@ theorem §\phantomsection\label{lean:CGD.Phenomenology.kinematicRightHandedCoupl
   (pu.toUniverse.asd_sector mu x).val = §\hyperref[lean:CGD.Phenomenology.vectorField]{\detokenize{vectorField}}§ pu.toUniverse mu x - §\hyperref[lean:CGD.Phenomenology.axialField]{\detokenize{axialField}}§ pu.toUniverse mu x
 
 /--
-Because the macroscopic volume emergent metric strictly forbids global chiral symmetry 
-(via `macroscopicVolumeImpliesChirality`), this mathematically guarantees that the spacetime 
-background is natively populated by a strictly non-zero Axial-Vector condensate. Empty 
+Because the macroscopic volume emergent metric strictly forbids global chiral symmetry
+(via `macroscopicVolumeImpliesChirality`), this mathematically guarantees that the spacetime
+background is natively populated by a strictly non-zero Axial-Vector condensate. Empty
 space spontaneously generates the axial field to preserve its volume.
 -/
 @[litlib_track "Macroscopic Volume Implies Axial Condensate"]
-theorem §\phantomsection\label{lean:CGD.Phenomenology.macroscopicVolumeImpliesAxialCondensate}§CGD.Phenomenology.macroscopicVolumeImpliesAxialCondensate 
+theorem §\phantomsection\label{lean:CGD.Phenomenology.macroscopicVolumeImpliesAxialCondensate}§CGD.Phenomenology.macroscopicVolumeImpliesAxialCondensate
   (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (hx : x ∈ pu.bulk)
   (h_vacuum : ∀ μ ν, §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.asd_sector.val μ ν x = 0) :
   ∃ y mu, §\hyperref[lean:CGD.Phenomenology.axialField]{\detokenize{axialField}}§ pu.toUniverse mu y ≠ 0
 
-/-- 
-A discrete geometric transformation that completely inverts the orientation of the 
+/--
+A discrete geometric transformation that completely inverts the orientation of the
 spacetime manifold by swapping the Chiral left (self-dual) and right (anti-self-dual) sectors.
 -/
 noncomputable def §\phantomsection\label{lean:CGD.Phenomenology.paritySwap}§CGD.Phenomenology.paritySwap (u : §\hyperref[lean:CGD.Axioms.Universe]{\detokenize{Universe}}§) : §\hyperref[lean:CGD.Axioms.Universe]{\detokenize{Universe}}§ :=
@@ -1288,16 +1280,16 @@ noncomputable def §\phantomsection\label{lean:CGD.Phenomenology.vectorField}§C
 /--
 Proves that a perfectly symmetric, non-chiral universe mathematically destroys itself.
 
-If the Left (Gravity) and Right (Matter) gauge fields are identical in a pure vacuum 
-(where the Anti-Self-Dual curvature is zero), the Self-Dual (Gravity) curvature is also 
-extinguished. A zero gravity curvature generates a zero Urbantke metric, which algebraically 
-forces det(g) = 0. This strictly violates the Macroscopic Volume axiom. 
+If the Left (Gravity) and Right (Matter) gauge fields are identical in a pure vacuum
+(where the Anti-Self-Dual curvature is zero), the Self-Dual (Gravity) curvature is also
+extinguished. A zero gravity curvature generates a zero Urbantke metric, which algebraically
+forces det(g) = 0. This strictly violates the Macroscopic Volume axiom.
 Therefore, empty space must be chiral.
 -/
 @[litlib_track "Macroscopic volume must have chirality"]
-theorem §\phantomsection\label{lean:CGD.Phenomenology.macroscopicVolumeImpliesChirality}§CGD.Phenomenology.macroscopicVolumeImpliesChirality 
-  (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) 
-  (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) 
+theorem §\phantomsection\label{lean:CGD.Phenomenology.macroscopicVolumeImpliesChirality}§CGD.Phenomenology.macroscopicVolumeImpliesChirality
+  (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§)
+  (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§)
   (hx : x ∈ pu.bulk)
   (h_vacuum : ∀ μ ν, §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.asd_sector.val μ ν x = 0) :
   pu.toUniverse.sd_sector.val ≠ pu.toUniverse.asd_sector.val
@@ -1305,7 +1297,7 @@ theorem §\phantomsection\label{lean:CGD.Phenomenology.macroscopicVolumeImpliesC
 
 -- MODULE: CGD.Phenomenology.TmdSignFlips
 --------------------------------------------------------------------
-/-- 
+/--
 The Boer-Mulders effect observable (Quark Transverse Spin vs Quark Transverse Momentum).
 Projects the orthogonal SU(2) topology via sigmaX.
 Geometrically identical to the Sivers projection.
@@ -1313,10 +1305,10 @@ Geometrically identical to the Sivers projection.
 noncomputable def §\phantomsection\label{lean:CGD.Phenomenology.boerMuldersTransverseKick}§CGD.Phenomenology.boerMuldersTransverseKick (U U_inv : Matrix (Fin 2) (Fin 2) ℂ) : ℂ :=
   Matrix.trace (U * explicitSigmaX * U_inv * explicitSigmaY)
 
-/-- 
-Proves that when evaluating continuous non-Abelian geometry, the Sivers and Boer-Mulders effects yield topologically identical observables. 
+/--
+Proves that when evaluating continuous non-Abelian geometry, the Sivers and Boer-Mulders effects yield topologically identical observables.
 
-While perturbative QCD treats them as independent non-perturbative functions, phenomenological 
+While perturbative QCD treats them as independent non-perturbative functions, phenomenological
 models (like Large-Nc and lattice QCD) observe strong proportionalities. This witness demonstrates how continuous background geometries intrinsically explain this: the macroscopic SU(2) holonomy is strictly blind to the composite vs. bare nature of the initial state, resolving both to the exact same geometric projection.
 -/
 @[litlib_track "Kinematic Sivers and Boer-Mulders Equivalence Witness"]
@@ -1332,7 +1324,7 @@ theorem §\phantomsection\label{lean:CGD.Phenomenology.kinematicSiversBoerMulder
       (§\hyperref[lean:CGD.Quantum.macroscopicObservable]{\detokenize{CGD.Quantum.macroscopicObservable}}§ (§\hyperref[lean:CGD.Quantum.holonomy]{\detokenize{CGD.Quantum.holonomy}}§ matrixExp) (fun mu p => §\hyperref[lean:CGD.Quantum.rotateYAxis]{\detokenize{CGD.Quantum.rotateYAxis}}§ (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 (-L))
 
 /--
-Evaluating the Sivers observable upon the `fluxTubeFrame` ansatz natively forces an exact geometric sign-flip upon path inversion (L -> -L). 
+Evaluating the Sivers observable upon the `fluxTubeFrame` ansatz natively forces an exact geometric sign-flip upon path inversion (L -> -L).
 While standard perturbative QCD derivations require external factorized gauge links to explain this effect, this theorem acts as an explicit constructive witness demonstrating that the continuous macroscopic gauge geometry intrinsically contains the parity-inverted mechanisms required for the Sivers effect.
 -/
 @[litlib_track "Kinematic Sivers Sign Flip Witness"]
@@ -1341,22 +1333,22 @@ theorem §\phantomsection\label{lean:CGD.Phenomenology.kinematicSiversSignFlip}�
     [§\hyperref[lean:Litlib.Y2000.hall2000elementary.DerivativeExponential]{\detokenize{Litlib.Y2000.hall2000elementary.DerivativeExponential}}§ (Fin 2) matrixExp]
     (alpha L : ℝ),
     (∀ t, pu.toUniverse.sd_sector 1 (§\hyperref[lean:CGD.Quantum.straightLinePath]{\detokenize{CGD.Quantum.straightLinePath}}§ t) = §\hyperref[lean:CGD.Quantum.fluxTubeFrame]{\detokenize{CGD.Quantum.fluxTubeFrame}}§ 1 (§\hyperref[lean:CGD.Quantum.straightLinePath]{\detokenize{CGD.Quantum.straightLinePath}}§ t)) →
-    §\hyperref[lean:CGD.Phenomenology.siversTransverseKick]{\detokenize{siversTransverseKick}}§ 
+    §\hyperref[lean:CGD.Phenomenology.siversTransverseKick]{\detokenize{siversTransverseKick}}§
       (§\hyperref[lean:CGD.Quantum.macroscopicObservable]{\detokenize{CGD.Quantum.macroscopicObservable}}§ (§\hyperref[lean:CGD.Quantum.holonomy]{\detokenize{CGD.Quantum.holonomy}}§ matrixExp) (fun mu p => §\hyperref[lean:CGD.Quantum.rotateYAxis]{\detokenize{CGD.Quantum.rotateYAxis}}§ (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 L)
       (§\hyperref[lean:CGD.Quantum.macroscopicObservable]{\detokenize{CGD.Quantum.macroscopicObservable}}§ (§\hyperref[lean:CGD.Quantum.holonomy]{\detokenize{CGD.Quantum.holonomy}}§ matrixExp) (fun mu p => §\hyperref[lean:CGD.Quantum.rotateYAxis]{\detokenize{CGD.Quantum.rotateYAxis}}§ (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 (-L)) =
-    - §\hyperref[lean:CGD.Phenomenology.siversTransverseKick]{\detokenize{siversTransverseKick}}§ 
+    - §\hyperref[lean:CGD.Phenomenology.siversTransverseKick]{\detokenize{siversTransverseKick}}§
       (§\hyperref[lean:CGD.Quantum.macroscopicObservable]{\detokenize{CGD.Quantum.macroscopicObservable}}§ (§\hyperref[lean:CGD.Quantum.holonomy]{\detokenize{CGD.Quantum.holonomy}}§ matrixExp) (fun mu p => §\hyperref[lean:CGD.Quantum.rotateYAxis]{\detokenize{CGD.Quantum.rotateYAxis}}§ (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 (-L))
       (§\hyperref[lean:CGD.Quantum.macroscopicObservable]{\detokenize{CGD.Quantum.macroscopicObservable}}§ (§\hyperref[lean:CGD.Quantum.holonomy]{\detokenize{CGD.Quantum.holonomy}}§ matrixExp) (fun mu p => §\hyperref[lean:CGD.Quantum.rotateYAxis]{\detokenize{CGD.Quantum.rotateYAxis}}§ (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 L)
 
-/-- 
+/--
 The Topological TMD Geometric Ratio Witness.
 
-By evaluating the `fluxTubeFrame` ansatz, this theorem acts as a constructive witness proving that the Worm-Gear and Sivers observables can natively become geometrically locked by the chiral phase angle 
+By evaluating the `fluxTubeFrame` ansatz, this theorem acts as a constructive witness proving that the Worm-Gear and Sivers observables can natively become geometrically locked by the chiral phase angle
 `alpha` of the macroscopic connection. Specifically:
 `cos(alpha) * WormGear = - sin(alpha) * Sivers`
 
-Because the observables are defined natively as geometric integrals without any 
-collisional momentum variables, this geometric lock demonstrates a framework mechanism where their ratio 
+Because the observables are defined natively as geometric integrals without any
+collisional momentum variables, this geometric lock demonstrates a framework mechanism where their ratio
 resolves as a flat kinematic constant (-tan(alpha)), reproducing global supercomputer fits.
 -/
 @[litlib_track "Topological TMD Geometric Ratio Witness"]
@@ -1365,10 +1357,10 @@ theorem §\phantomsection\label{lean:CGD.Phenomenology.kinematicTmdRatio}§CGD.P
     [§\hyperref[lean:Litlib.Y2000.hall2000elementary.DerivativeExponential]{\detokenize{Litlib.Y2000.hall2000elementary.DerivativeExponential}}§ (Fin 2) matrixExp]
     (alpha L : ℝ),
     (∀ t, pu.toUniverse.sd_sector 1 (§\hyperref[lean:CGD.Quantum.straightLinePath]{\detokenize{CGD.Quantum.straightLinePath}}§ t) = §\hyperref[lean:CGD.Quantum.fluxTubeFrame]{\detokenize{CGD.Quantum.fluxTubeFrame}}§ 1 (§\hyperref[lean:CGD.Quantum.straightLinePath]{\detokenize{CGD.Quantum.straightLinePath}}§ t)) →
-    (§\hyperref[lean:CGD.Phenomenology.obs_M_A]{\detokenize{obs_M_A}}§ alpha) * §\hyperref[lean:CGD.Phenomenology.wormGearTransverseKick]{\detokenize{wormGearTransverseKick}}§ 
+    (§\hyperref[lean:CGD.Phenomenology.obs_M_A]{\detokenize{obs_M_A}}§ alpha) * §\hyperref[lean:CGD.Phenomenology.wormGearTransverseKick]{\detokenize{wormGearTransverseKick}}§
       (§\hyperref[lean:CGD.Quantum.macroscopicObservable]{\detokenize{CGD.Quantum.macroscopicObservable}}§ (§\hyperref[lean:CGD.Quantum.holonomy]{\detokenize{CGD.Quantum.holonomy}}§ matrixExp) (fun mu p => §\hyperref[lean:CGD.Quantum.rotateYAxis]{\detokenize{CGD.Quantum.rotateYAxis}}§ (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 L)
       (§\hyperref[lean:CGD.Quantum.macroscopicObservable]{\detokenize{CGD.Quantum.macroscopicObservable}}§ (§\hyperref[lean:CGD.Quantum.holonomy]{\detokenize{CGD.Quantum.holonomy}}§ matrixExp) (fun mu p => §\hyperref[lean:CGD.Quantum.rotateYAxis]{\detokenize{CGD.Quantum.rotateYAxis}}§ (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 (-L)) =
-    - (§\hyperref[lean:CGD.Phenomenology.obs_M_B]{\detokenize{obs_M_B}}§ alpha) * §\hyperref[lean:CGD.Phenomenology.siversTransverseKick]{\detokenize{siversTransverseKick}}§ 
+    - (§\hyperref[lean:CGD.Phenomenology.obs_M_B]{\detokenize{obs_M_B}}§ alpha) * §\hyperref[lean:CGD.Phenomenology.siversTransverseKick]{\detokenize{siversTransverseKick}}§
       (§\hyperref[lean:CGD.Quantum.macroscopicObservable]{\detokenize{CGD.Quantum.macroscopicObservable}}§ (§\hyperref[lean:CGD.Quantum.holonomy]{\detokenize{CGD.Quantum.holonomy}}§ matrixExp) (fun mu p => §\hyperref[lean:CGD.Quantum.rotateYAxis]{\detokenize{CGD.Quantum.rotateYAxis}}§ (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 L)
       (§\hyperref[lean:CGD.Quantum.macroscopicObservable]{\detokenize{CGD.Quantum.macroscopicObservable}}§ (§\hyperref[lean:CGD.Quantum.holonomy]{\detokenize{CGD.Quantum.holonomy}}§ matrixExp) (fun mu p => §\hyperref[lean:CGD.Quantum.rotateYAxis]{\detokenize{CGD.Quantum.rotateYAxis}}§ (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 (-L))
 
@@ -1381,10 +1373,10 @@ theorem §\phantomsection\label{lean:CGD.Phenomenology.kinematicWormGearSignFlip
     [§\hyperref[lean:Litlib.Y2000.hall2000elementary.DerivativeExponential]{\detokenize{Litlib.Y2000.hall2000elementary.DerivativeExponential}}§ (Fin 2) matrixExp]
     (alpha L : ℝ),
     (∀ t, pu.toUniverse.sd_sector 1 (§\hyperref[lean:CGD.Quantum.straightLinePath]{\detokenize{CGD.Quantum.straightLinePath}}§ t) = §\hyperref[lean:CGD.Quantum.fluxTubeFrame]{\detokenize{CGD.Quantum.fluxTubeFrame}}§ 1 (§\hyperref[lean:CGD.Quantum.straightLinePath]{\detokenize{CGD.Quantum.straightLinePath}}§ t)) →
-    §\hyperref[lean:CGD.Phenomenology.wormGearTransverseKick]{\detokenize{wormGearTransverseKick}}§ 
+    §\hyperref[lean:CGD.Phenomenology.wormGearTransverseKick]{\detokenize{wormGearTransverseKick}}§
       (§\hyperref[lean:CGD.Quantum.macroscopicObservable]{\detokenize{CGD.Quantum.macroscopicObservable}}§ (§\hyperref[lean:CGD.Quantum.holonomy]{\detokenize{CGD.Quantum.holonomy}}§ matrixExp) (fun mu p => §\hyperref[lean:CGD.Quantum.rotateYAxis]{\detokenize{CGD.Quantum.rotateYAxis}}§ (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 L)
       (§\hyperref[lean:CGD.Quantum.macroscopicObservable]{\detokenize{CGD.Quantum.macroscopicObservable}}§ (§\hyperref[lean:CGD.Quantum.holonomy]{\detokenize{CGD.Quantum.holonomy}}§ matrixExp) (fun mu p => §\hyperref[lean:CGD.Quantum.rotateYAxis]{\detokenize{CGD.Quantum.rotateYAxis}}§ (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 (-L)) =
-    - §\hyperref[lean:CGD.Phenomenology.wormGearTransverseKick]{\detokenize{wormGearTransverseKick}}§ 
+    - §\hyperref[lean:CGD.Phenomenology.wormGearTransverseKick]{\detokenize{wormGearTransverseKick}}§
       (§\hyperref[lean:CGD.Quantum.macroscopicObservable]{\detokenize{CGD.Quantum.macroscopicObservable}}§ (§\hyperref[lean:CGD.Quantum.holonomy]{\detokenize{CGD.Quantum.holonomy}}§ matrixExp) (fun mu p => §\hyperref[lean:CGD.Quantum.rotateYAxis]{\detokenize{CGD.Quantum.rotateYAxis}}§ (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 (-L))
       (§\hyperref[lean:CGD.Quantum.macroscopicObservable]{\detokenize{CGD.Quantum.macroscopicObservable}}§ (§\hyperref[lean:CGD.Quantum.holonomy]{\detokenize{CGD.Quantum.holonomy}}§ matrixExp) (fun mu p => §\hyperref[lean:CGD.Quantum.rotateYAxis]{\detokenize{CGD.Quantum.rotateYAxis}}§ (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 L)
 
@@ -1392,14 +1384,14 @@ noncomputable def §\phantomsection\label{lean:CGD.Phenomenology.obs_M_A}§CGD.P
 
 noncomputable def §\phantomsection\label{lean:CGD.Phenomenology.obs_M_B}§CGD.Phenomenology.obs_M_B (alpha : ℝ) : ℂ := 2 * (Complex.cos (alpha/2)) * (Complex.sin (alpha/2))
 
-/-- 
+/--
 The Sivers effect observable (Nucleon Transverse Spin vs Quark Transverse Momentum).
 Projects the orthogonal SU(2) topology via sigmaX.
 -/
 noncomputable def §\phantomsection\label{lean:CGD.Phenomenology.siversTransverseKick}§CGD.Phenomenology.siversTransverseKick (U U_inv : Matrix (Fin 2) (Fin 2) ℂ) : ℂ :=
   Matrix.trace (U * explicitSigmaX * U_inv * explicitSigmaY)
 
-/-- 
+/--
 The Worm-Gear effect observable (Quark Longitudinal Spin vs Quark Transverse Momentum).
 Projects the orthogonal SU(2) topology via sigmaZ.
 -/
@@ -1409,7 +1401,7 @@ noncomputable def §\phantomsection\label{lean:CGD.Phenomenology.wormGearTransve
 
 -- MODULE: CGD.Quantum.ActionQuantization
 --------------------------------------------------------------------
-/-- 
+/--
 If a physical connection yields an asymptotic boundary map that is a topological homeomorphism to the gauge group, its Cartan-Maurer topological charge strictly evaluates to an integer quantization bound (±1).
 
 Here we explicitly invoke the Nakahara (2003) Cartan-Maurer degree theorem and the Belavin (1975) topological bounds.
@@ -1424,7 +1416,7 @@ theorem §\phantomsection\label{lean:CGD.Quantum.kinematicActionQuantization}§C
   [belavin : §\hyperref[lean:Litlib.Y1975.belavin1975pseudoparticle.Eq8]{\detokenize{Eq8}}§ BoundaryManifold §\hyperref[lean:CGD.Foundations.SU2Group]{\detokenize{SU2Group}}§ (Continuous : (BoundaryManifold → §\hyperref[lean:CGD.Foundations.SU2Group]{\detokenize{SU2Group}}§) → Prop) windingNumber cartanMaurerIntegral]
   (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§)
   (h_homeo : §\hyperref[lean:Litlib.Y1975.belavin1975pseudoparticle.IsHomeomorphism]{\detokenize{IsHomeomorphism}}§ (boundaryMap pu.toUniverse.sd_sector.val)) :
-  cartanMaurerIntegral (boundaryMap pu.toUniverse.sd_sector.val) = 1 ∨ 
+  cartanMaurerIntegral (boundaryMap pu.toUniverse.sd_sector.val) = 1 ∨
   cartanMaurerIntegral (boundaryMap pu.toUniverse.sd_sector.val) = -1
 
 
@@ -1483,12 +1475,12 @@ noncomputable def §\phantomsection\label{lean:CGD.Quantum.covariantSpinorDeriv}
 
 @[litlib_track "Gauge-Covariant Spinor Derivative Identity"]
 lemma §\phantomsection\label{lean:CGD.Quantum.covariantSpinorDeriv_eq_curvature_plus_deriv}§CGD.Quantum.covariantSpinorDeriv_eq_curvature_plus_deriv (u : §\hyperref[lean:CGD.Axioms.Universe]{\detokenize{Universe}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (mu nu : Fin 4) :
-  §\hyperref[lean:CGD.Quantum.covariantSpinorDeriv]{\detokenize{covariantSpinorDeriv}}§ u x mu nu = 
+  §\hyperref[lean:CGD.Quantum.covariantSpinorDeriv]{\detokenize{covariantSpinorDeriv}}§ u x mu nu =
   §\hyperref[lean:CGD.Foundations.curvature]{\detokenize{curvature}}§ (fun m p => u.spin4c_connection m p) mu nu x + §\hyperref[lean:CGD.Foundations.partialDerivChiral]{\detokenize{partialDerivChiral}}§ nu (fun p => u.spin4c_connection mu p) x
 
 /--
 The true background-independent Emergent Dirac Operator.
-It strictly contracts the local covariant spinor derivatives using the dynamically 
+It strictly contracts the local covariant spinor derivatives using the dynamically
 emergent macroscopic TetradField (Vielbein) rather than assuming a flat-space metric.
 -/
 @[litlib_track "Emergent Dirac Operator"]
@@ -1499,26 +1491,26 @@ noncomputable def §\phantomsection\label{lean:CGD.Quantum.extractSpinorMode}§C
   u.spin4c_connection nu x
 
 /--
-Recovers the standard textbook Dirac-Yang-Mills equivalence under the physical assumption that 
+Recovers the standard textbook Dirac-Yang-Mills equivalence under the physical assumption that
 the spacetime background is locally stationary with respect to the mode propagation direction.
 -/
 @[litlib_track "Familiar Dynamic Dirac Equation Limit"]
-theorem §\phantomsection\label{lean:CGD.Quantum.familiarDynamicDiracEquation}§CGD.Quantum.familiarDynamicDiracEquation 
+theorem §\phantomsection\label{lean:CGD.Quantum.familiarDynamicDiracEquation}§CGD.Quantum.familiarDynamicDiracEquation
   (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) (e : §\hyperref[lean:CGD.Gravity.TetradField]{\detokenize{TetradField}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (nu : Fin 4)
   (h_stationary : ∀ mu, §\hyperref[lean:CGD.Foundations.partialDerivChiral]{\detokenize{partialDerivChiral}}§ nu (fun p => pu.toUniverse.spin4c_connection mu p) x = 0) :
-  §\hyperref[lean:CGD.Quantum.emergentDiracOperator]{\detokenize{emergentDiracOperator}}§ pu.toUniverse e x nu = 
+  §\hyperref[lean:CGD.Quantum.emergentDiracOperator]{\detokenize{emergentDiracOperator}}§ pu.toUniverse e x nu =
   ∑ mu, ∑ a, (e a mu x) • (§\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ a * §\hyperref[lean:CGD.Foundations.curvature]{\detokenize{curvature}}§ (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x)
 
 /--
-The fully covariant Dirac operator natively equals the macroscopic Yang-Mills curvature trace, 
+The fully covariant Dirac operator natively equals the macroscopic Yang-Mills curvature trace,
 plus a geometric inertial term (\partial_nu A_mu) reflecting the dynamical evolution of the background geometry.
 Matter actively responds to the bubbling and expansion of spacetime without requiring a fixed coordinate frame.
 -/
 @[litlib_track "Generalized Dynamic Dirac Equation"]
-theorem §\phantomsection\label{lean:CGD.Quantum.generalizedDynamicDiracEquation}§CGD.Quantum.generalizedDynamicDiracEquation 
+theorem §\phantomsection\label{lean:CGD.Quantum.generalizedDynamicDiracEquation}§CGD.Quantum.generalizedDynamicDiracEquation
   (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) (e : §\hyperref[lean:CGD.Gravity.TetradField]{\detokenize{TetradField}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (nu : Fin 4) :
-  §\hyperref[lean:CGD.Quantum.emergentDiracOperator]{\detokenize{emergentDiracOperator}}§ pu.toUniverse e x nu = 
-  ∑ mu, ∑ a, (e a mu x) • (§\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ a * §\hyperref[lean:CGD.Foundations.curvature]{\detokenize{curvature}}§ (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) + 
+  §\hyperref[lean:CGD.Quantum.emergentDiracOperator]{\detokenize{emergentDiracOperator}}§ pu.toUniverse e x nu =
+  ∑ mu, ∑ a, (e a mu x) • (§\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ a * §\hyperref[lean:CGD.Foundations.curvature]{\detokenize{curvature}}§ (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) +
   ∑ mu, ∑ a, (e a mu x) • (§\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ a * §\hyperref[lean:CGD.Foundations.partialDerivChiral]{\detokenize{partialDerivChiral}}§ nu (fun p => pu.toUniverse.spin4c_connection mu p) x)
 
 /--
@@ -1527,16 +1519,16 @@ The covariant Dirac operator mathematically preserves the strict odd/even gradin
 @[litlib_track "Kinematic Dirac Operator Grading"]
 theorem §\phantomsection\label{lean:CGD.Quantum.kinematicDiracOperatorGrading}§CGD.Quantum.kinematicDiracOperatorGrading (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) :
   ∀ (m : Complex) (e : §\hyperref[lean:CGD.Gravity.TetradField]{\detokenize{TetradField}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (nu : Fin 4),
-    §\hyperref[lean:Litlib.Math.Dirac.isOdd]{\detokenize{isOdd}}§ (§\hyperref[lean:CGD.Quantum.emergentDiracOperator]{\detokenize{emergentDiracOperator}}§ pu.toUniverse e x nu) ∧ 
+    §\hyperref[lean:Litlib.Math.Dirac.isOdd]{\detokenize{isOdd}}§ (§\hyperref[lean:CGD.Quantum.emergentDiracOperator]{\detokenize{emergentDiracOperator}}§ pu.toUniverse e x nu) ∧
     §\hyperref[lean:Litlib.Math.Dirac.isOdd]{\detokenize{isOdd}}§ (m • (§\hyperref[lean:CGD.Quantum.extractSpinorMode]{\detokenize{extractSpinorMode}}§ pu.toUniverse x nu * §\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ nu))
 
 
 -- MODULE: CGD.Quantum.Entanglement.Wormhole
 --------------------------------------------------------------------
 /--
-Evaluates the macroscopic metric of the `fluxTubeFrame` witness to prove that if two 
-particles are connected by such a 1D uniform gauge connection, the metric determinant 
-rigorously vanishes. This confirms that non-local, degenerate wormhole topologies 
+Evaluates the macroscopic metric of the `fluxTubeFrame` witness to prove that if two
+particles are connected by such a 1D uniform gauge connection, the metric determinant
+rigorously vanishes. This confirms that non-local, degenerate wormhole topologies
 mathematically exist as non-vacuous solutions within the Spin(4,C) geometry.
 -/
 @[litlib_track "Witness for Degenerate Entanglement Channels"]
@@ -1565,8 +1557,8 @@ theorem §\phantomsection\label{lean:CGD.Quantum.kinematicFluxTubeStability}§CG
     (§\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{urbantkeMetric}}§ (fun m n => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.sd_sector m n x)).det = 0
 
 /--
-Mathematically enforces a strictly static (∂_t A = 0), purely magnetic (electric curvature F_{0ν} = 0) configuration. 
-Phenomenologically, this represents the minimal energy ground state of a flux tube. Geometrically, 
+Mathematically enforces a strictly static (∂_t A = 0), purely magnetic (electric curvature F_{0ν} = 0) configuration.
+Phenomenologically, this represents the minimal energy ground state of a flux tube. Geometrically,
 it simply isolates a static background topology.
 -/
 def §\phantomsection\label{lean:CGD.Quantum.satisfies1DMinimalEnergyBound}§CGD.Quantum.satisfies1DMinimalEnergyBound (A : Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) : Prop :=
@@ -1577,9 +1569,9 @@ def §\phantomsection\label{lean:CGD.Quantum.satisfies1DMinimalEnergyBound}§CGD
 -- MODULE: CGD.Quantum.Holonomy.Evaluation
 --------------------------------------------------------------------
 /--
-Evaluates the path-ordered integral of the exact `fluxTubeFrame` spatial gauge connection witness. 
-This explicitly demonstrates that evaluating an SU(2) holonomy natively maps geometric 
-parameters directly to the trigonometric coefficients of standard quantum state vectors, 
+Evaluates the path-ordered integral of the exact `fluxTubeFrame` spatial gauge connection witness.
+This explicitly demonstrates that evaluating an SU(2) holonomy natively maps geometric
+parameters directly to the trigonometric coefficients of standard quantum state vectors,
 proving that the geometry can natively reproduce quantum observables.
 -/
 @[litlib_track "Macroscopic Spin State Witness"]
@@ -1598,9 +1590,9 @@ noncomputable def §\phantomsection\label{lean:CGD.Quantum.holonomy}§CGD.Quantu
   matrixExp ((t1 - t0 : ℂ) • A t0)
 
 @[litlib_track "Macroscopic Observable"]
-noncomputable def §\phantomsection\label{lean:CGD.Quantum.macroscopicObservable}§CGD.Quantum.macroscopicObservable 
+noncomputable def §\phantomsection\label{lean:CGD.Quantum.macroscopicObservable}§CGD.Quantum.macroscopicObservable
   (§\hyperref[lean:CGD.Quantum.holonomy]{\detokenize{holonomy}}§ : (ℝ → Matrix (Fin 2) (Fin 2) ℂ) → ℝ → ℝ → Matrix (Fin 2) (Fin 2) ℂ)
-  (A : Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§) 
+  (A : Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§)
   (mu : Fin 4) (L : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
   §\hyperref[lean:CGD.Quantum.holonomy]{\detokenize{holonomy}}§ (fun t => (A mu (§\hyperref[lean:CGD.Quantum.straightLinePath]{\detokenize{straightLinePath}}§ t)).val) 0 L
 
@@ -1658,27 +1650,27 @@ theorem §\phantomsection\label{lean:CGD.Quantum.geometricHolonomyTsirelsonBound
 -- MODULE: CGD.Quantum.Holonomy.RelationalTime
 --------------------------------------------------------------------
 /--
-Using an exact analytical witness representing the U(1) core of a topological defect 
-(`Complex.I • sigmaZ`), this theorem demonstrates that computing the geometric holonomy 
-(spatial parallel transport) is mathematically identical to applying the Schrödinger 
-time-evolution operator. 
+Using an exact analytical witness representing the U(1) core of a topological defect
+(`Complex.I • sigmaZ`), this theorem demonstrates that computing the geometric holonomy
+(spatial parallel transport) is mathematically identical to applying the Schrödinger
+time-evolution operator.
 
-This proves that traversal along a defect's internal spatial phase space can physically 
-manifest as the passage of time, demonstrating that relational geometric phase 
+This proves that traversal along a defect's internal spatial phase space can physically
+manifest as the passage of time, demonstrating that relational geometric phase
 mathematically satisfies the role of time evolution.
 -/
 @[litlib_track "Witness for Relational Time Emergence"]
 theorem §\phantomsection\label{lean:CGD.Quantum.Holonomy.relationalTimeEmergence}§CGD.Quantum.Holonomy.relationalTimeEmergence
   (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
-  (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) 
+  (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§)
   (t : ℝ)
   (h_core : ∀ s, (pu.toUniverse.sd_sector.val 1 (§\hyperref[lean:CGD.Quantum.straightLinePath]{\detokenize{straightLinePath}}§ s)).val = Complex.I • §\hyperref[lean:CGD.Foundations.sigmaZ]{\detokenize{sigmaZ}}§) :
-  §\hyperref[lean:CGD.Quantum.macroscopicObservable]{\detokenize{macroscopicObservable}}§ (§\hyperref[lean:CGD.Quantum.holonomy]{\detokenize{holonomy}}§ matrixExp) pu.toUniverse.sd_sector.val 1 t = 
+  §\hyperref[lean:CGD.Quantum.macroscopicObservable]{\detokenize{macroscopicObservable}}§ (§\hyperref[lean:CGD.Quantum.holonomy]{\detokenize{holonomy}}§ matrixExp) pu.toUniverse.sd_sector.val 1 t =
   §\hyperref[lean:CGD.Quantum.Holonomy.unitaryTimeEvolution]{\detokenize{unitaryTimeEvolution}}§ matrixExp (-§\hyperref[lean:CGD.Foundations.sigmaZ]{\detokenize{sigmaZ}}§) t
 
 /-- Standard quantum mechanical time-evolution operator U(t) = exp(-i H t) -/
 @[litlib_track "Unitary Time Evolution Operator"]
-noncomputable def §\phantomsection\label{lean:CGD.Quantum.Holonomy.unitaryTimeEvolution}§CGD.Quantum.Holonomy.unitaryTimeEvolution 
+noncomputable def §\phantomsection\label{lean:CGD.Quantum.Holonomy.unitaryTimeEvolution}§CGD.Quantum.Holonomy.unitaryTimeEvolution
   (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
   (Hamiltonian : Matrix (Fin 2) (Fin 2) ℂ) (t : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
   matrixExp ((-Complex.I * (t : ℂ)) • Hamiltonian)
@@ -1689,7 +1681,7 @@ noncomputable def §\phantomsection\label{lean:CGD.Quantum.Holonomy.unitaryTimeE
 /--
 The exact analytical primitive (volume function) of the Bengtsson invariant Hopf metric.
 According to Litlib.Y2017.bengtsson2017geometry.Chapter03.Sec05_HopfFibration.Eq3_98,
-the invariant metric volume element scales natively as sin(θ). 
+the invariant metric volume element scales natively as sin(θ).
 The strict analytical primitive (antiderivative) of sin(θ) evaluates to -cos(θ).
 -/
 noncomputable def §\phantomsection\label{lean:CGD.Quantum.Measurement.hopfVolumePrimitive}§CGD.Quantum.Measurement.hopfVolumePrimitive (theta : ℝ) : ℝ :=
@@ -1697,14 +1689,14 @@ noncomputable def §\phantomsection\label{lean:CGD.Quantum.Measurement.hopfVolum
 
 /--
 The Kinematic Born Rule Equivalence.
-Demonstrates that in Chiral Gauge Dynamics, the phase-space volume fraction 
-(calculated strictly via the invariant Hopf metric primitive) bounded by the 
-geometric correlation between the Physical Universe's gauge state and a 
-macroscopic detector frame mathematically evaluates exactly to the quantum 
+Demonstrates that in Chiral Gauge Dynamics, the phase-space volume fraction
+(calculated strictly via the invariant Hopf metric primitive) bounded by the
+geometric correlation between the Physical Universe's gauge state and a
+macroscopic detector frame mathematically evaluates exactly to the quantum
 mechanical Born rule projection.
 
-This derives the fundamental mechanism of quantum probability directly from 
-the macroscopic continuous geometry of the gauge field, without requiring 
+This derives the fundamental mechanism of quantum probability directly from
+the macroscopic continuous geometry of the gauge field, without requiring
 wave-function collapse or arbitrary dynamic thresholds.
 -/
 @[litlib_track "Kinematic Born Rule Equivalence"]
@@ -1716,8 +1708,8 @@ theorem §\phantomsection\label{lean:CGD.Quantum.Measurement.kinematicBornRuleEq
   -- The physical angle is strictly defined by the SU(2) trace metric between the universe and the detector
   (h_angle : Real.cos theta = (§\hyperref[lean:CGD.Quantum.geometricBellCorrelation]{\detokenize{geometricBellCorrelation}}§ (evaluateBoundary pu.toUniverse.sd_sector) detector_frame).re) :
   -- The phase-space volume fraction of the universe...
-  (§\hyperref[lean:CGD.Quantum.Measurement.hopfVolumePrimitive]{\detokenize{hopfVolumePrimitive}}§ Real.pi - §\hyperref[lean:CGD.Quantum.Measurement.hopfVolumePrimitive]{\detokenize{hopfVolumePrimitive}}§ theta) / 
-  (§\hyperref[lean:CGD.Quantum.Measurement.hopfVolumePrimitive]{\detokenize{hopfVolumePrimitive}}§ Real.pi - §\hyperref[lean:CGD.Quantum.Measurement.hopfVolumePrimitive]{\detokenize{hopfVolumePrimitive}}§ 0) = 
+  (§\hyperref[lean:CGD.Quantum.Measurement.hopfVolumePrimitive]{\detokenize{hopfVolumePrimitive}}§ Real.pi - §\hyperref[lean:CGD.Quantum.Measurement.hopfVolumePrimitive]{\detokenize{hopfVolumePrimitive}}§ theta) /
+  (§\hyperref[lean:CGD.Quantum.Measurement.hopfVolumePrimitive]{\detokenize{hopfVolumePrimitive}}§ Real.pi - §\hyperref[lean:CGD.Quantum.Measurement.hopfVolumePrimitive]{\detokenize{hopfVolumePrimitive}}§ 0) =
   -- ...is mathematically identical to the linear projection...
   (1 + (§\hyperref[lean:CGD.Quantum.geometricBellCorrelation]{\detokenize{geometricBellCorrelation}}§ (evaluateBoundary pu.toUniverse.sd_sector) detector_frame).re) / 2 ∧
   -- ...which identically equals the quantum mechanical Born rule probability projection
@@ -1734,11 +1726,11 @@ noncomputable def §\phantomsection\label{lean:CGD.Quantum.P_plus}§CGD.Quantum.
 
 /--
 The exact algebraic chiral split of the emergent Dirac equation.
-By applying the projection operators, the relativistic Dirac equation natively factors 
+By applying the projection operators, the relativistic Dirac equation natively factors
 into a coupled system for the large and small components.
 -/
 @[litlib_track "Algebraic Dirac Chiral Split"]
-theorem §\phantomsection\label{lean:CGD.Quantum.algebraicDiracChiralSplit}§CGD.Quantum.algebraicDiracChiralSplit (dPsi : Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → Matrix (Fin 4) (Fin 4) Complex) 
+theorem §\phantomsection\label{lean:CGD.Quantum.algebraicDiracChiralSplit}§CGD.Quantum.algebraicDiracChiralSplit (dPsi : Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → Matrix (Fin 4) (Fin 4) Complex)
   (Psi : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → Matrix (Fin 4) (Fin 4) Complex) (m : Complex) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) :
   §\hyperref[lean:CGD.Quantum.localDiracOp]{\detokenize{localDiracOp}}§ (fun a => dPsi a x) = m • Psi x →
   let D0_mod := §\hyperref[lean:CGD.Quantum.modulatedTemporalDeriv]{\detokenize{modulatedTemporalDeriv}}§ (dPsi 0 x) (Psi x) m
@@ -1748,13 +1740,13 @@ theorem §\phantomsection\label{lean:CGD.Quantum.algebraicDiracChiralSplit}§CGD
 
 /--
 The Emergent Schrödinger/Pauli Reduction.
-Without making any approximations, the large component of the gauge-covariant Dirac field natively obeys 
+Without making any approximations, the large component of the gauge-covariant Dirac field natively obeys
 a relation where its temporal variation is exactly sourced by the spatial Dirac operator acting on the small component.
-Because the small component is algebraically inversely proportional to the mass, this rigorously 
+Because the small component is algebraically inversely proportional to the mass, this rigorously
 yields the non-relativistic 1/2m Hamiltonian structure.
 -/
 @[litlib_track "Exact Schroedinger Reduction"]
-theorem §\phantomsection\label{lean:CGD.Quantum.exactSchroedingerReduction}§CGD.Quantum.exactSchroedingerReduction (dPsi : Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → Matrix (Fin 4) (Fin 4) Complex) 
+theorem §\phantomsection\label{lean:CGD.Quantum.exactSchroedingerReduction}§CGD.Quantum.exactSchroedingerReduction (dPsi : Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → Matrix (Fin 4) (Fin 4) Complex)
   (Psi : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → Matrix (Fin 4) (Fin 4) Complex) (m : Complex) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) :
   §\hyperref[lean:CGD.Quantum.localDiracOp]{\detokenize{localDiracOp}}§ (fun a => dPsi a x) = m • Psi x →
   let D0_mod := §\hyperref[lean:CGD.Quantum.modulatedTemporalDeriv]{\detokenize{modulatedTemporalDeriv}}§ (dPsi 0 x) (Psi x) m
@@ -1762,8 +1754,8 @@ theorem §\phantomsection\label{lean:CGD.Quantum.exactSchroedingerReduction}§CG
   (2 • m • Psi_small = §\hyperref[lean:CGD.Quantum.P_plus]{\detokenize{P_plus}}§ * D0_mod + §\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ 1 * (§\hyperref[lean:CGD.Quantum.P_minus]{\detokenize{P_minus}}§ * dPsi 1 x) + §\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ 2 * (§\hyperref[lean:CGD.Quantum.P_minus]{\detokenize{P_minus}}§ * dPsi 2 x) + §\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ 3 * (§\hyperref[lean:CGD.Quantum.P_minus]{\detokenize{P_minus}}§ * dPsi 3 x)) ∧
   (§\hyperref[lean:CGD.Quantum.P_minus]{\detokenize{P_minus}}§ * D0_mod = §\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ 1 * (§\hyperref[lean:CGD.Quantum.P_plus]{\detokenize{P_plus}}§ * dPsi 1 x) + §\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ 2 * (§\hyperref[lean:CGD.Quantum.P_plus]{\detokenize{P_plus}}§ * dPsi 2 x) + §\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ 3 * (§\hyperref[lean:CGD.Quantum.P_plus]{\detokenize{P_plus}}§ * dPsi 3 x))
 
-/-- 
-The core Dirac operator evaluated in the local tangent space frame (using tangent space index 'a' 
+/--
+The core Dirac operator evaluated in the local tangent space frame (using tangent space index 'a'
 instead of coordinate index 'mu'). In curved space, dP represents the tetrad-contracted derivative.
 -/
 noncomputable def §\phantomsection\label{lean:CGD.Quantum.localDiracOp}§CGD.Quantum.localDiracOp (dP : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) : Matrix (Fin 4) (Fin 4) Complex :=
@@ -1847,7 +1839,7 @@ class §\phantomsection\label{lean:Litlib.Y1951.papapetrou1951spinning.Eq2_12}§
     (invMetric : M → Matrix (Fin 4) (Fin 4) F)
     (Christoffel : M → (Fin 4 → Fin 4 → Fin 4 → F))
     (T : Fin 4 → Fin 4 → M → F)
-    (§\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ : Fin 4 → (M → F) → M → F)
+    (§\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ : Fin 4 → (M → F) → M → F)
     (worldline : F → M)
     (u_up : F → (Fin 4 → F))
     (du_up_ds : F → (Fin 4 → F))
@@ -1858,7 +1850,7 @@ class §\phantomsection\label{lean:Litlib.Y1951.papapetrou1951spinning.Eq2_12}§
   u_norm_nonzero : ∀ s, ∑ μ, ∑ ν, Metric (worldline s) μ ν * u_up s μ * u_up s ν ≠ 0
   single_pole_eom : 
     (∀ x b, ∑ a : Fin 4, ∑ c : Fin 4, invMetric x a c * (
-      §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ c (fun p => T a b p) x -
+      §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ c (fun p => T a b p) x -
       ∑ d : Fin 4, (Christoffel x d c a * T d b x + Christoffel x d c b * T a d x)
     ) = 0) →
     isSinglePole T worldline →
@@ -2210,13 +2202,13 @@ class §\phantomsection\label{lean:Litlib.Y2000.hall2000elementary.DerivativeExp
 class §\phantomsection\label{lean:Litlib.Y2003.nakahara2003geometry.Theorem_ContractedBianchi}§Litlib.Y2003.nakahara2003geometry.Theorem_ContractedBianchi§\textsuperscript{\pdftooltip{\cite{nakahara2003geometry}}{Reference: nakahara2003geometry}}§ 
     (Point Index : Type _) [Fintype Index] [DecidableEq Index] [Nonempty Index] [Nonempty Point]
     (isSmooth : (Point → ℂ) → Prop)
-    (§\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ : Index → (Point → ℂ) → Point → ℂ) where
+    (§\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ : Index → (Point → ℂ) → Point → ℂ) where
   
   -- The fundamental rules of calculus required for the geometry
-  derivCommute : ∀ mu nu f x, isSmooth f → isSmooth (§\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ mu f) → isSmooth (§\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ nu f) →
-    §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ mu (fun p => §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ nu f p) x = §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ nu (fun p => §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ mu f p) x
+  derivCommute : ∀ mu nu f x, isSmooth f → isSmooth (§\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ mu f) → isSmooth (§\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ nu f) →
+    §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ mu (fun p => §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ nu f p) x = §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ nu (fun p => §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ mu f p) x
   derivLeibniz : ∀ mu f1 f2 x, isSmooth f1 → isSmooth f2 →
-    §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ mu (fun p => f1 p * f2 p) x = §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ mu f1 x * f2 x + f1 x * §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ mu f2 x
+    §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ mu (fun p => f1 p * f2 p) x = §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ mu f1 x * f2 x + f1 x * §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ mu f2 x
 
   -- The General Theorem: If a metric satisfies the Levi-Civita premises, it satisfies Bianchi.
   all_metrics_satisfy_bianchi :
@@ -2230,9 +2222,9 @@ class §\phantomsection\label{lean:Litlib.Y2003.nakahara2003geometry.Theorem_Con
       (∀ x i j, g_inv i j x = g_inv j i x) →
       (∀ x i j, (∑ k, g i k x * g_inv k j x) = if i = j then 1 else 0) →
       (∀ x rho mu nu, §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{christoffel}}§ rho mu nu x = (1/2 : ℂ) * ∑ sigma, g_inv rho sigma x * (
-        §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ mu (fun p => g sigma nu p) x + §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ nu (fun p => g mu sigma p) x - §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ sigma (fun p => g mu nu p) x)) →
+        §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ mu (fun p => g sigma nu p) x + §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ nu (fun p => g mu sigma p) x - §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ sigma (fun p => g mu nu p) x)) →
       (∀ x mu nu, ricci mu nu x = ∑ rho, (
-        §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ rho (fun p => §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{christoffel}}§ rho mu nu p) x - §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ nu (fun p => §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{christoffel}}§ rho mu rho p) x + 
+        §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ rho (fun p => §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{christoffel}}§ rho mu nu p) x - §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ nu (fun p => §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{christoffel}}§ rho mu rho p) x + 
         ∑ lambda, (§\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{christoffel}}§ rho lambda rho x * §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{christoffel}}§ lambda mu nu x - §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{christoffel}}§ rho lambda nu x * §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{christoffel}}§ lambda mu rho x))) →
       (∀ x, scalarCurv x = ∑ alpha, ∑ beta, g_inv alpha beta x * ricci alpha beta x) →
       (∀ x mu nu, G mu nu x = ricci mu nu x - (1/2 : ℂ) * g mu nu x * scalarCurv x) →
@@ -2243,7 +2235,7 @@ class §\phantomsection\label{lean:Litlib.Y2003.nakahara2003geometry.Theorem_Con
       -- CONCLUSION:
       ∀ (nu : Index) (x : Point),
         ∑ mu : Index, ∑ alpha : Index, g_inv mu alpha x * (
-          §\hyperref[lean:CGD.Foundations.partialDeriv]{\detokenize{partialDeriv}}§ alpha (fun p => G mu nu p) x -
+          §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ alpha (fun p => G mu nu p) x -
           ∑ lambda : Index, (§\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{christoffel}}§ lambda alpha mu x * G lambda nu x + §\hyperref[lean:CGD.Gravity.christoffel]{\detokenize{christoffel}}§ lambda alpha nu x * G mu lambda x)
         ) = 0
 

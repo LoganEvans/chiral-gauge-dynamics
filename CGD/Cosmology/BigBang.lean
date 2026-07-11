@@ -18,7 +18,14 @@ open CGD.Axioms CGD.Foundations CGD.Math
 namespace CGD.Cosmology
 
 /--
-Demonstrates that if the macroscopic boundary assumes a fully 4D symmetric SO(4) ground state, the geometry natively averts a singularity. Provided the metric determinant remains non-zero, the boundary manifests mathematically as a smooth Euclidean instanton bounce.
+A kinematic boundary evaluation. This demonstrates that if a phase region is 
+artificially constrained to a fully 4D symmetric SO(4) state, the resulting 
+Urbantke metric takes a purely Euclidean form (c • 1).
+
+Rather than representing a dynamic cosmological evolution, this acts as a 
+mathematical sanity check: it shows that highly symmetric ground-state toy models 
+evaluate to non-singular Euclidean spaces rather than generating mathematical 
+singularities in the metric.
 -/
 @[litlib_track "Big Bang Singularity Resolution (Euclidean Bounce)"]
 theorem kinematicBigBang (pu : PhysicalUniverse) (phaseRegion : Set SpacetimePoint)
