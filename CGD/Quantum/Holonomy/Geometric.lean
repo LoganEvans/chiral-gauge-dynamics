@@ -3,6 +3,7 @@
 import Litlib.Core
 import CGD.Axioms.Ontology
 import CGD.Axioms.PhysicalUniverse
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Foundations.GaugeGroup
 import Mathlib.Data.Complex.Basic
@@ -15,7 +16,7 @@ set_option maxHeartbeats 4000000
 
 namespace CGD.Quantum
 
-open CGD.Axioms CGD.Foundations Complex Matrix
+open CGD.Axioms CGD.Foundations CGD.Math Complex Matrix
 
 lemma embed_mul_eq_zero (L R : SL2C) : embedSelfDual L * embedAntiSelfDual R = 0 := by
   ext i j

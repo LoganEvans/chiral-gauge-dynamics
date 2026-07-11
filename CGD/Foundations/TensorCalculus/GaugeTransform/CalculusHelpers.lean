@@ -2,10 +2,13 @@
 
 import Litlib.Core
 import CGD.Foundations.TensorCalculus.DifferentialRules
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import Mathlib.LinearAlgebra.Matrix.Trace
 import Mathlib.Analysis.Calculus.ContDiff.Basic
 import Mathlib.Algebra.Lie.Classical
+
+open CGD.Math
 
 set_option linter.unusedSimpArgs false
 

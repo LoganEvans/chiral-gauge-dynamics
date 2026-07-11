@@ -3,7 +3,7 @@
 import Litlib.Core
 import CGD.Axioms.Ontology
 
-open CGD.Axioms CGD.Foundations
+open CGD.Axioms CGD.Foundations CGD.Math
 
 namespace CGD.Foundations
 

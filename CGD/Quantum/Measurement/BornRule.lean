@@ -9,7 +9,7 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 
 namespace CGD.Quantum.Measurement
 
-open CGD.Foundations CGD.Axioms CGD.Quantum
+open CGD.Foundations CGD.Math CGD.Axioms CGD.Quantum
 
 /--
 The exact analytical primitive (volume function) of the Bengtsson invariant Hopf metric.

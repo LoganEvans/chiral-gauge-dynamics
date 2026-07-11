@@ -2,6 +2,8 @@
 
 import CGD.Foundations.TensorCalculus.GaugeTransform.CalculusHelpers
 
+open CGD.Math
+
 set_option linter.unusedSimpArgs false
 
 open Matrix Complex BigOperators Litlib.Y2003.nakahara2003geometry

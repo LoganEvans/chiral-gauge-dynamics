@@ -15,7 +15,7 @@ open Matrix
 open Complex
 open CGD
 open CGD.Axioms
-open CGD.Foundations
+open CGD.Foundations CGD.Math
 
 namespace CGD.Phenomenology
 

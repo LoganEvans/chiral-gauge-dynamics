@@ -9,7 +9,7 @@ import CGD.Axioms.Ontology
 import CGD.Axioms.PhysicalUniverse
 
 
-open CGD.Foundations Matrix BigOperators
+open CGD.Foundations CGD.Math Matrix BigOperators
 open CGD.Axioms
 
 namespace CGD.AntiSelfDualSector

@@ -1,13 +1,14 @@
 -- FILENAME: CGD/Gravity/Geometry.lean
 
 import CGD.Foundations.Spacetime
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Foundations.GaugeGroup
 import Mathlib.Analysis.Calculus.ContDiff.Basic
 import Litlib.Math.Matrix4
 
 open Complex Matrix BigOperators
-open CGD.Foundations
+open CGD.Foundations CGD.Math
 
 namespace CGD.Gravity
 

@@ -14,7 +14,7 @@ import Mathlib.Analysis.Calculus.FDeriv.Basic
 
 namespace CGD.Gravity
 
-open Set Complex Matrix BigOperators CGD.Axioms CGD.Foundations Classical Filter
+open Set Complex Matrix BigOperators CGD.Axioms CGD.Foundations CGD.Math Classical Filter
 open Litlib.Y1991.capovilla1991pure
 
 -- ==========================================

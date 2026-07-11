@@ -11,7 +11,7 @@ import Mathlib.Analysis.Calculus.Deriv.Mul
 set_option linter.unusedSimpArgs false
 set_option linter.unusedSectionVars false
 
-open Matrix Complex BigOperators CGD.Axioms CGD.Foundations
+open Matrix Complex BigOperators CGD.Axioms CGD.Foundations CGD.Math
 
 namespace CGD.Foundations
 

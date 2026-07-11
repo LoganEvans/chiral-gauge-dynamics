@@ -2,6 +2,7 @@
 
 import CGD.Foundations.Spacetime
 import CGD.Foundations.GaugeGroup
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Gravity.ExactSolutions.Math
 import CGD.Gravity.Geometry
@@ -27,7 +28,7 @@ set_option maxHeartbeats 800000
 
 namespace CGD.Gravity.ExactSolutions
 
-open CGD.Foundations
+open CGD.Foundations CGD.Math
 open CGD.Gravity
 open CGD.Axioms
 open Complex

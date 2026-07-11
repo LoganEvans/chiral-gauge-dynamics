@@ -1,6 +1,7 @@
 -- FILENAME: CGD/Quantum/Definitions.lean
 
 import Litlib.Core
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Foundations.GaugeGroup
 import CGD.Axioms.Ontology
@@ -8,7 +9,7 @@ import Mathlib.Data.Complex.Basic
 import Mathlib.Data.Matrix.Basic
 
 
-open CGD.Axioms CGD.Foundations Matrix Complex
+open CGD.Axioms CGD.Foundations CGD.Math Matrix Complex
 
 namespace CGD.Quantum
 

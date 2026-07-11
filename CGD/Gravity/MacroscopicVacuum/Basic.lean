@@ -7,7 +7,7 @@ import CGD.Axioms.Ontology
 set_option autoImplicit false
 
 open Complex Matrix BigOperators
-open CGD.Axioms CGD.Foundations Litlib Classical
+open CGD.Axioms CGD.Foundations CGD.Math Litlib Classical
 
 namespace CGD.Gravity
 

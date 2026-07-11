@@ -11,7 +11,7 @@ import CGD.Gravity.Geometry
 
 set_option linter.unusedSimpArgs false
 
-open CGD.Foundations CGD.Gravity Matrix Complex BigOperators
+open CGD.Foundations CGD.Math CGD.Gravity Matrix Complex BigOperators
 open CGD.Axioms
 
 namespace CGD.Quantum

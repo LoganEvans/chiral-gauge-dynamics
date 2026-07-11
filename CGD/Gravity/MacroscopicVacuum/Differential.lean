@@ -3,6 +3,8 @@
 import CGD.Foundations.Bianchi
 import CGD.Gravity.MacroscopicVacuum.Spinors
 
+open CGD.Math
+
 namespace CGD.Gravity
 
 -- ==========================================
@@ -15,7 +17,7 @@ noncomputable def cgd_omega (u : CGD.Axioms.Universe) (x : CGD.Foundations.Space
 
 /-- The exact partial derivative expansion of the derived soldering 2-form. -/
 noncomputable def cgd_dSigma (e : TetradField) (x : CGD.Foundations.SpacetimePoint) (μ ν ρ : Fin 4) (A B : Fin 2) : ℂ :=
-  CGD.Foundations.partialDeriv ρ (fun p => cgd_Sigma e p μ ν A B) x
+  CGD.Math.partialDeriv ρ (fun p => cgd_Sigma e p μ ν A B) x
 
 /-- The inverse Levi-Civita spinor metric (indices up). -/
 def cgd_eps2_up (A B : Fin 2) : ℂ := cgd_eps2_down A B

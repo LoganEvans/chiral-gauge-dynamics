@@ -5,7 +5,7 @@ import CGD.Foundations.Spacetime
 import CGD.Axioms.Ontology
 import CGD.Axioms.PhysicalUniverse
 import CGD.Foundations.GaugeGroup
-import CGD.Foundations.Math
+import CGD.Math.Matrix
 import Mathlib.LinearAlgebra.Matrix.Trace
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Tactic.Ring
@@ -14,7 +14,7 @@ import Mathlib.Tactic.FinCases
 
 set_option linter.unusedSimpArgs false
 
-open CGD.Axioms CGD.Foundations Matrix BigOperators
+open CGD.Axioms CGD.Math CGD.Foundations Matrix BigOperators
 
 namespace CGD.AntiSelfDualSector
 

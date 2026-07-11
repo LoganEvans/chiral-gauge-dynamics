@@ -1,10 +1,11 @@
 -- FILENAME: CGD/Gravity/ExactSolutions/Definitions.lean
 
 import CGD.Axioms.PhysicalUniverse
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Gravity.Geometry
 
-open CGD.Axioms CGD.Foundations CGD.Gravity
+open CGD.Axioms CGD.Foundations CGD.Math CGD.Gravity
 
 namespace CGD.Gravity.ExactSolutions
 

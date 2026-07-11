@@ -1,9 +1,10 @@
 -- FILENAME: CGD/Gravity/ExactSolutions/AlgebraicForms.lean
 
 import CGD.Axioms.PhysicalUniverse
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 
-open CGD.Axioms CGD.Foundations Complex Matrix
+open CGD.Axioms CGD.Foundations CGD.Math Complex Matrix
 
 namespace CGD.Gravity.ExactSolutions
 

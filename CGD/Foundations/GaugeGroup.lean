@@ -10,7 +10,7 @@ import Mathlib.Data.Fintype.Basic
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import CGD.Foundations.Math
+import CGD.Math.Matrix
 
 open Complex Matrix
 

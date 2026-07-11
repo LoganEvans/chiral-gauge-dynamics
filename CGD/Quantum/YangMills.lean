@@ -2,7 +2,7 @@
 
 import Litlib.Core
 import CGD.Foundations.GaugeGroup
-import CGD.Foundations.Math
+import CGD.Math.Matrix
 import CGD.Particles.Definitions
 import Mathlib.Data.Complex.Basic
 import Mathlib.Tactic.Ring
@@ -12,7 +12,7 @@ set_option linter.unusedSimpArgs false
 set_option linter.unusedTactic false
 set_option linter.unreachableTactic false
 
-open CGD.Foundations CGD.Particles Matrix Complex BigOperators
+open CGD.Math CGD.Foundations CGD.Particles Matrix Complex BigOperators
 open CGD.Axioms
 
 namespace CGD.Quantum

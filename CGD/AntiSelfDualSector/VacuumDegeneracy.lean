@@ -2,13 +2,14 @@
 
 import CGD.Axioms.Ontology
 import CGD.Axioms.PhysicalUniverse
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Gravity.Geometry
 import CGD.Particles.Color
 import CGD.Particles.Definitions
 import Litlib.Core
 
-open CGD.Axioms CGD.Foundations CGD.Gravity CGD.Particles Matrix Complex
+open CGD.Axioms CGD.Foundations CGD.Math CGD.Gravity CGD.Particles Matrix Complex
 
 set_option linter.unusedSimpArgs false
 

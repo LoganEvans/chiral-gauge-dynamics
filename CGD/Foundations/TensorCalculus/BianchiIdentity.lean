@@ -4,6 +4,8 @@ import CGD.Foundations.TensorCalculus.DifferentialRules
 import CGD.Foundations.TensorCalculus.LieAlgebra
 import CGD.Axioms.Ontology
 
+open CGD.Math
+
 
 open Matrix Complex BigOperators Litlib.Y2003.nakahara2003geometry CGD.Axioms
 

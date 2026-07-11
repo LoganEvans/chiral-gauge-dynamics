@@ -3,6 +3,7 @@
 import CGD.Foundations.TensorCalculus.BianchiIdentity
 import CGD.Gravity.Geometry
 import CGD.Axioms.Ontology
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Foundations.Spacetime
 import Mathlib.Analysis.Calculus.ContDiff.Basic
@@ -15,7 +16,7 @@ import Mathlib.Analysis.Calculus.Deriv.Add
 import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.Analysis.Calculus.Deriv.Comp
 
-open Matrix Complex BigOperators CGD.Axioms CGD.Foundations
+open Matrix Complex BigOperators CGD.Axioms CGD.Foundations CGD.Math
 
 namespace CGD.Foundations
 

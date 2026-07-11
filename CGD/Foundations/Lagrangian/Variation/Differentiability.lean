@@ -1,6 +1,7 @@
 -- FILENAME: CGD/Foundations/Lagrangian/Variation/Differentiability.lean
 
 import CGD.Foundations.Action
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Axioms.Ontology
 import CGD.Foundations.Lagrangian.Variation.Algebra
@@ -15,7 +16,7 @@ import Mathlib.Analysis.Calculus.Deriv.Prod
 set_option linter.unusedSimpArgs false
 set_option linter.unusedSectionVars false
 
-open Matrix Complex BigOperators CGD.Axioms CGD.Foundations
+open Matrix Complex BigOperators CGD.Axioms CGD.Foundations CGD.Math
 
 namespace CGD.Foundations
 

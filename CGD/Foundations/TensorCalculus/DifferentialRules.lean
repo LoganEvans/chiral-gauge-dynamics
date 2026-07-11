@@ -1,12 +1,15 @@
 -- FILENAME: CGD/Foundations/TensorCalculus/DifferentialRules.lean
 
 import Litlib.Y2003.nakahara2003geometry.Signature
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Foundations.GaugeGroup
 import Mathlib.Analysis.Calculus.ContDiff.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import Mathlib.Analysis.Calculus.FDeriv.Add
 import Mathlib.Analysis.Calculus.FDeriv.Mul
+
+open CGD.Math
 
 
 open Matrix Complex BigOperators Litlib.Y2003.nakahara2003geometry

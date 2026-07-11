@@ -1,13 +1,14 @@
 -- FILENAME: CGD/Cosmology/Definitions.lean
 
 import CGD.Foundations.GaugeGroup
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Gravity.Geometry
 import CGD.Axioms.Ontology
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 
 open BigOperators Complex Matrix
-open CGD.Axioms CGD.Foundations CGD.Gravity
+open CGD.Axioms CGD.Foundations CGD.Math CGD.Gravity
 
 namespace CGD.Cosmology
 

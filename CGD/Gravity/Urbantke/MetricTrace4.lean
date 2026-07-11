@@ -6,7 +6,7 @@ set_option linter.unusedSimpArgs false
 
 namespace CGD.Gravity
 
-open Complex Matrix BigOperators CGD.Foundations Litlib.Y1991.capovilla1991pure
+open Complex Matrix BigOperators CGD.Foundations CGD.Math Litlib.Y1991.capovilla1991pure
 
 lemma sum_trace_expand (a b c : Fin 3) :
   (∑ A : Fin 2, ∑ B : Fin 2, ∑ C : Fin 2, ∑ D : Fin 2, ∑ E : Fin 2, ∑ F_idx : Fin 2,

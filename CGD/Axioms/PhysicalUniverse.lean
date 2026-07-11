@@ -5,7 +5,7 @@ import CGD.Axioms.MacroscopicVolume
 import CGD.Axioms.UnimodularVacuum
 import CGD.Foundations.Spacetime
 
-open CGD.Foundations
+open CGD.Foundations CGD.Math
 
 namespace CGD.Axioms
 

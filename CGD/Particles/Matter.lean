@@ -2,6 +2,7 @@
 
 import CGD.Axioms.Ontology
 import CGD.Axioms.PhysicalUniverse
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Foundations.Spacetime
 import CGD.Gravity.Geometry
@@ -15,7 +16,7 @@ set_option linter.unusedVariables false
 
 open scoped BigOperators
 open Litlib.Y2011.krasnov2011plebanski
-open CGD.Axioms CGD.Foundations CGD.Gravity
+open CGD.Axioms CGD.Foundations CGD.Math CGD.Gravity
 
 namespace CGD.Particles
 

@@ -7,7 +7,7 @@ import CGD.Foundations.GaugeGroup
 import CGD.Quantum.Definitions
 import CGD.Quantum.Holonomy.Evaluation
 
-open Complex Matrix CGD.Foundations CGD.Quantum CGD.Axioms
+open Complex Matrix CGD.Foundations CGD.Math CGD.Quantum CGD.Axioms
 
 set_option linter.unusedSimpArgs false
 

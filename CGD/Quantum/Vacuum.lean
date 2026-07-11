@@ -1,6 +1,7 @@
 -- FILENAME: CGD/Quantum/Vacuum.lean
 
 import Litlib.Core
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Gravity.Geometry
 import CGD.Axioms.Ontology
@@ -10,7 +11,7 @@ import Mathlib.Analysis.Calculus.FDeriv.Add
 
 set_option linter.unusedSimpArgs false
 
-open CGD.Foundations CGD.Gravity CGD.Axioms Matrix Complex
+open CGD.Foundations CGD.Math CGD.Gravity CGD.Axioms Matrix Complex
 
 namespace CGD.Quantum
 

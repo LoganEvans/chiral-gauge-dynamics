@@ -5,6 +5,7 @@ import CGD.Axioms.Ontology
 import CGD.Axioms.PhysicalUniverse
 import CGD.Axioms.MacroscopicVolume
 import CGD.Foundations.Spacetime
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Gravity.Geometry
 import CGD.Particles.Color
@@ -15,7 +16,7 @@ set_option autoImplicit false
 set_option linter.unusedVariables false
 
 open scoped BigOperators
-open CGD.Axioms CGD.Foundations CGD.Gravity CGD.Particles
+open CGD.Axioms CGD.Foundations CGD.Math CGD.Gravity CGD.Particles
 
 namespace CGD.Phenomenology
 

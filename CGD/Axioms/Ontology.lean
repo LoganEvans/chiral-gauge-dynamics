@@ -7,7 +7,7 @@ import CGD.Foundations.Spacetime
 
 namespace CGD.Axioms
 
-open CGD.Foundations
+open CGD.Foundations CGD.Math
 
 /--
 A smooth SL(2, C) gauge field.

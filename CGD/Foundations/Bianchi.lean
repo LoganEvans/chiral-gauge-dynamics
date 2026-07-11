@@ -2,11 +2,14 @@
 
 import Litlib.Core
 import CGD.Axioms.Ontology
-import CGD.Foundations.Math
+import CGD.Math.Matrix
 import CGD.Foundations.Calculus
-import CGD.Foundations.Charge
+import CGD.Particles.Electromagnetism
+import CGD.Math.Calculus
 import CGD.Foundations.TensorCalculus.DifferentialRules
 import Mathlib.Analysis.Calculus.FDeriv.Add
+
+open CGD.Math
 
 namespace CGD.Foundations
 

@@ -10,7 +10,7 @@ set_option linter.unusedSimpArgs false
 
 namespace CGD.Quantum
 
-open CGD.Foundations CGD.Axioms Complex Matrix Litlib.Y2000.hall2000elementary
+open CGD.Foundations CGD.Math CGD.Axioms Complex Matrix Litlib.Y2000.hall2000elementary
 
 noncomputable def straightLinePath (t : ℝ) : SpacetimePoint := fun _ => t
 

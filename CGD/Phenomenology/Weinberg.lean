@@ -13,7 +13,7 @@ set_option linter.unusedSectionVars false
 set_option linter.unusedSimpArgs false
 
 open Complex Matrix BigOperators
-open CGD.Axioms CGD.Foundations
+open CGD.Axioms CGD.Foundations CGD.Math
 
 namespace CGD.Phenomenology
 

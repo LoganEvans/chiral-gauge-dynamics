@@ -9,7 +9,7 @@ set_option linter.unusedSimpArgs false
 
 namespace CGD.Gravity
 
-open Complex Matrix BigOperators CGD.Foundations Litlib.Y1991.capovilla1991pure
+open Complex Matrix BigOperators CGD.Foundations CGD.Math Litlib.Y1991.capovilla1991pure
 
 lemma capovilla_g_eq (F : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) (μ ν : Fin 4)
   (h_antisymm : ∀ μ ν, F μ ν = - F ν μ) :

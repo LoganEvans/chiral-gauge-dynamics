@@ -6,7 +6,7 @@ set_option linter.unusedSimpArgs false
 
 namespace CGD.Gravity
 
-open Complex Matrix BigOperators CGD.Foundations Litlib.Y1991.capovilla1991pure
+open Complex Matrix BigOperators CGD.Foundations CGD.Math Litlib.Y1991.capovilla1991pure
 
 lemma plebanski_f_comp (F : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) (Λ : ℂ)
   (h_su2 : ∀ μ ν,

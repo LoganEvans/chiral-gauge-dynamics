@@ -2,13 +2,14 @@
 
 import CGD.Foundations.Spacetime
 import CGD.Gravity.Geometry
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import Mathlib.Data.Complex.Basic
 import Litlib.Core
 import CGD.Axioms.Ontology
 
 
-open CGD.Axioms CGD.Foundations Matrix Complex
+open CGD.Axioms CGD.Foundations CGD.Math Matrix Complex
 
 namespace CGD.Particles
 

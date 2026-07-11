@@ -2,6 +2,7 @@
 
 import CGD.Foundations.Spacetime
 import CGD.Foundations.GaugeGroup
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Axioms.Ontology
 import CGD.Axioms.PhysicalUniverse

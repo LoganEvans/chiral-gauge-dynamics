@@ -3,6 +3,7 @@
 import Litlib.Core
 import CGD.Gravity.Geometry
 import CGD.Gravity.StressEnergy.Conservation
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Foundations.GaugeGroup
 import CGD.Axioms.PhysicalUniverse
@@ -13,7 +14,7 @@ import Litlib.Y2003.nakahara2003geometry.Signature
 import Litlib.Y1984.urbantke1984integrability.Signature
 import Litlib.Y1951.papapetrou1951spinning.Signature
 
-open Complex Matrix CGD.Foundations BigOperators Classical
+open Complex Matrix CGD.Foundations CGD.Math BigOperators Classical
 open Topology CGD.Axioms Litlib.Y1951.papapetrou1951spinning
 
 namespace CGD.Gravity

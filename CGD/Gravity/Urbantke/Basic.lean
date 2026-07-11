@@ -11,7 +11,7 @@ set_option linter.unusedSimpArgs false
 
 namespace CGD.Gravity
 
-open Complex Matrix BigOperators CGD.Foundations Litlib.Y1991.capovilla1991pure
+open Complex Matrix BigOperators CGD.Foundations CGD.Math Litlib.Y1991.capovilla1991pure
 
 noncomputable def eps2 : Fin 2 → Fin 2 → ℂ := !![0, 1; -1, 0]
 noncomputable def eps2_up : Fin 2 → Fin 2 → ℂ := !![0, 1; -1, 0]

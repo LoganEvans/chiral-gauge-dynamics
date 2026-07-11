@@ -6,7 +6,7 @@ set_option linter.unusedSimpArgs false
 
 namespace CGD.Gravity
 
-open Complex Matrix BigOperators CGD.Foundations Litlib.Y1991.capovilla1991pure
+open Complex Matrix BigOperators CGD.Foundations CGD.Math Litlib.Y1991.capovilla1991pure
 
 lemma swap_2_3 (f : Fin 2 → Fin 3 → ℂ) : (∑ x : Fin 2, ∑ y : Fin 3, f x y) = (∑ y : Fin 3, ∑ x : Fin 2, f x y) := Finset.sum_comm
 lemma swap_4_3 (f : Fin 4 → Fin 3 → ℂ) : (∑ x : Fin 4, ∑ y : Fin 3, f x y) = (∑ y : Fin 3, ∑ x : Fin 4, f x y) := Finset.sum_comm

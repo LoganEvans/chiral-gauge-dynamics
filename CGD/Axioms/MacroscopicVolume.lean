@@ -5,7 +5,7 @@ import CGD.Axioms.Ontology
 import CGD.Foundations.Spacetime
 import CGD.Gravity.Geometry
 
-open CGD.Foundations CGD.Gravity Set
+open CGD.Foundations CGD.Math CGD.Gravity Set
 
 namespace CGD.Axioms
 

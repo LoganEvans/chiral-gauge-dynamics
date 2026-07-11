@@ -7,7 +7,7 @@ import Mathlib.Tactic.Ring
 
 set_option linter.unusedSimpArgs false
 
-open CGD.Foundations Matrix Complex BigOperators Litlib.Math.Dirac
+open CGD.Foundations CGD.Math Matrix Complex BigOperators Litlib.Math.Dirac
 
 namespace CGD.Quantum
 

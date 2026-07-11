@@ -1,11 +1,8 @@
 -- FILENAME: CGD/Foundations/Calculus.lean
 
+import CGD.Math.Calculus
 import CGD.Foundations.Spacetime
 import CGD.Foundations.GaugeGroup
-import CGD.Foundations.Math
-import Mathlib.Analysis.Calculus.FDeriv.Basic
-import Mathlib.Analysis.Calculus.FDeriv.Mul
-import Mathlib.Analysis.Calculus.FDeriv.Add
 import Mathlib.Analysis.Calculus.ContDiff.Basic
 import Mathlib.Analysis.Calculus.Deriv.Basic
 import Mathlib.Analysis.Complex.Basic
@@ -15,15 +12,7 @@ set_option linter.unusedSimpArgs false
 
 namespace CGD.Foundations
 
-structure PhysicalField (E : Type*)[NormedAddCommGroup E][NormedSpace ℝ E] where
-  val : SpacetimePoint → E
-  smooth : ContDiff ℝ ⊤ val
-
-instance {E : Type*}[NormedAddCommGroup E][NormedSpace ℝ E] : CoeFun (PhysicalField E) (fun _ => SpacetimePoint → E) where
-  coe := PhysicalField.val
-
-noncomputable def partialDeriv {E : Type*}[NormedAddCommGroup E][NormedSpace ℝ E] (μ : Fin 4) (f : SpacetimePoint → E) : SpacetimePoint → E :=
-  fun x => fderiv ℝ f x ((Pi.single μ (1 : ℝ)) : Fin 4 → ℝ)
+open CGD.Math Complex Matrix
 
 noncomputable def partialDerivMat (μ : Fin 4) (f : SpacetimePoint → Matrix (Fin 2) (Fin 2) ℂ) (x : SpacetimePoint) : Matrix (Fin 2) (Fin 2) ℂ :=
   fun i j => partialDeriv μ (fun p => f p i j) x
@@ -31,14 +20,6 @@ noncomputable def partialDerivMat (μ : Fin 4) (f : SpacetimePoint → Matrix (F
 noncomputable def partialDerivSl2c (μ : Fin 4) (A : SpacetimePoint → SL2C) (x : SpacetimePoint) : SL2C :=
   let dA_val := partialDerivMat μ (fun p => (A p).val) x
   toSl2c dA_val
-
-lemma partialDeriv_const {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] (c : E) (μ : Fin 4) (x : SpacetimePoint) :
-  partialDeriv μ (fun _ => c) x = 0 := by
-  unfold partialDeriv
-  have h_const : (fun (_ : SpacetimePoint) => c) = Function.const SpacetimePoint c := rfl
-  rw [h_const]
-  rw [fderiv_const]
-  rfl
 
 lemma partialDerivMat_const (c : Matrix (Fin 2) (Fin 2) ℂ) (μ : Fin 4) (x : SpacetimePoint) :
   partialDerivMat μ (fun _ => c) x = 0 := by
@@ -58,57 +39,6 @@ lemma partialDerivSl2c_const (c : SL2C) (μ : Fin 4) (x : SpacetimePoint) :
   rw [ht]
   have hz : (0:ℂ) / 2 = 0 := by ring
   rw [hz, zero_smul, sub_zero]
-
-lemma partialDeriv_mul_c
-  (f g : SpacetimePoint → ℂ) (μ : Fin 4) (x : SpacetimePoint)
-  (hf : DifferentiableAt ℝ f x) (hg : DifferentiableAt ℝ g x) :
-  partialDeriv μ (fun p => f p * g p) x = f x * partialDeriv μ g x + partialDeriv μ f x * g x := by
-  unfold partialDeriv
-  have h_eq : (fun p => f p * g p) = f * g := rfl
-  rw [h_eq]
-  rw [fderiv_mul hf hg]
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
-  ring
-
-lemma partialDeriv_const_smul
-  (c : ℂ) (f : SpacetimePoint → ℂ) (μ : Fin 4) (x : SpacetimePoint)
-  (hf : DifferentiableAt ℝ f x) :
-  partialDeriv μ (fun p => c * f p) x = c * partialDeriv μ f x := by
-  have hc : DifferentiableAt ℝ (fun _ : SpacetimePoint => c) x := differentiableAt_const c
-  rw [partialDeriv_mul_c (fun _ => c) f μ x hc hf]
-  rw [partialDeriv_const]
-  ring
-
-lemma diff_sum {ι : Type*} [Fintype ι] (f : ι → SpacetimePoint → ℂ) (x : SpacetimePoint) (hf : ∀ i, DifferentiableAt ℝ (f i) x) :
-  DifferentiableAt ℝ (fun p => ∑ i, f i p) x := by
-  have h_eq : (fun p => ∑ i, f i p) = ∑ i, f i := by
-    ext p
-    rw [Finset.sum_apply]
-  rw [h_eq]
-  have hf' : ∀ i ∈ Finset.univ, DifferentiableAt ℝ (f i) x := fun i _ => hf i
-  exact DifferentiableAt.sum hf'
-
-lemma diff_const_mul (c : ℂ) (f : SpacetimePoint → ℂ) (x : SpacetimePoint) (hf : DifferentiableAt ℝ f x) :
-  DifferentiableAt ℝ (fun p => c * f p) x := by
-  have hc : DifferentiableAt ℝ (fun _ : SpacetimePoint => c) x := differentiableAt_const c
-  have h_eq : (fun p => c * f p) = (fun _ => c) * f := by
-    ext p
-    rfl
-  rw [h_eq]
-  exact DifferentiableAt.mul hc hf
-
-lemma partialDeriv_sum {ι : Type*} [Fintype ι]
-  (f : ι → SpacetimePoint → ℂ) (μ : Fin 4) (x : SpacetimePoint)
-  (hf : ∀ i, DifferentiableAt ℝ (f i) x) :
-  partialDeriv μ (fun p => ∑ i, f i p) x = ∑ i, partialDeriv μ (f i) x := by
-  unfold partialDeriv
-  have h_eq : (fun p => ∑ i, f i p) = ∑ i, f i := by
-    ext p
-    rw [Finset.sum_apply]
-  rw [h_eq]
-  have hf' : ∀ i ∈ Finset.univ, DifferentiableAt ℝ (f i) x := fun i _ => hf i
-  rw [fderiv_sum hf']
-  simp
 
 noncomputable def partialDerivChiral (μ : Fin 4) (f : SpacetimePoint → ChiralM) (x : SpacetimePoint) : ChiralM :=
   let L_A := fun p => toSl2c (fun i j => f p (chiralIso (Sum.inl i)) (chiralIso (Sum.inl j)))

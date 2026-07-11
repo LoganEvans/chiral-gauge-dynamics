@@ -1,6 +1,7 @@
 -- FILENAME: CGD/Quantum/ActionQuantization.lean
 
 import Litlib.Core
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Foundations.Topology
 import CGD.Foundations.GaugeGroup
@@ -14,7 +15,7 @@ import CGD.Particles.TopologicalStability
 set_option autoImplicit false
 set_option linter.unusedSimpArgs false
 
-open CGD.Foundations CGD.Particles Matrix Complex BigOperators
+open CGD.Foundations CGD.Math CGD.Particles Matrix Complex BigOperators
 open CGD.Axioms Litlib.Y2003.nakahara2003geometry Litlib.Y1975.belavin1975pseudoparticle
 
 namespace CGD.Quantum

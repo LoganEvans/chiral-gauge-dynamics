@@ -7,7 +7,7 @@ set_option linter.unusedSimpArgs false
 set_option linter.unusedTactic false
 set_option linter.unreachableTactic false
 
-open CGD.Foundations Matrix Complex BigOperators
+open CGD.Foundations CGD.Math Matrix Complex BigOperators
 open CGD.Axioms
 
 namespace CGD.Gravity

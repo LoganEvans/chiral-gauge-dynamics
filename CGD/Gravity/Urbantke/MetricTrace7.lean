@@ -6,7 +6,7 @@ set_option linter.unusedSimpArgs false
 
 namespace CGD.Gravity
 
-open Complex Matrix BigOperators CGD.Foundations Litlib.Y1991.capovilla1991pure
+open Complex Matrix BigOperators CGD.Foundations CGD.Math Litlib.Y1991.capovilla1991pure
 
 lemma bubble_3_44 (f : Fin 4 → Fin 4 → Fin 3 → ℂ) : (∑ α : Fin 4, ∑ β : Fin 4, ∑ a : Fin 3, f α β a) = (∑ a : Fin 3, ∑ α : Fin 4, ∑ β : Fin 4, f α β a) := by
   have h1 : ∀ α, (∑ β : Fin 4, ∑ a : Fin 3, f α β a) = (∑ a : Fin 3, ∑ β : Fin 4, f α β a) := fun _ => Finset.sum_comm

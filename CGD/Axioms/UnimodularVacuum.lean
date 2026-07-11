@@ -5,7 +5,7 @@ import CGD.Axioms.Ontology
 import CGD.Foundations.Spacetime
 import CGD.Gravity.MacroscopicVacuum.Basic
 
-open CGD.Foundations CGD.Gravity Complex Matrix Set
+open CGD.Foundations CGD.Math CGD.Gravity Complex Matrix Set
 
 namespace CGD.Axioms
 

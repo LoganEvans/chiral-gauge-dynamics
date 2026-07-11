@@ -9,6 +9,7 @@ import Mathlib.Tactic.Ring
 import Mathlib.Tactic.NormNum
 import CGD.Gravity.MacroscopicVacuum.Basic
 import CGD.Gravity.Geometry
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Foundations.Spacetime
 import CGD.Axioms.Ontology
@@ -17,7 +18,7 @@ set_option autoImplicit false
 set_option linter.unreachableTactic false
 set_option linter.unusedTactic false
 
-open CGD.Foundations CGD.Axioms BigOperators
+open CGD.Foundations CGD.Math CGD.Axioms BigOperators
 
 namespace CGD.Gravity
 

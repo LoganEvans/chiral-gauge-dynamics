@@ -1,4 +1,4 @@
--- FILENAME: CGD/Foundations/Math.lean
+-- FILENAME: CGD/Math/Matrix.lean
 
 import Mathlib.Data.Complex.Basic
 import Mathlib.Data.Matrix.Basic
@@ -7,7 +7,7 @@ import Mathlib.Analysis.Matrix.Normed
 
 open Complex Matrix
 
-namespace CGD.Foundations
+namespace CGD.Math
 
 lemma sum_fin_2_expand {M} [AddCommMonoid M] (f : Fin 2 → M) :
   (∑ i : Fin 2, f i) = f 0 + f 1 := by
@@ -48,4 +48,4 @@ noncomputable instance matNormedSpaceC : NormedSpace ℂ (Matrix (Fin 2) (Fin 2)
 noncomputable instance matNormedSpaceR : NormedSpace ℝ (Matrix (Fin 2) (Fin 2) ℂ) :=
   inferInstanceAs (NormedSpace ℝ (Fin 2 → Fin 2 → ℂ))
 
-end CGD.Foundations
+end CGD.Math

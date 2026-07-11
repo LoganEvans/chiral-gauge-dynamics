@@ -6,7 +6,7 @@ set_option linter.unusedSimpArgs false
 
 namespace CGD.Gravity
 
-open Complex Matrix BigOperators CGD.Foundations Litlib.Y1991.capovilla1991pure
+open Complex Matrix BigOperators CGD.Foundations CGD.Math Litlib.Y1991.capovilla1991pure
 
 lemma capovilla_invPsi_eq (F : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) (Λ : ℂ)
   (h_su2 : ∀ μ ν,
@@ -106,22 +106,22 @@ lemma capovilla_invPsi_eq (F : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) (
     have t211 : tau 2 1 1 = 0 := rfl
 
     have h_cap_00 : ∀ α β, capovilla_R F α β 0 0 = - F_comp F 0 α β + I * F_comp F 1 α β := by
-      intro α β; unfold capovilla_R; rw [CGD.Foundations.sum_fin_3_expand]
+      intro α β; unfold capovilla_R; rw [CGD.Math.sum_fin_3_expand]
       change F_comp F 0 α β * tau 0 0 0 + F_comp F 1 α β * tau 1 0 0 + F_comp F 2 α β * tau 2 0 0 = _
       rw [t000, t100, t200]; ring
 
     have h_cap_01 : ∀ α β, capovilla_R F α β 0 1 = F_comp F 2 α β := by
-      intro α β; unfold capovilla_R; rw [CGD.Foundations.sum_fin_3_expand]
+      intro α β; unfold capovilla_R; rw [CGD.Math.sum_fin_3_expand]
       change F_comp F 0 α β * tau 0 0 1 + F_comp F 1 α β * tau 1 0 1 + F_comp F 2 α β * tau 2 0 1 = _
       rw [t001, t101, t201]; ring
 
     have h_cap_10 : ∀ α β, capovilla_R F α β 1 0 = F_comp F 2 α β := by
-      intro α β; unfold capovilla_R; rw [CGD.Foundations.sum_fin_3_expand]
+      intro α β; unfold capovilla_R; rw [CGD.Math.sum_fin_3_expand]
       change F_comp F 0 α β * tau 0 1 0 + F_comp F 1 α β * tau 1 1 0 + F_comp F 2 α β * tau 2 1 0 = _
       rw [t010, t110, t210]; ring
 
     have h_cap_11 : ∀ α β, capovilla_R F α β 1 1 = F_comp F 0 α β + I * F_comp F 1 α β := by
-      intro α β; unfold capovilla_R; rw [CGD.Foundations.sum_fin_3_expand]
+      intro α β; unfold capovilla_R; rw [CGD.Math.sum_fin_3_expand]
       change F_comp F 0 α β * tau 0 1 1 + F_comp F 1 α β * tau 1 1 1 + F_comp F 2 α β * tau 2 1 1 = _
       rw [t011, t111, t211]; ring
 
@@ -131,35 +131,35 @@ lemma capovilla_invPsi_eq (F : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) (
     have e11 : eps2_up 1 1 = 0 := rfl
 
     have h_rup_00 : ∀ ρ σ, (∑ A' : Fin 2, ∑ B' : Fin 2, eps2_up 0 A' * eps2_up 0 B' * capovilla_R F ρ σ A' B') = capovilla_R F ρ σ 1 1 := by
-      intro ρ σ; rw [CGD.Foundations.sum_fin_2_expand]
+      intro ρ σ; rw [CGD.Math.sum_fin_2_expand]
       have h0 : (∑ B' : Fin 2, eps2_up 0 0 * eps2_up 0 B' * capovilla_R F ρ σ 0 B') = 0 := by
-        rw [CGD.Foundations.sum_fin_2_expand, e00, e01]; ring
+        rw [CGD.Math.sum_fin_2_expand, e00, e01]; ring
       have h1 : (∑ B' : Fin 2, eps2_up 0 1 * eps2_up 0 B' * capovilla_R F ρ σ 1 B') = capovilla_R F ρ σ 1 1 := by
-        rw [CGD.Foundations.sum_fin_2_expand, e00, e01]; ring
+        rw [CGD.Math.sum_fin_2_expand, e00, e01]; ring
       rw [h0, h1]; ring
 
     have h_rup_01 : ∀ ρ σ, (∑ A' : Fin 2, ∑ B' : Fin 2, eps2_up 0 A' * eps2_up 1 B' * capovilla_R F ρ σ A' B') = - capovilla_R F ρ σ 1 0 := by
-      intro ρ σ; rw [CGD.Foundations.sum_fin_2_expand]
+      intro ρ σ; rw [CGD.Math.sum_fin_2_expand]
       have h0 : (∑ B' : Fin 2, eps2_up 0 0 * eps2_up 1 B' * capovilla_R F ρ σ 0 B') = 0 := by
-        rw [CGD.Foundations.sum_fin_2_expand, e00, e10, e11]; ring
+        rw [CGD.Math.sum_fin_2_expand, e00, e10, e11]; ring
       have h1 : (∑ B' : Fin 2, eps2_up 0 1 * eps2_up 1 B' * capovilla_R F ρ σ 1 B') = - capovilla_R F ρ σ 1 0 := by
-        rw [CGD.Foundations.sum_fin_2_expand, e01, e10, e11]; ring
+        rw [CGD.Math.sum_fin_2_expand, e01, e10, e11]; ring
       rw [h0, h1]; ring
 
     have h_rup_10 : ∀ ρ σ, (∑ A' : Fin 2, ∑ B' : Fin 2, eps2_up 1 A' * eps2_up 0 B' * capovilla_R F ρ σ A' B') = - capovilla_R F ρ σ 0 1 := by
-      intro ρ σ; rw [CGD.Foundations.sum_fin_2_expand]
+      intro ρ σ; rw [CGD.Math.sum_fin_2_expand]
       have h0 : (∑ B' : Fin 2, eps2_up 1 0 * eps2_up 0 B' * capovilla_R F ρ σ 0 B') = - capovilla_R F ρ σ 0 1 := by
-        rw [CGD.Foundations.sum_fin_2_expand, e10, e00, e01]; ring
+        rw [CGD.Math.sum_fin_2_expand, e10, e00, e01]; ring
       have h1 : (∑ B' : Fin 2, eps2_up 1 1 * eps2_up 0 B' * capovilla_R F ρ σ 1 B') = 0 := by
-        rw [CGD.Foundations.sum_fin_2_expand, e11, e00, e01]; ring
+        rw [CGD.Math.sum_fin_2_expand, e11, e00, e01]; ring
       rw [h0, h1]; ring
 
     have h_rup_11 : ∀ ρ σ, (∑ A' : Fin 2, ∑ B' : Fin 2, eps2_up 1 A' * eps2_up 1 B' * capovilla_R F ρ σ A' B') = capovilla_R F ρ σ 0 0 := by
-      intro ρ σ; rw [CGD.Foundations.sum_fin_2_expand]
+      intro ρ σ; rw [CGD.Math.sum_fin_2_expand]
       have h0 : (∑ B' : Fin 2, eps2_up 1 0 * eps2_up 1 B' * capovilla_R F ρ σ 0 B') = capovilla_R F ρ σ 0 0 := by
-        rw [CGD.Foundations.sum_fin_2_expand, e10, e11]; ring
+        rw [CGD.Math.sum_fin_2_expand, e10, e11]; ring
       have h1 : (∑ B' : Fin 2, eps2_up 1 1 * eps2_up 1 B' * capovilla_R F ρ σ 1 B') = 0 := by
-        rw [CGD.Foundations.sum_fin_2_expand, e11, e10]; ring
+        rw [CGD.Math.sum_fin_2_expand, e11, e10]; ring
       rw [h0, h1]; ring
 
     have h_rhs_eq_P : ∀ (A_val B_val C_val D_val : Fin 2), (∑ ρ : Fin 4, ∑ σ : Fin 4, ∑ α : Fin 4, ∑ β : Fin 4,

@@ -3,6 +3,7 @@
 import Litlib.Core
 import CGD.Foundations.GaugeGroup
 import CGD.Foundations.Spacetime
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Foundations.Action
 import Mathlib.Data.Matrix.Basic
@@ -10,7 +11,7 @@ import Mathlib.LinearAlgebra.Matrix.Trace
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import CGD.Axioms.PhysicalUniverse
 
-open Complex Matrix CGD.Foundations BigOperators
+open Complex Matrix CGD.Foundations CGD.Math BigOperators
 open CGD.Axioms
 
 namespace CGD.Foundations

@@ -6,7 +6,7 @@ set_option linter.unusedSimpArgs false
 
 namespace CGD.Gravity
 
-open Complex Matrix BigOperators CGD.Foundations Litlib.Y1991.capovilla1991pure
+open Complex Matrix BigOperators CGD.Foundations CGD.Math Litlib.Y1991.capovilla1991pure
 
 lemma capovilla_lam_zero (Λ : ℂ) (h : (1/4 : ℂ) * Λ^6 = 0) : Λ = 0 := by
   have h6 : Λ^6 = 0 := by

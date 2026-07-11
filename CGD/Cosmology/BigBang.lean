@@ -13,7 +13,7 @@ import CGD.Axioms.PhysicalUniverse
 set_option linter.unusedSimpArgs false
 
 open CGD.Gravity Matrix Complex BigOperators
-open CGD.Axioms CGD.Foundations
+open CGD.Axioms CGD.Foundations CGD.Math
 
 namespace CGD.Cosmology
 

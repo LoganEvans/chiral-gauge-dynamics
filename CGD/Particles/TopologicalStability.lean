@@ -3,6 +3,7 @@
 import Litlib.Y2003.nakahara2003geometry.Signature
 import Litlib.Y1975.belavin1975pseudoparticle.Signature
 import CGD.Foundations.GaugeGroup
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Foundations.Topology
 import CGD.Particles.Definitions
@@ -18,7 +19,7 @@ set_option autoImplicit false
 set_option linter.unusedSectionVars false
 set_option linter.unusedSimpArgs false
 
-open Complex Matrix CGD.Foundations CGD.Axioms Litlib.Y2003.nakahara2003geometry Litlib.Y1975.belavin1975pseudoparticle
+open Complex Matrix CGD.Foundations CGD.Math CGD.Axioms Litlib.Y2003.nakahara2003geometry Litlib.Y1975.belavin1975pseudoparticle
 
 namespace CGD.Particles
 

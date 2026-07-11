@@ -3,6 +3,7 @@
 import Litlib.Y1973.nielsen1973vortex.Signature
 import CGD.Quantum.Definitions
 import CGD.Gravity.Geometry
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Foundations.Action
 import CGD.Axioms.Ontology
@@ -24,7 +25,7 @@ import Mathlib.Tactic.Ring
 import Litlib.Core
 
 
-open CGD.Foundations CGD.Gravity Matrix Complex BigOperators
+open CGD.Foundations CGD.Math CGD.Gravity Matrix Complex BigOperators
 open CGD.Axioms Litlib.Y1973.nielsen1973vortex
 
 namespace CGD.Quantum

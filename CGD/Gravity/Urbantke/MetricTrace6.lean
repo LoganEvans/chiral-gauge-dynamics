@@ -6,7 +6,7 @@ set_option linter.unusedSimpArgs false
 
 namespace CGD.Gravity
 
-open Complex Matrix BigOperators CGD.Foundations Litlib.Y1991.capovilla1991pure
+open Complex Matrix BigOperators CGD.Foundations CGD.Math Litlib.Y1991.capovilla1991pure
 
 lemma epsilon3_swap_int (a b c : Fin 3) : epsilon3_int a b c = - epsilon3_int a c b := by
   fin_cases a <;> fin_cases b <;> fin_cases c <;> decide

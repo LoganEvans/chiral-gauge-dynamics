@@ -1,5 +1,6 @@
 -- FILENAME: CGD/Foundations/TensorCalculus/LieAlgebra.lean
 
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Foundations.GaugeGroup
 import Mathlib.Tactic.NoncommRing

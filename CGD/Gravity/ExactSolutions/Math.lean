@@ -1,6 +1,7 @@
 -- FILENAME: CGD/Gravity/ExactSolutions/Math.lean
 
 import Litlib.Core
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Foundations.GaugeGroup
 import CGD.Axioms.Ontology
@@ -13,7 +14,7 @@ set_option linter.unusedSimpArgs false
 set_option linter.unusedTactic false
 set_option linter.unreachableTactic false
 
-open CGD.Foundations Matrix Complex BigOperators
+open CGD.Foundations CGD.Math Matrix Complex BigOperators
 open CGD.Axioms
 
 namespace CGD.Gravity

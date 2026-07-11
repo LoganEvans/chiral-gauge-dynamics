@@ -8,7 +8,7 @@ set_option linter.unusedTactic false
 
 namespace CGD.Gravity
 
-open Complex Matrix BigOperators CGD.Foundations Litlib.Y1991.capovilla1991pure
+open Complex Matrix BigOperators CGD.Foundations CGD.Math Litlib.Y1991.capovilla1991pure
 
 lemma eps3_012 : epsilon3 0 1 2 = 1 := by norm_num [epsilon3, epsilon3_int]
 lemma eps3_120 : epsilon3 1 2 0 = 1 := by norm_num [epsilon3, epsilon3_int]

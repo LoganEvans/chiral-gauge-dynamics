@@ -1,6 +1,6 @@
 -- FILENAME: CGD/Particles/Color.lean
 
-import CGD.Foundations.Math
+import CGD.Math.Matrix
 import CGD.Foundations.GaugeGroup
 import CGD.Particles.Definitions
 import CGD.Gravity.Geometry
@@ -12,7 +12,7 @@ import Mathlib.Tactic.Ring
 import Mathlib.Tactic.FinCases
 import Litlib.Core
 
-open CGD.Axioms CGD.Foundations CGD.Gravity Matrix Complex BigOperators
+open CGD.Axioms CGD.Math CGD.Foundations CGD.Gravity Matrix Complex BigOperators
 
 set_option linter.unusedSimpArgs false
 

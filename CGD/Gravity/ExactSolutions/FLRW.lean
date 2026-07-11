@@ -1,5 +1,6 @@
 -- FILENAME: CGD/Gravity/ExactSolutions/FLRW.lean
 
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Gravity.Geometry
 import Mathlib.Analysis.Calculus.FDeriv.Comp
@@ -13,7 +14,7 @@ set_option linter.unusedSimpArgs false
 set_option linter.unusedTactic false
 set_option maxHeartbeats 4000000
 
-open CGD.Axioms CGD.Foundations Complex Matrix CGD.Gravity BigOperators
+open CGD.Axioms CGD.Foundations CGD.Math Complex Matrix CGD.Gravity BigOperators
 
 set_option linter.unreachableTactic false
 

@@ -9,7 +9,7 @@ import Litlib.Y1989.capovilla1989general.Signature
 set_option autoImplicit false
 
 open Complex Matrix BigOperators
-open CGD.Axioms CGD.Foundations Litlib Classical
+open CGD.Axioms CGD.Foundations CGD.Math Litlib Classical
 open Litlib.Y1989.capovilla1989general
 
 namespace CGD.Gravity

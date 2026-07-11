@@ -2,6 +2,7 @@
 
 import Litlib.Core
 import CGD.Gravity.Geometry
+import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Axioms.Ontology
 import CGD.Axioms.PhysicalUniverse
@@ -10,7 +11,7 @@ import Mathlib.LinearAlgebra.Matrix.Adjugate
 import Litlib.Y2003.nakahara2003geometry.Signature
 import Litlib.Y1984.urbantke1984integrability.Signature
 
-open Complex Matrix CGD.Foundations BigOperators Classical
+open Complex Matrix CGD.Foundations CGD.Math BigOperators Classical
 open CGD.Axioms
 
 namespace CGD.Gravity

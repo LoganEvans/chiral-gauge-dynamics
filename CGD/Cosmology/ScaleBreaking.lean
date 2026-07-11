@@ -8,7 +8,7 @@ import Mathlib.Data.Matrix.Basic
 import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.Tactic.Ring
 
-open Complex Matrix CGD.Gravity CGD.Foundations
+open Complex Matrix CGD.Gravity CGD.Foundations CGD.Math
 
 namespace CGD.Cosmology
 

@@ -3,7 +3,7 @@
 import Litlib.Core
 import CGD.Cosmology.Definitions
 import CGD.Gravity.Geometry
-import CGD.Foundations.Math
+import CGD.Math.Matrix
 import Mathlib.Data.Complex.Basic
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.FinCases
@@ -14,7 +14,7 @@ import CGD.Axioms.PhysicalUniverse
 set_option maxHeartbeats 4000000
 set_option linter.unusedSimpArgs false
 
-open CGD.Foundations CGD.Gravity Matrix Complex BigOperators
+open CGD.Math CGD.Foundations CGD.Gravity Matrix Complex BigOperators
 open CGD.Axioms
 
 namespace CGD.Cosmology
