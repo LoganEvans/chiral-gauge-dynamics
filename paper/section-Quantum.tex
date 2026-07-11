@@ -3,7 +3,7 @@
 \section{Quantum Mechanics Without Quantization}
 \label{sec:Quantum}
 
-In the previous section, we established that particles exist; in this section, we will explore how they behave. As we discussed in Section \ref{sec:Introduction}, \spinFourC naturally possesess a bispinor structure, so we will evaluate the Dirac operator $\slashed{D}$ by treating the local gauge connection as the spinor field $(\Psi = \mathcal{A}_\nu)$. By considering the gauge-covariant derivative and the Yang-Mills curvature tensor, we find
+In the previous section, we established that particles exist; in this section, we will explore how they behave. As we discussed in Section \ref{sec:Introduction}, \spinFourC naturally possesses a bispinor structure, so we will evaluate the Dirac operator $\slashed{D}$ by treating the local gauge connection as the spinor field $(\Psi = \mathcal{A}_\nu)$. This may appear at first to be a mismatch between a vector-valued 1-form (connection) and a bispinor, but the $4 \times 4$ matrix representation of $\spinFourCAlg \cong \slTwoCLAlg \oplus \slTwoCRAlg$ Lie algebra indices for the 1-form possess the same algebraic degrees of freedom as a Dirac spinor. By considering the gauge-covariant derivative and the Yang-Mills curvature tensor, we find
 \begin{equation}
     D_\mu \mathcal{A}_\nu = F_{\mu\nu} + \partial_\nu \mathcal{A}_\mu .
     \quad \leanref{CGD.Quantum.covariantSpinorDeriv_eq_curvature_plus_deriv}
@@ -15,7 +15,7 @@ In the previous section, we established that particles exist; in this section, w
     \quad \leanref{CGD.Quantum.generalizedDynamicDiracEquation}
     \label{eq:generalizedDynamicDiracEquation}
 \end{equation}
-\noindent This is the generalized Dirac Equation. In the first term, $F_{\mu\nu}$ is the interaction between a fermion and a gauge field. In the second term, $\partial_\nu \mathcal{A}_\mu$ is an inertial term. This means that particles feel a force from the background if the background universe is dynamically bubbling or expanding, but if the universe is stationary, the second term goes to zero and we recover the standard definition for the Dirac Equation. Notice that the spacetime index $\nu$ survives the Dirac contraction because the spinor field is the gauge connection itself.
+\noindent This is the generalized Dirac Equation. In the first term, $F_{\mu\nu}$ is the interaction between a fermion and a gauge field. In the second term, $\partial_\nu \mathcal{A}_\mu$ is an inertial term that absorbs the inhomogeneous shift $(\mathcal{A}_\nu \rightarrow U \mathcal{A}_\nu U^{-1} + U \partial_\nu U^{-1})$. This means that particles feel a force from the background if the background universe is dynamically bubbling or expanding, but if the universe is stationary, the second term goes to zero and we recover the standard definition for the Dirac Equation. Notice that the spacetime index $\nu$ survives the Dirac contraction because the spinor field is the gauge connection itself.
 
 Since CGD is a classical field theory for both gravity and particles, one of the biggest concerns is how it addresses Bell's Theorem. \citeauthor{bell1964einstein} concluded:
 \begin{quote}
@@ -52,7 +52,7 @@ Now, we can evaluate the path integral along the flux tube, and find that we rec
     \label{eq:geometricHolonomyTsirelsonBound}
 \end{equation}
 
-The result in Equation \ref{eq:geometricHolonomyTsirelsonBound} demonstrates that contrary to conventional belief, a purely classical theory can satisfy Bell's inequalities. We did not invalidate any part of Bell's theorem; instead, since the metric inside the flux tube vanishes and the particles are effectively colocal, CGD bypasses the locality assumption required for Bell's theorem.
+The result in Equation \ref{eq:geometricHolonomyTsirelsonBound} demonstrates that contrary to conventional belief, a purely classical theory can satisfy Bell's inequalities. We did not invalidate any part of Bell's theorem. Since $\det(g) = 0$, the metric inside the flux tube vanishes and the geometric distance between the particles is zero, so the interaction is strictly local in the topological sense even though it appears to be non-local to an observer.
 
 While this resolves the most obvious concern about proposing CGD as an ontology for quantum mechanics, entanglement correlation is not the only concern. Since we proved in Equation \ref{eq:topologicalActionVariationZero} that CGD does not possess a classical Hamiltonian, the Dirac operator in Equation \ref{eq:generalizedDynamicDiracEquation} is not sufficient by itself to explain the complex phase rotation of quantum time-evolution. For this, we need to address ``the problem of time'' \citep{rovelli1996relational}.
 
