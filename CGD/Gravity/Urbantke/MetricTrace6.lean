@@ -30,7 +30,7 @@ lemma urbantke_term_symm (F : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) (�
   (∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3, ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4,
     epsilon3 a b c * epsilon4 α β γ δ * F_comp F a μ α * F_comp F b ν β * F_comp F c γ δ) := by
   apply Finset.sum_congr rfl; intro a _
-  
+
   have comm_bc : (∑ b : Fin 3, ∑ c : Fin 3, ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4,
     epsilon3 a b c * epsilon4 α β γ δ * F_comp F a μ α * F_comp F b β γ * F_comp F c δ ν) =
     (∑ c : Fin 3, ∑ b : Fin 3, ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4,
@@ -40,13 +40,13 @@ lemma urbantke_term_symm (F : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) (�
     epsilon3 a b c * epsilon4 α β γ δ * F_comp F a μ α * F_comp F b β γ * F_comp F c δ ν) =
     (∑ b : Fin 3, ∑ c : Fin 3, ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4,
     epsilon3 a c b * epsilon4 α β γ δ * F_comp F a μ α * F_comp F c β γ * F_comp F b δ ν) := rfl
-  
+
   rw [comm_bc, alpha_rename_bc]
-  
+
   apply Finset.sum_congr rfl; intro b _
   apply Finset.sum_congr rfl; intro c _
   apply Finset.sum_congr rfl; intro α _
-  
+
   have comm_beta_delta : (∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4,
     epsilon3 a c b * epsilon4 α β γ δ * F_comp F a μ α * F_comp F c β γ * F_comp F b δ ν) =
     (∑ δ : Fin 4, ∑ γ : Fin 4, ∑ β : Fin 4,
@@ -60,18 +60,18 @@ lemma urbantke_term_symm (F : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) (�
     have h3 : ∀ δ, (∑ β : Fin 4, ∑ γ : Fin 4, epsilon3 a c b * epsilon4 α β γ δ * F_comp F a μ α * F_comp F c β γ * F_comp F b δ ν) =
       (∑ γ : Fin 4, ∑ β : Fin 4, epsilon3 a c b * epsilon4 α β γ δ * F_comp F a μ α * F_comp F c β γ * F_comp F b δ ν) := fun _ => Finset.sum_comm
     simp_rw [h3]
-  
+
   have alpha_rename_beta_delta : (∑ δ : Fin 4, ∑ γ : Fin 4, ∑ β : Fin 4,
     epsilon3 a c b * epsilon4 α β γ δ * F_comp F a μ α * F_comp F c β γ * F_comp F b δ ν) =
     (∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4,
     epsilon3 a c b * epsilon4 α δ γ β * F_comp F a μ α * F_comp F c δ γ * F_comp F b β ν) := rfl
-    
+
   rw [comm_beta_delta, alpha_rename_beta_delta]
-  
+
   apply Finset.sum_congr rfl; intro β _
   apply Finset.sum_congr rfl; intro γ _
   apply Finset.sum_congr rfl; intro δ _
-  
+
   have h_comp_anti : ∀ x y c_idx, F_comp F c_idx x y = - F_comp F c_idx y x := by
     intro x y c_idx
     unfold F_comp
@@ -84,7 +84,7 @@ lemma urbantke_term_symm (F : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) (�
   have he4 : epsilon4 α δ γ β = - epsilon4 α β γ δ := epsilon4_swap24 α β γ δ
   have hc : F_comp F c δ γ = - F_comp F c γ δ := h_comp_anti δ γ c
   have hb : F_comp F b β ν = - F_comp F b ν β := h_comp_anti β ν b
-  
+
   calc epsilon3 a c b * epsilon4 α δ γ β * F_comp F a μ α * F_comp F c δ γ * F_comp F b β ν
     _ = (- epsilon3 a b c) * (- epsilon4 α β γ δ) * F_comp F a μ α * (- F_comp F c γ δ) * (- F_comp F b ν β) := by rw [he3, he4, hc, hb]
     _ = epsilon3 a b c * epsilon4 α β γ δ * F_comp F a μ α * F_comp F b ν β * F_comp F c γ δ := by ring

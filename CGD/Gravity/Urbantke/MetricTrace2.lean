@@ -92,7 +92,7 @@ lemma TE_2_eq : TE 2 = mkMat (-1) 0 0 1 := by
     simp [Fin.sum_univ_two]
 
 lemma trace_mul3_fin2 (A B C : Matrix (Fin 2) (Fin 2) ℂ) :
-  Matrix.trace (A * B * C) = 
+  Matrix.trace (A * B * C) =
     A 0 0 * B 0 0 * C 0 0 + A 0 0 * B 0 1 * C 1 0 + A 0 1 * B 1 0 * C 0 0 + A 0 1 * B 1 1 * C 1 0 +
     A 1 0 * B 0 0 * C 0 1 + A 1 0 * B 0 1 * C 1 1 + A 1 1 * B 1 0 * C 0 1 + A 1 1 * B 1 1 * C 1 1 := by
   dsimp [Matrix.trace, Matrix.diag, Matrix.mul_apply]

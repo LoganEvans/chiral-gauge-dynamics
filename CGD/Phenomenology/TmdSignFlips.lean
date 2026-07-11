@@ -18,14 +18,14 @@ noncomputable def explicitSigmaX : Matrix (Fin 2) (Fin 2) ℂ := Matrix.of ![![0
 noncomputable def explicitSigmaY : Matrix (Fin 2) (Fin 2) ℂ := Matrix.of ![![0, -Complex.I], ![Complex.I, 0]]
 noncomputable def explicitSigmaZ : Matrix (Fin 2) (Fin 2) ℂ := Matrix.of ![![1, 0], ![0, -1]]
 
-/-- 
+/--
 The Sivers effect observable (Nucleon Transverse Spin vs Quark Transverse Momentum).
 Projects the orthogonal SU(2) topology via sigmaX.
 -/
 noncomputable def siversTransverseKick (U U_inv : Matrix (Fin 2) (Fin 2) ℂ) : ℂ :=
   Matrix.trace (U * explicitSigmaX * U_inv * explicitSigmaY)
 
-/-- 
+/--
 The Boer-Mulders effect observable (Quark Transverse Spin vs Quark Transverse Momentum).
 Projects the orthogonal SU(2) topology via sigmaX.
 Geometrically identical to the Sivers projection.
@@ -33,7 +33,7 @@ Geometrically identical to the Sivers projection.
 noncomputable def boerMuldersTransverseKick (U U_inv : Matrix (Fin 2) (Fin 2) ℂ) : ℂ :=
   Matrix.trace (U * explicitSigmaX * U_inv * explicitSigmaY)
 
-/-- 
+/--
 The Worm-Gear effect observable (Quark Longitudinal Spin vs Quark Transverse Momentum).
 Projects the orthogonal SU(2) topology via sigmaZ.
 -/
@@ -84,7 +84,7 @@ lemma sig3_val_11 : CGD.Foundations.sigma3.val 1 1 = -1 := by rw [CGD.Foundation
 -- ====================================================================
 
 /-- Algebraically unpacks the SU(2) phase generator into a flat matrix. -/
-lemma obs_M_eq (alpha : ℝ) : 
+lemma obs_M_eq (alpha : ℝ) :
   CGD.Quantum.obs_M alpha = Matrix.of ![![obs_M_A alpha, obs_M_B alpha], ![obs_M_B alpha, -obs_M_A alpha]] := by
   ext i j
   fin_cases i <;> fin_cases j
@@ -117,11 +117,11 @@ lemma obs_M_eq (alpha : ℝ) :
 
 /-- The isolated matrix algebra proving the exact Sivers sign flip. -/
 lemma kinematicSiversAlgebra (c s A B : ℂ) :
-  siversTransverseKick 
-    (c • (1 : Matrix (Fin 2) (Fin 2) ℂ) + (Complex.I * s) • Matrix.of ![![A, B], ![B, -A]]) 
+  siversTransverseKick
+    (c • (1 : Matrix (Fin 2) (Fin 2) ℂ) + (Complex.I * s) • Matrix.of ![![A, B], ![B, -A]])
     (c • (1 : Matrix (Fin 2) (Fin 2) ℂ) + (Complex.I * -s) • Matrix.of ![![A, B], ![B, -A]]) =
-  - siversTransverseKick 
-    (c • (1 : Matrix (Fin 2) (Fin 2) ℂ) + (Complex.I * -s) • Matrix.of ![![A, B], ![B, -A]]) 
+  - siversTransverseKick
+    (c • (1 : Matrix (Fin 2) (Fin 2) ℂ) + (Complex.I * -s) • Matrix.of ![![A, B], ![B, -A]])
     (c • (1 : Matrix (Fin 2) (Fin 2) ℂ) + (Complex.I * s) • Matrix.of ![![A, B], ![B, -A]]) := by
   unfold siversTransverseKick explicitSigmaX explicitSigmaY
   rw [trace_fin2, trace_fin2]
@@ -143,11 +143,11 @@ lemma kinematicSiversAlgebra (c s A B : ℂ) :
 
 /-- The isolated matrix algebra proving the exact Worm-Gear sign flip. -/
 lemma kinematicWormGearAlgebra (c s A B : ℂ) :
-  wormGearTransverseKick 
-    (c • (1 : Matrix (Fin 2) (Fin 2) ℂ) + (Complex.I * s) • Matrix.of ![![A, B], ![B, -A]]) 
+  wormGearTransverseKick
+    (c • (1 : Matrix (Fin 2) (Fin 2) ℂ) + (Complex.I * s) • Matrix.of ![![A, B], ![B, -A]])
     (c • (1 : Matrix (Fin 2) (Fin 2) ℂ) + (Complex.I * -s) • Matrix.of ![![A, B], ![B, -A]]) =
-  - wormGearTransverseKick 
-    (c • (1 : Matrix (Fin 2) (Fin 2) ℂ) + (Complex.I * -s) • Matrix.of ![![A, B], ![B, -A]]) 
+  - wormGearTransverseKick
+    (c • (1 : Matrix (Fin 2) (Fin 2) ℂ) + (Complex.I * -s) • Matrix.of ![![A, B], ![B, -A]])
     (c • (1 : Matrix (Fin 2) (Fin 2) ℂ) + (Complex.I * s) • Matrix.of ![![A, B], ![B, -A]]) := by
   unfold wormGearTransverseKick explicitSigmaZ explicitSigmaY
   rw [trace_fin2, trace_fin2]
@@ -167,16 +167,16 @@ lemma kinematicWormGearAlgebra (c s A B : ℂ) :
   repeat rw [smul_eq_mul]
   ring_nf
 
-/-- 
-The isolated matrix algebra proving the exact geometric ratio. 
+/--
+The isolated matrix algebra proving the exact geometric ratio.
 A * WormGear = - B * Sivers  -->  cos(alpha) * WormGear = - sin(alpha) * Sivers
 -/
 lemma kinematicTmdRatioAlgebra (c s A B : ℂ) :
-  A * wormGearTransverseKick 
-    (c • (1 : Matrix (Fin 2) (Fin 2) ℂ) + (Complex.I * s) • Matrix.of ![![A, B], ![B, -A]]) 
+  A * wormGearTransverseKick
+    (c • (1 : Matrix (Fin 2) (Fin 2) ℂ) + (Complex.I * s) • Matrix.of ![![A, B], ![B, -A]])
     (c • (1 : Matrix (Fin 2) (Fin 2) ℂ) + (Complex.I * -s) • Matrix.of ![![A, B], ![B, -A]]) =
-  - B * siversTransverseKick 
-    (c • (1 : Matrix (Fin 2) (Fin 2) ℂ) + (Complex.I * s) • Matrix.of ![![A, B], ![B, -A]]) 
+  - B * siversTransverseKick
+    (c • (1 : Matrix (Fin 2) (Fin 2) ℂ) + (Complex.I * s) • Matrix.of ![![A, B], ![B, -A]])
     (c • (1 : Matrix (Fin 2) (Fin 2) ℂ) + (Complex.I * -s) • Matrix.of ![![A, B], ![B, -A]]) := by
   unfold wormGearTransverseKick siversTransverseKick explicitSigmaX explicitSigmaY explicitSigmaZ
   rw [trace_fin2, trace_fin2]
@@ -197,7 +197,7 @@ lemma kinematicTmdRatioAlgebra (c s A B : ℂ) :
   ring_nf
 
 /--
-Evaluating the Sivers observable upon the `fluxTubeFrame` ansatz natively forces an exact geometric sign-flip upon path inversion (L -> -L). 
+Evaluating the Sivers observable upon the `fluxTubeFrame` ansatz natively forces an exact geometric sign-flip upon path inversion (L -> -L).
 While standard perturbative QCD derivations require external factorized gauge links to explain this effect, this theorem acts as an explicit constructive witness demonstrating that the continuous macroscopic gauge geometry intrinsically contains the parity-inverted mechanisms required for the Sivers effect.
 -/
 @[litlib_track "Kinematic Sivers Sign Flip Witness"]
@@ -206,10 +206,10 @@ theorem kinematicSiversSignFlip (pu : CGD.Axioms.PhysicalUniverse) :
     [Litlib.Y2000.hall2000elementary.DerivativeExponential (Fin 2) matrixExp]
     (alpha L : ℝ),
     (∀ t, pu.toUniverse.sd_sector 1 (CGD.Quantum.straightLinePath t) = CGD.Quantum.fluxTubeFrame 1 (CGD.Quantum.straightLinePath t)) →
-    siversTransverseKick 
+    siversTransverseKick
       (CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) (fun mu p => CGD.Quantum.rotateYAxis (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 L)
       (CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) (fun mu p => CGD.Quantum.rotateYAxis (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 (-L)) =
-    - siversTransverseKick 
+    - siversTransverseKick
       (CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) (fun mu p => CGD.Quantum.rotateYAxis (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 (-L))
       (CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) (fun mu p => CGD.Quantum.rotateYAxis (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 L) := by
   intros matrixExp _ alpha L h_field
@@ -228,10 +228,10 @@ theorem kinematicWormGearSignFlip (pu : CGD.Axioms.PhysicalUniverse) :
     [Litlib.Y2000.hall2000elementary.DerivativeExponential (Fin 2) matrixExp]
     (alpha L : ℝ),
     (∀ t, pu.toUniverse.sd_sector 1 (CGD.Quantum.straightLinePath t) = CGD.Quantum.fluxTubeFrame 1 (CGD.Quantum.straightLinePath t)) →
-    wormGearTransverseKick 
+    wormGearTransverseKick
       (CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) (fun mu p => CGD.Quantum.rotateYAxis (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 L)
       (CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) (fun mu p => CGD.Quantum.rotateYAxis (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 (-L)) =
-    - wormGearTransverseKick 
+    - wormGearTransverseKick
       (CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) (fun mu p => CGD.Quantum.rotateYAxis (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 (-L))
       (CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) (fun mu p => CGD.Quantum.rotateYAxis (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 L) := by
   intros matrixExp _ alpha L h_field
@@ -241,10 +241,10 @@ theorem kinematicWormGearSignFlip (pu : CGD.Axioms.PhysicalUniverse) :
   rw [obs_M_eq alpha]
   exact kinematicWormGearAlgebra (Complex.cos ↑L) (Complex.sin ↑L) (obs_M_A alpha) (obs_M_B alpha)
 
-/-- 
-Proves that when evaluating continuous non-Abelian geometry, the Sivers and Boer-Mulders effects yield topologically identical observables. 
+/--
+Proves that when evaluating continuous non-Abelian geometry, the Sivers and Boer-Mulders effects yield topologically identical observables.
 
-While perturbative QCD treats them as independent non-perturbative functions, phenomenological 
+While perturbative QCD treats them as independent non-perturbative functions, phenomenological
 models (like Large-Nc and lattice QCD) observe strong proportionalities. This witness demonstrates how continuous background geometries intrinsically explain this: the macroscopic SU(2) holonomy is strictly blind to the composite vs. bare nature of the initial state, resolving both to the exact same geometric projection.
 -/
 @[litlib_track "Kinematic Sivers and Boer-Mulders Equivalence Witness"]
@@ -261,15 +261,15 @@ theorem kinematicSiversBoerMuldersEquivalence (pu : CGD.Axioms.PhysicalUniverse)
   intros
   rfl
 
-/-- 
+/--
 The Topological TMD Geometric Ratio Witness.
 
-By evaluating the `fluxTubeFrame` ansatz, this theorem acts as a constructive witness proving that the Worm-Gear and Sivers observables can natively become geometrically locked by the chiral phase angle 
+By evaluating the `fluxTubeFrame` ansatz, this theorem acts as a constructive witness proving that the Worm-Gear and Sivers observables can natively become geometrically locked by the chiral phase angle
 `alpha` of the macroscopic connection. Specifically:
 `cos(alpha) * WormGear = - sin(alpha) * Sivers`
 
-Because the observables are defined natively as geometric integrals without any 
-collisional momentum variables, this geometric lock demonstrates a framework mechanism where their ratio 
+Because the observables are defined natively as geometric integrals without any
+collisional momentum variables, this geometric lock demonstrates a framework mechanism where their ratio
 resolves as a flat kinematic constant (-tan(alpha)), reproducing global supercomputer fits.
 -/
 @[litlib_track "Topological TMD Geometric Ratio Witness"]
@@ -278,10 +278,10 @@ theorem kinematicTmdRatio (pu : CGD.Axioms.PhysicalUniverse) :
     [Litlib.Y2000.hall2000elementary.DerivativeExponential (Fin 2) matrixExp]
     (alpha L : ℝ),
     (∀ t, pu.toUniverse.sd_sector 1 (CGD.Quantum.straightLinePath t) = CGD.Quantum.fluxTubeFrame 1 (CGD.Quantum.straightLinePath t)) →
-    (obs_M_A alpha) * wormGearTransverseKick 
+    (obs_M_A alpha) * wormGearTransverseKick
       (CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) (fun mu p => CGD.Quantum.rotateYAxis (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 L)
       (CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) (fun mu p => CGD.Quantum.rotateYAxis (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 (-L)) =
-    - (obs_M_B alpha) * siversTransverseKick 
+    - (obs_M_B alpha) * siversTransverseKick
       (CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) (fun mu p => CGD.Quantum.rotateYAxis (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 L)
       (CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) (fun mu p => CGD.Quantum.rotateYAxis (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 (-L)) := by
   intros matrixExp _ alpha L h_field

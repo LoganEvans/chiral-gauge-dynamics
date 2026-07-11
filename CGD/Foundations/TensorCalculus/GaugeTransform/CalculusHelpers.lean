@@ -17,9 +17,9 @@ lemma partialDerivMat_mul3 (μ : Fin 4) (f g h : SpacetimePoint → Matrix (Fin 
   (hf : ∀ i j, DifferentiableAt ℝ (fun p => f p i j) x)
   (hg : ∀ i j, DifferentiableAt ℝ (fun p => g p i j) x)
   (hh : ∀ i j, DifferentiableAt ℝ (fun p => h p i j) x) :
-  partialDerivMat μ (fun p => f p * g p * h p) x = 
-    partialDerivMat μ f x * g x * h x + 
-    f x * partialDerivMat μ g x * h x + 
+  partialDerivMat μ (fun p => f p * g p * h p) x =
+    partialDerivMat μ f x * g x * h x +
+    f x * partialDerivMat μ g x * h x +
     f x * g x * partialDerivMat μ h x := by
   have hd_fg := diff_matrix_mul f g x hf hg
   rw [partialDerivMat_mul (fun p => f p * g p) h μ x hd_fg hh]
@@ -108,12 +108,12 @@ lemma partialDerivSl2c_val_eq (μ : Fin 4) (A : SpacetimePoint → SL2C) (x : Sp
 lemma curvature_val_expansion (A : Fin 4 → SpacetimePoint → SL2C) (mu nu : Fin 4) (x : SpacetimePoint)
   (hA_smooth_mu : ∀ i j, DifferentiableAt ℝ (fun p => (A mu p).val i j) x)
   (hA_smooth_nu : ∀ i j, DifferentiableAt ℝ (fun p => (A nu p).val i j) x) :
-  (curvatureSl2c A mu nu x).val = 
-    partialDerivMat mu (fun p => (A nu p).val) x - 
-    partialDerivMat nu (fun p => (A mu p).val) x + 
+  (curvatureSl2c A mu nu x).val =
+    partialDerivMat mu (fun p => (A nu p).val) x -
+    partialDerivMat nu (fun p => (A mu p).val) x +
     ((A mu x).val * (A nu x).val - (A nu x).val * (A mu x).val) := by
   rw [curvatureSl2c_def]
-  have h2 : (partialDerivSl2c mu (A nu) x - partialDerivSl2c nu (A mu) x + ⁅A mu x, A nu x⁆).val = 
+  have h2 : (partialDerivSl2c mu (A nu) x - partialDerivSl2c nu (A mu) x + ⁅A mu x, A nu x⁆).val =
     (partialDerivSl2c mu (A nu) x).val - (partialDerivSl2c nu (A mu) x).val + ⁅A mu x, A nu x⁆.val := rfl
   rw [h2]
   have hd_mu_eq := partialDerivSl2c_val_eq mu (A nu) x (hA_smooth_nu 0 0) (hA_smooth_nu 1 1)

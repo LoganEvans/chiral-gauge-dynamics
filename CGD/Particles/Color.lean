@@ -84,8 +84,8 @@ lemma triple_sum_eps (f : Fin 3 → Fin 3 → Fin 3 → Complex) :
   ring
 
 /--
-The scalar triple product of the Pauli projections of three trace-free 2x2 matrices 
-is strictly proportional to the trace of their Lie bracket. If the field is single color 
+The scalar triple product of the Pauli projections of three trace-free 2x2 matrices
+is strictly proportional to the trace of their Lie bracket. If the field is single color
 (all components commute), the triple product identically vanishes.
 -/
 lemma single_color_triple_product_zero (F : Fin 4 → Fin 4 → SL2C) (h : isSingleColor F)
@@ -269,7 +269,7 @@ theorem kinematicMultiColorRequirement :
   exact h_vol h_zero
 
 /--
-Defines a gauge field that is constrained to a lower-dimensional Lie subalgebra, 
+Defines a gauge field that is constrained to a lower-dimensional Lie subalgebra,
 missing at least one of the three internal color generators.
 -/
 def isColorDeficient (F : Fin 4 → Fin 4 → SL2C) (color : Fin 3) : Prop :=

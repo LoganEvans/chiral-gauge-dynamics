@@ -9,11 +9,11 @@ The axiom selection is the only point where we are able to engineer the physics 
 
 The workhorse ontological axiom is
 \begin{equation}
-    \mathcal{A}_\mu(x) = \mathcal{A}^{(L)}_\mu(x) \oplus \mathcal{A}^{(R)}_\mu(x) \in \spinFourC.
+    \mathcal{A}_\mu(x) = \mathcal{A}^{(L)}_\mu(x) \oplus \mathcal{A}^{(R)}_\mu(x) \in \spinFourCAlg.
     \quad \leanref{CGD.Axioms.Universe}
     \label{eq:spinFourCAxiom}
 \end{equation}
-\noindent This merely states that the universe is a \spinFourC gauge connection. The $\mathcal{A}^{(L)}_\mu(x) \oplus \mathcal{A}^{(R)}_\mu(x)$ part is stating a property of the matrix math, which is often described as \spinFourC decomposing into two chiral halves \slTwoCL and \slTwoCR.
+\noindent This merely states that the universe is a \spinFourCAlg gauge connection. The $\mathcal{A}^{(L)}_\mu(x) \oplus \mathcal{A}^{(R)}_\mu(x)$ part is stating a property of the matrix math, which is often described as \spinFourC decomposing into two chiral halves \slTwoCL and \slTwoCR.
 
 Perhaps the most compelling motivation for \spinFourC is to notice that the Dirac Equation is naturally described in \spinFourC. That is, Paul Dirac started with the 4-dimensional symmetries of Special Relativity, which is the Lorentz Group \soOneThree. However, the electron is a spin-$1/2$ particle, which requires a double cover of the Lorentz Group such as \slTwoC. However, \slTwoC is a 2-component Weyl spinor that can only describe massless particles, so to describe a massive particle, Dirac combined a left-handed and right-handed Weyl spinor into a 4-component Dirac spinor \cite{nakahara2003geometry}. This representation is the group $(1/2, 0) \oplus (0, 1/2)$, but the Lie group that natively describes this structure is \spinFourC. In other words, if we hope to derive the Dirac Equation, we need to use either \spinFourC or a supergroup.
 
@@ -35,7 +35,7 @@ While Axiom \ref{eq:macroscopicVolumeAxiom} largely serves to allow the Lean 4 f
 
 At this point, we have finalized our axiom basis, but it's worth emphasizing the fundamental way that CGD differs from the Standard Model and Loop Quantum Gravity (LQG): we do not quantize the gauge connection. We do not assume that force transfer occurs in quantized units and we do not assume that particles are quantum points. From a practical perspective, this means we will not proceed with deriving CGD by user perturbation and renormalization techniques.
 
-Another notable absence from our axiom set is that we do not assume an independent Minkowski metric space background. This is a feature CGD shares with LQG, and in fact, the LQG body of work demonstrates that the absense of an independent background is fully consistent with General Relativity (GR). However, LQG attempts to modify GR by quantizing it. In contrast, in CGD we will demonstrate that instead of quantizing gravity, we can instead gravitize the quantum. That is, we will take a classical framework that is fully consistent with Einstein's field equations and show that Standard Model phenomenology emerges.
+Another notable absence from our axiom set is that we do not assume an independent Minkowski metric space background. This is a feature CGD shares with LQG, and in fact, the LQG body of work demonstrates that the absence of an independent background is fully consistent with General Relativity (GR). However, LQG attempts to modify GR by quantizing it. In contrast, in CGD we will demonstrate that instead of quantizing gravity, we can instead gravitize the quantum. That is, we will take a classical framework that is fully consistent with Einstein's field equations and show that Standard Model phenomenology emerges.
 
 Now that we have our full axiom basis, we can show that \spinFourC decomposes perfectly into two chiral halves.
 \begin{equation}
@@ -59,7 +59,7 @@ The CGD Lagrangian is built from the trace of the curvature squared. Because the
 \end{equation}
 \noindent The geometry of the self-dual (L) sector does not algebraically interact with the geometry of the anti-self-dual (R) sector. As we will see in Sections \ref{sec:Gravity} and \ref{sec:Particles}, this will lead to the observation that gravity and matter couple geometrically, but not algebraically. They can coexist in a volume without sharing energy through the action.
 
-To construct a gauge-invariant Lagrangian, we need to build a scalar density that is quadritic in the field strength tensor. In \cite{utiyama1956invariant}, Utiyama showed that the only possible invariant scalars are the Yang-Mills term $\mathrm{Tr}(F_{\mu\nu} F^{\mu\nu})$ or the Pontryagin density $\epsilon^{\mu\nu\rho\sigma}\mathrm{Tr}(F_{\mu\nu} F_{\rho\sigma})$. However, as shown in \cite{nakahara2003geometry}, the Yang-Mills term requires an independent background metric, so CGD must use the Pontryagin density.
+To construct a gauge-invariant Lagrangian, we need to build a scalar density that is quadratic in the field strength tensor. In \cite{utiyama1956invariant}, Utiyama showed that the only possible invariant scalars are the Yang-Mills term $\mathrm{Tr}(F_{\mu\nu} F^{\mu\nu})$ or the Pontryagin density $\epsilon^{\mu\nu\rho\sigma}\mathrm{Tr}(F_{\mu\nu} F_{\rho\sigma})$. However, as shown in \cite{nakahara2003geometry}, the Yang-Mills term requires an independent background metric, so CGD must use the Pontryagin density.
 
 This leads us to the unique Lagrangian candidate
 \begin{equation}

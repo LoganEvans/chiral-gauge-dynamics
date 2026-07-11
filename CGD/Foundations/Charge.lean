@@ -15,18 +15,18 @@ open BigOperators Complex
 
 namespace CGD.Foundations
 
-/-- 
+/--
 The emergent U(1) current based on the Duan-Ge (1979) topological decomposition.
 Defined as the dual divergence of the Abelian field strength tensor F_ρσ.
 J^μ = ε^{μνρσ} ∂_ν F_ρσ
 -/
-noncomputable def emergentElectricCurrent 
-  (F : Fin 4 → Fin 4 → SpacetimePoint → ℂ) 
+noncomputable def emergentElectricCurrent
+  (F : Fin 4 → Fin 4 → SpacetimePoint → ℂ)
   (μ : Fin 4) (x : SpacetimePoint) : ℂ :=
   ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
     epsilon4 μ ν ρ σ * partialDeriv ν (fun p => F ρ σ p) x
 
-/-- 
+/--
 Extracts the negative sign from a finite sum.
 -/
 lemma sum_neg_extract (n : Type*) [Fintype n] (f : n → ℂ) :
@@ -56,7 +56,7 @@ lemma sum_antisymm_zero (S : Fin 4 → Fin 4 → ℂ) (h : ∀ i j, S i j = - S 
         intro i _
         exact sum_neg_extract _ (fun j => S i j)
       _ = - ∑ i : Fin 4, ∑ j : Fin 4, S i j := sum_neg_extract _ (fun i => ∑ j : Fin 4, S i j)
-      
+
   have h2 : (2 : ℂ) * (∑ i : Fin 4, ∑ j : Fin 4, S i j) = 0 := by
     let A := ∑ i : Fin 4, ∑ j : Fin 4, S i j
     have h_add : A + A = -A + A := congrArg (fun x => x + A) h1
@@ -64,7 +64,7 @@ lemma sum_antisymm_zero (S : Fin 4 → Fin 4 → ℂ) (h : ∀ i j, S i j = - S 
       (2 : ℂ) * A = A + A := by ring
       _ = -A + A := h_add
       _ = 0 := by ring
-      
+
   calc
     ∑ i : Fin 4, ∑ j : Fin 4, S i j = (1 / 2 : ℂ) * ((2 : ℂ) * ∑ i : Fin 4, ∑ j : Fin 4, S i j) := by ring
     _ = (1 / 2 : ℂ) * 0 := by rw [h2]
@@ -108,52 +108,52 @@ lemma partialDeriv_comm_real
   [clairaut : Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional]
   (f : SpacetimePoint → ℝ)
   (h_smooth : ContDiffOn ℝ 2 f Set.univ)
-  (μ ν : Fin 4) (x : SpacetimePoint) 
+  (μ ν : Fin 4) (x : SpacetimePoint)
   (h_diff_fderiv : DifferentiableAt ℝ (fderiv ℝ f) x) :
   partialDeriv μ (partialDeriv ν f) x = partialDeriv ν (partialDeriv μ f) x := by
   let u : Fin 4 → ℝ := (Pi.single ν (1:ℝ) : Fin 4 → ℝ)
   let w : Fin 4 → ℝ := (Pi.single μ (1:ℝ) : Fin 4 → ℝ)
-  
+
   let L_u : ((Fin 4 → ℝ) →L[ℝ] ℝ) →L[ℝ] ℝ := ContinuousLinearMap.apply ℝ ℝ u
   have hg1 : HasFDerivAt L_u L_u (fderiv ℝ f x) := L_u.hasFDerivAt
   have hf1 : HasFDerivAt (fderiv ℝ f) (fderiv ℝ (fderiv ℝ f) x) x := h_diff_fderiv.hasFDerivAt
   have hc1 : HasFDerivAt (L_u ∘ (fderiv ℝ f)) (L_u.comp (fderiv ℝ (fderiv ℝ f) x)) x := hg1.comp x hf1
   have hc1_fderiv : fderiv ℝ (L_u ∘ (fderiv ℝ f)) x = L_u.comp (fderiv ℝ (fderiv ℝ f) x) := hc1.fderiv
-  
+
   have h_eval1 : partialDeriv μ (partialDeriv ν f) x = fderiv ℝ (fderiv ℝ f) x w u := by
     unfold partialDeriv
     have heq : (fun p => fderiv ℝ f p u) = L_u ∘ (fderiv ℝ f) := rfl
     rw [heq, hc1_fderiv]
     rfl
-    
+
   let L_w : ((Fin 4 → ℝ) →L[ℝ] ℝ) →L[ℝ] ℝ := ContinuousLinearMap.apply ℝ ℝ w
   have hg2 : HasFDerivAt L_w L_w (fderiv ℝ f x) := L_w.hasFDerivAt
   have hc2 : HasFDerivAt (L_w ∘ (fderiv ℝ f)) (L_w.comp (fderiv ℝ (fderiv ℝ f) x)) x := hg2.comp x hf1
   have hc2_fderiv : fderiv ℝ (L_w ∘ (fderiv ℝ f)) x = L_w.comp (fderiv ℝ (fderiv ℝ f) x) := hc2.fderiv
-  
+
   have h_eval2 : partialDeriv ν (partialDeriv μ f) x = fderiv ℝ (fderiv ℝ f) x u w := by
     unfold partialDeriv
     have heq : (fun p => fderiv ℝ f p w) = L_w ∘ (fderiv ℝ f) := rfl
     rw [heq, hc2_fderiv]
     rfl
-    
+
   rw [h_eval1, h_eval2]
-  
+
   let v : Fin 2 → (Fin 4 → ℝ) := fun i => if i = 0 then u else w
   let sig : Equiv.Perm (Fin 2) := Equiv.swap 0 1
-  
+
   have hc_clairaut := clairaut.symmetry_of_higher_partials 4 2 Set.univ isOpen_univ f h_smooth x (Set.mem_univ x) v sig
-  
+
   have hr1 : iteratedFDeriv ℝ 2 f x v = fderiv ℝ (fderiv ℝ f) x u w := by
     have h : iteratedFDeriv ℝ 2 f x v = fderiv ℝ (fderiv ℝ f) x (v 0) (v 1) := iteratedFDeriv_two_apply f x v
     rw [h]
     rfl
-    
+
   have hr2 : iteratedFDeriv ℝ 2 f x (fun i => v (sig i)) = fderiv ℝ (fderiv ℝ f) x w u := by
     have h : iteratedFDeriv ℝ 2 f x (fun i => v (sig i)) = fderiv ℝ (fderiv ℝ f) x (v (sig 0)) (v (sig 1)) := iteratedFDeriv_two_apply f x (fun i => v (sig i))
     rw [h]
     rfl
-    
+
   rw [hr2, hr1] at hc_clairaut
   exact hc_clairaut
 
@@ -163,7 +163,7 @@ its divergence strictly vanishes due to the commutativity of partial derivatives
 justified natively via n-dimensional Clairaut theorem on the Abelian field strength.
 -/
 @[litlib_track "Topological Charge Conservation"]
-theorem topologicalChargeConservation 
+theorem topologicalChargeConservation
   [clairaut : Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional]
   (F : Fin 4 → Fin 4 → SpacetimePoint → ℂ)
   (h_smooth_re : ∀ ρ σ, ContDiffOn ℝ 2 (fun p => (F ρ σ p).re) Set.univ)
@@ -172,17 +172,17 @@ theorem topologicalChargeConservation
   (h_diff : ∀ ν ρ σ x, DifferentiableAt ℝ (fun p => partialDeriv ν (fun p' => F ρ σ p') p) x)
   (h_diff_fderiv_re : ∀ ρ σ x, DifferentiableAt ℝ (fderiv ℝ (fun p => (F ρ σ p).re)) x)
   (h_diff_fderiv_im : ∀ ρ σ x, DifferentiableAt ℝ (fderiv ℝ (fun p => (F ρ σ p).im)) x) :
-  ∀ x : SpacetimePoint, 
+  ∀ x : SpacetimePoint,
     ∑ μ : Fin 4, partialDeriv μ (fun p => emergentElectricCurrent F μ p) x = 0 := by
   intro x
   let S := fun (μ ν : Fin 4) => ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv μ (fun p => partialDeriv ν (fun p' => F ρ σ p') p) x
-  
+
   have h_diff_smul : ∀ μ ν ρ σ, DifferentiableAt ℝ (fun p => epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x :=
     fun μ ν ρ σ => diff_const_mul (epsilon4 μ ν ρ σ) (fun p => partialDeriv ν (fun p' => F ρ σ p') p) x (h_diff ν ρ σ x)
-  
+
   have h_diff_sum_sigma : ∀ μ ν ρ, DifferentiableAt ℝ (fun p => ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x :=
     fun μ ν ρ => diff_sum (fun σ p => epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x (fun σ => h_diff_smul μ ν ρ σ)
-  
+
   have h_diff_sum_rho : ∀ μ ν, DifferentiableAt ℝ (fun p => ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x :=
     fun μ ν => diff_sum (fun ρ p => ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x (fun ρ => h_diff_sum_sigma μ ν ρ)
 
@@ -190,17 +190,17 @@ theorem topologicalChargeConservation
     partialDeriv μ (fun p => emergentElectricCurrent F μ p) x =
     ∑ ν : Fin 4, partialDeriv μ (fun p => ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x :=
     partialDeriv_sum (fun ν p => ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) μ x (fun ν => h_diff_sum_rho μ ν)
-    
+
   have step2 (μ ν : Fin 4) :
     partialDeriv μ (fun p => ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x =
     ∑ ρ : Fin 4, partialDeriv μ (fun p => ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x :=
     partialDeriv_sum (fun ρ p => ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) μ x (fun ρ => h_diff_sum_sigma μ ν ρ)
-    
+
   have step3 (μ ν ρ : Fin 4) :
     partialDeriv μ (fun p => ∑ σ : Fin 4, epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x =
     ∑ σ : Fin 4, partialDeriv μ (fun p => epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x :=
     partialDeriv_sum (fun σ p => epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) μ x (fun σ => h_diff_smul μ ν ρ σ)
-    
+
   have step4 (μ ν ρ σ : Fin 4) :
     partialDeriv μ (fun p => epsilon4 μ ν ρ σ * partialDeriv ν (fun p' => F ρ σ p') p) x =
     epsilon4 μ ν ρ σ * partialDeriv μ (fun p => partialDeriv ν (fun p' => F ρ σ p') p) x :=
@@ -232,7 +232,7 @@ theorem topologicalChargeConservation
         apply Finset.sum_congr rfl
         intro σ _
         have h_eps : epsilon4 μ ν ρ σ = - epsilon4 ν μ ρ σ := (epsilon4_alt μ ν ρ σ).1
-        
+
         have h_comm : partialDeriv μ (fun p => partialDeriv ν (fun p' => F ρ σ p') p) x = partialDeriv ν (fun p => partialDeriv μ (fun p' => F ρ σ p') p) x := by
           apply Complex.ext
           · have hr1 := partialDeriv_re (fun p => partialDeriv ν (fun p' => F ρ σ p') p) μ x (h_diff ν ρ σ x)
@@ -241,30 +241,30 @@ theorem topologicalChargeConservation
               exact partialDeriv_re (fun p' => F ρ σ p') ν p (h_diff_F ρ σ p)
             rw [h_inner_re] at hr1
             rw [hr1]
-            
+
             have hr2 := partialDeriv_re (fun p => partialDeriv μ (fun p' => F ρ σ p') p) ν x (h_diff μ ρ σ x)
             have h_inner_re2 : (fun p => (partialDeriv μ (fun p' => F ρ σ p') p).re) = partialDeriv μ (fun p => (F ρ σ p).re) := by
               ext p
               exact partialDeriv_re (fun p' => F ρ σ p') μ p (h_diff_F ρ σ p)
             rw [h_inner_re2] at hr2
             rw [hr2]
-            
+
             exact partialDeriv_comm_real (fun p => (F ρ σ p).re) (h_smooth_re ρ σ) μ ν x (h_diff_fderiv_re ρ σ x)
-            
+
           · have hi1 := partialDeriv_im (fun p => partialDeriv ν (fun p' => F ρ σ p') p) μ x (h_diff ν ρ σ x)
             have h_inner_im : (fun p => (partialDeriv ν (fun p' => F ρ σ p') p).im) = partialDeriv ν (fun p => (F ρ σ p).im) := by
               ext p
               exact partialDeriv_im (fun p' => F ρ σ p') ν p (h_diff_F ρ σ p)
             rw [h_inner_im] at hi1
             rw [hi1]
-            
+
             have hi2 := partialDeriv_im (fun p => partialDeriv μ (fun p' => F ρ σ p') p) ν x (h_diff μ ρ σ x)
             have h_inner_im2 : (fun p => (partialDeriv μ (fun p' => F ρ σ p') p).im) = partialDeriv μ (fun p => (F ρ σ p).im) := by
               ext p
               exact partialDeriv_im (fun p' => F ρ σ p') μ p (h_diff_F ρ σ p)
             rw [h_inner_im2] at hi2
             rw [hi2]
-            
+
             exact partialDeriv_comm_real (fun p => (F ρ σ p).im) (h_smooth_im ρ σ) μ ν x (h_diff_fderiv_im ρ σ x)
 
         rw [h_eps, h_comm]
@@ -295,12 +295,12 @@ noncomputable def abelianFieldStrength (pu : PhysicalUniverse) (i j : Fin 4) (μ
 lemma contDiff_fderiv_of_contDiff_real {f : SpacetimePoint → ℝ} (hf : ContDiff ℝ ⊤ f) :
   ContDiff ℝ ⊤ (fderiv ℝ f) := by
   let snd_clm : (SpacetimePoint × SpacetimePoint) →L[ℝ] SpacetimePoint := ContinuousLinearMap.snd ℝ SpacetimePoint SpacetimePoint
-  have hf_snd : ContDiff ℝ ⊤ (fun p : SpacetimePoint × SpacetimePoint => f p.2) := 
+  have hf_snd : ContDiff ℝ ⊤ (fun p : SpacetimePoint × SpacetimePoint => f p.2) :=
     ContDiff.comp (g := f) (f := Prod.snd) hf snd_clm.contDiff
   let id_clm : SpacetimePoint →L[ℝ] SpacetimePoint := ContinuousLinearMap.id ℝ SpacetimePoint
   exact ContDiff.fderiv (f := fun _ y => f y) (g := fun x => x) hf_snd id_clm.contDiff le_top
 
-lemma contDiff_partialDeriv_complex (μ : Fin 4) (f : SpacetimePoint → ℂ) (hf : ContDiff ℝ ⊤ f) : 
+lemma contDiff_partialDeriv_complex (μ : Fin 4) (f : SpacetimePoint → ℂ) (hf : ContDiff ℝ ⊤ f) :
   ContDiff ℝ ⊤ (partialDeriv μ f) := by
   unfold partialDeriv
   let w : Fin 4 → ℝ := Pi.single μ 1
@@ -348,8 +348,8 @@ lemma smooth_embed_asd (pu : PhysicalUniverse) (i j μ : Fin 4) :
 lemma smooth_connectionComponent (pu : PhysicalUniverse) (i j μ : Fin 4) :
   ContDiff ℝ ⊤ (fun x => connectionComponent pu i j μ x) := by
   unfold connectionComponent Universe.spin4c_connection
-  have h_eq : (fun x => pu.toUniverse.val μ x i j) = 
-    fun x => embedSelfDual (pu.toUniverse.sd_sector.val μ x) i j + 
+  have h_eq : (fun x => pu.toUniverse.val μ x i j) =
+    fun x => embedSelfDual (pu.toUniverse.sd_sector.val μ x) i j +
              embedAntiSelfDual (pu.toUniverse.asd_sector.val μ x) i j := by
     ext x
     exact congrFun (congrFun (pu.toUniverse.is_spin4c μ x) i) j
@@ -414,16 +414,16 @@ lemma diff_fderiv_im_afs (pu : PhysicalUniverse) (i j μ ν : Fin 4) (x : Spacet
   have h_diff := ContDiff.differentiable h_fderiv hn
   exact h_diff x
 
-/-- 
-Because the physical Universe is axiomatically a smooth Spin(4,C) connection, 
-its emergent Abelian projection natively satisfies the n-dimensional Clairaut theorem, 
+/--
+Because the physical Universe is axiomatically a smooth Spin(4,C) connection,
+its emergent Abelian projection natively satisfies the n-dimensional Clairaut theorem,
 guaranteeing exact topological charge conservation without further assumptions.
 -/
 @[litlib_track "Kinematic Charge Conservation"]
-theorem kinematicChargeConservation 
+theorem kinematicChargeConservation
   [clairaut : Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional]
   (pu : PhysicalUniverse) (i j : Fin 4) :
-  ∀ x : SpacetimePoint, 
+  ∀ x : SpacetimePoint,
     ∑ μ : Fin 4, partialDeriv μ (fun p => emergentElectricCurrent (abelianFieldStrength pu i j) μ p) x = 0 := by
   intro x
   apply topologicalChargeConservation (abelianFieldStrength pu i j)

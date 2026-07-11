@@ -9,15 +9,15 @@ namespace CGD.Gravity
 open Complex Matrix BigOperators CGD.Foundations Litlib.Y1991.capovilla1991pure
 
 lemma plebanski_f_comp (F : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) (Λ : ℂ)
-  (h_su2 : ∀ μ ν, 
+  (h_su2 : ∀ μ ν,
     F μ ν 0 0 = 0 ∧ F μ ν 1 1 = 0 ∧ F μ ν 2 2 = 0 ∧
     F μ ν 2 1 = - F μ ν 1 2 ∧ F μ ν 2 0 = - F μ ν 0 2 ∧ F μ ν 1 0 = - F μ ν 0 1)
-  (h_plebanski : (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, CGD.Gravity.epsilon4 μ ν ρ σ • (F μ ν * F ρ σ)) = Λ • 1) 
+  (h_plebanski : (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, CGD.Gravity.epsilon4 μ ν ρ σ • (F μ ν * F ρ σ)) = Λ • 1)
   (a b : Fin 3) :
-  (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, 
-    CGD.Gravity.epsilon4 μ ν ρ σ * (F_comp F a μ ν * F_comp F b ρ σ)) = 
+  (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
+    CGD.Gravity.epsilon4 μ ν ρ σ * (F_comp F a μ ν * F_comp F b ρ σ)) =
   if a = b then -Λ/2 else 0 := by
-  
+
   let I (a b : Fin 3) : ℂ :=
     (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, CGD.Gravity.epsilon4 μ ν ρ σ * (F_comp F a μ ν * F_comp F b ρ σ))
 
@@ -46,9 +46,9 @@ lemma plebanski_f_comp (F : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) (Λ 
     (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, CGD.Gravity.epsilon4 μ ν ρ σ * (F μ ν i 1 * F ρ σ 1 j)) +
     (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, CGD.Gravity.epsilon4 μ ν ρ σ * (F μ ν i 2 * F ρ σ 2 j)) := by
     intro i j
-    have h_inner : ∀ μ ν ρ σ, CGD.Gravity.epsilon4 μ ν ρ σ * (F μ ν * F ρ σ) i j = 
-      CGD.Gravity.epsilon4 μ ν ρ σ * (F μ ν i 0 * F ρ σ 0 j) + 
-      CGD.Gravity.epsilon4 μ ν ρ σ * (F μ ν i 1 * F ρ σ 1 j) + 
+    have h_inner : ∀ μ ν ρ σ, CGD.Gravity.epsilon4 μ ν ρ σ * (F μ ν * F ρ σ) i j =
+      CGD.Gravity.epsilon4 μ ν ρ σ * (F μ ν i 0 * F ρ σ 0 j) +
+      CGD.Gravity.epsilon4 μ ν ρ σ * (F μ ν i 1 * F ρ σ 1 j) +
       CGD.Gravity.epsilon4 μ ν ρ σ * (F μ ν i 2 * F ρ σ 2 j) := by
       intro μ ν ρ σ
       rw [Matrix.mul_apply]
@@ -76,7 +76,7 @@ lemma plebanski_f_comp (F : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) (Λ 
     apply Finset.sum_eq_zero; intro σ _
     rw [h ρ σ]
     ring
-    
+
   have sum_I_pos : ∀ (f1 f2 : Fin 4 → Fin 4 → ℂ) (x y : Fin 3),
     (∀ μ ν, f1 μ ν = F_comp F x μ ν) →
     (∀ ρ σ, f2 ρ σ = F_comp F y ρ σ) →

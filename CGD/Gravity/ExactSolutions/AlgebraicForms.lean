@@ -10,15 +10,15 @@ namespace CGD.Gravity.ExactSolutions
 /--
 Type O (Isotropic / FLRW Cosmological Vacuum)
 Algebraic Form: A_0 = 0, A_j(t) = a(t) σ_j
-All principal null directions are degenerate. 
+All principal null directions are degenerate.
 The scale factor `a(t)` must be strictly real and non-static to ensure a non-degenerate Lorentzian metric.
 Acts as the volume-generating Axial Condensate for all other Petrov types.
 -/
 def IsTypeOForm (pu : PhysicalUniverse) : Prop :=
   ∃ a : ℝ → ℂ, ∀ x : SpacetimePoint,
-    (a (x 0)).im = 0 ∧ 
+    (a (x 0)).im = 0 ∧
     (fderiv ℝ a (x 0) 1).im = 0 ∧
-    a (x 0) ≠ 0 ∧ 
+    a (x 0) ≠ 0 ∧
     fderiv ℝ a (x 0) 1 ≠ 0 ∧
     pu.toUniverse.sd_sector.val 0 x = 0 ∧
     pu.toUniverse.sd_sector.val 1 x = toSl2c (a (x 0) • sigma1.val) ∧
@@ -80,7 +80,7 @@ def IsTypeIIForm (pu : PhysicalUniverse) : Prop :=
 
 /--
 Type I (Algebraically General / Binary Merger)
-No overlapping roots. Contains zero algebraic symmetry. 
+No overlapping roots. Contains zero algebraic symmetry.
 Asserts the existence of an unconstrained configuration to be verified dynamically via oracle.
 -/
 def IsTypeIForm (pu : PhysicalUniverse) : Prop :=

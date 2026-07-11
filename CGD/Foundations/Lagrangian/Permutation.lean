@@ -14,7 +14,7 @@ namespace CGD.Foundations
 def permMatrix (p : Equiv.Perm (Fin 4)) : Matrix (Fin 4) (Fin 4) ℂ :=
   Matrix.of (fun i j => if i = p j then 1 else 0)
 
-lemma det_permMatrix (p : Equiv.Perm (Fin 4)) : 
+lemma det_permMatrix (p : Equiv.Perm (Fin 4)) :
   Matrix.det (permMatrix p) = (Equiv.Perm.sign p : ℂ) := by
   rw [Matrix.det_apply]
   have h_prod : ∀ (σ : Equiv.Perm (Fin 4)),
@@ -42,7 +42,7 @@ lemma det_permMatrix (p : Equiv.Perm (Fin 4)) :
       unfold permMatrix
       rw [Matrix.of_apply]
       rw [if_neg hi]
-  
+
   -- Rewrite the sum body using the exact prod evaluation
   have h_sum_body : (∑ σ : Equiv.Perm (Fin 4), Equiv.Perm.sign σ • ∏ i : Fin 4, permMatrix p (σ i) i) =
     ∑ σ : Equiv.Perm (Fin 4), (Equiv.Perm.sign σ : ℤ) • (if σ = p then (1 : ℂ) else 0) := by
@@ -54,7 +54,7 @@ lemma det_permMatrix (p : Equiv.Perm (Fin 4)) :
   rw [h_sum_body]
 
   -- Isolate the p-th term explicitly
-  have h_single : (∑ σ : Equiv.Perm (Fin 4), (Equiv.Perm.sign σ : ℤ) • (if σ = p then (1 : ℂ) else 0)) = 
+  have h_single : (∑ σ : Equiv.Perm (Fin 4), (Equiv.Perm.sign σ : ℤ) • (if σ = p then (1 : ℂ) else 0)) =
     (Equiv.Perm.sign p : ℤ) • (1 : ℂ) := by
     have h_ext : (∑ σ : Equiv.Perm (Fin 4), (Equiv.Perm.sign σ : ℤ) • (if σ = p then (1 : ℂ) else 0)) =
       ∑ σ : Equiv.Perm (Fin 4), (fun x => (Equiv.Perm.sign x : ℤ) • (if x = p then (1 : ℂ) else 0)) σ := rfl
@@ -71,7 +71,7 @@ lemma det_permMatrix (p : Equiv.Perm (Fin 4)) :
   rw [zsmul_eq_mul]
   rw [mul_one]
 
-lemma det_swapMatrix (i j : Fin 4) (h : i ≠ j) : 
+lemma det_swapMatrix (i j : Fin 4) (h : i ≠ j) :
   Matrix.det (permMatrix (Equiv.swap i j)) = -1 := by
   rw [det_permMatrix]
   have hs := Equiv.Perm.sign_swap h
@@ -94,11 +94,11 @@ lemma ite_perm_symm (p : Equiv.Perm (Fin 4)) (μ α : Fin 4) :
     · rw [if_neg h1, if_neg h2]
 
 lemma permMatrix_apply_factor (p : Equiv.Perm (Fin 4)) (F : Fin 4 → Fin 4 → ChiralM) (μ ν : Fin 4) :
-  (∑ α : Fin 4, ∑ β : Fin 4, ((if α = p.symm μ then (1 : ℂ) else 0) * (if β = p.symm ν then (1 : ℂ) else 0)) • F α β) = 
-  ∑ α : Fin 4, (if α = p.symm μ then (1 : ℂ) else 0) • 
+  (∑ α : Fin 4, ∑ β : Fin 4, ((if α = p.symm μ then (1 : ℂ) else 0) * (if β = p.symm ν then (1 : ℂ) else 0)) • F α β) =
+  ∑ α : Fin 4, (if α = p.symm μ then (1 : ℂ) else 0) •
     (∑ β : Fin 4, (if β = p.symm ν then (1 : ℂ) else 0) • F α β) := by
   symm
-  have h_pull_smul : (∑ α : Fin 4, (if α = p.symm μ then (1 : ℂ) else 0) • ∑ β : Fin 4, (if β = p.symm ν then (1 : ℂ) else 0) • F α β) = 
+  have h_pull_smul : (∑ α : Fin 4, (if α = p.symm μ then (1 : ℂ) else 0) • ∑ β : Fin 4, (if β = p.symm ν then (1 : ℂ) else 0) • F α β) =
     ∑ α : Fin 4, ∑ β : Fin 4, (if α = p.symm μ then (1 : ℂ) else 0) • (if β = p.symm ν then (1 : ℂ) else 0) • F α β := by
     apply Finset.sum_congr rfl
     intro α _
@@ -109,7 +109,7 @@ lemma permMatrix_apply_factor (p : Equiv.Perm (Fin 4)) (F : Fin 4 → Fin 4 → 
   exact Eq.symm (mul_smul (if α = p.symm μ then (1 : ℂ) else 0) (if β = p.symm ν then (1 : ℂ) else 0) (F α β))
 
 lemma permMatrix_apply (p : Equiv.Perm (Fin 4)) (F : Fin 4 → Fin 4 → ChiralM) :
-  (fun μ ν => ∑ α : Fin 4, ∑ β : Fin 4, (permMatrix p μ α * permMatrix p ν β) • F α β) = 
+  (fun μ ν => ∑ α : Fin 4, ∑ β : Fin 4, (permMatrix p μ α * permMatrix p ν β) • F α β) =
   (fun μ ν => F (p.symm μ) (p.symm ν)) := by
   ext μ ν
   unfold permMatrix
@@ -121,8 +121,8 @@ lemma permMatrix_apply (p : Equiv.Perm (Fin 4)) (F : Fin 4 → Fin 4 → ChiralM
   simp
 
 lemma swapMatrix_topological_C (a b : Fin 4) (hab : a ≠ b) :
-  ∀ μ ν ρ σ, ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4, 
-      permMatrix (Equiv.swap a b) α μ * permMatrix (Equiv.swap a b) β ν * permMatrix (Equiv.swap a b) γ ρ * permMatrix (Equiv.swap a b) δ σ * CGD.Gravity.epsilon4 α β γ δ = 
+  ∀ μ ν ρ σ, ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4,
+      permMatrix (Equiv.swap a b) α μ * permMatrix (Equiv.swap a b) β ν * permMatrix (Equiv.swap a b) γ ρ * permMatrix (Equiv.swap a b) δ σ * CGD.Gravity.epsilon4 α β γ δ =
       Matrix.det (permMatrix (Equiv.swap a b)) * CGD.Gravity.epsilon4 μ ν ρ σ := by
   intro μ ν ρ σ
   rw [det_swapMatrix a b hab]

@@ -26,9 +26,9 @@ noncomputable def holonomy (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (F
   matrixExp ((t1 - t0 : ℂ) • A t0)
 
 @[litlib_track "Macroscopic Observable"]
-noncomputable def macroscopicObservable 
+noncomputable def macroscopicObservable
   (holonomy : (ℝ → Matrix (Fin 2) (Fin 2) ℂ) → ℝ → ℝ → Matrix (Fin 2) (Fin 2) ℂ)
-  (A : Fin 4 → SpacetimePoint → SL2C) 
+  (A : Fin 4 → SpacetimePoint → SL2C)
   (mu : Fin 4) (L : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
   holonomy (fun t => (A mu (straightLinePath t)).val) 0 L
 
@@ -76,11 +76,11 @@ lemma obs_M_sq (alpha : ℝ) : obs_M alpha * obs_M alpha = 1 := by
   have h_R := R_R_inv_eq_one alpha
   let R : Matrix (Fin 2) (Fin 2) ℂ := Matrix.of ![![Complex.cos (alpha/2), -Complex.sin (alpha/2)], ![Complex.sin (alpha/2), Complex.cos (alpha/2)]]
   let R_inv : Matrix (Fin 2) (Fin 2) ℂ := Matrix.of ![![Complex.cos (alpha/2), Complex.sin (alpha/2)], ![-Complex.sin (alpha/2), Complex.cos (alpha/2)]]
-  
+
   have h_sig : sigma3.val * sigma3.val = 1 := by
     ext i j
     fin_cases i <;> fin_cases j
-    all_goals { 
+    all_goals {
       simp [sigma3, toSl2c, sigmaZ, mkMat, Matrix.mul_apply, Matrix.trace, Matrix.diag, h_sum2]
     }
 
@@ -110,14 +110,14 @@ lemma fluxTubeFrame_one_val (t : ℝ) : (fluxTubeFrame 1 (straightLinePath t)).v
   dsimp [fluxTubeFrame]
   ext i j
   fin_cases i <;> fin_cases j
-  all_goals { 
-    simp [toSl2c, sigma3, sigmaZ, mkMat, Matrix.trace, Matrix.diag, Matrix.smul_apply, h_sum2] 
+  all_goals {
+    simp [toSl2c, sigma3, sigmaZ, mkMat, Matrix.trace, Matrix.diag, Matrix.smul_apply, h_sum2]
   }
 
 /--
-Evaluates the path-ordered integral of the exact `fluxTubeFrame` spatial gauge connection witness. 
-This explicitly demonstrates that evaluating an SU(2) holonomy natively maps geometric 
-parameters directly to the trigonometric coefficients of standard quantum state vectors, 
+Evaluates the path-ordered integral of the exact `fluxTubeFrame` spatial gauge connection witness.
+This explicitly demonstrates that evaluating an SU(2) holonomy natively maps geometric
+parameters directly to the trigonometric coefficients of standard quantum state vectors,
 proving that the geometry can natively reproduce quantum observables.
 -/
 @[litlib_track "Macroscopic Spin State Witness"]
@@ -128,40 +128,40 @@ theorem fluxTubeHolonomyEvaluation
   (h_field : ∀ t, pu.toUniverse.sd_sector 1 (straightLinePath t) = fluxTubeFrame 1 (straightLinePath t)) :
   macroscopicObservable (holonomy matrixExp) (fun mu p => rotateYAxis (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 L =
   (Complex.cos (L:ℂ)) • 1 + (Complex.I * Complex.sin (L:ℂ)) • obs_M alpha := by
-  
+
   dsimp [macroscopicObservable, holonomy]
-  
+
   have hf : (pu.toUniverse.sd_sector 1 (straightLinePath 0)).val = (fluxTubeFrame 1 (straightLinePath 0)).val :=
     congr_arg Subtype.val (h_field 0)
-  
-  have h_eval : (rotateYAxis (fun m p => pu.toUniverse.sd_sector m p) alpha 1 (straightLinePath 0)).val = 
+
+  have h_eval : (rotateYAxis (fun m p => pu.toUniverse.sd_sector m p) alpha 1 (straightLinePath 0)).val =
                 Complex.I • obs_M alpha := by
     dsimp [rotateYAxis]
     rw [hf]
     have h_flux := fluxTubeFrame_one_val 0
     rw [h_flux]
-    
+
     have h_assoc : Matrix.of ![![Complex.cos (alpha / 2 : ℂ), -Complex.sin (alpha / 2 : ℂ)], ![Complex.sin (alpha / 2 : ℂ), Complex.cos (alpha / 2 : ℂ)]] *
                    (Complex.I • sigma3.val) *
                    Matrix.of ![![Complex.cos (alpha / 2 : ℂ), Complex.sin (alpha / 2 : ℂ)], ![-Complex.sin (alpha / 2 : ℂ), Complex.cos (alpha / 2 : ℂ)]] =
                    Complex.I • obs_M alpha := by
       dsimp [obs_M]
       rw [Matrix.mul_smul, Matrix.smul_mul]
-      
+
     rw [h_assoc]
     exact I_obs_M_toSl2c alpha
-    
+
   rw [h_eval]
-  
+
   have hz : ((L : ℂ) - (0 : ℂ)) = (L : ℂ) := sub_zero _
   rw [hz]
-  
+
   have h_arg : (L : ℂ) • Complex.I • obs_M alpha = (Complex.I * (L : ℂ)) • obs_M alpha := by
     rw [smul_smul]
     congr 1
     ring
   rw [h_arg]
-  
+
   exact matrixEulerFormula matrixExp (obs_M alpha) L (obs_M_sq alpha)
 
 end CGD.Quantum

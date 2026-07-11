@@ -12,7 +12,7 @@ open CGD.Axioms CGD.Foundations Matrix Complex
 
 namespace CGD.Particles
 
-/-- 
+/--
 The 4D BPST Instanton in the regular gauge.
 Topologically localizes in both space and time via the 't Hooft symbols.
 Multiplied by Complex.I to map into the strictly anti-Hermitian su(2) Lie algebra.

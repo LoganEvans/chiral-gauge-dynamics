@@ -16,14 +16,14 @@ def isPureNonAbelian (F : Fin 4 → Fin 4 → SL2C) : Prop :=
   ∃ μ ν ρ σ, ⁅F μ ν, F ρ σ⁆ ≠ 0
 
 /-- Phase 1: Prove the logical contrapositive that a non-zero commutator requires non-zero constituent matrices. -/
-lemma non_abelian_implies_nonzero (M N : SL2C) (h : ⁅M, N⁆ ≠ 0) : 
+lemma non_abelian_implies_nonzero (M N : SL2C) (h : ⁅M, N⁆ ≠ 0) :
   M ≠ 0 := by
   intro hM
   rw [hM] at h
   simp at h
 
 /-- Phase 2: Prove that the physical self-interaction scattering tensor (the commutator) is itself an SU(2) matrix. -/
-lemma commutator_is_su2 (M N : Matrix (Fin 2) (Fin 2) ℂ) (hM : isSu2 M) (hN : isSu2 N) : 
+lemma commutator_is_su2 (M N : Matrix (Fin 2) (Fin 2) ℂ) (hM : isSu2 M) (hN : isSu2 N) :
   isSu2 (M * N - N * M) := by
   rcases hM with ⟨hM_tr, hM_adj⟩
   rcases hN with ⟨hN_tr, hN_adj⟩
@@ -40,14 +40,16 @@ lemma commutator_is_su2 (M N : Matrix (Fin 2) (Fin 2) ℂ) (hM : isSu2 M) (hN : 
     simp only [neg_mul_neg]
     exact neg_sub (M * N) (N * M) |>.symm
 
-/-- A pure non-Abelian defect mathematically requires inertial mass > 0, and guarantees a strictly non-zero self-interaction topological density. -/
+/--
+A purely non-Abelian defect (lacking a stable U(1) Abelian projection) possesses no electric charge. However, it mathematically requires an inertial mass > 0 and guarantees a non-zero self-interaction topological density, matching the phenomenological profile of Self-Interacting Dark Matter (SIDM).
+-/
 @[litlib_track "Emergent Dark Matter Profile"]
 theorem emergentDarkMatterProfile (pu : PhysicalUniverse) :
   ∀ (x : SpacetimePoint),
   (∀ μ p, isSu2 (pu.toUniverse.asd_sector.val μ p).val) →
   isPureNonAbelian (fun m n => curvatureSl2c pu.toUniverse.asd_sector.val m n x) →
   inertialMass pu x > 0 ∧
-  ∃ α β γ δ, Matrix.trace (⁅curvatureSl2c pu.toUniverse.asd_sector.val α β x, curvatureSl2c pu.toUniverse.asd_sector.val γ δ x⁆.val * 
+  ∃ α β γ δ, Matrix.trace (⁅curvatureSl2c pu.toUniverse.asd_sector.val α β x, curvatureSl2c pu.toUniverse.asd_sector.val γ δ x⁆.val *
                 ⁅curvatureSl2c pu.toUniverse.asd_sector.val α β x, curvatureSl2c pu.toUniverse.asd_sector.val γ δ x⁆.val) ≠ 0 := by
   intro x h_su2 h_dark
   rcases h_dark with ⟨α, β, γ, δ, h_comm_neq⟩

@@ -52,7 +52,7 @@ lemma partialDerivSl2c_exactAbelian (c : ℂ) (k l : Fin 4) (x : SpacetimePoint)
   partialDerivSl2c k (exactAbelianField c l) x = if k = 1 ∧ l = 2 then toSl2c (c • sigmaX) else 0 := by
   unfold exactAbelianField
   by_cases hl : l = 2
-  · have h_fun_eq : (fun p : SpacetimePoint => if l = 2 then toSl2c (exactAbelianL c p) else 0) = 
+  · have h_fun_eq : (fun p : SpacetimePoint => if l = 2 then toSl2c (exactAbelianL c p) else 0) =
                     (fun p : SpacetimePoint => toSl2c (exactAbelianL c p)) := by
       funext p; rw [if_pos hl]
     rw [h_fun_eq]
@@ -69,7 +69,7 @@ lemma partialDerivSl2c_exactAbelian (c : ℂ) (k l : Fin 4) (x : SpacetimePoint)
       apply Subtype.ext
       unfold toSl2c
       simp
-  · have h_fun_eq : (fun p : SpacetimePoint => if l = 2 then toSl2c (exactAbelianL c p) else 0) = 
+  · have h_fun_eq : (fun p : SpacetimePoint => if l = 2 then toSl2c (exactAbelianL c p) else 0) =
                     (fun _ : SpacetimePoint => (0 : SL2C)) := by
       funext p; rw [if_neg hl]
     rw [h_fun_eq]
@@ -83,7 +83,7 @@ lemma partialDerivSl2c_exactAbelian (c : ℂ) (k l : Fin 4) (x : SpacetimePoint)
     rw [hzero]
     unfold toSl2c
     dsimp
-    have htr : Matrix.trace (fun (_ _ : Fin 2) => (0 : ℂ)) = 0 := by 
+    have htr : Matrix.trace (fun (_ _ : Fin 2) => (0 : ℂ)) = 0 := by
       unfold Matrix.trace Matrix.diag
       simp
     rw [htr]
@@ -135,13 +135,13 @@ lemma curvature_const_supp (c : ℂ) (μ ν : Fin 4) :
   · left; rfl
 
 /--
-Provides an exact analytical solution for an Abelian plane wave satisfying the pure CDJ 
+Provides an exact analytical solution for an Abelian plane wave satisfying the pure CDJ
 constraint equation (F ∧ F = 0).
 -/
 @[litlib_track "Exact Abelian Macroscopic Solution"]
 theorem dynamicExactAbelianSolution (c : ℂ) (hc : c ≠ 0) :
-  ∃ (u : Universe), 
-    CGD.Gravity.satisfiesPureCdjConstraint (fun p m n => cgdAdjointCurvature u m n p) ∧ 
+  ∃ (u : Universe),
+    CGD.Gravity.satisfiesPureCdjConstraint (fun p m n => cgdAdjointCurvature u m n p) ∧
     (∀ x, curvatureSl2c u.sd_sector 1 2 x = c • toSl2c sigmaX) ∧
     (∃ x, curvatureSl2c u.sd_sector 1 2 x ≠ 0) := by
   have h_smooth_AL : ∀ mu i j, ContDiff ℝ ⊤ (fun x : SpacetimePoint => (exactAbelianField c mu x).val i j) := by
@@ -190,7 +190,7 @@ theorem dynamicExactAbelianSolution (c : ℂ) (hc : c ≠ 0) :
           rw [h_sd_curv]
           exact curvature_exactAbelian c ρ σ x
         rw [h_curv_mu, h_curv_rho]
-        
+
         have h_supp1 := curvature_const_supp c μ ν
         have h_supp2 := curvature_const_supp c ρ σ
         rcases h_supp1 with h1 | h1

@@ -13,23 +13,23 @@ open CGD.Axioms
 namespace CGD.Gravity
 
 /--
-This formally constructs an exact analytical non-Abelian $SU(2)$ gauge configuration 
-that simultaneously satisfies the trace-free Capovilla CDJ constraint at the spatial 
-origin, and produces a non-degenerate, strictly real, negative-determinant 
+This formally constructs an exact analytical non-Abelian $SU(2)$ gauge configuration
+that simultaneously satisfies the trace-free Capovilla CDJ constraint at the spatial
+origin, and produces a non-degenerate, strictly real, negative-determinant
 Lorentzian metric (det g < 0) at x = 0.
 
-This mathematically proves that the foundational vacuum geometry of Chiral Gauge Dynamics 
+This mathematically proves that the foundational vacuum geometry of Chiral Gauge Dynamics
 is strictly non-vacuous.
 -/
 @[litlib_track "Exact Non-Abelian Lorentzian Macroscopic Witness"]
 theorem dynamicExactLorentzianSolution :
-  ∃ (u : Universe) (x : SpacetimePoint), 
+  ∃ (u : Universe) (x : SpacetimePoint),
     (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
-      epsilon4 μ ν ρ σ • (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)) = 
+      epsilon4 μ ν ρ σ • (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)) =
     ((∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
       epsilon4 μ ν ρ σ • (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)).trace / 3) • 1 ∧
     isLorentzian (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector m n x)) := by
-  
+
   let A_L : Sl2cGaugeField := ⟨exactLorentzianField, exactLorentzian_smooth⟩
   let A_R : Sl2cGaugeField := ⟨fun _ _ => 0, fun _ _ _ => contDiff_const⟩
   let u : Universe := universeEquiv.symm (A_L, A_R)

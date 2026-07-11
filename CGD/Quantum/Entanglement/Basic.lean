@@ -34,19 +34,19 @@ lemma fluxTubeFrame_0_eq_zero (p : SpacetimePoint) : (fluxTubeFrame 0 p).val = 0
   have h_subst : (fluxTubeFrame 0 p).val = (toSl2c 0).val := Eq.trans h_def (congr_arg (fun M => (toSl2c M).val) h_ite)
   exact Eq.trans h_subst toSl2c_zero_val
 
-lemma rotateYAxis_math_partialDerivMat_fluxTube_time_0 (C : ℝ) (x : SpacetimePoint) : 
+lemma rotateYAxis_math_partialDerivMat_fluxTube_time_0 (C : ℝ) (x : SpacetimePoint) :
   partialDerivMat 0 (fun p => (rotateYAxis fluxTubeFrame C 0 p).val) x = 0 := by
   have h0 : (fun p => (rotateYAxis fluxTubeFrame C 0 p).val) = fun _ => 0 := by
     apply funext
     intro p
     have h_f0 : (fluxTubeFrame 0 p).val = 0 := fluxTubeFrame_0_eq_zero p
-    have h_rot : (rotateYAxis fluxTubeFrame C 0 p).val = 
-      (toSl2c (Matrix.of ![![Complex.cos (↑C / 2), -Complex.sin (↑C / 2)], ![Complex.sin (↑C / 2), Complex.cos (↑C / 2)]] * 
-      (fluxTubeFrame 0 p).val * 
+    have h_rot : (rotateYAxis fluxTubeFrame C 0 p).val =
+      (toSl2c (Matrix.of ![![Complex.cos (↑C / 2), -Complex.sin (↑C / 2)], ![Complex.sin (↑C / 2), Complex.cos (↑C / 2)]] *
+      (fluxTubeFrame 0 p).val *
       Matrix.of ![![Complex.cos (↑C / 2), Complex.sin (↑C / 2)], ![-Complex.sin (↑C / 2), Complex.cos (↑C / 2)]])).val := rfl
-    have h_subst : (rotateYAxis fluxTubeFrame C 0 p).val = 
-      (toSl2c (Matrix.of ![![Complex.cos (↑C / 2), -Complex.sin (↑C / 2)], ![Complex.sin (↑C / 2), Complex.cos (↑C / 2)]] * 
-      0 * 
+    have h_subst : (rotateYAxis fluxTubeFrame C 0 p).val =
+      (toSl2c (Matrix.of ![![Complex.cos (↑C / 2), -Complex.sin (↑C / 2)], ![Complex.sin (↑C / 2), Complex.cos (↑C / 2)]] *
+      0 *
       Matrix.of ![![Complex.cos (↑C / 2), Complex.sin (↑C / 2)], ![-Complex.sin (↑C / 2), Complex.cos (↑C / 2)]])).val := congr_arg (fun M => (toSl2c (Matrix.of ![![Complex.cos (↑C / 2), -Complex.sin (↑C / 2)], ![Complex.sin (↑C / 2), Complex.cos (↑C / 2)]] * M * Matrix.of ![![Complex.cos (↑C / 2), Complex.sin (↑C / 2)], ![-Complex.sin (↑C / 2), Complex.cos (↑C / 2)]])).val) h_f0
     have h_mul1 : Matrix.of ![![Complex.cos (↑C / 2), -Complex.sin (↑C / 2)], ![Complex.sin (↑C / 2), Complex.cos (↑C / 2)]] * 0 = 0 := Matrix.mul_zero _
     have h_mul1_congr : Matrix.of ![![Complex.cos (↑C / 2), -Complex.sin (↑C / 2)], ![Complex.sin (↑C / 2), Complex.cos (↑C / 2)]] * 0 * Matrix.of ![![Complex.cos (↑C / 2), Complex.sin (↑C / 2)], ![-Complex.sin (↑C / 2), Complex.cos (↑C / 2)]] = 0 * Matrix.of ![![Complex.cos (↑C / 2), Complex.sin (↑C / 2)], ![-Complex.sin (↑C / 2), Complex.cos (↑C / 2)]] := congr_arg (fun M => M * Matrix.of ![![Complex.cos (↑C / 2), Complex.sin (↑C / 2)], ![-Complex.sin (↑C / 2), Complex.cos (↑C / 2)]]) h_mul1
@@ -57,7 +57,7 @@ lemma rotateYAxis_math_partialDerivMat_fluxTube_time_0 (C : ℝ) (x : SpacetimeP
   have h_pd : partialDerivMat 0 (fun p => (rotateYAxis fluxTubeFrame C 0 p).val) x = partialDerivMat 0 (fun _ => 0) x := congr_arg (fun f => partialDerivMat 0 f x) h0
   exact Eq.trans h_pd (partialDerivMat_const 0 0 x)
 
-lemma fluxTubeFrame_eval_1 (p : SpacetimePoint) : 
+lemma fluxTubeFrame_eval_1 (p : SpacetimePoint) :
   fluxTubeFrame 1 p = toSl2c (Complex.I • sigma3.val) := by
   unfold fluxTubeFrame
   have h1 : (1:Fin 4) ≠ 0 := by decide
@@ -66,7 +66,7 @@ lemma fluxTubeFrame_eval_1 (p : SpacetimePoint) :
     rw [if_neg h1, if_pos h2]
   exact congr_arg toSl2c h_ite
 
-lemma fluxTubeFrame_eval_2 (p : SpacetimePoint) : 
+lemma fluxTubeFrame_eval_2 (p : SpacetimePoint) :
   fluxTubeFrame 2 p = toSl2c (Complex.I • sigma1.val) := by
   unfold fluxTubeFrame
   have h1 : (2:Fin 4) ≠ 0 := by decide
@@ -76,7 +76,7 @@ lemma fluxTubeFrame_eval_2 (p : SpacetimePoint) :
     rw [if_neg h1, if_neg h2, if_pos h3]
   exact congr_arg toSl2c h_ite
 
-lemma fluxTubeFrame_eval_3 (p : SpacetimePoint) : 
+lemma fluxTubeFrame_eval_3 (p : SpacetimePoint) :
   fluxTubeFrame 3 p = toSl2c (Complex.I • sigma2.val) := by
   unfold fluxTubeFrame
   have h1 : (3:Fin 4) ≠ 0 := by decide
@@ -86,7 +86,7 @@ lemma fluxTubeFrame_eval_3 (p : SpacetimePoint) :
     rw [if_neg h1, if_neg h2, if_neg h3]
   exact congr_arg toSl2c h_ite
 
-lemma rotateYAxis_math_partialDerivMat_fluxTube_time_1 (C : ℝ) (x : SpacetimePoint) : 
+lemma rotateYAxis_math_partialDerivMat_fluxTube_time_1 (C : ℝ) (x : SpacetimePoint) :
   partialDerivMat 0 (fun p => (rotateYAxis fluxTubeFrame C 1 p).val) x = 0 := by
   have h1 : (fun p => (rotateYAxis fluxTubeFrame C 1 p).val) = fun _ => (rotateYAxis fluxTubeFrame C 1 x).val := by
     apply funext
@@ -99,7 +99,7 @@ lemma rotateYAxis_math_partialDerivMat_fluxTube_time_1 (C : ℝ) (x : SpacetimeP
     exact congr_arg (fun A => (toSl2c (Matrix.of ![![Complex.cos (↑C / 2), -Complex.sin (↑C / 2)], ![Complex.sin (↑C / 2), Complex.cos (↑C / 2)]] * A.val * Matrix.of ![![Complex.cos (↑C / 2), Complex.sin (↑C / 2)], ![-Complex.sin (↑C / 2), Complex.cos (↑C / 2)]])).val) hp
   rw [h1]; exact partialDerivMat_const _ 0 x
 
-lemma rotateYAxis_math_partialDerivMat_fluxTube_time_2 (C : ℝ) (x : SpacetimePoint) : 
+lemma rotateYAxis_math_partialDerivMat_fluxTube_time_2 (C : ℝ) (x : SpacetimePoint) :
   partialDerivMat 0 (fun p => (rotateYAxis fluxTubeFrame C 2 p).val) x = 0 := by
   have h2 : (fun p => (rotateYAxis fluxTubeFrame C 2 p).val) = fun _ => (rotateYAxis fluxTubeFrame C 2 x).val := by
     apply funext
@@ -112,7 +112,7 @@ lemma rotateYAxis_math_partialDerivMat_fluxTube_time_2 (C : ℝ) (x : SpacetimeP
     exact congr_arg (fun A => (toSl2c (Matrix.of ![![Complex.cos (↑C / 2), -Complex.sin (↑C / 2)], ![Complex.sin (↑C / 2), Complex.cos (↑C / 2)]] * A.val * Matrix.of ![![Complex.cos (↑C / 2), Complex.sin (↑C / 2)], ![-Complex.sin (↑C / 2), Complex.cos (↑C / 2)]])).val) hp
   rw [h2]; exact partialDerivMat_const _ 0 x
 
-lemma rotateYAxis_math_partialDerivMat_fluxTube_time_3 (C : ℝ) (x : SpacetimePoint) : 
+lemma rotateYAxis_math_partialDerivMat_fluxTube_time_3 (C : ℝ) (x : SpacetimePoint) :
   partialDerivMat 0 (fun p => (rotateYAxis fluxTubeFrame C 3 p).val) x = 0 := by
   have h3 : (fun p => (rotateYAxis fluxTubeFrame C 3 p).val) = fun _ => (rotateYAxis fluxTubeFrame C 3 x).val := by
     apply funext
@@ -140,7 +140,7 @@ lemma rotateYAxis_math_partialDerivSl2c_fluxTube_time (C : ℝ) (nu : Fin 4) (x 
 
 lemma rotateYAxis_math_partialDerivSl2c_fluxTube_cross (C : ℝ) (nu : Fin 4) (x : SpacetimePoint) :
   partialDerivSl2c nu (rotateYAxis fluxTubeFrame C 0) x = 0 := by
-  have h_zero : rotateYAxis fluxTubeFrame C 0 = fun _ => 0 := by 
+  have h_zero : rotateYAxis fluxTubeFrame C 0 = fun _ => 0 := by
     apply funext
     intro p
     unfold rotateYAxis
@@ -159,7 +159,7 @@ lemma rotateYAxis_flux_tube_electric_zero_at (C : ℝ) (nu : Fin 4) (x : Spaceti
   curvatureSl2c (rotateYAxis fluxTubeFrame C) 0 nu x = 0 := by
   unfold curvatureSl2c
   rw[rotateYAxis_math_partialDerivSl2c_fluxTube_time C nu x, rotateYAxis_math_partialDerivSl2c_fluxTube_cross C nu x]
-  have h_frame_0 : rotateYAxis fluxTubeFrame C 0 x = 0 := by 
+  have h_frame_0 : rotateYAxis fluxTubeFrame C 0 x = 0 := by
     apply Subtype.ext
     unfold rotateYAxis
     have h_f0 : (fluxTubeFrame 0 x).val = 0 := fluxTubeFrame_0_eq_zero x

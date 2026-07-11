@@ -64,7 +64,7 @@ theorem kinematicVacuumCondensate (pu : PhysicalUniverse) (x : SpacetimePoint) (
   have h_det := pu.has_volume.volume_exists x hx
   apply h_det
   rw [h_trivial]
-  have h_curv : (fun mu nu => curvatureSl2c (fun _ _ => (0 : SL2C)) mu nu x) = (fun _ _ => (0 : SL2C)) := by 
+  have h_curv : (fun mu nu => curvatureSl2c (fun _ _ => (0 : SL2C)) mu nu x) = (fun _ _ => (0 : SL2C)) := by
     ext mu nu
     rw [curvatureSl2c_zero]
   rw[h_curv]

@@ -11,21 +11,21 @@ open CGD.Foundations
 namespace CGD.Particles
 
 noncomputable def inertialMass (pu : PhysicalUniverse) (x : SpacetimePoint) : ℝ :=
-  ∑ μ : Fin 4, ∑ ν : Fin 4, - (Matrix.trace ((curvatureSl2c pu.toUniverse.asd_sector.val μ ν x).val * 
+  ∑ μ : Fin 4, ∑ ν : Fin 4, - (Matrix.trace ((curvatureSl2c pu.toUniverse.asd_sector.val μ ν x).val *
                                              (curvatureSl2c pu.toUniverse.asd_sector.val μ ν x).val)).re
 
 /-- Phase 1: Prove that the Cartan-Killing trace for any SU(2) matrix is strictly non-negative. -/
-lemma su2_trace_sq_nonneg (M : Matrix (Fin 2) (Fin 2) ℂ) (h : isSu2 M) : 
+lemma su2_trace_sq_nonneg (M : Matrix (Fin 2) (Fin 2) ℂ) (h : isSu2 M) :
   -(Matrix.trace (M * M)).re ≥ 0 := by
   rcases h with ⟨h_tr, h_adj⟩
-  
+
   -- Extract trace equation
   have h_tr_eq : M 0 0 + M 1 1 = 0 := by
     have : Matrix.trace M = ∑ i, M i i := rfl
     have eval : ∑ i, M i i = M 0 0 + M 1 1 := Fin.sum_univ_two (fun i => M i i)
     rw [this, eval] at h_tr
     exact h_tr
-    
+
   have h_m11 : M 1 1 = - M 0 0 := by
     calc M 1 1 = (M 0 0 + M 1 1) - M 0 0 := by ring
     _ = 0 - M 0 0 := by rw [h_tr_eq]
@@ -38,14 +38,14 @@ lemma su2_trace_sq_nonneg (M : Matrix (Fin 2) (Fin 2) ℂ) (h : isSu2 M) :
     have rhs : (-M) 0 0 = - M 0 0 := rfl
     rw [lhs, rhs] at this
     exact this
-  
+
   have h_adj_10 : star (M 0 1) = - M 1 0 := by
     have : M.conjTranspose 1 0 = (-M) 1 0 := by rw [h_adj]
     have lhs : M.conjTranspose 1 0 = star (M 0 1) := rfl
     have rhs : (-M) 1 0 = - M 1 0 := rfl
     rw [lhs, rhs] at this
     exact this
-    
+
   have h_m10 : M 1 0 = - star (M 0 1) := by
     calc M 1 0 = - (- M 1 0) := by ring
     _ = - star (M 0 1) := by rw [←h_adj_10]
@@ -60,7 +60,7 @@ lemma su2_trace_sq_nonneg (M : Matrix (Fin 2) (Fin 2) ℂ) (h : isSu2 M) :
     have step2_1_eval : ∑ j, M 1 j * M j 1 = M 1 0 * M 0 1 + M 1 1 * M 1 1 := Fin.sum_univ_two (fun j => M 1 j * M j 1)
     rw [step1, step1_eval, step2_0, step2_0_eval, step2_1, step2_1_eval]
     ring
-    
+
   -- Substitute components
   have h_tr_M2_sub : Matrix.trace (M * M) = (2 : ℂ) * (M 0 0 * M 0 0) - (2 : ℂ) * (M 0 1 * star (M 0 1)) := by
     calc Matrix.trace (M * M) = M 0 0 * M 0 0 + M 0 1 * M 1 0 + M 1 0 * M 0 1 + M 1 1 * M 1 1 := h_tr_M2
@@ -73,7 +73,7 @@ lemma su2_trace_sq_nonneg (M : Matrix (Fin 2) (Fin 2) ℂ) (h : isSu2 M) :
     have h2 : (star (M 0 0)).re = (M 0 0).re := rfl
     have h3 : (- M 0 0).re = - (M 0 0).re := rfl
     linarith [h1, h2, h3]
-    
+
   have h_m00_sq_re : (M 0 0 * M 0 0).re = - ((M 0 0).im * (M 0 0).im) := by
     have : (M 0 0 * M 0 0).re = (M 0 0).re * (M 0 0).re - (M 0 0).im * (M 0 0).im := rfl
     rw [this, h_m00_re]
@@ -90,13 +90,13 @@ lemma su2_trace_sq_nonneg (M : Matrix (Fin 2) (Fin 2) ℂ) (h : isSu2 M) :
   -- Take real parts
   have h_lin : ∀ A B : ℂ, ((2:ℂ) * A - (2:ℂ) * B).re = 2 * A.re - 2 * B.re := by
     intro A B
-    have eqA : ((2:ℂ) * A).re = 2 * A.re := by 
+    have eqA : ((2:ℂ) * A).re = 2 * A.re := by
       have : ((2:ℂ) * A).re = (2 : ℂ).re * A.re - (2 : ℂ).im * A.im := rfl
       have re2 : (2 : ℂ).re = 2 := rfl
       have im2 : (2 : ℂ).im = 0 := rfl
       rw [this, re2, im2]
       ring
-    have eqB : ((2:ℂ) * B).re = 2 * B.re := by 
+    have eqB : ((2:ℂ) * B).re = 2 * B.re := by
       have : ((2:ℂ) * B).re = (2 : ℂ).re * B.re - (2 : ℂ).im * B.im := rfl
       have re2 : (2 : ℂ).re = 2 := rfl
       have im2 : (2 : ℂ).im = 0 := rfl
@@ -116,23 +116,23 @@ lemma su2_trace_sq_nonneg (M : Matrix (Fin 2) (Fin 2) ℂ) (h : isSu2 M) :
     _ = 2 * ((M 0 0).im * (M 0 0).im) + 2 * ((M 0 1).re * (M 0 1).re) + 2 * ((M 0 1).im * (M 0 1).im) := by ring
 
   rw [h_LHS]
-  
+
   have p1 : 0 ≤ (M 0 0).im * (M 0 0).im := mul_self_nonneg _
   have p2 : 0 ≤ (M 0 1).re * (M 0 1).re := mul_self_nonneg _
   have p3 : 0 ≤ (M 0 1).im * (M 0 1).im := mul_self_nonneg _
   linarith
 
 /-- Phase 2: Establish the strict positivity bound if the SU(2) matrix is non-zero. -/
-lemma su2_trace_sq_pos (M : Matrix (Fin 2) (Fin 2) ℂ) (h1 : isSu2 M) (h2 : M ≠ 0) : 
+lemma su2_trace_sq_pos (M : Matrix (Fin 2) (Fin 2) ℂ) (h1 : isSu2 M) (h2 : M ≠ 0) :
   -(Matrix.trace (M * M)).re > 0 := by
   rcases h1 with ⟨h_tr, h_adj⟩
-  
+
   have h_tr_eq : M 0 0 + M 1 1 = 0 := by
     have : Matrix.trace M = ∑ i, M i i := rfl
     have eval : ∑ i, M i i = M 0 0 + M 1 1 := Fin.sum_univ_two (fun i => M i i)
     rw [this, eval] at h_tr
     exact h_tr
-    
+
   have h_m11 : M 1 1 = - M 0 0 := by
     calc M 1 1 = (M 0 0 + M 1 1) - M 0 0 := by ring
     _ = 0 - M 0 0 := by rw [h_tr_eq]
@@ -141,11 +141,11 @@ lemma su2_trace_sq_pos (M : Matrix (Fin 2) (Fin 2) ℂ) (h1 : isSu2 M) (h2 : M �
   have h_adj_00 : star (M 0 0) = - M 0 0 := by
     have : M.conjTranspose 0 0 = (-M) 0 0 := by rw [h_adj]
     exact this
-  
+
   have h_adj_10 : star (M 0 1) = - M 1 0 := by
     have : M.conjTranspose 1 0 = (-M) 1 0 := by rw [h_adj]
     exact this
-    
+
   have h_m10 : M 1 0 = - star (M 0 1) := by
     calc M 1 0 = - (- M 1 0) := by ring
     _ = - star (M 0 1) := by rw [←h_adj_10]
@@ -157,7 +157,7 @@ lemma su2_trace_sq_pos (M : Matrix (Fin 2) (Fin 2) ℂ) (h1 : isSu2 M) (h2 : M �
     have step2_1 : (M * M) 1 1 = M 1 0 * M 0 1 + M 1 1 * M 1 1 := Fin.sum_univ_two (fun j => M 1 j * M j 1)
     rw [step1, step1_eval, step2_0, step2_1]
     ring
-    
+
   have h_tr_M2_sub : Matrix.trace (M * M) = (2 : ℂ) * (M 0 0 * M 0 0) - (2 : ℂ) * (M 0 1 * star (M 0 1)) := by
     calc Matrix.trace (M * M) = M 0 0 * M 0 0 + M 0 1 * M 1 0 + M 1 0 * M 0 1 + M 1 1 * M 1 1 := h_tr_M2
     _ = M 0 0 * M 0 0 + M 0 1 * (- star (M 0 1)) + (- star (M 0 1)) * M 0 1 + (- M 0 0) * (- M 0 0) := by rw [h_m11, h_m10]
@@ -168,7 +168,7 @@ lemma su2_trace_sq_pos (M : Matrix (Fin 2) (Fin 2) ℂ) (h1 : isSu2 M) (h2 : M �
     have h2 : (star (M 0 0)).re = (M 0 0).re := rfl
     have h3 : (- M 0 0).re = - (M 0 0).re := rfl
     linarith [h1, h2, h3]
-    
+
   have h_m00_sq_re : (M 0 0 * M 0 0).re = - ((M 0 0).im * (M 0 0).im) := by
     have : (M 0 0 * M 0 0).re = (M 0 0).re * (M 0 0).re - (M 0 0).im * (M 0 0).im := rfl
     rw [this, h_m00_re]
@@ -183,13 +183,13 @@ lemma su2_trace_sq_pos (M : Matrix (Fin 2) (Fin 2) ℂ) (h1 : isSu2 M) (h2 : M �
 
   have h_lin : ∀ A B : ℂ, ((2:ℂ) * A - (2:ℂ) * B).re = 2 * A.re - 2 * B.re := by
     intro A B
-    have eqA : ((2:ℂ) * A).re = 2 * A.re := by 
+    have eqA : ((2:ℂ) * A).re = 2 * A.re := by
       have : ((2:ℂ) * A).re = (2 : ℂ).re * A.re - (2 : ℂ).im * A.im := rfl
       have re2 : (2 : ℂ).re = 2 := rfl
       have im2 : (2 : ℂ).im = 0 := rfl
       rw [this, re2, im2]
       ring
-    have eqB : ((2:ℂ) * B).re = 2 * B.re := by 
+    have eqB : ((2:ℂ) * B).re = 2 * B.re := by
       have : ((2:ℂ) * B).re = (2 : ℂ).re * B.re - (2 : ℂ).im * B.im := rfl
       have re2 : (2 : ℂ).re = 2 := rfl
       have im2 : (2 : ℂ).im = 0 := rfl
@@ -217,7 +217,7 @@ lemma su2_trace_sq_pos (M : Matrix (Fin 2) (Fin 2) ℂ) (h1 : isSu2 M) (h2 : M �
   -- Since it's a sum of squares, it must be exactly 0, which forces all terms to be 0.
   by_contra h_not_pos
   push_neg at h_not_pos
-  
+
   have h_sum_zero : 2 * ((M 0 0).im * (M 0 0).im) + 2 * ((M 0 1).re * (M 0 1).re) + 2 * ((M 0 1).im * (M 0 1).im) = 0 := by
     linarith [h_not_pos, p1, p2, p3]
 
@@ -239,8 +239,8 @@ lemma su2_trace_sq_pos (M : Matrix (Fin 2) (Fin 2) ℂ) (h1 : isSu2 M) (h2 : M �
   have hz_00 : M 0 0 = 0 := Complex.ext h_m00_re z1
   have hz_01 : M 0 1 = 0 := Complex.ext z2 z3
   have hz_11 : M 1 1 = 0 := by rw [h_m11, hz_00, neg_zero]
-  
-  have hz_10 : M 1 0 = 0 := by 
+
+  have hz_10 : M 1 0 = 0 := by
     calc M 1 0 = - star (M 0 1) := h_m10
     _ = - star (0 : ℂ) := by rw [hz_01]
     _ = 0 := by simp
@@ -252,7 +252,7 @@ lemma su2_trace_sq_pos (M : Matrix (Fin 2) (Fin 2) ℂ) (h1 : isSu2 M) (h2 : M �
     · exact hz_01
     · exact hz_10
     · exact hz_11
-    
+
   exact h2 hM_zero
 
 lemma partialDeriv_star (f : SpacetimePoint → ℂ) (μ : Fin 4) (x : SpacetimePoint)
@@ -277,15 +277,15 @@ lemma partialDeriv_star (f : SpacetimePoint → ℂ) (μ : Fin 4) (x : Spacetime
   rfl
 
 /-- Phase 3: Prove that because partial derivatives commute and the Lie bracket of SU(2) remains in SU(2), the curvature tensor natively belongs to the SU(2) Lie algebra. -/
-lemma curvature_is_su2 (pu : PhysicalUniverse) (x : SpacetimePoint) (μ ν : Fin 4) 
-  (h_su2 : ∀ μ p, isSu2 (pu.toUniverse.asd_sector.val μ p).val) : 
+lemma curvature_is_su2 (pu : PhysicalUniverse) (x : SpacetimePoint) (μ ν : Fin 4)
+  (h_su2 : ∀ μ p, isSu2 (pu.toUniverse.asd_sector.val μ p).val) :
   isSu2 (curvatureSl2c pu.toUniverse.asd_sector.val μ ν x).val := by
   let A := pu.toUniverse.asd_sector.val
 
   have hAμ : ∀ i j, DifferentiableAt ℝ (fun p => (A μ p).val i j) x := by
     intro i j
     exact (pu.toUniverse.asd_sector.is_smooth μ i j).differentiable (by decide) x
-    
+
   have hAν : ∀ i j, DifferentiableAt ℝ (fun p => (A ν p).val i j) x := by
     intro i j
     exact (pu.toUniverse.asd_sector.is_smooth ν i j).differentiable (by decide) x
@@ -303,12 +303,12 @@ lemma curvature_is_su2 (pu : PhysicalUniverse) (x : SpacetimePoint) (μ ν : Fin
 
     have h_F_ji : F j i = partialDeriv μ (fun p => (A ν p).val j i) x - partialDeriv ν (fun p => (A μ p).val j i) x + ((A μ x).val * (A ν x).val - (A ν x).val * (A μ x).val) j i := by
       exact curvatureSl2c_val_eq A μ ν x hAμ hAν j i
-    
+
     have h_F_ij : F i j = partialDeriv μ (fun p => (A ν p).val i j) x - partialDeriv ν (fun p => (A μ p).val i j) x + ((A μ x).val * (A ν x).val - (A ν x).val * (A μ x).val) i j := by
       exact curvatureSl2c_val_eq A μ ν x hAμ hAν i j
 
     rw [h_F_ji, h_F_ij]
-    
+
     have h_star_add : ∀ a b : ℂ, star (a + b) = star a + star b := star_add
     have h_star_sub : ∀ a b : ℂ, star (a - b) = star a - star b := star_sub
     rw [h_star_add, h_star_sub]

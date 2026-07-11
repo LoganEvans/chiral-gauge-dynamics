@@ -26,7 +26,7 @@ noncomputable def toSl2c (M : Matrix (Fin 2) (Fin 2) Complex) : SL2C :=
   let M' := M - (tr / 2) • (1 : Matrix (Fin 2) (Fin 2) Complex)
   ⟨M', by rw[mem_sl_iff, Matrix.trace_sub, Matrix.trace_smul, Matrix.trace_one]; rw[Fintype.card_fin]; simp only[Nat.cast_ofNat]; rw[smul_eq_mul]; field_simp; ring⟩
 
-def isSu2 (M : Matrix (Fin 2) (Fin 2) Complex) : Prop := 
+def isSu2 (M : Matrix (Fin 2) (Fin 2) Complex) : Prop :=
   Matrix.trace M = 0 ∧ M.conjTranspose = -M
 
 def SU2Group := { M : Matrix (Fin 2) (Fin 2) Complex // M * M.conjTranspose = 1 ∧ M.det = 1 }

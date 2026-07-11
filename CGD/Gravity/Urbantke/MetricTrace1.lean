@@ -34,7 +34,7 @@ lemma project_eq (F : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) (a : Fin 3
     simp only [mul_zero, smul_eq_mul, add_zero]
   have h_val := toSl2c_val_eq _ h_tr
   dsimp [project, getPauli]
-  have h_sub : (toSl2c (F_comp F 0 μ α • sigma1.val + F_comp F 1 μ α • sigma2.val + F_comp F 2 μ α • sigma3.val)).val = 
+  have h_sub : (toSl2c (F_comp F 0 μ α • sigma1.val + F_comp F 1 μ α • sigma2.val + F_comp F 2 μ α • sigma3.val)).val =
     F_comp F 0 μ α • sigma1.val + F_comp F 1 μ α • sigma2.val + F_comp F 2 μ α • sigma3.val := h_val
   rw [h_sub]
   fin_cases a

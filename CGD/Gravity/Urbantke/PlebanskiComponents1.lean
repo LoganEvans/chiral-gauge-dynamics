@@ -16,31 +16,31 @@ lemma capovilla_lam_zero (Λ : ℂ) (h : (1/4 : ℂ) * Λ^6 = 0) : Λ = 0 := by
   exact eq_zero_of_pow_eq_zero h6
 
 lemma capovilla_invPsi_det (Λ : ℂ) :
-  Matrix.det (fun (i j : Fin 3) => 
-    if i = 0 ∧ j = 0 then Λ 
-    else if i = 1 ∧ j = 1 then Λ 
-    else if i = 2 ∧ j = 2 then (1/2:ℂ) * Λ 
+  Matrix.det (fun (i j : Fin 3) =>
+    if i = 0 ∧ j = 0 then Λ
+    else if i = 1 ∧ j = 1 then Λ
+    else if i = 2 ∧ j = 2 then (1/2:ℂ) * Λ
     else 0) = (1/2:ℂ) * Λ^3 := by
   rw [Matrix.det_fin_three]
   simp
   ring
 
-/-- 
-Factors the Plebanski constraint purely into 3x3 scalar equations, 
-avoiding unifier AST explosion on the 4D sums. 
+/--
+Factors the Plebanski constraint purely into 3x3 scalar equations,
+avoiding unifier AST explosion on the 4D sums.
 -/
 lemma plebanski_matrix_comp (F : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) (Λ : ℂ)
   (h : (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, CGD.Gravity.epsilon4 μ ν ρ σ • (F μ ν * F ρ σ)) = Λ • 1)
   (i j : Fin 3) :
-  (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, CGD.Gravity.epsilon4 μ ν ρ σ * (F μ ν * F ρ σ) i j) = 
+  (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, CGD.Gravity.epsilon4 μ ν ρ σ * (F μ ν * F ρ σ) i j) =
   if i = j then Λ else 0 := by
-  
+
   let eval_ij : Matrix (Fin 3) (Fin 3) ℂ →+ ℂ :=
     { toFun := fun M => M i j
       map_zero' := rfl
       map_add' := fun _ _ => rfl }
 
-  have eq1 : eval_ij (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, CGD.Gravity.epsilon4 μ ν ρ σ • (F μ ν * F ρ σ)) = 
+  have eq1 : eval_ij (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, CGD.Gravity.epsilon4 μ ν ρ σ • (F μ ν * F ρ σ)) =
              ∑ μ : Fin 4, eval_ij (∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, CGD.Gravity.epsilon4 μ ν ρ σ • (F μ ν * F ρ σ)) :=
     map_sum eval_ij _ Finset.univ
 

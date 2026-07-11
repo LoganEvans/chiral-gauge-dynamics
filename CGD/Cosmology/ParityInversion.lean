@@ -96,7 +96,7 @@ lemma P_F_eq (F P_F : Fin 4 → Fin 4 → SL2C)
     exact h_parity_ij μ ν h_mu h_nu
 
 /--
-Negating the electric (temporal) components of the field strength tensor while preserving the magnetic (spatial) components inverts the sign of the fully antisymmetric topological density. This directly links the parity inversion of the local geometry to the negation of the topological charge (Pontryagin density), seamlessly mapping the geometric arrow of time to matter/antimatter asymmetry.
+Demonstrates that the fully antisymmetric topological density (Pontryagin action) natively obeys geometric CPT symmetry. A passive time-reversal transformation (negating the temporal components of the field strength tensor) strictly inverts the sign of the topological charge.
 -/
 @[litlib_track "Geometric Parity Inversion"]
 theorem kinematicParityInversion (pu : PhysicalUniverse) :

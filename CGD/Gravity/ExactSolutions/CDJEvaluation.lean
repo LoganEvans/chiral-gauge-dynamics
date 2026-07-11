@@ -69,7 +69,7 @@ lemma CDJ_sum_matrix_eq_diag : CDJ_sum_matrix = Matrix.diagonal ![(16 * Complex.
 
 @[litlib_track "CDJ constraint holds"]
 lemma CDJ_constraint_holds :
-  (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ • (adj_F μ ν * adj_F ρ σ)) = 
+  (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ • (adj_F μ ν * adj_F ρ σ)) =
   ((∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ • (adj_F μ ν * adj_F ρ σ)).trace / 3) • 1 := by
   have h_lhs : (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ • (adj_F μ ν * adj_F ρ σ)) = CDJ_sum_matrix := by exact sum_epsilon4_matrices (fun μ ν ρ σ => adj_F μ ν * adj_F ρ σ)
   rw [h_lhs]

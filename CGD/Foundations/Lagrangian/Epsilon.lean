@@ -11,9 +11,9 @@ open Matrix Complex BigOperators CGD.Axioms CGD.Foundations
 namespace CGD.Foundations
 
 lemma alternating_is_proportional_to_epsilon (T : Fin 4 → Fin 4 → Fin 4 → Fin 4 → ℂ)
-  (h_alt : ∀ μ ν ρ σ, 
-    T μ ν ρ σ = -T ν μ ρ σ ∧ 
-    T μ ν ρ σ = -T μ ρ ν σ ∧ 
+  (h_alt : ∀ μ ν ρ σ,
+    T μ ν ρ σ = -T ν μ ρ σ ∧
+    T μ ν ρ σ = -T μ ρ ν σ ∧
     T μ ν ρ σ = -T μ ν σ ρ) :
   ∃ c : ℂ, ∀ μ ν ρ σ, T μ ν ρ σ = c * CGD.Gravity.epsilon4 μ ν ρ σ := by
   use T 0 1 2 3
@@ -34,7 +34,7 @@ lemma alternating_is_proportional_to_epsilon (T : Fin 4 → Fin 4 → Fin 4 → 
   have z1 : ∀ μ ρ σ, T μ μ ρ σ = 0 := fun μ ρ σ => h_zero _ (h_swap1 μ μ ρ σ)
   have z2 : ∀ μ ν σ, T μ ν ν σ = 0 := fun μ ν σ => h_zero _ (h_swap2 μ ν ν σ)
   have z3 : ∀ μ ν ρ, T μ ν ρ ρ = 0 := fun μ ν ρ => h_zero _ (h_swap3 μ ν ρ ρ)
-  
+
   have z4 : ∀ μ ν σ, T μ ν μ σ = 0 := by
     intro μ ν σ
     calc T μ ν μ σ = -T ν μ μ σ := h_swap1 μ ν μ σ
@@ -56,78 +56,78 @@ lemma alternating_is_proportional_to_epsilon (T : Fin 4 → Fin 4 → Fin 4 → 
 
   have p0132 : T 0 1 3 2 = -T 0 1 2 3 := h_swap3 0 1 3 2
   have p0213 : T 0 2 1 3 = -T 0 1 2 3 := h_swap2 0 2 1 3
-  have p0231 : T 0 2 3 1 = T 0 1 2 3 := by 
+  have p0231 : T 0 2 3 1 = T 0 1 2 3 := by
     calc T 0 2 3 1 = -T 0 2 1 3 := h_swap3 0 2 3 1
          _ = -(-T 0 1 2 3) := by rw [p0213]
          _ = T 0 1 2 3 := by ring
-  have p0312 : T 0 3 1 2 = T 0 1 2 3 := by 
+  have p0312 : T 0 3 1 2 = T 0 1 2 3 := by
     calc T 0 3 1 2 = -T 0 1 3 2 := h_swap2 0 3 1 2
          _ = -(-T 0 1 2 3) := by rw [p0132]
          _ = T 0 1 2 3 := by ring
-  have p0321 : T 0 3 2 1 = -T 0 1 2 3 := by 
+  have p0321 : T 0 3 2 1 = -T 0 1 2 3 := by
     calc T 0 3 2 1 = -T 0 3 1 2 := h_swap3 0 3 2 1
          _ = -(T 0 1 2 3) := by rw [p0312]
-  
+
   have p1023 : T 1 0 2 3 = -T 0 1 2 3 := h_swap1 1 0 2 3
-  have p1032 : T 1 0 3 2 = T 0 1 2 3 := by 
+  have p1032 : T 1 0 3 2 = T 0 1 2 3 := by
     calc T 1 0 3 2 = -T 1 0 2 3 := h_swap3 1 0 3 2
          _ = -(-T 0 1 2 3) := by rw [p1023]
          _ = T 0 1 2 3 := by ring
-  have p1203 : T 1 2 0 3 = T 0 1 2 3 := by 
+  have p1203 : T 1 2 0 3 = T 0 1 2 3 := by
     calc T 1 2 0 3 = -T 1 0 2 3 := h_swap2 1 2 0 3
          _ = -(-T 0 1 2 3) := by rw [p1023]
          _ = T 0 1 2 3 := by ring
-  have p1230 : T 1 2 3 0 = -T 0 1 2 3 := by 
+  have p1230 : T 1 2 3 0 = -T 0 1 2 3 := by
     calc T 1 2 3 0 = -T 1 2 0 3 := h_swap3 1 2 3 0
          _ = -(T 0 1 2 3) := by rw [p1203]
-  have p1302 : T 1 3 0 2 = -T 0 1 2 3 := by 
+  have p1302 : T 1 3 0 2 = -T 0 1 2 3 := by
     calc T 1 3 0 2 = -T 1 0 3 2 := h_swap2 1 3 0 2
          _ = -(T 0 1 2 3) := by rw [p1032]
-  have p1320 : T 1 3 2 0 = T 0 1 2 3 := by 
+  have p1320 : T 1 3 2 0 = T 0 1 2 3 := by
     calc T 1 3 2 0 = -T 1 3 0 2 := h_swap3 1 3 2 0
          _ = -(-T 0 1 2 3) := by rw [p1302]
          _ = T 0 1 2 3 := by ring
-  
-  have p2013 : T 2 0 1 3 = T 0 1 2 3 := by 
+
+  have p2013 : T 2 0 1 3 = T 0 1 2 3 := by
     calc T 2 0 1 3 = -T 0 2 1 3 := h_swap1 2 0 1 3
          _ = -(-T 0 1 2 3) := by rw [p0213]
          _ = T 0 1 2 3 := by ring
-  have p2031 : T 2 0 3 1 = -T 0 1 2 3 := by 
+  have p2031 : T 2 0 3 1 = -T 0 1 2 3 := by
     calc T 2 0 3 1 = -T 2 0 1 3 := h_swap3 2 0 3 1
          _ = -(T 0 1 2 3) := by rw [p2013]
-  have p2103 : T 2 1 0 3 = -T 0 1 2 3 := by 
+  have p2103 : T 2 1 0 3 = -T 0 1 2 3 := by
     calc T 2 1 0 3 = -T 2 0 1 3 := h_swap2 2 1 0 3
          _ = -(T 0 1 2 3) := by rw [p2013]
-  have p2130 : T 2 1 3 0 = T 0 1 2 3 := by 
+  have p2130 : T 2 1 3 0 = T 0 1 2 3 := by
     calc T 2 1 3 0 = -T 2 1 0 3 := h_swap3 2 1 3 0
          _ = -(-T 0 1 2 3) := by rw [p2103]
          _ = T 0 1 2 3 := by ring
-  have p2301 : T 2 3 0 1 = T 0 1 2 3 := by 
+  have p2301 : T 2 3 0 1 = T 0 1 2 3 := by
     calc T 2 3 0 1 = -T 2 0 3 1 := h_swap2 2 3 0 1
          _ = -(-T 0 1 2 3) := by rw [p2031]
          _ = T 0 1 2 3 := by ring
-  have p2310 : T 2 3 1 0 = -T 0 1 2 3 := by 
+  have p2310 : T 2 3 1 0 = -T 0 1 2 3 := by
     calc T 2 3 1 0 = -T 2 3 0 1 := h_swap3 2 3 1 0
          _ = -(T 0 1 2 3) := by rw [p2301]
-  
-  have p3012 : T 3 0 1 2 = -T 0 1 2 3 := by 
+
+  have p3012 : T 3 0 1 2 = -T 0 1 2 3 := by
     calc T 3 0 1 2 = -T 0 3 1 2 := h_swap1 3 0 1 2
          _ = -(T 0 1 2 3) := by rw [p0312]
-  have p3021 : T 3 0 2 1 = T 0 1 2 3 := by 
+  have p3021 : T 3 0 2 1 = T 0 1 2 3 := by
     calc T 3 0 2 1 = -T 3 0 1 2 := h_swap3 3 0 2 1
          _ = -(-T 0 1 2 3) := by rw [p3012]
          _ = T 0 1 2 3 := by ring
-  have p3102 : T 3 1 0 2 = T 0 1 2 3 := by 
+  have p3102 : T 3 1 0 2 = T 0 1 2 3 := by
     calc T 3 1 0 2 = -T 3 0 1 2 := h_swap2 3 1 0 2
          _ = -(-T 0 1 2 3) := by rw [p3012]
          _ = T 0 1 2 3 := by ring
-  have p3120 : T 3 1 2 0 = -T 0 1 2 3 := by 
+  have p3120 : T 3 1 2 0 = -T 0 1 2 3 := by
     calc T 3 1 2 0 = -T 3 1 0 2 := h_swap3 3 1 2 0
          _ = -(T 0 1 2 3) := by rw [p3102]
-  have p3201 : T 3 2 0 1 = -T 0 1 2 3 := by 
+  have p3201 : T 3 2 0 1 = -T 0 1 2 3 := by
     calc T 3 2 0 1 = -T 3 0 2 1 := h_swap2 3 2 0 1
          _ = -(T 0 1 2 3) := by rw [p3021]
-  have p3210 : T 3 2 1 0 = T 0 1 2 3 := by 
+  have p3210 : T 3 2 1 0 = T 0 1 2 3 := by
     calc T 3 2 1 0 = -T 3 2 0 1 := h_swap3 3 2 1 0
          _ = -(-T 0 1 2 3) := by rw [p3201]
          _ = T 0 1 2 3 := by ring
@@ -170,11 +170,11 @@ lemma alternating_is_proportional_to_epsilon (T : Fin 4 → Fin 4 → Fin 4 → 
   }
 
 lemma eps_diag_factor (d : Fin 4 → ℂ) (μ ν ρ σ : Fin 4) :
-  (∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4, 
-    (if α = μ then d α else 0) * (if β = ν then d β else 0) * (if γ = ρ then d γ else 0) * (if δ = σ then d δ else 0) * CGD.Gravity.epsilon4 α β γ δ) = 
-  ∑ α : Fin 4, (if α = μ then d α else 0) * 
-    (∑ β : Fin 4, (if β = ν then d β else 0) * 
-      (∑ γ : Fin 4, (if γ = ρ then d γ else 0) * 
+  (∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4,
+    (if α = μ then d α else 0) * (if β = ν then d β else 0) * (if γ = ρ then d γ else 0) * (if δ = σ then d δ else 0) * CGD.Gravity.epsilon4 α β γ δ) =
+  ∑ α : Fin 4, (if α = μ then d α else 0) *
+    (∑ β : Fin 4, (if β = ν then d β else 0) *
+      (∑ γ : Fin 4, (if γ = ρ then d γ else 0) *
         (∑ δ : Fin 4, (if δ = σ then d δ else 0) * CGD.Gravity.epsilon4 α β γ δ))) := by
   symm
   simp_rw [Finset.mul_sum]
@@ -185,19 +185,19 @@ lemma eps_diag_factor (d : Fin 4 → ℂ) (μ ν ρ σ : Fin 4) :
   ring
 
 lemma eps_diag_rearrange (d : Fin 4 → ℂ) (μ ν ρ σ : Fin 4) :
-  (∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4, 
-    (if α = μ then d α else 0) * (if β = ν then d β else 0) * (if γ = ρ then d γ else 0) * (if δ = σ then d δ else 0) * CGD.Gravity.epsilon4 α β γ δ) = 
+  (∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4,
+    (if α = μ then d α else 0) * (if β = ν then d β else 0) * (if γ = ρ then d γ else 0) * (if δ = σ then d δ else 0) * CGD.Gravity.epsilon4 α β γ δ) =
   (d μ * d ν * d ρ * d σ) * CGD.Gravity.epsilon4 μ ν ρ σ := by
   rw [eps_diag_factor]
   simp_rw [sum_ite_mul]
   ring
 
 lemma eps_perm_factor (p : Fin 4 → Fin 4) (μ ν ρ σ : Fin 4) :
-  (∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4, 
-    (if α = p μ then (1:ℂ) else 0) * (if β = p ν then (1:ℂ) else 0) * (if γ = p ρ then (1:ℂ) else 0) * (if δ = p σ then (1:ℂ) else 0) * CGD.Gravity.epsilon4 α β γ δ) = 
-  ∑ α : Fin 4, (if α = p μ then (1:ℂ) else 0) * 
-    (∑ β : Fin 4, (if β = p ν then (1:ℂ) else 0) * 
-      (∑ γ : Fin 4, (if γ = p ρ then (1:ℂ) else 0) * 
+  (∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4,
+    (if α = p μ then (1:ℂ) else 0) * (if β = p ν then (1:ℂ) else 0) * (if γ = p ρ then (1:ℂ) else 0) * (if δ = p σ then (1:ℂ) else 0) * CGD.Gravity.epsilon4 α β γ δ) =
+  ∑ α : Fin 4, (if α = p μ then (1:ℂ) else 0) *
+    (∑ β : Fin 4, (if β = p ν then (1:ℂ) else 0) *
+      (∑ γ : Fin 4, (if γ = p ρ then (1:ℂ) else 0) *
         (∑ δ : Fin 4, (if δ = p σ then (1:ℂ) else 0) * CGD.Gravity.epsilon4 α β γ δ))) := by
   symm
   simp_rw [Finset.mul_sum]
@@ -208,8 +208,8 @@ lemma eps_perm_factor (p : Fin 4 → Fin 4) (μ ν ρ σ : Fin 4) :
   ring
 
 lemma eps_perm_rearrange (p : Fin 4 → Fin 4) (μ ν ρ σ : Fin 4) :
-  (∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4, 
-    (if α = p μ then (1:ℂ) else 0) * (if β = p ν then (1:ℂ) else 0) * (if γ = p ρ then (1:ℂ) else 0) * (if δ = p σ then (1:ℂ) else 0) * CGD.Gravity.epsilon4 α β γ δ) = 
+  (∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4,
+    (if α = p μ then (1:ℂ) else 0) * (if β = p ν then (1:ℂ) else 0) * (if γ = p ρ then (1:ℂ) else 0) * (if δ = p σ then (1:ℂ) else 0) * CGD.Gravity.epsilon4 α β γ δ) =
   CGD.Gravity.epsilon4 (p μ) (p ν) (p ρ) (p σ) := by
   rw [eps_perm_factor]
   simp_rw [sum_ite_mul]

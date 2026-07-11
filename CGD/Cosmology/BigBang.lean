@@ -18,7 +18,7 @@ open CGD.Axioms CGD.Foundations
 namespace CGD.Cosmology
 
 /--
-By enforcing a topological initial condition, the Big Bang manifests as a pure Euclidean SO(4) instanton rather than a mathematical singularity. Provided the bouncing instanton is topologically non-degenerate (metric determinant is non-zero), it forms a strictly non-zero, macroscopic Euclidean scale state.
+Demonstrates that if the macroscopic boundary assumes a fully 4D symmetric SO(4) ground state, the geometry natively averts a singularity. Provided the metric determinant remains non-zero, the boundary manifests mathematically as a smooth Euclidean instanton bounce.
 -/
 @[litlib_track "Big Bang Singularity Resolution (Euclidean Bounce)"]
 theorem kinematicBigBang (pu : PhysicalUniverse) (phaseRegion : Set SpacetimePoint)

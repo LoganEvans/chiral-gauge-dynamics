@@ -66,7 +66,7 @@ lemma metric_inv_symm (g : Matrix (Fin 4) (Fin 4) ℂ) (hSymm : ∀ i j, g i j =
 noncomputable def bulkDeriv (pu : PhysicalUniverse) (mu : Fin 4) (f : pu.bulk → ℂ) (x : pu.bulk) : ℂ :=
   partialDeriv mu (fun p => if h : p ∈ pu.bulk then f ⟨p, h⟩ else 0) x.val
 
-/-- 
+/--
 The emergent Stress-Energy tensor (defined as the Einstein tensor of the dynamically emergent Urbantke metric) is covariantly conserved with respect to its own Levi-Civita connection.
 This fundamentally restricts the conservation to the macroscopic bulk where det g ≠ 0.
 -/
@@ -85,12 +85,12 @@ theorem emergentStressEnergyConservation
   (h_smooth_g : ∀ i j, isSmooth (fun p => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p.val) i j))
   (h_smooth_g_inv : ∀ i j, isSmooth (fun p => CGD.Gravity.matrixInv4x4 (fun m n => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p.val) m n) i j))
   (h_smooth_chris : ∀ rho mu nu, isSmooth (fun p => CGD.Gravity.christoffel (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p') m n) rho mu nu p.val))
-  (h_chris_eq : ∀ p : pu.bulk, ∀ rho mu nu, CGD.Gravity.christoffel (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p') m n) rho mu nu p.val = 
+  (h_chris_eq : ∀ p : pu.bulk, ∀ rho mu nu, CGD.Gravity.christoffel (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p') m n) rho mu nu p.val =
     (1/2 : ℂ) * ∑ sigma : Fin 4, CGD.Gravity.matrixInv4x4 (fun m n => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p.val) m n) rho sigma * (
       bulkDeriv pu mu (fun p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p'.val) sigma nu) p +
       bulkDeriv pu nu (fun p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p'.val) mu sigma) p -
       bulkDeriv pu sigma (fun p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p'.val) mu nu) p))
-  (h_ricci_eq : ∀ p : pu.bulk, ∀ mu nu, CGD.Gravity.ricciTensor (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p') m n) mu nu p.val = 
+  (h_ricci_eq : ∀ p : pu.bulk, ∀ mu nu, CGD.Gravity.ricciTensor (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p') m n) mu nu p.val =
     ∑ rho : Fin 4, (bulkDeriv pu rho (fun p' => CGD.Gravity.christoffel (fun m n p'' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p'') m n) rho mu nu p'.val) p -
           bulkDeriv pu nu (fun p' => CGD.Gravity.christoffel (fun m n p'' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p'') m n) rho mu rho p'.val) p +
           ∑ lambda : Fin 4, (CGD.Gravity.christoffel (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p') m n) rho lambda rho p.val * CGD.Gravity.christoffel (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p') m n) lambda mu nu p.val -
@@ -102,7 +102,7 @@ theorem emergentStressEnergyConservation
     let T := fun m n (p : pu.bulk) => emergentStressEnergy (fun a b p' => curvatureSl2c pu.toUniverse.sd_sector a b p') m n p.val
     ∑ mu : Fin 4, ∑ alpha : Fin 4, g_inv mu alpha x * (
       bulkDeriv pu alpha (fun p => T mu nu p) x -
-      ∑ lambda : Fin 4, (chris lambda alpha mu x * T lambda nu x + 
+      ∑ lambda : Fin 4, (chris lambda alpha mu x * T lambda nu x +
                          chris lambda alpha nu x * T mu lambda x)
     ) = 0 := by
   intro nu x

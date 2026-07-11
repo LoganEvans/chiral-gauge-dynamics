@@ -13,7 +13,7 @@ namespace CGD.Cosmology
 
 /--
 Time Emergence: A mathematically rigorous definition of pre-time SO(4) Euclidean symmetry.
-Instead of setting time components to zero, we define the symmetric state as a strictly 
+Instead of setting time components to zero, we define the symmetric state as a strictly
 self-dual configuration.
 -/
 def isFully4DSymmetric (F : Fin 4 → Fin 4 → SL2C) : Prop :=

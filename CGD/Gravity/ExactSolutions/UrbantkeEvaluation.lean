@@ -49,18 +49,18 @@ noncomputable def urb_cell (mu nu : Fin 4) : ℂ :=
 lemma urbantkeMetric_eq_cell (mu nu : Fin 4) :
   urbantkeMetric urb_F_origin mu nu = urb_cell mu nu := by
   unfold urbantkeMetric
-  
+
   have h_inner : ∀ a b c : Fin 3, (∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4, (epsilon4 α β γ δ : ℂ) * project urb_F_origin a mu α * project urb_F_origin b nu β * project urb_F_origin c γ δ) = T_Urb a b c mu nu := by
     intro a b c
     unfold T_Urb F_proj
     simp only [sum_4_eval, epsilon4, epsilon4_int, Int.cast_zero, Int.cast_one, Int.cast_neg, zero_mul, one_mul, neg_mul, add_zero, zero_add]
     ring
-    
+
   have h_outer : (∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3, (epsilon3 a b c : ℂ) * T_Urb a b c mu nu) = urb_cell mu nu := by
     unfold urb_cell
     simp only [sum_3_eval, epsilon3, epsilon3_int, Int.cast_zero, Int.cast_one, Int.cast_neg, zero_mul, one_mul, neg_mul, add_zero, zero_add]
     ring
-    
+
   dsimp only
   change (∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3, (epsilon3 a b c : ℂ) * (∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4, (epsilon4 α β γ δ : ℂ) * project urb_F_origin a mu α * project urb_F_origin b nu β * project urb_F_origin c γ δ)) = urb_cell mu nu
   simp only [h_inner]

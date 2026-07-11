@@ -19,19 +19,19 @@ namespace CGD.Quantum
 
 open Complex Matrix Litlib.Y2000.hall2000elementary Filter Topology
 
-noncomputable def eulerX (M : Matrix (Fin 2) (Fin 2) ℂ) : Matrix (Fin 2) (Fin 2) ℂ := 
+noncomputable def eulerX (M : Matrix (Fin 2) (Fin 2) ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
   Complex.I • M
 
-noncomputable def eulerF 
-  (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ) 
+noncomputable def eulerF
+  (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
   (M : Matrix (Fin 2) (Fin 2) ℂ) (t : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
   matrixExp ((t : ℂ) • eulerX M)
 
-noncomputable def eulerG 
+noncomputable def eulerG
   (M : Matrix (Fin 2) (Fin 2) ℂ) (t : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
   (Complex.cos (t:ℂ)) • (1 : Matrix (Fin 2) (Fin 2) ℂ) + (Complex.I * Complex.sin (t:ℂ)) • M
 
-noncomputable def eulerG0 
+noncomputable def eulerG0
   (M : Matrix (Fin 2) (Fin 2) ℂ) (t : ℝ) : Matrix (Fin 2) (Fin 2) ℂ :=
   (Complex.cos (t:ℂ)) • (1 : Matrix (Fin 2) (Fin 2) ℂ) - (Complex.I * Complex.sin (t:ℂ)) • M
 
@@ -49,7 +49,7 @@ lemma eulerG_mul_eulerG0 (M : Matrix (Fin 2) (Fin 2) ℂ) (h_sq : M * M = 1) (t 
   have h4 : ((Complex.I * Complex.sin (t:ℂ)) • M) * ((Complex.I * Complex.sin (t:ℂ)) • M) = (-Complex.sin (t:ℂ) ^ 2) • 1 := by
     rw [smul_mul_assoc, mul_smul_comm, h_sq, smul_smul]
     congr 1
-    calc Complex.I * Complex.sin (t:ℂ) * (Complex.I * Complex.sin (t:ℂ)) 
+    calc Complex.I * Complex.sin (t:ℂ) * (Complex.I * Complex.sin (t:ℂ))
       = (Complex.I * Complex.I) * Complex.sin (t:ℂ) ^ 2 := by ring
       _ = -Complex.sin (t:ℂ) ^ 2 := by rw [Complex.I_mul_I, neg_one_mul]
   rw [h1, h2, h3, h4]
@@ -69,19 +69,19 @@ lemma eulerG0_zero (M : Matrix (Fin 2) (Fin 2) ℂ) : eulerG0 M 0 = 1 := by
   dsimp [eulerG0]
   rw [Complex.cos_zero, Complex.sin_zero, mul_zero, zero_smul, one_smul, sub_zero]
 
-lemma eulerF_zero 
-  (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ) 
-  [h_exp : DerivativeExponential (Fin 2) matrixExp] 
+lemma eulerF_zero
+  (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
+  [h_exp : DerivativeExponential (Fin 2) matrixExp]
   (M : Matrix (Fin 2) (Fin 2) ℂ) :
   eulerF matrixExp M 0 = 1 := by
   dsimp [eulerF]
   have hz : (0 : ℂ) • eulerX M = 0 := zero_smul _ _
   rw [hz]
-  
+
   have h_sum_eq : ∀ n : ℕ, ∑ k ∈ Finset.range (n + 1), (1 / (Nat.factorial k : ℂ)) • (0 : Matrix (Fin 2) (Fin 2) ℂ)^k = 1 := by
     intro n
     induction n with
-    | zero => 
+    | zero =>
       rw [zero_add, Finset.sum_range_one]
       rw [pow_zero, Nat.factorial_zero, Nat.cast_one, div_one, one_smul]
     | succ n ih =>
@@ -91,7 +91,7 @@ lemma eulerF_zero
         exact zero_pow hp.ne'
       rw [h_zero_pow, smul_zero, add_zero]
       exact ih
-      
+
   have h_tendsto := h_exp.hIsExp (0 : Matrix (Fin 2) (Fin 2) ℂ)
   have h_tendsto_const : Tendsto (fun m : ℕ => ∑ k ∈ Finset.range m, (1 / (Nat.factorial k : ℂ)) • (0 : Matrix (Fin 2) (Fin 2) ℂ)^k) atTop (𝓝 1) := by
     have h_ev : (fun m : ℕ => ∑ k ∈ Finset.range m, (1 / (Nat.factorial k : ℂ)) • (0 : Matrix (Fin 2) (Fin 2) ℂ)^k) =ᶠ[atTop] (fun _ => 1) := by
@@ -102,10 +102,10 @@ lemma eulerF_zero
       rcases hj_pos with ⟨j', rfl⟩
       exact h_sum_eq j'
     exact tendsto_const_nhds.congr' h_ev.symm
-    
+
   exact tendsto_nhds_unique h_tendsto h_tendsto_const
 
-lemma h_G0_X (M : Matrix (Fin 2) (Fin 2) ℂ) (h_sq : M * M = 1) (t : ℝ) : 
+lemma h_G0_X (M : Matrix (Fin 2) (Fin 2) ℂ) (h_sq : M * M = 1) (t : ℝ) :
   ((-Complex.sin (t : ℂ)) • (1 : Matrix (Fin 2) (Fin 2) ℂ) - (Complex.I * Complex.cos (t : ℂ)) • M) = - (eulerG0 M t * eulerX M) := by
   dsimp [eulerG0, eulerX]
   rw [sub_mul]
@@ -115,7 +115,7 @@ lemma h_G0_X (M : Matrix (Fin 2) (Fin 2) ℂ) (h_sq : M * M = 1) (t : ℝ) :
   have h2 : ((Complex.I * Complex.sin (t:ℂ)) • M) * (Complex.I • M) = (-Complex.sin (t:ℂ)) • (1 : Matrix (Fin 2) (Fin 2) ℂ) := by
     rw [smul_mul_assoc, mul_smul_comm, h_sq, smul_smul]
     congr 1
-    calc Complex.I * Complex.sin (t:ℂ) * Complex.I 
+    calc Complex.I * Complex.sin (t:ℂ) * Complex.I
       = Complex.I * Complex.I * Complex.sin (t:ℂ) := by ring
       _ = -1 * Complex.sin (t:ℂ) := by rw [Complex.I_mul_I]
       _ = -Complex.sin (t:ℂ) := by ring
@@ -173,13 +173,13 @@ lemma hd_G0 (M : Matrix (Fin 2) (Fin 2) ℂ) (h_sq : M * M = 1) (t : ℝ) :
   have h_c2 : HasDerivAt (fun s : ℝ => (Complex.I * Complex.sin (s : ℂ)) • M) ((Complex.I * Complex.cos (t : ℂ)) • M) t :=
     HasDerivAt.smul_const h_sin_I M
   have h_sub := HasDerivAt.sub h_c1 h_c2
-  
+
   change HasDerivAt (fun s : ℝ => Complex.cos (s : ℂ) • (1 : Matrix (Fin 2) (Fin 2) ℂ) - (Complex.I * Complex.sin (s : ℂ)) • M) (-Complex.sin (t : ℂ) • (1 : Matrix (Fin 2) (Fin 2) ℂ) - (Complex.I * Complex.cos (t : ℂ)) • M) t at h_sub
-  
+
   have h_eq : (fun s : ℝ => Complex.cos (s : ℂ) • (1 : Matrix (Fin 2) (Fin 2) ℂ) - (Complex.I * Complex.sin (s : ℂ)) • M) = eulerG0 M := by
     ext s; rfl
   rw [h_eq] at h_sub
-  
+
   have h_val_mat := h_G0_X M h_sq t
   have h_val_comp : -Complex.sin (t : ℂ) • (1 : Matrix (Fin 2) (Fin 2) ℂ) - (Complex.I * Complex.cos (t : ℂ)) • M = - (eulerG0 M t * eulerX M) := by
     exact h_val_mat
@@ -210,16 +210,16 @@ lemma hd_prod_comp (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (F
   [DerivativeExponential (Fin 2) matrixExp]
   (M : Matrix (Fin 2) (Fin 2) ℂ) (h_sq : M * M = 1) (t : ℝ) (i j : Fin 2) :
   HasDerivAt (fun s => (eulerG0 M s * eulerF matrixExp M s) i j) 0 t := by
-  
-  have h_terms : ∀ k ∈ (Finset.univ : Finset (Fin 2)), 
+
+  have h_terms : ∀ k ∈ (Finset.univ : Finset (Fin 2)),
     HasDerivAt (fun s => eulerG0 M s i k * eulerF matrixExp M s k j)
-      (- (eulerG0 M t * eulerX M) i k * eulerF matrixExp M t k j + 
+      (- (eulerG0 M t * eulerX M) i k * eulerF matrixExp M t k j +
        eulerG0 M t i k * (eulerX M * eulerF matrixExp M t) k j) t := by
     intro k _
     exact HasDerivAt.mul (hd_G0_comp M h_sq t i k) (hd_F_comp matrixExp M t k j)
 
   have h_sum_deriv := HasDerivAt.sum h_terms
-  
+
   have h_val : (∑ k : Fin 2, (- (eulerG0 M t * eulerX M) i k * eulerF matrixExp M t k j + eulerG0 M t i k * (eulerX M * eulerF matrixExp M t) k j)) = 0 := by
     calc (∑ k : Fin 2, (- (eulerG0 M t * eulerX M) i k * eulerF matrixExp M t k j + eulerG0 M t i k * (eulerX M * eulerF matrixExp M t) k j))
       _ = (∑ k : Fin 2, - (eulerG0 M t * eulerX M) i k * eulerF matrixExp M t k j) + (∑ k : Fin 2, eulerG0 M t i k * (eulerX M * eulerF matrixExp M t) k j) := Finset.sum_add_distrib
@@ -228,15 +228,15 @@ lemma hd_prod_comp (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (F
       _ = (0 : Matrix (Fin 2) (Fin 2) ℂ) i j := by
         rw [neg_mul, Matrix.mul_assoc, neg_add_cancel]
       _ = 0 := rfl
-      
+
   rw [h_val] at h_sum_deriv
-  
-  have h_fun_eq : (∑ k : Fin 2, fun s => eulerG0 M s i k * eulerF matrixExp M s k j) = 
+
+  have h_fun_eq : (∑ k : Fin 2, fun s => eulerG0 M s i k * eulerF matrixExp M s k j) =
                   (fun s => (eulerG0 M s * eulerF matrixExp M s) i j) := by
     ext s
     simp only [Finset.sum_apply]
     rfl
-    
+
   rw [h_fun_eq] at h_sum_deriv
   exact h_sum_deriv
 
@@ -245,9 +245,9 @@ lemma euler_prod_const (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2
   (M : Matrix (Fin 2) (Fin 2) ℂ) (h_sq : M * M = 1) (t : ℝ) :
   eulerG0 M t * eulerF matrixExp M t = 1 := by
   ext i j
-  have h_diff : ∀ s, DifferentiableAt ℝ (fun s => (eulerG0 M s * eulerF matrixExp M s) i j) s := 
+  have h_diff : ∀ s, DifferentiableAt ℝ (fun s => (eulerG0 M s * eulerF matrixExp M s) i j) s :=
     fun s => (hd_prod_comp matrixExp M h_sq s i j).differentiableAt
-  have h_deriv : ∀ s, deriv (fun s => (eulerG0 M s * eulerF matrixExp M s) i j) s = 0 := 
+  have h_deriv : ∀ s, deriv (fun s => (eulerG0 M s * eulerF matrixExp M s) i j) s = 0 :=
     fun s => (hd_prod_comp matrixExp M h_sq s i j).deriv
   have h_const := is_const_of_deriv_eq_zero h_diff h_deriv
   have hc := h_const t 0
@@ -255,26 +255,26 @@ lemma euler_prod_const (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2
     rw [eulerG0_zero, eulerF_zero, Matrix.mul_one]
   rw [hc, h_zero]
 
-lemma matrixEulerFormula 
+lemma matrixEulerFormula
   (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
   [DerivativeExponential (Fin 2) matrixExp]
   (M : Matrix (Fin 2) (Fin 2) ℂ) (L : ℝ) (h_sq : M * M = 1) :
   matrixExp ((Complex.I * (L:ℂ)) • M) = (Complex.cos (L:ℂ)) • 1 + (Complex.I * Complex.sin (L:ℂ)) • M := by
-  
+
   have h_G_G0 := eulerG_mul_eulerG0 M h_sq L
   have h_G0_F := euler_prod_const matrixExp M h_sq L
-  
+
   have h_eq : eulerF matrixExp M L = eulerG M L := by
     calc eulerF matrixExp M L = 1 * eulerF matrixExp M L := by rw [Matrix.one_mul]
       _ = (eulerG M L * eulerG0 M L) * eulerF matrixExp M L := by rw [h_G_G0]
       _ = eulerG M L * (eulerG0 M L * eulerF matrixExp M L) := by rw [Matrix.mul_assoc]
       _ = eulerG M L * 1 := by rw [h_G0_F]
       _ = eulerG M L := by rw [Matrix.mul_one]
-      
+
   have h_target_left : ((Complex.I * (L:ℂ)) • M) = (L:ℂ) • eulerX M := by
     change (Complex.I * (L:ℂ)) • M = (L:ℂ) • (Complex.I • M)
     rw [smul_smul, mul_comm (L:ℂ) Complex.I]
-    
+
   rw [h_target_left]
   exact h_eq
 

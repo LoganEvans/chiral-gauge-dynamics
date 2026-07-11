@@ -84,9 +84,9 @@ lemma flrw_A_val_eq (a : ℝ → ℂ) (μ : Fin 4) (x : SpacetimePoint) :
   have h_tr := flrw_L_trace_zero a μ x
   rw [toSl2c_val_eq _ h_tr]
 
-/-- 
+/--
 Spatial derivatives of purely time-dependent isotropic functions strictly evaluate to zero.
-This is the foundational analytic step for establishing the F_jk magnetic terms in the FLRW vacuum. 
+This is the foundational analytic step for establishing the F_jk magnetic terms in the FLRW vacuum.
 -/
 lemma partialDeriv_time_dep_spatial
   (f : ℝ → ℂ) (k : Fin 4) (x : SpacetimePoint) (hk : k ≠ 0)
@@ -95,27 +95,27 @@ lemma partialDeriv_time_dep_spatial
   unfold partialDeriv
   have h_comp : (fun (p : SpacetimePoint) => f (p 0)) = f ∘ (fun p => p 0) := rfl
   rw [h_comp]
-  
+
   let proj0 : SpacetimePoint →L[ℝ] ℝ := ContinuousLinearMap.proj 0
   have h_proj_eq : (fun p : SpacetimePoint => p 0) = proj0 := rfl
   rw [h_proj_eq]
-  
+
   have h_proj_diff : DifferentiableAt ℝ proj0 x := proj0.differentiableAt
   rw [fderiv_comp x hf h_proj_diff]
-  
+
   simp only [ContinuousLinearMap.comp_apply]
-  
+
   have h_fderiv_proj : fderiv ℝ proj0 x = proj0 := proj0.fderiv
   rw [h_fderiv_proj]
-  
+
   have h_single : proj0 ((Pi.single k (1 : ℝ) : Fin 4 → ℝ)) = 0 := by
     change (Pi.single k (1 : ℝ) : Fin 4 → ℝ) 0 = 0
     simp [Pi.single, Function.update, hk.symm]
   rw [h_single]
-  
+
   exact ContinuousLinearMap.map_zero (fderiv ℝ f (x 0))
 
-/-- 
+/--
 Temporal derivatives of time-dependent isotropic functions strictly evaluate to the 1D chain rule derivative.
 -/
 lemma partialDeriv_time_dep_time
@@ -125,28 +125,28 @@ lemma partialDeriv_time_dep_time
   unfold partialDeriv
   have h_comp : (fun (p : SpacetimePoint) => f (p 0)) = f ∘ (fun p => p 0) := rfl
   rw [h_comp]
-  
+
   let proj0 : SpacetimePoint →L[ℝ] ℝ := ContinuousLinearMap.proj 0
   have h_proj_eq : (fun p : SpacetimePoint => p 0) = proj0 := rfl
   rw [h_proj_eq]
-  
+
   have h_proj_diff : DifferentiableAt ℝ proj0 x := proj0.differentiableAt
   rw [fderiv_comp x hf h_proj_diff]
-  
+
   simp only [ContinuousLinearMap.comp_apply]
-  
+
   have h_fderiv_proj : fderiv ℝ proj0 x = proj0 := proj0.fderiv
   rw [h_fderiv_proj]
-  
+
   have h_single : proj0 ((Pi.single 0 (1 : ℝ) : Fin 4 → ℝ)) = 1 := by
     change (Pi.single 0 (1 : ℝ) : Fin 4 → ℝ) 0 = 1
     simp [Pi.single, Function.update]
   rw [h_single]
-  
+
   have h_eval : proj0 x = x 0 := rfl
   rw [h_eval]
 
-/-- 
+/--
 Proves that the coordinate-projected time function remains differentiable on the 4D manifold.
 -/
 lemma diff_time_dep (a : ℝ → ℂ) (x : SpacetimePoint) (ha : DifferentiableAt ℝ a (x 0)) :
@@ -160,7 +160,7 @@ lemma diff_time_dep (a : ℝ → ℂ) (x : SpacetimePoint) (ha : DifferentiableA
   exact DifferentiableAt.comp x ha h_proj_diff
 
 /-- Evaluates the temporal partial derivative of the mu=1 FLRW connection matrix. -/
-lemma partialDerivMat_flrw_L_0_1 (a : ℝ → ℂ) (x : SpacetimePoint) 
+lemma partialDerivMat_flrw_L_0_1 (a : ℝ → ℂ) (x : SpacetimePoint)
   (ha : DifferentiableAt ℝ a (x 0)) :
   partialDerivMat 0 (fun p => flrw_L a 1 p) x = (fderiv ℝ a (x 0) 1) • sigma1.val := by
   ext i j
@@ -181,7 +181,7 @@ lemma partialDerivMat_flrw_L_0_1 (a : ℝ → ℂ) (x : SpacetimePoint)
   ring
 
 /-- Evaluates the spatial partial derivative of the mu=1 FLRW connection matrix. -/
-lemma partialDerivMat_flrw_L_k_1 (a : ℝ → ℂ) (k : Fin 4) (x : SpacetimePoint) 
+lemma partialDerivMat_flrw_L_k_1 (a : ℝ → ℂ) (k : Fin 4) (x : SpacetimePoint)
   (hk : k ≠ 0) (ha : DifferentiableAt ℝ a (x 0)) :
   partialDerivMat k (fun p => flrw_L a 1 p) x = 0 := by
   ext i j
@@ -202,7 +202,7 @@ lemma partialDerivMat_flrw_L_k_1 (a : ℝ → ℂ) (k : Fin 4) (x : SpacetimePoi
   ring
 
 /-- Evaluates the temporal partial derivative of the mu=2 FLRW connection matrix. -/
-lemma partialDerivMat_flrw_L_0_2 (a : ℝ → ℂ) (x : SpacetimePoint) 
+lemma partialDerivMat_flrw_L_0_2 (a : ℝ → ℂ) (x : SpacetimePoint)
   (ha : DifferentiableAt ℝ a (x 0)) :
   partialDerivMat 0 (fun p => flrw_L a 2 p) x = (fderiv ℝ a (x 0) 1) • sigma2.val := by
   ext i j
@@ -223,7 +223,7 @@ lemma partialDerivMat_flrw_L_0_2 (a : ℝ → ℂ) (x : SpacetimePoint)
   ring
 
 /-- Evaluates the spatial partial derivative of the mu=2 FLRW connection matrix. -/
-lemma partialDerivMat_flrw_L_k_2 (a : ℝ → ℂ) (k : Fin 4) (x : SpacetimePoint) 
+lemma partialDerivMat_flrw_L_k_2 (a : ℝ → ℂ) (k : Fin 4) (x : SpacetimePoint)
   (hk : k ≠ 0) (ha : DifferentiableAt ℝ a (x 0)) :
   partialDerivMat k (fun p => flrw_L a 2 p) x = 0 := by
   ext i j
@@ -244,7 +244,7 @@ lemma partialDerivMat_flrw_L_k_2 (a : ℝ → ℂ) (k : Fin 4) (x : SpacetimePoi
   ring
 
 /-- Evaluates the temporal partial derivative of the mu=3 FLRW connection matrix. -/
-lemma partialDerivMat_flrw_L_0_3 (a : ℝ → ℂ) (x : SpacetimePoint) 
+lemma partialDerivMat_flrw_L_0_3 (a : ℝ → ℂ) (x : SpacetimePoint)
   (ha : DifferentiableAt ℝ a (x 0)) :
   partialDerivMat 0 (fun p => flrw_L a 3 p) x = (fderiv ℝ a (x 0) 1) • sigma3.val := by
   ext i j
@@ -265,7 +265,7 @@ lemma partialDerivMat_flrw_L_0_3 (a : ℝ → ℂ) (x : SpacetimePoint)
   ring
 
 /-- Evaluates the spatial partial derivative of the mu=3 FLRW connection matrix. -/
-lemma partialDerivMat_flrw_L_k_3 (a : ℝ → ℂ) (k : Fin 4) (x : SpacetimePoint) 
+lemma partialDerivMat_flrw_L_k_3 (a : ℝ → ℂ) (k : Fin 4) (x : SpacetimePoint)
   (hk : k ≠ 0) (ha : DifferentiableAt ℝ a (x 0)) :
   partialDerivMat k (fun p => flrw_L a 3 p) x = 0 := by
   ext i j
@@ -419,11 +419,11 @@ lemma flrw_L_comm_3_1 (a : ℝ → ℂ) (x : SpacetimePoint) :
     simp only [hs1_01, hs1_10, hs1_11, hs2_11, hs3_01, hs3_10, hs3_11]
     ring
 
-/-- 
-Proves that the internal elements of the FLRW matrix field are everywhere differentiable, 
+/--
+Proves that the internal elements of the FLRW matrix field are everywhere differentiable,
 satisfying the prerequisite for invoking the rigorous curvature matrix evaluation theorem.
 -/
-lemma flrw_A_differentiable (a : ℝ → ℂ) (μ : Fin 4) (x : SpacetimePoint) 
+lemma flrw_A_differentiable (a : ℝ → ℂ) (μ : Fin 4) (x : SpacetimePoint)
   (ha : DifferentiableAt ℝ a (x 0)) :
   ∀ i j, DifferentiableAt ℝ (fun p => (flrw_A a μ p).val i j) x := by
   intros i j
@@ -816,7 +816,7 @@ lemma flrw_F_val_master (a : ℝ → ℂ) (x : SpacetimePoint) (ha : Differentia
     calc (curvatureSl2c (flrw_A a) n m x).val
       _ = (- curvatureSl2c (flrw_A a) m n x).val := by rw [h]
       _ = - (curvatureSl2c (flrw_A a) m n x).val := rfl
-      
+
   fin_cases mu <;> fin_cases nu
   · change (curvatureSl2c (flrw_A a) 0 0 x).val = flrw_F_expected _ _ 0 0
     rw [curvatureSl2c_same]; rfl
@@ -869,7 +869,7 @@ noncomputable def flrw_P_expected (adot a2 : ℂ) (c : Fin 3) (mu nu : Fin 4) : 
 
 lemma flrw_project_master_c0 (a : ℝ → ℂ) (x : SpacetimePoint) (ha : DifferentiableAt ℝ a (x 0)) (mu nu : Fin 4) :
   project (fun m n => curvatureSl2c (flrw_A a) m n x) 0 mu nu = flrw_P_expected (fderiv ℝ a (x 0) 1) (a (x 0) * a (x 0)) 0 mu nu := by
-  
+
   -- Explicitly expand project to bypass `let` bindings
   have h_expand : project (fun m n => curvatureSl2c (flrw_A a) m n x) 0 mu nu = 0.5 * ((curvatureSl2c (flrw_A a) mu nu x).val * sigma1.val).trace := rfl
   rw [h_expand]
@@ -914,7 +914,7 @@ lemma I_cubed : Complex.I ^ 3 = -Complex.I := by
 
 lemma flrw_project_master_c1 (a : ℝ → ℂ) (x : SpacetimePoint) (ha : DifferentiableAt ℝ a (x 0)) (mu nu : Fin 4) :
   project (fun m n => curvatureSl2c (flrw_A a) m n x) 1 mu nu = flrw_P_expected (fderiv ℝ a (x 0) 1) (a (x 0) * a (x 0)) 1 mu nu := by
-  
+
   -- Explicitly expand project to bypass `let` bindings
   have h_expand : project (fun m n => curvatureSl2c (flrw_A a) m n x) 1 mu nu = 0.5 * ((curvatureSl2c (flrw_A a) mu nu x).val * sigma2.val).trace := rfl
   rw [h_expand]
@@ -952,7 +952,7 @@ lemma flrw_project_master_c1 (a : ℝ → ℂ) (x : SpacetimePoint) (ha : Differ
 
 lemma flrw_project_master_c2 (a : ℝ → ℂ) (x : SpacetimePoint) (ha : DifferentiableAt ℝ a (x 0)) (mu nu : Fin 4) :
   project (fun m n => curvatureSl2c (flrw_A a) m n x) 2 mu nu = flrw_P_expected (fderiv ℝ a (x 0) 1) (a (x 0) * a (x 0)) 2 mu nu := by
-  
+
   -- Explicitly expand project to bypass `let` bindings
   have h_expand : project (fun m n => curvatureSl2c (flrw_A a) m n x) 2 mu nu = 0.5 * ((curvatureSl2c (flrw_A a) mu nu x).val * sigma3.val).trace := rfl
   rw [h_expand]
@@ -1103,7 +1103,7 @@ lemma im_zero_00 (adot : ℂ) (h_adot_im : adot.im = 0) : (12 * adot ^ 3).im = 0
   rw [this]
   exact Complex.ofReal_im _
 
-lemma im_zero_ii (adot a_val : ℂ) (h_adot_im : adot.im = 0) (h_a_im : a_val.im = 0) : 
+lemma im_zero_ii (adot a_val : ℂ) (h_adot_im : adot.im = 0) (h_a_im : a_val.im = 0) :
   (-48 * adot * (a_val * a_val) ^ 2).im = 0 := by
   rw [complex_re_im_eq adot h_adot_im, complex_re_im_eq a_val h_a_im]
   have : -48 * (adot.re : ℂ) * ((a_val.re : ℂ) * (a_val.re : ℂ)) ^ 2 = (((-48 : ℝ) * adot.re * (a_val.re * a_val.re) ^ 2 : ℝ) : ℂ) := by push_cast; rfl
@@ -1151,7 +1151,7 @@ lemma flrw_det_eval (a : ℝ → ℂ) (x : SpacetimePoint) (ha : DifferentiableA
   have h11 := flrw_metric_11 a x ha
   have h22 := flrw_metric_22 a x ha
   have h33 := flrw_metric_33 a x ha
-  have h_off : ∀ μ ν, μ ≠ ν → urbantkeMetric (fun m n => curvatureSl2c (flrw_A a) m n x) μ ν = 0 := 
+  have h_off : ∀ μ ν, μ ≠ ν → urbantkeMetric (fun m n => curvatureSl2c (flrw_A a) m n x) μ ν = 0 :=
     fun μ ν h_diff => flrw_metric_off_diagonal a x ha μ ν h_diff
   have h_det := det_diag_4x4 (urbantkeMetric (fun m n => curvatureSl2c (flrw_A a) m n x)) h_off
   rw [h_det, h00, h11, h22, h33]
@@ -1178,10 +1178,6 @@ lemma flrw_det_signs (adot a_val : ℂ)
   have h_a_pos := pow_twelve_pos a_val.re h_a_nz_re
   have h_mul_pos : 0 < adot.re ^ 6 * a_val.re ^ 12 := mul_pos h_adot_pos h_a_pos
   linarith
-
--- ==============================================================================
--- THE CAPSTONE: GLOBAL VERIFICATION OF COSMOLOGICAL REALITY
--- ==============================================================================
 
 lemma diff_of_fderiv_apply_ne_zero (f : ℝ → ℂ) (t : ℝ) (h : fderiv ℝ f t 1 ≠ 0) : DifferentiableAt ℝ f t := by
   by_contra hc
@@ -1227,41 +1223,40 @@ lemma flrw_A_eq (pu : PhysicalUniverse) (a : ℝ → ℂ)
     rw [h3 p, flrw_A_eval_3]
 
 /--
-CAPSTONE THEOREM: FLRW (Isotropic) spacetimes intrinsically satisfy the non-degenerate 
-Lorentzian Reality Conditions natively from the SU(2) topology, requiring no exact scalar field assumptions.
+LRW (Isotropic) spacetimes intrinsically satisfy the non-degenerate Lorentzian Reality Conditions natively from the SU(2) topology, requiring no exact scalar field assumptions.
 -/
 @[litlib_track "FLRW connections produce real Lorentzian metrics"]
 theorem flrw_satisfies_reality (pu : PhysicalUniverse) (h_typeO : IsTypeOForm pu) :
   SatisfiesRealityConditions pu := by
-  
+
   unfold SatisfiesRealityConditions
   intro x _ -- Bulk constraint satisfied strictly globally
-  
+
   rcases h_typeO with ⟨a, h_a_global⟩
-  
+
   -- Extract scalar properties at evaluation point x
   have hx := h_a_global x
   have h_a_im : (a (x 0)).im = 0 := hx.1
   have h_adot_im : (fderiv ℝ a (x 0) 1).im = 0 := hx.2.1
   have h_a_nz : a (x 0) ≠ 0 := hx.2.2.1
   have h_adot_nz : fderiv ℝ a (x 0) 1 ≠ 0 := hx.2.2.2.1
-  
+
   -- Extract and elevate field equalities globally
   have h0 : ∀ p, pu.toUniverse.sd_sector.val 0 p = 0 := fun p => (h_a_global p).2.2.2.2.1
   have h1 : ∀ p, pu.toUniverse.sd_sector.val 1 p = toSl2c (a (p 0) • sigma1.val) := fun p => (h_a_global p).2.2.2.2.2.1
   have h2 : ∀ p, pu.toUniverse.sd_sector.val 2 p = toSl2c (a (p 0) • sigma2.val) := fun p => (h_a_global p).2.2.2.2.2.2.1
   have h3 : ∀ p, pu.toUniverse.sd_sector.val 3 p = toSl2c (a (p 0) • sigma3.val) := fun p => (h_a_global p).2.2.2.2.2.2.2
-  
+
   have ha_diff : DifferentiableAt ℝ a (x 0) := diff_of_fderiv_apply_ne_zero a (x 0) h_adot_nz
-  
+
   have h_A_eq : pu.toUniverse.sd_sector.val = flrw_A a := flrw_A_eq pu a h0 h1 h2 h3
-  
+
   have h_metric_eq : (urbantkeMetric (fun μ ν => curvatureSl2c pu.toUniverse.sd_sector.val μ ν x)) =
                      (urbantkeMetric (fun μ ν => curvatureSl2c (flrw_A a) μ ν x)) := by rw [h_A_eq]
-                     
+
   unfold isLorentzian
   rw [h_metric_eq]
-  
+
   -- 1. Verify imaginary metric components dynamically collapse to zero
   have h_im_zero : ∀ i j, (urbantkeMetric (fun μ ν => curvatureSl2c (flrw_A a) μ ν x) i j).im = 0 := by
     intro i j
@@ -1284,13 +1279,13 @@ theorem flrw_satisfies_reality (pu : PhysicalUniverse) (h_typeO : IsTypeOForm pu
       change (urbantkeMetric (fun μ ν => curvatureSl2c (flrw_A a) μ ν x) i j).im = 0
       rw [h_off]
       rfl
-      
+
   -- 2. Verify determinant reality conditions (strict Non-Degenerate Lorentzian Signature)
   have h_det_eval_eq := flrw_det_eval a x ha_diff
   have h_signs := flrw_det_signs (fderiv ℝ a (x 0) 1) (a (x 0)) h_adot_im h_a_im h_adot_nz h_a_nz
-  
+
   rw [h_det_eval_eq]
-  
+
   exact ⟨h_im_zero, h_signs.2, h_signs.1⟩
 
 end CGD.Gravity.ExactSolutions

@@ -36,14 +36,14 @@ noncomputable def covariantSpinorDeriv (u : Universe) (x : SpacetimePoint) (mu n
 
 /--
 The true background-independent Emergent Dirac Operator.
-It strictly contracts the local covariant spinor derivatives using the dynamically 
+It strictly contracts the local covariant spinor derivatives using the dynamically
 emergent macroscopic TetradField (Vielbein) rather than assuming a flat-space metric.
 -/
 @[litlib_track "Emergent Dirac Operator"]
 noncomputable def emergentDiracOperator (u : Universe) (e : TetradField) (x : SpacetimePoint) (nu : Fin 4) : Matrix (Fin 4) (Fin 4) Complex :=
   ∑ mu, ∑ a, (e a mu x) • (gammaVec a * covariantSpinorDeriv u x mu nu)
 
-lemma isOdd_sum (f : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) 
+lemma isOdd_sum (f : Fin 4 → Matrix (Fin 4) (Fin 4) Complex)
   (hf : ∀ mu, isOdd (f mu)) : isOdd (∑ mu, f mu) := by
   intros i j hij
   rw [Finset.sum_apply, Finset.sum_apply]
@@ -128,7 +128,7 @@ The covariant Dirac operator mathematically preserves the strict odd/even gradin
 @[litlib_track "Kinematic Dirac Operator Grading"]
 theorem kinematicDiracOperatorGrading (pu : PhysicalUniverse) :
   ∀ (m : Complex) (e : TetradField) (x : SpacetimePoint) (nu : Fin 4),
-    isOdd (emergentDiracOperator pu.toUniverse e x nu) ∧ 
+    isOdd (emergentDiracOperator pu.toUniverse e x nu) ∧
     isOdd (m • (extractSpinorMode pu.toUniverse x nu * gammaVec nu)) := by
   intros m e x nu
   constructor
@@ -146,7 +146,7 @@ theorem kinematicDiracOperatorGrading (pu : PhysicalUniverse) :
 
 @[litlib_track "Gauge-Covariant Spinor Derivative Identity"]
 lemma covariantSpinorDeriv_eq_curvature_plus_deriv (u : Universe) (x : SpacetimePoint) (mu nu : Fin 4) :
-  covariantSpinorDeriv u x mu nu = 
+  covariantSpinorDeriv u x mu nu =
   curvature (fun m p => u.spin4c_connection m p) mu nu x + partialDerivChiral nu (fun p => u.spin4c_connection mu p) x := by
   unfold covariantSpinorDeriv extractSpinorDeriv extractSpinorMode curvature
   dsimp only
@@ -155,63 +155,62 @@ lemma covariantSpinorDeriv_eq_curvature_plus_deriv (u : Universe) (x : Spacetime
   ring
 
 /--
-The CAPSTONE Dirac equivalence.
-The fully covariant Dirac operator natively equals the macroscopic Yang-Mills curvature trace, 
+The fully covariant Dirac operator natively equals the macroscopic Yang-Mills curvature trace,
 plus a geometric inertial term (\partial_nu A_mu) reflecting the dynamical evolution of the background geometry.
 Matter actively responds to the bubbling and expansion of spacetime without requiring a fixed coordinate frame.
 -/
 @[litlib_track "Generalized Dynamic Dirac Equation"]
-theorem generalizedDynamicDiracEquation 
+theorem generalizedDynamicDiracEquation
   (pu : PhysicalUniverse) (e : TetradField) (x : SpacetimePoint) (nu : Fin 4) :
-  emergentDiracOperator pu.toUniverse e x nu = 
-  ∑ mu, ∑ a, (e a mu x) • (gammaVec a * curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) + 
+  emergentDiracOperator pu.toUniverse e x nu =
+  ∑ mu, ∑ a, (e a mu x) • (gammaVec a * curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) +
   ∑ mu, ∑ a, (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => pu.toUniverse.spin4c_connection mu p) x) := by
   unfold emergentDiracOperator
-  have h_sub : ∀ mu a, (e a mu x) • (gammaVec a * covariantSpinorDeriv pu.toUniverse x mu nu) = 
-                       (e a mu x) • (gammaVec a * curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) + 
+  have h_sub : ∀ mu a, (e a mu x) • (gammaVec a * covariantSpinorDeriv pu.toUniverse x mu nu) =
+                       (e a mu x) • (gammaVec a * curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) +
                        (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => pu.toUniverse.spin4c_connection mu p) x) := by
     intro mu a
     rw [covariantSpinorDeriv_eq_curvature_plus_deriv]
     rw [Matrix.mul_add, smul_add]
-    
-  have h_congr : (∑ mu : Fin 4, ∑ a : Fin 4, (e a mu x) • (gammaVec a * covariantSpinorDeriv pu.toUniverse x mu nu)) = 
-                 ∑ mu : Fin 4, ∑ a : Fin 4, ((e a mu x) • (gammaVec a * curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) + 
+
+  have h_congr : (∑ mu : Fin 4, ∑ a : Fin 4, (e a mu x) • (gammaVec a * covariantSpinorDeriv pu.toUniverse x mu nu)) =
+                 ∑ mu : Fin 4, ∑ a : Fin 4, ((e a mu x) • (gammaVec a * curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) +
                                              (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => pu.toUniverse.spin4c_connection mu p) x)) := by
     apply Finset.sum_congr rfl
     intro mu _
     apply Finset.sum_congr rfl
     intro a _
     exact h_sub mu a
-    
+
   rw [h_congr]
-  
-  have h_inner : ∀ mu, (∑ a : Fin 4, ((e a mu x) • (gammaVec a * curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) + 
+
+  have h_inner : ∀ mu, (∑ a : Fin 4, ((e a mu x) • (gammaVec a * curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) +
                                       (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => pu.toUniverse.spin4c_connection mu p) x))) =
-                       (∑ a : Fin 4, (e a mu x) • (gammaVec a * curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x)) + 
+                       (∑ a : Fin 4, (e a mu x) • (gammaVec a * curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x)) +
                        (∑ a : Fin 4, (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => pu.toUniverse.spin4c_connection mu p) x)) := by
     intro mu
     exact Finset.sum_add_distrib
-    
-  have h_outer : (∑ mu : Fin 4, ∑ a : Fin 4, ((e a mu x) • (gammaVec a * curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) + 
+
+  have h_outer : (∑ mu : Fin 4, ∑ a : Fin 4, ((e a mu x) • (gammaVec a * curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) +
                                               (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => pu.toUniverse.spin4c_connection mu p) x))) =
-                 ∑ mu : Fin 4, ((∑ a : Fin 4, (e a mu x) • (gammaVec a * curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x)) + 
+                 ∑ mu : Fin 4, ((∑ a : Fin 4, (e a mu x) • (gammaVec a * curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x)) +
                                 (∑ a : Fin 4, (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => pu.toUniverse.spin4c_connection mu p) x))) := by
     apply Finset.sum_congr rfl
     intro mu _
     exact h_inner mu
-    
+
   rw [h_outer]
   exact Finset.sum_add_distrib
 
 /--
-Recovers the standard textbook Dirac-Yang-Mills equivalence under the physical assumption that 
+Recovers the standard textbook Dirac-Yang-Mills equivalence under the physical assumption that
 the spacetime background is locally stationary with respect to the mode propagation direction.
 -/
 @[litlib_track "Familiar Dynamic Dirac Equation Limit"]
-theorem familiarDynamicDiracEquation 
+theorem familiarDynamicDiracEquation
   (pu : PhysicalUniverse) (e : TetradField) (x : SpacetimePoint) (nu : Fin 4)
   (h_stationary : ∀ mu, partialDerivChiral nu (fun p => pu.toUniverse.spin4c_connection mu p) x = 0) :
-  emergentDiracOperator pu.toUniverse e x nu = 
+  emergentDiracOperator pu.toUniverse e x nu =
   ∑ mu, ∑ a, (e a mu x) • (gammaVec a * curvature (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x) := by
   rw [generalizedDynamicDiracEquation]
   have h_zero : (∑ mu : Fin 4, ∑ a : Fin 4, (e a mu x) • (gammaVec a * partialDerivChiral nu (fun p => pu.toUniverse.spin4c_connection mu p) x)) = 0 := by

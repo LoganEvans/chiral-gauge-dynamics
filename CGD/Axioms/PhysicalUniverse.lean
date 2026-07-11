@@ -9,10 +9,10 @@ open CGD.Foundations
 
 namespace CGD.Axioms
 
-/-- 
+/--
 The Comprehensive Physical Reality.
-Bundles the foundational ontology with the topological bulk and its required physical mixins. 
-Matter is never inputted as an assumption; it exists entirely as the topological complement 
+Bundles the foundational ontology with the topological bulk and its required physical mixins.
+Matter is never inputted as an assumption; it exists entirely as the topological complement
 of the macroscopic bulk.
 -/
 structure PhysicalUniverse where

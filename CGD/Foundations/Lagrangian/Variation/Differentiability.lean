@@ -20,7 +20,7 @@ open Matrix Complex BigOperators CGD.Axioms CGD.Foundations
 namespace CGD.Foundations
 
 /--
-Reduces the differentiability of a matrix trace of a product to the element-wise 
+Reduces the differentiability of a matrix trace of a product to the element-wise
 differentiability of the constituent matrices.
 -/
 lemma diff_matrix_trace_mul (A B : SpacetimePoint → Matrix (Fin 4) (Fin 4) ℂ) (x : SpacetimePoint)
@@ -34,7 +34,7 @@ lemma diff_matrix_trace_mul (A B : SpacetimePoint → Matrix (Fin 4) (Fin 4) ℂ
   exact DifferentiableAt.mul (hA i j) (hB j i)
 
 /--
-Reduces the differentiability of a Lie bracket to the element-wise differentiability 
+Reduces the differentiability of a Lie bracket to the element-wise differentiability
 of the constituent matrices using the product and difference rules.
 -/
 lemma diff_bracket (A B : SpacetimePoint → ChiralM) (x : SpacetimePoint)
@@ -77,8 +77,8 @@ lemma deriv_matrix_apply (A : ℝ → Matrix (Fin 4) (Fin 4) ℂ) (t : ℝ)
 
 /--
 The core algebraic reduction.
-Proves that the topological Chern-Simons Variation Current is spatially differentiable 
-*if and only if* the temporal derivative of the connection and the spatial curvature tensor 
+Proves that the topological Chern-Simons Variation Current is spatially differentiable
+*if and only if* the temporal derivative of the connection and the spatial curvature tensor
 are both independently differentiable at the element level.
 -/
 lemma diff_variationCurrent (v : ℝ → PhysicalUniverse) (t : ℝ) (mu : Fin 4) (x : SpacetimePoint)
@@ -92,31 +92,31 @@ lemma diff_variationCurrent (v : ℝ → PhysicalUniverse) (t : ℝ) (mu : Fin 4
   apply diff_sum; intro rho
   apply diff_sum; intro sigma
   apply diff_const_mul
-  
+
   have h_trace_diff : DifferentiableAt ℝ (fun p => Matrix.trace (deriv (fun s => (v s).toUniverse.spin4c_connection nu p) t * curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p)) x := by
-    have h_tr : (fun p => Matrix.trace (deriv (fun s => (v s).toUniverse.spin4c_connection nu p) t * curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p)) = 
+    have h_tr : (fun p => Matrix.trace (deriv (fun s => (v s).toUniverse.spin4c_connection nu p) t * curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p)) =
                 (fun p => ∑ i : Fin 4, ∑ j : Fin 4, (deriv (fun s => (v s).toUniverse.spin4c_connection nu p) t) i j * (curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p) j i) := rfl
     rw [h_tr]
     apply diff_sum; intro i
     apply diff_sum; intro j
-    
-    have h_deriv_eval : (fun p => (deriv (fun s => (v s).toUniverse.spin4c_connection nu p) t) i j * (curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p) j i) = 
+
+    have h_deriv_eval : (fun p => (deriv (fun s => (v s).toUniverse.spin4c_connection nu p) t) i j * (curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p) j i) =
                         (fun p => deriv (fun s => (v s).toUniverse.spin4c_connection nu p i j) t * (curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p) j i) := by
       ext p
       have hp := deriv_matrix_apply (fun s => (v s).toUniverse.spin4c_connection nu p) t (h_t_diff p nu) i j
       rw [hp]
-      
+
     have hd_eval : DifferentiableAt ℝ (fun p => deriv (fun s => (v s).toUniverse.spin4c_connection nu p i j) t * curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p j i) x := by
       exact DifferentiableAt.mul (hdA nu i j) (hF rho sigma j i)
-      
+
     exact cast (congrArg (fun F => DifferentiableAt ℝ F x) h_deriv_eval.symm) hd_eval
-    
+
   exact h_trace_diff
 
-/-- 
+/--
 THE GNARLY BRIDGE:
-To complete Option 1 and mathematically bridge our physics down to the 
-requirements of `diff_variationCurrent`, we define exactly what the pure-math 
+To complete Option 1 and mathematically bridge our physics down to the
+requirements of `diff_variationCurrent`, we define exactly what the pure-math
 manifold topology must prove.
 -/
 def gnarly_contdiff_bridge_required (v : ℝ → PhysicalUniverse) (t : ℝ) : Prop :=
@@ -130,7 +130,7 @@ lemma contDiff_joint_implies_differentiable_temporal (f : ℝ × SpacetimePoint 
   (h_smooth : ContDiff ℝ ⊤ f) :
   DifferentiableAt ℝ (fun t => f (t, tx.2)) tx.1 := by
   have h_diff_joint : DifferentiableAt ℝ f tx := (h_smooth.differentiable (by decide)) tx
-  have hg_diff : DifferentiableAt ℝ (fun t : ℝ => (t, tx.2)) tx.1 := 
+  have hg_diff : DifferentiableAt ℝ (fun t : ℝ => (t, tx.2)) tx.1 :=
     DifferentiableAt.prodMk differentiableAt_id (differentiableAt_const tx.2)
   exact DifferentiableAt.comp tx.1 h_diff_joint hg_diff
 
@@ -144,7 +144,7 @@ lemma conn_is_smooth (v : ℝ → PhysicalUniverse) (h_valid : isValidPhysicalVa
     ext tx
     exact congr_fun (congr_fun (spin4c_connection_eq_embed (v tx.1).toUniverse mu tx.2) i) j
   rw [h_eq]
-  
+
   have h_eq2 : (fun (tx : ℝ × SpacetimePoint) => embedSelfDual ((v tx.1).toUniverse.sd_sector mu tx.2) i j + embedAntiSelfDual ((v tx.1).toUniverse.asd_sector mu tx.2) i j) =
                fun (tx : ℝ × SpacetimePoint) => match chiralIso.symm i, chiralIso.symm j with
                          | Sum.inl a, Sum.inl b => ((v tx.1).toUniverse.sd_sector mu tx.2).val a b
@@ -154,7 +154,7 @@ lemma conn_is_smooth (v : ℝ → PhysicalUniverse) (h_valid : isValidPhysicalVa
     unfold embedSelfDual embedAntiSelfDual
     simp only [Matrix.of_apply]
     rcases h_i : chiralIso.symm i with i' | i' <;> rcases h_j : chiralIso.symm j with j' | j' <;> ring
-  
+
   rw [h_eq2]
   rcases h_i : chiralIso.symm i with i' | i' <;> rcases h_j : chiralIso.symm j with j' | j'
   · exact h_sd_smooth _ _
@@ -207,8 +207,8 @@ lemma diff_curvatureSl2c (A : Fin 4 → SpacetimePoint → SL2C) (mu nu : Fin 4)
     · apply diff_matrix_mul (fun p => (A nu p).val) (fun p => (A mu p).val) x (fun a b => ContDiff.differentiable (h_smooth nu a b) (by decide) x) (fun a b => ContDiff.differentiable (h_smooth mu a b) (by decide) x) i j
 
 /--
-Takes the top-level macroscopic `ContDiff ℝ ⊤` geometric constraints required by a 
-valid physical variation and mathematically projects them all the way down to 
+Takes the top-level macroscopic `ContDiff ℝ ⊤` geometric constraints required by a
+valid physical variation and mathematically projects them all the way down to
 the point-wise `DifferentiableAt ℝ` scalar conditions required by the Variation Current integration.
 -/
 lemma prove_gnarly_bridge_from_valid_variation (v : ℝ → PhysicalUniverse) (t : ℝ)
@@ -216,9 +216,9 @@ lemma prove_gnarly_bridge_from_valid_variation (v : ℝ → PhysicalUniverse) (t
   gnarly_contdiff_bridge_required v t := by
   unfold gnarly_contdiff_bridge_required
   intro mu x
-  
+
   have h_conn_smooth := conn_is_smooth v h_valid
-  
+
   have hdA : ∀ nu i j, DifferentiableAt ℝ (fun p => deriv (fun s => (v s).toUniverse.spin4c_connection nu p i j) t) x := by
     intro nu i j
     let f : ℝ × SpacetimePoint → ℂ := fun tx => (v tx.1).toUniverse.spin4c_connection nu tx.2 i j
@@ -237,16 +237,16 @@ lemma prove_gnarly_bridge_from_valid_variation (v : ℝ → PhysicalUniverse) (t
     have hd_g : Differentiable ℝ g := Differentiable.prodMk (differentiable_const t) differentiable_id
     have hd_final : Differentiable ℝ ((L ∘ (fderiv ℝ f)) ∘ g) := Differentiable.comp hd_comp hd_g
     exact hd_final x
-    
+
   have hF : ∀ rho sigma i j, DifferentiableAt ℝ (fun p => curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p i j) x := by
     intro rho sigma i j
-    have hc : (fun p => curvature (fun m p' => (v t).toUniverse.spin4c_connection m p') rho sigma p i j) = 
+    have hc : (fun p => curvature (fun m p' => (v t).toUniverse.spin4c_connection m p') rho sigma p i j) =
               (fun p => (embedSelfDual (curvatureSl2c (v t).toUniverse.sd_sector rho sigma p)) i j + (embedAntiSelfDual (curvatureSl2c (v t).toUniverse.asd_sector rho sigma p)) i j) := by
       ext p
       have h_curv := curvature_spin4c_eq (v t).toUniverse rho sigma p
       exact congr_fun (congr_fun h_curv i) j
     rw [hc]
-    
+
     have hd_sd : ∀ a b, DifferentiableAt ℝ (fun p => (curvatureSl2c (v t).toUniverse.sd_sector rho sigma p).val a b) x := by
       have hs : ∀ a c d, ContDiff ℝ ⊤ (fun p => ((v t).toUniverse.sd_sector a p).val c d) := by
         intro a c d
@@ -269,7 +269,7 @@ lemma prove_gnarly_bridge_from_valid_variation (v : ℝ → PhysicalUniverse) (t
         rw [h_eq]
         exact h_comp
       exact diff_curvatureSl2c (v t).toUniverse.sd_sector rho sigma x hs
-      
+
     have hd_asd : ∀ a b, DifferentiableAt ℝ (fun p => (curvatureSl2c (v t).toUniverse.asd_sector rho sigma p).val a b) x := by
       have hs : ∀ a c d, ContDiff ℝ ⊤ (fun p => ((v t).toUniverse.asd_sector a p).val c d) := by
         intro a c d
@@ -332,7 +332,7 @@ lemma prove_gnarly_bridge_from_valid_variation (v : ℝ → PhysicalUniverse) (t
   have h_t_diff : ∀ p nu i j, DifferentiableAt ℝ (fun s => (v s).toUniverse.spin4c_connection nu p i j) t := by
     intro p nu i j
     exact contDiff_joint_implies_differentiable_temporal (fun tx => (v tx.1).toUniverse.spin4c_connection nu tx.2 i j) (t, p) (h_conn_smooth nu i j)
-    
+
   exact diff_variationCurrent v t mu x hdA hF h_t_diff
 
 lemma smooth_implies_diff_t (f : ℝ × SpacetimePoint → ℂ) (t : ℝ) (x : SpacetimePoint)
@@ -423,12 +423,12 @@ lemma diff_t_partialDerivChiral (v : ℝ → PhysicalUniverse) (h_valid : isVali
     simp_rw [chiralProject_spin4c_sd, chiralProject_spin4c_asd] at h_proj
     exact congr_fun (congr_fun h_proj i) j
   rw [hc]
-  
+
   have hd_sd_eval : ∀ a b, DifferentiableAt ℝ (fun s => partialDeriv nu (fun p => ((v s).toUniverse.sd_sector mu p).val a b) x) t := by
     intro a b
     have h_smooth : ContDiff ℝ ⊤ (fun tx : ℝ × SpacetimePoint => ((v tx.1).toUniverse.sd_sector mu tx.2).val a b) := h_valid.1 mu a b
     exact smooth_implies_diff_t _ t x (partial_x_smooth _ nu h_smooth)
-    
+
   have hd_asd_eval : ∀ a b, DifferentiableAt ℝ (fun s => partialDeriv nu (fun p => ((v s).toUniverse.asd_sector mu p).val a b) x) t := by
     intro a b
     have h_smooth : ContDiff ℝ ⊤ (fun tx : ℝ × SpacetimePoint => ((v tx.1).toUniverse.asd_sector mu tx.2).val a b) := h_valid.2.1 mu a b
@@ -486,12 +486,12 @@ lemma diff_t_curvature (v : ℝ → PhysicalUniverse) (h_valid : isValidPhysical
     have hb := chiralProject_bracket_spin4c_sd (v s).toUniverse mu nu x
     have hb2 := chiralProject_bracket_spin4c_asd (v s).toUniverse mu nu x
     have hb3 := bracket_spin4c (v s).toUniverse mu nu x
-    have h_proj : embedSelfDual (chiralProject (bracket ((v s).toUniverse.spin4c_connection mu x) ((v s).toUniverse.spin4c_connection nu x))).self_dual + 
-                  embedAntiSelfDual (chiralProject (bracket ((v s).toUniverse.spin4c_connection mu x) ((v s).toUniverse.spin4c_connection nu x))).anti_self_dual = 
+    have h_proj : embedSelfDual (chiralProject (bracket ((v s).toUniverse.spin4c_connection mu x) ((v s).toUniverse.spin4c_connection nu x))).self_dual +
+                  embedAntiSelfDual (chiralProject (bracket ((v s).toUniverse.spin4c_connection mu x) ((v s).toUniverse.spin4c_connection nu x))).anti_self_dual =
                   bracket ((v s).toUniverse.spin4c_connection mu x) ((v s).toUniverse.spin4c_connection nu x) := by
       rw [hb, hb2, hb3]
-    have h_proj_eval : (embedSelfDual (chiralProject (bracket ((v s).toUniverse.spin4c_connection mu x) ((v s).toUniverse.spin4c_connection nu x))).self_dual) i j + 
-                       (embedAntiSelfDual (chiralProject (bracket ((v s).toUniverse.spin4c_connection mu x) ((v s).toUniverse.spin4c_connection nu x))).anti_self_dual) i j = 
+    have h_proj_eval : (embedSelfDual (chiralProject (bracket ((v s).toUniverse.spin4c_connection mu x) ((v s).toUniverse.spin4c_connection nu x))).self_dual) i j +
+                       (embedAntiSelfDual (chiralProject (bracket ((v s).toUniverse.spin4c_connection mu x) ((v s).toUniverse.spin4c_connection nu x))).anti_self_dual) i j =
                        bracket ((v s).toUniverse.spin4c_connection mu x) ((v s).toUniverse.spin4c_connection nu x) i j := by
       exact congr_fun (congr_fun h_proj i) j
     rw [h_proj_eval]

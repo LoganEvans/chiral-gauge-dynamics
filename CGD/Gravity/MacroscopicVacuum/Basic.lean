@@ -60,7 +60,7 @@ lemma extractAdjoint_neg (M : Matrix (Fin 2) (Fin 2) ℂ) :
     rw [h1]; ring
   · change (0 : ℂ) = -0; ring
 
-lemma adjoint_curvature_antisymm (u : Universe) : 
+lemma adjoint_curvature_antisymm (u : Universe) :
   ∀ x μ ν, cgdAdjointCurvature u μ ν x = - cgdAdjointCurvature u ν μ x := by
   intros x μ ν
   unfold cgdAdjointCurvature
@@ -69,12 +69,12 @@ lemma adjoint_curvature_antisymm (u : Universe) :
   rw [h_antisymm, h_val_eq, extractAdjoint_neg]
 
 lemma adjoint_curvature_su2 (u : Universe) :
-  ∀ x μ ν, 
-    cgdAdjointCurvature u μ ν x 0 0 = 0 ∧ 
-    cgdAdjointCurvature u μ ν x 1 1 = 0 ∧ 
+  ∀ x μ ν,
+    cgdAdjointCurvature u μ ν x 0 0 = 0 ∧
+    cgdAdjointCurvature u μ ν x 1 1 = 0 ∧
     cgdAdjointCurvature u μ ν x 2 2 = 0 ∧
-    cgdAdjointCurvature u μ ν x 2 1 = - cgdAdjointCurvature u μ ν x 1 2 ∧ 
-    cgdAdjointCurvature u μ ν x 2 0 = - cgdAdjointCurvature u μ ν x 0 2 ∧ 
+    cgdAdjointCurvature u μ ν x 2 1 = - cgdAdjointCurvature u μ ν x 1 2 ∧
+    cgdAdjointCurvature u μ ν x 2 0 = - cgdAdjointCurvature u μ ν x 0 2 ∧
     cgdAdjointCurvature u μ ν x 1 0 = - cgdAdjointCurvature u μ ν x 0 1 := by
   intros x μ ν
   unfold cgdAdjointCurvature extractAdjoint
@@ -109,7 +109,7 @@ lemma trace_M_sigma1 (M : Matrix (Fin 2) (Fin 2) ℂ) :
   have hs01 : sigma1.val 0 1 = 1 := by rw [val_sigma1]; rfl
   have hs10 : sigma1.val 1 0 = 1 := by rw [val_sigma1]; rfl
   have hs11 : sigma1.val 1 1 = 0 := by rw [val_sigma1]; rfl
-  
+
   have h0 : (M * sigma1.val) 0 0 = M 0 1 := by
     rw [Matrix.mul_apply]
     rw [fin2_sum]
@@ -130,7 +130,7 @@ lemma trace_M_sigma2 (M : Matrix (Fin 2) (Fin 2) ℂ) :
   have hs01 : sigma2.val 0 1 = -Complex.I := by rw [val_sigma2]; rfl
   have hs10 : sigma2.val 1 0 = Complex.I := by rw [val_sigma2]; rfl
   have hs11 : sigma2.val 1 1 = 0 := by rw [val_sigma2]; rfl
-  
+
   have h0 : (M * sigma2.val) 0 0 = Complex.I * M 0 1 := by
     rw [Matrix.mul_apply]
     rw [fin2_sum]
@@ -152,7 +152,7 @@ lemma trace_M_sigma3 (M : Matrix (Fin 2) (Fin 2) ℂ) :
   have hs01 : sigma3.val 0 1 = 0 := by rw [val_sigma3]; rfl
   have hs10 : sigma3.val 1 0 = 0 := by rw [val_sigma3]; rfl
   have hs11 : sigma3.val 1 1 = -1 := by rw [val_sigma3]; rfl
-  
+
   have h0 : (M * sigma3.val) 0 0 = M 0 0 := by
     rw [Matrix.mul_apply]
     rw [fin2_sum]
@@ -181,9 +181,9 @@ lemma trace_zero_eq_sum_pauli (M : Matrix (Fin 2) (Fin 2) ℂ) (h_tr : Matrix.tr
   have h11 : M 1 1 = - M 0 0 := by
     have h_add : M 1 1 + M 0 0 = 0 := by rw [add_comm, h_sum]
     exact eq_neg_of_add_eq_zero_left h_add
-  
+
   have hi : Complex.I * Complex.I = -1 := Complex.I_mul_I
-  
+
   have hs1_00 : sigma1.val 0 0 = 0 := by rw [val_sigma1]; rfl
   have hs1_01 : sigma1.val 0 1 = 1 := by rw [val_sigma1]; rfl
   have hs1_10 : sigma1.val 1 0 = 1 := by rw [val_sigma1]; rfl

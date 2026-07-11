@@ -9,8 +9,8 @@ import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 
 namespace CGD.Foundations
 
-/-- 
-The Spacetime Manifold is defined as a map `Fin 4 → ℝ`. 
+/--
+The Spacetime Manifold is defined as a map `Fin 4 → ℝ`.
 This instantiates the standard `NormedAddCommGroup` and `NormedSpace ℝ` required for rigorous calculus of variations over the manifold.
 -/
 abbrev SpacetimePoint := Fin 4 → ℝ

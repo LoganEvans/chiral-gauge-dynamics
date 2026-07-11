@@ -19,9 +19,9 @@ open Topology CGD.Axioms Litlib.Y1951.papapetrou1951spinning
 namespace CGD.Gravity
 
 /--
-Using the rigorous Papapetrou (1951) theorem, we prove that a localized topological defect 
-(a single-pole singularity in the gauge curvature) must travel along a complex geodesic of the 
-dynamically emergent Urbantke geometry. This natively utilizes the exact complex covariant 
+Using the rigorous Papapetrou (1951) theorem, we prove that a localized topological defect
+(a single-pole singularity in the gauge curvature) must travel along a complex geodesic of the
+dynamically emergent Urbantke geometry. This natively utilizes the exact complex covariant
 conservation of the emergent Stress-Energy tensor, evaluating strictly inside the macroscopic bulk.
 -/
 @[litlib_track "Machian Motion of Topological Defects"]
@@ -34,7 +34,7 @@ theorem machianTopologicalDefectMotion
   (isSinglePole : (Fin 4 → Fin 4 → pu.bulk → ℂ) → (ℂ → pu.bulk) → Prop)
   [general_bianchi : Litlib.Y2003.nakahara2003geometry.Theorem_ContractedBianchi pu.bulk (Fin 4) isSmooth (bulkDeriv pu)]
   [symm_metric : Litlib.Y1984.urbantke1984integrability.Eq10_Symmetry]
-  [papa : Litlib.Y1951.papapetrou1951spinning.Eq2_12 pu.bulk ℂ 
+  [papa : Litlib.Y1951.papapetrou1951spinning.Eq2_12 pu.bulk ℂ
     (fun p => Matrix.of (fun m n => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p.val) m n))
     (fun p => Matrix.of (fun m n => CGD.Gravity.matrixInv4x4 (fun a b => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p.val) a b) m n))
     (fun p rho mu nu => CGD.Gravity.christoffel (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p') m n) rho mu nu p.val)
@@ -49,12 +49,12 @@ theorem machianTopologicalDefectMotion
   (h_smooth_g : ∀ i j, isSmooth (fun p => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p.val) i j))
   (h_smooth_g_inv : ∀ i j, isSmooth (fun p => CGD.Gravity.matrixInv4x4 (fun m n => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p.val) m n) i j))
   (h_smooth_chris : ∀ rho mu nu, isSmooth (fun p => CGD.Gravity.christoffel (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p') m n) rho mu nu p.val))
-  (h_chris_eq : ∀ p : pu.bulk, ∀ rho mu nu, CGD.Gravity.christoffel (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p') m n) rho mu nu p.val = 
+  (h_chris_eq : ∀ p : pu.bulk, ∀ rho mu nu, CGD.Gravity.christoffel (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p') m n) rho mu nu p.val =
     (1/2 : ℂ) * ∑ sigma : Fin 4, CGD.Gravity.matrixInv4x4 (fun m n => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p.val) m n) rho sigma * (
       bulkDeriv pu mu (fun p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p'.val) sigma nu) p +
       bulkDeriv pu nu (fun p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p'.val) mu sigma) p -
       bulkDeriv pu sigma (fun p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p'.val) mu nu) p))
-  (h_ricci_eq : ∀ p : pu.bulk, ∀ mu nu, CGD.Gravity.ricciTensor (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p') m n) mu nu p.val = 
+  (h_ricci_eq : ∀ p : pu.bulk, ∀ mu nu, CGD.Gravity.ricciTensor (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p') m n) mu nu p.val =
     ∑ rho : Fin 4, (bulkDeriv pu rho (fun p' => CGD.Gravity.christoffel (fun m n p'' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p'') m n) rho mu nu p'.val) p -
           bulkDeriv pu nu (fun p' => CGD.Gravity.christoffel (fun m n p'' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p'') m n) rho mu rho p'.val) p +
           ∑ lambda : Fin 4, (CGD.Gravity.christoffel (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p') m n) rho lambda rho p.val * CGD.Gravity.christoffel (fun m n p' => CGD.Gravity.urbantkeMetric (fun a b => curvatureSl2c pu.toUniverse.sd_sector a b p') m n) lambda mu nu p.val -

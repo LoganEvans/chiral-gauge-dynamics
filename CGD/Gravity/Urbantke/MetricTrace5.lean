@@ -144,12 +144,12 @@ lemma sum_trace_eq (F1 F2 F3 : Fin 3 → ℂ) :
     (∑ c : Fin 3, F3 c * tau c E F_idx) * eps2 F_idx A) =
   ∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3,
     F1 a * F2 b * F3 c * (-2 * I * epsilon3 a b c) := by
-  have h1 : ∀ A B C D E F_idx, 
+  have h1 : ∀ A B C D E F_idx,
     (∑ a : Fin 3, F1 a * tau a A B) * eps2 B C * (∑ b : Fin 3, F2 b * tau b C D) * eps2 D E * (∑ c : Fin 3, F3 c * tau c E F_idx) * eps2 F_idx A =
     ∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3, F1 a * F2 b * F3 c * (tau a A B * eps2 B C * tau b C D * eps2 D E * tau c E F_idx * eps2 F_idx A) := by
     intro A B C D E F_idx
     exact inner_eval F1 F2 F3 (fun a => tau a A B) (fun b => tau b C D) (fun c => tau c E F_idx) (eps2 B C) (eps2 D E) (eps2 F_idx A)
-  
+
   have h2 : (∑ A : Fin 2, ∑ B : Fin 2, ∑ C : Fin 2, ∑ D : Fin 2, ∑ E : Fin 2, ∑ F_idx : Fin 2,
     (∑ a : Fin 3, F1 a * tau a A B) * eps2 B C *
     (∑ b : Fin 3, F2 b * tau b C D) * eps2 D E *

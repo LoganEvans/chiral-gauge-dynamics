@@ -158,7 +158,7 @@ lemma extractAdjoint_zero : extractAdjoint (0 : Matrix (Fin 2) (Fin 2) ℂ) = 0 
 lemma partialDeriv_const {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] (c_val : E) (μ : Fin 4) (x : SpacetimePoint) :
   partialDeriv μ (fun _ => c_val) x = 0 := by unfold partialDeriv; simp
 
-lemma partialDeriv_coord_smul {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] 
+lemma partialDeriv_coord_smul {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   (c_idx : Fin 4) (M : E) (k : Fin 4) (x : SpacetimePoint) :
   partialDeriv k (fun p : SpacetimePoint => p c_idx • M) x = if k = c_idx then M else 0 := by
   unfold partialDeriv

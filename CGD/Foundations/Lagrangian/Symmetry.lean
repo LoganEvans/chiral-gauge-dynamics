@@ -51,7 +51,7 @@ lemma L_eq_symm_part (T : Fin 4 → Fin 4 → Fin 4 → Fin 4 → ℂ) (F : Fin 
   rw [h1]
   ring
 
-lemma L_single_eval (T : Fin 4 → Fin 4 → Fin 4 → Fin 4 → ℂ) 
+lemma L_single_eval (T : Fin 4 → Fin 4 → Fin 4 → Fin 4 → ℂ)
   (L : ((Fin 4 → Fin 4 → ChiralM) → Complex))
   (h_L_eq : ∀ F, (∀ μ ν, isSpin4cAlgebra (F μ ν)) → L F = ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4, T α β γ δ * Matrix.trace (F α β * F γ δ))
   (μ ν : Fin 4) (M : ChiralM) (h_alg : ∀ α β, isSpin4cAlgebra (F_single μ ν M α β)) :
@@ -65,9 +65,9 @@ lemma L_single_eval (T : Fin 4 → Fin 4 → Fin 4 → Fin 4 → ℂ)
     ring
   simp_rw [h_term]
   have h_pull : (∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4, (if α = μ then (1:ℂ) else 0) * (if β = ν then (1:ℂ) else 0) * ((if γ = μ then (1:ℂ) else 0) * (if δ = ν then (1:ℂ) else 0)) * (T α β γ δ * Matrix.trace (M * M))) =
-    ∑ α : Fin 4, (if α = μ then (1:ℂ) else 0) * 
-      (∑ β : Fin 4, (if β = ν then (1:ℂ) else 0) * 
-        (∑ γ : Fin 4, (if γ = μ then (1:ℂ) else 0) * 
+    ∑ α : Fin 4, (if α = μ then (1:ℂ) else 0) *
+      (∑ β : Fin 4, (if β = ν then (1:ℂ) else 0) *
+        (∑ γ : Fin 4, (if γ = μ then (1:ℂ) else 0) *
           (∑ δ : Fin 4, (if δ = ν then (1:ℂ) else 0) * (T α β γ δ * Matrix.trace (M * M))))) := by
     symm
     simp_rw [Finset.mul_sum]
@@ -80,15 +80,15 @@ lemma L_single_eval (T : Fin 4 → Fin 4 → Fin 4 → Fin 4 → ℂ)
   simp_rw [sum_ite_mul]
   ring
 
-lemma L_double_eval (T : Fin 4 → Fin 4 → Fin 4 → Fin 4 → ℂ) 
+lemma L_double_eval (T : Fin 4 → Fin 4 → Fin 4 → Fin 4 → ℂ)
   (L : ((Fin 4 → Fin 4 → ChiralM) → Complex))
   (h_L_eq : ∀ F, (∀ μ ν, isSpin4cAlgebra (F μ ν)) → L F = ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4, T α β γ δ * Matrix.trace (F α β * F γ δ))
   (μ ν ρ σ : Fin 4) (M : ChiralM) (h_alg : ∀ α β, isSpin4cAlgebra (F_double μ ν ρ σ M α β)) (h_diff : μ ≠ ρ ∨ ν ≠ σ) :
   L (F_double μ ν ρ σ M) = (T μ ν μ ν + T μ ν ρ σ + T ρ σ μ ν + T ρ σ ρ σ) * Matrix.trace (M * M) := by
   rw [h_L_eq (F_double μ ν ρ σ M) h_alg]
   have h_term : ∀ α β γ δ, T α β γ δ * Matrix.trace (F_double μ ν ρ σ M α β * F_double μ ν ρ σ M γ δ) =
-    ((if α = μ ∧ β = ν then (1:ℂ) else 0) + (if α = ρ ∧ β = σ then (1:ℂ) else 0)) * 
-    ((if γ = μ ∧ δ = ν then (1:ℂ) else 0) + (if γ = ρ ∧ δ = σ then (1:ℂ) else 0)) * 
+    ((if α = μ ∧ β = ν then (1:ℂ) else 0) + (if α = ρ ∧ β = σ then (1:ℂ) else 0)) *
+    ((if γ = μ ∧ δ = ν then (1:ℂ) else 0) + (if γ = ρ ∧ δ = σ then (1:ℂ) else 0)) *
     (T α β γ δ * Matrix.trace (M * M)) := by
     intro α β γ δ
     rw [ite_F_double_sq μ ν ρ σ M α β γ δ h_diff]
@@ -100,9 +100,9 @@ lemma L_double_eval (T : Fin 4 → Fin 4 → Fin 4 → Fin 4 → ℂ)
     intro a b c d
     simp_rw [ite_and_mul]
     have h_pull : (∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4, (if α = a then (1:ℂ) else 0) * (if β = b then (1:ℂ) else 0) * ((if γ = c then (1:ℂ) else 0) * (if δ = d then (1:ℂ) else 0)) * (T α β γ δ * Matrix.trace (M * M))) =
-      ∑ α : Fin 4, (if α = a then (1:ℂ) else 0) * 
-        (∑ β : Fin 4, (if β = b then (1:ℂ) else 0) * 
-          (∑ γ : Fin 4, (if γ = c then (1:ℂ) else 0) * 
+      ∑ α : Fin 4, (if α = a then (1:ℂ) else 0) *
+        (∑ β : Fin 4, (if β = b then (1:ℂ) else 0) *
+          (∑ γ : Fin 4, (if γ = c then (1:ℂ) else 0) *
             (∑ δ : Fin 4, (if δ = d then (1:ℂ) else 0) * (T α β γ δ * Matrix.trace (M * M))))) := by
       symm
       simp_rw [Finset.mul_sum]
@@ -130,13 +130,13 @@ lemma extract_symm_part_eq
        _ = (T μ ν μ ν * 2) / 2 * 2 := by ring
        _ = L (F_single μ ν M0) / 2 * 2 := by rw [h_s]
 
-lemma extract_symm_part 
+lemma extract_symm_part
   (L : ((Fin 4 → Fin 4 → ChiralM) → Complex))
   (T : Fin 4 → Fin 4 → Fin 4 → Fin 4 → ℂ)
   (h_L_eq : ∀ F, (∀ μ ν, isSpin4cAlgebra (F μ ν)) → L F = ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4, T α β γ δ * Matrix.trace (F α β * F γ δ))
   (μ ν ρ σ : Fin 4) (h_diff : μ ≠ ρ ∨ ν ≠ σ) :
-  symm_part T μ ν ρ σ = (L (F_double μ ν ρ σ M0) - 
-                         L (F_single μ ν M0) - 
+  symm_part T μ ν ρ σ = (L (F_double μ ν ρ σ M0) -
+                         L (F_single μ ν M0) -
                          L (F_single ρ σ M0)) / 2 := by
   have h_d := L_double_eval T L h_L_eq μ ν ρ σ M0 (F_double_is_alg μ ν ρ σ) h_diff
   have h_s1 := L_single_eval T L h_L_eq μ ν M0 (F_single_is_alg μ ν)
@@ -146,13 +146,13 @@ lemma extract_symm_part
        _ = ((T μ ν μ ν + T μ ν ρ σ + T ρ σ μ ν + T ρ σ ρ σ) * 2 - T μ ν μ ν * 2 - T ρ σ ρ σ * 2) / 2 := by ring
        _ = (L (F_double μ ν ρ σ M0) - L (F_single μ ν M0) - L (F_single ρ σ M0)) / 2 := by rw [h_d, h_s1, h_s2]
 
-lemma L_zero_missing 
+lemma L_zero_missing
   (L : ((Fin 4 → Fin 4 → ChiralM) → Complex))
-  (h_topological : ∀ Λ : Matrix (Fin 4) (Fin 4) ℂ, 
-    (∀ μ ν ρ σ, ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4, 
+  (h_topological : ∀ Λ : Matrix (Fin 4) (Fin 4) ℂ,
+    (∀ μ ν ρ σ, ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4,
       Λ α μ * Λ β ν * Λ γ ρ * Λ δ σ * CGD.Gravity.epsilon4 α β γ δ = Matrix.det Λ * CGD.Gravity.epsilon4 μ ν ρ σ) →
-    ∀ F, (∀ μ ν, isSpin4cAlgebra (F μ ν)) → 
-    (∀ μ ν, isSpin4cAlgebra (∑ α : Fin 4, ∑ β : Fin 4, (Λ μ α * Λ ν β) • F α β)) → 
+    ∀ F, (∀ μ ν, isSpin4cAlgebra (F μ ν)) →
+    (∀ μ ν, isSpin4cAlgebra (∑ α : Fin 4, ∑ β : Fin 4, (Λ μ α * Λ ν β) • F α β)) →
     L (fun μ ν => ∑ α : Fin 4, ∑ β : Fin 4, (Λ μ α * Λ ν β) • F α β) = Matrix.det Λ * L F)
   (k : Fin 4) (F : Fin 4 → Fin 4 → ChiralM)
   (h_alg : ∀ μ ν, isSpin4cAlgebra (F μ ν))
@@ -191,7 +191,7 @@ lemma F_single_missing (μ ν : Fin 4) (M : ChiralM) (k : Fin 4) (hk : k ≠ μ 
     · rw [h_cond.2] at hb; exfalso; exact hk.2 hb.symm
   · rfl
 
-lemma F_double_missing (μ ν ρ σ : Fin 4) (M : ChiralM) (k : Fin 4) 
+lemma F_double_missing (μ ν ρ σ : Fin 4) (M : ChiralM) (k : Fin 4)
   (hk : k ≠ μ ∧ k ≠ ν ∧ k ≠ ρ ∧ k ≠ σ) :
   ∀ α β, α = k ∨ β = k → F_double μ ν ρ σ M α β = 0 := by
   intro α β h_or
@@ -206,13 +206,13 @@ lemma F_double_missing (μ ν ρ σ : Fin 4) (M : ChiralM) (k : Fin 4)
       · rw [h4] at hb; exfalso; exact hk.2.2.2 hb.symm
   · rfl
 
-lemma symm_part_zero_of_dup 
+lemma symm_part_zero_of_dup
   (L : ((Fin 4 → Fin 4 → ChiralM) → Complex))
-  (h_topological : ∀ Λ : Matrix (Fin 4) (Fin 4) ℂ, 
-    (∀ μ ν ρ σ, ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4, 
+  (h_topological : ∀ Λ : Matrix (Fin 4) (Fin 4) ℂ,
+    (∀ μ ν ρ σ, ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4,
       Λ α μ * Λ β ν * Λ γ ρ * Λ δ σ * CGD.Gravity.epsilon4 α β γ δ = Matrix.det Λ * CGD.Gravity.epsilon4 μ ν ρ σ) →
-    ∀ F, (∀ μ ν, isSpin4cAlgebra (F μ ν)) → 
-    (∀ μ ν, isSpin4cAlgebra (∑ α : Fin 4, ∑ β : Fin 4, (Λ μ α * Λ ν β) • F α β)) → 
+    ∀ F, (∀ μ ν, isSpin4cAlgebra (F μ ν)) →
+    (∀ μ ν, isSpin4cAlgebra (∑ α : Fin 4, ∑ β : Fin 4, (Λ μ α * Λ ν β) • F α β)) →
     L (fun μ ν => ∑ α : Fin 4, ∑ β : Fin 4, (Λ μ α * Λ ν β) • F α β) = Matrix.det Λ * L F)
   (T : Fin 4 → Fin 4 → Fin 4 → Fin 4 → ℂ)
   (h_L_eq : ∀ F, (∀ μ ν, isSpin4cAlgebra (F μ ν)) → L F = ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4, T α β γ δ * Matrix.trace (F α β * F γ δ))
@@ -244,13 +244,13 @@ lemma symm_part_zero_of_dup
 
 lemma L_swap_F
   (L : ((Fin 4 → Fin 4 → ChiralM) → Complex))
-  (h_topological : ∀ Λ : Matrix (Fin 4) (Fin 4) ℂ, 
-    (∀ μ ν ρ σ, ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4, 
+  (h_topological : ∀ Λ : Matrix (Fin 4) (Fin 4) ℂ,
+    (∀ μ ν ρ σ, ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4,
       Λ α μ * Λ β ν * Λ γ ρ * Λ δ σ * CGD.Gravity.epsilon4 α β γ δ = Matrix.det Λ * CGD.Gravity.epsilon4 μ ν ρ σ) →
-    ∀ F, (∀ μ ν, isSpin4cAlgebra (F μ ν)) → 
-    (∀ μ ν, isSpin4cAlgebra (∑ α : Fin 4, ∑ β : Fin 4, (Λ μ α * Λ ν β) • F α β)) → 
+    ∀ F, (∀ μ ν, isSpin4cAlgebra (F μ ν)) →
+    (∀ μ ν, isSpin4cAlgebra (∑ α : Fin 4, ∑ β : Fin 4, (Λ μ α * Λ ν β) • F α β)) →
     L (fun μ ν => ∑ α : Fin 4, ∑ β : Fin 4, (Λ μ α * Λ ν β) • F α β) = Matrix.det Λ * L F)
-  (a b : Fin 4) (hab : a ≠ b) (F : Fin 4 → Fin 4 → ChiralM) 
+  (a b : Fin 4) (hab : a ≠ b) (F : Fin 4 → Fin 4 → ChiralM)
   (h_alg : ∀ μ ν, isSpin4cAlgebra (F μ ν)) :
   L (fun μ ν => F (Equiv.swap a b μ) (Equiv.swap a b ν)) = - L F := by
   have h_F := permMatrix_apply (Equiv.swap a b) F
@@ -309,13 +309,13 @@ lemma F_double_swap (a b μ ν ρ σ : Fin 4) (M : ChiralM) :
     have h_neg2 : (if (α = Equiv.swap a b μ ∧ β = Equiv.swap a b ν) ∨ (α = Equiv.swap a b ρ ∧ β = Equiv.swap a b σ) then M else 0) = 0 := if_neg h_eq
     rw [h_neg1, h_neg2]
 
-lemma symm_part_swap 
+lemma symm_part_swap
   (L : ((Fin 4 → Fin 4 → ChiralM) → Complex))
-  (h_topological : ∀ Λ : Matrix (Fin 4) (Fin 4) ℂ, 
-    (∀ μ ν ρ σ, ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4, 
+  (h_topological : ∀ Λ : Matrix (Fin 4) (Fin 4) ℂ,
+    (∀ μ ν ρ σ, ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4,
       Λ α μ * Λ β ν * Λ γ ρ * Λ δ σ * CGD.Gravity.epsilon4 α β γ δ = Matrix.det Λ * CGD.Gravity.epsilon4 μ ν ρ σ) →
-    ∀ F, (∀ μ ν, isSpin4cAlgebra (F μ ν)) → 
-    (∀ μ ν, isSpin4cAlgebra (∑ α : Fin 4, ∑ β : Fin 4, (Λ μ α * Λ ν β) • F α β)) → 
+    ∀ F, (∀ μ ν, isSpin4cAlgebra (F μ ν)) →
+    (∀ μ ν, isSpin4cAlgebra (∑ α : Fin 4, ∑ β : Fin 4, (Λ μ α * Λ ν β) • F α β)) →
     L (fun μ ν => ∑ α : Fin 4, ∑ β : Fin 4, (Λ μ α * Λ ν β) • F α β) = Matrix.det Λ * L F)
   (T : Fin 4 → Fin 4 → Fin 4 → Fin 4 → ℂ)
   (h_L_eq : ∀ F, (∀ μ ν, isSpin4cAlgebra (F μ ν)) → L F = ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4, T α β γ δ * Matrix.trace (F α β * F γ δ))
@@ -325,12 +325,12 @@ lemma symm_part_swap
   · rcases h_diff with ⟨rfl, rfl⟩
     have h_ex1 := extract_symm_part_eq L T h_L_eq (Equiv.swap a b μ) (Equiv.swap a b ν)
     have h_ex2 := extract_symm_part_eq L T h_L_eq μ ν
-    
+
     have h_F_s_swap := F_single_swap a b μ ν M0
     have h_L_s_swap := L_swap_F L h_topological a b hab (F_single μ ν M0) (F_single_is_alg μ ν)
     rw [← h_F_s_swap] at h_ex1
     rw [h_L_s_swap] at h_ex1
-    
+
     calc symm_part T (Equiv.swap a b μ) (Equiv.swap a b ν) (Equiv.swap a b μ) (Equiv.swap a b ν) = (- L (F_single μ ν M0)) / 2 * 2 := h_ex1
          _ = - (L (F_single μ ν M0) / 2 * 2) := by ring
          _ = - symm_part T μ ν μ ν := by rw [h_ex2]
@@ -341,23 +341,23 @@ lemma symm_part_swap
       · right; intro hc; exact h2 ((Equiv.swap a b).injective hc)
     have h_ex1 := extract_symm_part L T h_L_eq (Equiv.swap a b μ) (Equiv.swap a b ν) (Equiv.swap a b ρ) (Equiv.swap a b σ) h_diff_swap
     have h_ex2 := extract_symm_part L T h_L_eq μ ν ρ σ h_diff_or
-    
+
     have h_F_d_swap := F_double_swap a b μ ν ρ σ M0
     have h_L_d_swap := L_swap_F L h_topological a b hab (F_double μ ν ρ σ M0) (F_double_is_alg μ ν ρ σ)
     rw [← h_F_d_swap] at h_ex1
     rw [h_L_d_swap] at h_ex1
-    
+
     have h_F_s1_swap := F_single_swap a b μ ν M0
     have h_L_s1_swap := L_swap_F L h_topological a b hab (F_single μ ν M0) (F_single_is_alg μ ν)
     rw [← h_F_s1_swap] at h_ex1
     rw [h_L_s1_swap] at h_ex1
-    
+
     have h_F_s2_swap := F_single_swap a b ρ σ M0
     have h_L_s2_swap := L_swap_F L h_topological a b hab (F_single ρ σ M0) (F_single_is_alg ρ σ)
     rw [← h_F_s2_swap] at h_ex1
     rw [h_L_s2_swap] at h_ex1
-    
-    calc symm_part T (Equiv.swap a b μ) (Equiv.swap a b ν) (Equiv.swap a b ρ) (Equiv.swap a b σ) 
+
+    calc symm_part T (Equiv.swap a b μ) (Equiv.swap a b ν) (Equiv.swap a b ρ) (Equiv.swap a b σ)
          = (- L (F_double μ ν ρ σ M0) - - L (F_single μ ν M0) - - L (F_single ρ σ M0)) / 2 := h_ex1
        _ = - ((L (F_double μ ν ρ σ M0) - L (F_single μ ν M0) - L (F_single ρ σ M0)) / 2) := by ring
        _ = - symm_part T μ ν ρ σ := by rw [h_ex2]
@@ -366,18 +366,18 @@ lemma symm_part_is_alternating
   (T : Fin 4 → Fin 4 → Fin 4 → Fin 4 → ℂ)
   (L : ((Fin 4 → Fin 4 → ChiralM) → Complex))
   (h_L_eq : ∀ F, (∀ μ ν, isSpin4cAlgebra (F μ ν)) → L F = ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4, T α β γ δ * Matrix.trace (F α β * F γ δ))
-  (h_topological : ∀ Λ : Matrix (Fin 4) (Fin 4) ℂ, 
-    (∀ μ ν ρ σ, ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4, 
+  (h_topological : ∀ Λ : Matrix (Fin 4) (Fin 4) ℂ,
+    (∀ μ ν ρ σ, ∑ α : Fin 4, ∑ β : Fin 4, ∑ γ : Fin 4, ∑ δ : Fin 4,
       Λ α μ * Λ β ν * Λ γ ρ * Λ δ σ * CGD.Gravity.epsilon4 α β γ δ = Matrix.det Λ * CGD.Gravity.epsilon4 μ ν ρ σ) →
-    ∀ F, (∀ μ ν, isSpin4cAlgebra (F μ ν)) → 
-    (∀ μ ν, isSpin4cAlgebra (∑ α : Fin 4, ∑ β : Fin 4, (Λ μ α * Λ ν β) • F α β)) → 
+    ∀ F, (∀ μ ν, isSpin4cAlgebra (F μ ν)) →
+    (∀ μ ν, isSpin4cAlgebra (∑ α : Fin 4, ∑ β : Fin 4, (Λ μ α * Λ ν β) • F α β)) →
     L (fun μ ν => ∑ α : Fin 4, ∑ β : Fin 4, (Λ μ α * Λ ν β) • F α β) = Matrix.det Λ * L F) :
-  ∀ μ ν ρ σ, symm_part T μ ν ρ σ = - symm_part T ν μ ρ σ ∧ 
-             symm_part T μ ν ρ σ = - symm_part T μ ρ ν σ ∧ 
+  ∀ μ ν ρ σ, symm_part T μ ν ρ σ = - symm_part T ν μ ρ σ ∧
+             symm_part T μ ν ρ σ = - symm_part T μ ρ ν σ ∧
              symm_part T μ ν ρ σ = - symm_part T μ ν σ ρ := by
   have h_swap := symm_part_swap L h_topological T h_L_eq
   have h_dup := symm_part_zero_of_dup L h_topological T h_L_eq
-  
+
   have h_alt1 : ∀ μ ν ρ σ, symm_part T μ ν ρ σ = - symm_part T ν μ ρ σ := by
     intro μ ν ρ σ
     by_cases hd : ¬ (μ ≠ ν ∧ μ ≠ ρ ∧ μ ≠ σ ∧ ν ≠ ρ ∧ ν ≠ σ ∧ ρ ≠ σ)

@@ -79,7 +79,7 @@ lemma sum_quad_congr (f g : Fin 4 → Fin 4 → Fin 4 → Fin 4 → ℂ) (h : �
   apply Finset.sum_congr rfl; intro σ _
   exact h μ ν ρ σ
 
-lemma h_comp_lemma (u : Universe) (x : SpacetimePoint) 
+lemma h_comp_lemma (u : Universe) (x : SpacetimePoint)
   (h_cdj : (∑ μ, ∑ ν, ∑ ρ, ∑ σ, epsilon4 μ ν ρ σ • (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)) = 0) (i j : Fin 3) :
   (∑ μ, ∑ ν, ∑ ρ, ∑ σ, epsilon4 μ ν ρ σ * (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x) i j) = 0 := by
   have h1 : (∑ μ, ∑ ν, ∑ ρ, ∑ σ, epsilon4 μ ν ρ σ • (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)) i j = 0 := by rw [h_cdj]; rfl
@@ -158,13 +158,13 @@ lemma W_12_eq_zero (u : Universe) (x : SpacetimePoint) (h_cdj : (∑ μ, ∑ ν,
   rwa [h_eq] at h
 
 lemma h_diag0_kernel_eq (u : Universe) (x : SpacetimePoint) (μ ν ρ σ : Fin 4) :
-  epsilon4 μ ν ρ σ * (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x) 0 0 = 
+  epsilon4 μ ν ρ σ * (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x) 0 0 =
   - (epsilon4 μ ν ρ σ * F_CGD u x 2 μ ν * F_CGD u x 2 ρ σ) - (epsilon4 μ ν ρ σ * F_CGD u x 1 μ ν * F_CGD u x 1 ρ σ) := by
   rw [cgdAdjointCurvature_mul_00]; ring
 
 lemma h_diag0_eq (u : Universe) (x : SpacetimePoint) :
   (∑ μ, ∑ ν, ∑ ρ, ∑ σ, epsilon4 μ ν ρ σ * (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x) 0 0) = - W u x 2 2 - W u x 1 1 := by
-  have h_kernel := sum_quad_congr 
+  have h_kernel := sum_quad_congr
     (fun μ ν ρ σ => epsilon4 μ ν ρ σ * (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x) 0 0)
     (fun μ ν ρ σ => - (epsilon4 μ ν ρ σ * F_CGD u x 2 μ ν * F_CGD u x 2 ρ σ) - (epsilon4 μ ν ρ σ * F_CGD u x 1 μ ν * F_CGD u x 1 ρ σ))
     (h_diag0_kernel_eq u x)
@@ -175,13 +175,13 @@ lemma h_diag0_eq (u : Universe) (x : SpacetimePoint) :
   rw [hw2, hw1]
 
 lemma h_diag1_kernel_eq (u : Universe) (x : SpacetimePoint) (μ ν ρ σ : Fin 4) :
-  epsilon4 μ ν ρ σ * (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x) 1 1 = 
+  epsilon4 μ ν ρ σ * (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x) 1 1 =
   - (epsilon4 μ ν ρ σ * F_CGD u x 2 μ ν * F_CGD u x 2 ρ σ) - (epsilon4 μ ν ρ σ * F_CGD u x 0 μ ν * F_CGD u x 0 ρ σ) := by
   rw [cgdAdjointCurvature_mul_11]; ring
 
 lemma h_diag1_eq (u : Universe) (x : SpacetimePoint) :
   (∑ μ, ∑ ν, ∑ ρ, ∑ σ, epsilon4 μ ν ρ σ * (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x) 1 1) = - W u x 2 2 - W u x 0 0 := by
-  have h_kernel := sum_quad_congr 
+  have h_kernel := sum_quad_congr
     (fun μ ν ρ σ => epsilon4 μ ν ρ σ * (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x) 1 1)
     (fun μ ν ρ σ => - (epsilon4 μ ν ρ σ * F_CGD u x 2 μ ν * F_CGD u x 2 ρ σ) - (epsilon4 μ ν ρ σ * F_CGD u x 0 μ ν * F_CGD u x 0 ρ σ))
     (h_diag1_kernel_eq u x)
@@ -192,13 +192,13 @@ lemma h_diag1_eq (u : Universe) (x : SpacetimePoint) :
   rw [hw2, hw0]
 
 lemma h_diag2_kernel_eq (u : Universe) (x : SpacetimePoint) (μ ν ρ σ : Fin 4) :
-  epsilon4 μ ν ρ σ * (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x) 2 2 = 
+  epsilon4 μ ν ρ σ * (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x) 2 2 =
   - (epsilon4 μ ν ρ σ * F_CGD u x 1 μ ν * F_CGD u x 1 ρ σ) - (epsilon4 μ ν ρ σ * F_CGD u x 0 μ ν * F_CGD u x 0 ρ σ) := by
   rw [cgdAdjointCurvature_mul_22]; ring
 
 lemma h_diag2_eq (u : Universe) (x : SpacetimePoint) :
   (∑ μ, ∑ ν, ∑ ρ, ∑ σ, epsilon4 μ ν ρ σ * (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x) 2 2) = - W u x 1 1 - W u x 0 0 := by
-  have h_kernel := sum_quad_congr 
+  have h_kernel := sum_quad_congr
     (fun μ ν ρ σ => epsilon4 μ ν ρ σ * (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x) 2 2)
     (fun μ ν ρ σ => - (epsilon4 μ ν ρ σ * F_CGD u x 1 μ ν * F_CGD u x 1 ρ σ) - (epsilon4 μ ν ρ σ * F_CGD u x 0 μ ν * F_CGD u x 0 ρ σ))
     (h_diag2_kernel_eq u x)

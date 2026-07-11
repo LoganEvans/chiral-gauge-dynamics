@@ -145,7 +145,7 @@ class §\phantomsection\label{lean:CGD.Axioms.UnimodularVacuum}§CGD.Axioms.Unim
 -- MODULE: CGD.Cosmology.BigBang
 --------------------------------------------------------------------
 /--
-By enforcing a topological initial condition, the Big Bang manifests as a pure Euclidean SO(4) instanton rather than a mathematical singularity. Provided the bouncing instanton is topologically non-degenerate (metric determinant is non-zero), it forms a strictly non-zero, macroscopic Euclidean scale state.
+Demonstrates that if the macroscopic boundary assumes a fully 4D symmetric SO(4) ground state, the geometry natively averts a singularity. Provided the metric determinant remains non-zero, the boundary manifests mathematically as a smooth Euclidean instanton bounce.
 -/
 @[litlib_track "Big Bang Singularity Resolution (Euclidean Bounce)"]
 theorem §\phantomsection\label{lean:CGD.Cosmology.kinematicBigBang}§CGD.Cosmology.kinematicBigBang (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) (phaseRegion : Set §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§)
@@ -164,14 +164,16 @@ theorem §\phantomsection\label{lean:CGD.Cosmology.kinematicStaticUniverseDegene
 
 -- MODULE: CGD.Cosmology.DarkMatter
 --------------------------------------------------------------------
-/-- A pure non-Abelian defect mathematically requires inertial mass > 0, and guarantees a strictly non-zero self-interaction topological density. -/
+/--
+A purely non-Abelian defect (lacking a stable U(1) Abelian projection) possesses no electric charge. However, it mathematically requires an inertial mass > 0 and guarantees a non-zero self-interaction topological density, matching the phenomenological profile of Self-Interacting Dark Matter (SIDM).
+-/
 @[litlib_track "Emergent Dark Matter Profile"]
 theorem §\phantomsection\label{lean:CGD.Cosmology.emergentDarkMatterProfile}§CGD.Cosmology.emergentDarkMatterProfile (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) :
   ∀ (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§),
   (∀ μ p, §\hyperref[lean:CGD.Foundations.isSu2]{\detokenize{isSu2}}§ (pu.toUniverse.asd_sector.val μ p).val) →
   §\hyperref[lean:CGD.Cosmology.isPureNonAbelian]{\detokenize{isPureNonAbelian}}§ (fun m n => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.asd_sector.val m n x) →
   §\hyperref[lean:CGD.Particles.inertialMass]{\detokenize{inertialMass}}§ pu x > 0 ∧
-  ∃ α β γ δ, Matrix.trace (⁅§\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.asd_sector.val α β x, §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.asd_sector.val γ δ x⁆.val * 
+  ∃ α β γ δ, Matrix.trace (⁅§\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.asd_sector.val α β x, §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.asd_sector.val γ δ x⁆.val *
                 ⁅§\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.asd_sector.val α β x, §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ pu.toUniverse.asd_sector.val γ δ x⁆.val) ≠ 0
 
 def §\phantomsection\label{lean:CGD.Cosmology.isPureNonAbelian}§CGD.Cosmology.isPureNonAbelian (F : Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§) : Prop :=
@@ -205,7 +207,7 @@ def §\phantomsection\label{lean:CGD.Cosmology.isStaticUniverse}§CGD.Cosmology.
 -- MODULE: CGD.Cosmology.ParityInversion
 --------------------------------------------------------------------
 /--
-Negating the electric (temporal) components of the field strength tensor while preserving the magnetic (spatial) components inverts the sign of the fully antisymmetric topological density. This directly links the parity inversion of the local geometry to the negation of the topological charge (Pontryagin density), seamlessly mapping the geometric arrow of time to matter/antimatter asymmetry.
+Demonstrates that the fully antisymmetric topological density (Pontryagin action) natively obeys geometric CPT symmetry. A passive time-reversal transformation (negating the temporal components of the field strength tensor) strictly inverts the sign of the topological charge.
 -/
 @[litlib_track "Geometric Parity Inversion"]
 theorem §\phantomsection\label{lean:CGD.Cosmology.kinematicParityInversion}§CGD.Cosmology.kinematicParityInversion (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) :
@@ -220,7 +222,7 @@ noncomputable def §\phantomsection\label{lean:CGD.Cosmology.pontryaginDensity}�
 -- MODULE: CGD.Cosmology.ScaleBreaking
 --------------------------------------------------------------------
 /--
-The Urbantke metric natively breaks conformal symmetry at the classical level. A scale transformation of the field strength tensor results in a non-trivial scaling of the emergent metric.
+The conformal scaling property of the Urbantke metric. A scale transformation of the field strength tensor (F → λ² F) results in a strict λ²⁴ scaling of the emergent metric determinant, demonstrating that the macroscopic metric possesses a conformal weight of 6.
 -/
 @[litlib_track "Kinematic Classical Scale Breaking"]
 theorem §\phantomsection\label{lean:CGD.Cosmology.kinematicClassicalScaleBreaking}§CGD.Cosmology.kinematicClassicalScaleBreaking (F : Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§) (lambda_scale : ℂ) :
@@ -284,16 +286,8 @@ noncomputable def §\phantomsection\label{lean:CGD.Foundations.lagrangianDensity
 --------------------------------------------------------------------
 /--
 The Differential Bianchi Identity.
-D_ρ F_μν + D_μ F_νρ + D_ν F_ρμ = 0
-
-Strictly proven from fundamental Lie algebra rules and Clairaut's theorem, 
-leaving no mathematical loopholes. The proof maps the topological constraints 
-down to matrix multiplication, simultaneously performing the d^2=0 and 
-Jacobi cancellations algebraically.
-
-This theorem automatically proves all 14 required calculus differentiability 
-bounds by natively resolving them against the `is_smooth` foundational axiom 
-of the generic smooth background gauge field.
+Derived strictly from fundamental Lie algebra properties and Clairaut's theorem,
+simultaneously performing the $d^2=0$ and Jacobi cancellations algebraically.
 -/
 @[litlib_track "Kinematic Bianchi Identity"]
 theorem §\phantomsection\label{lean:CGD.Foundations.kinematicBianchiIdentity}§CGD.Foundations.kinematicBianchiIdentity
@@ -455,15 +449,14 @@ theorem §\phantomsection\label{lean:CGD.Foundations.topologicalLagrangianUnique
 
 -- MODULE: CGD.Foundations.Lagrangian.Variation
 --------------------------------------------------------------------
-/-- 
-The Capstone Theorem. 
-Because the action is the topological Pontryagin density, its functional variation with respect 
-to compactly supported, smooth gauge field perturbations is identically zero. 
-This proves strictly that every continuous non-degenerate configuration is an exact vacuum state, 
+/--
+Because the action is the topological Pontryagin density, its functional variation with respect
+to compactly supported, smooth gauge field perturbations is identically zero.
+This proves strictly that every continuous non-degenerate configuration is an exact vacuum state,
 mandating that macroscopic spacetime strictly emerges from local matter topological defects.
 -/
 @[litlib_track "Topological Action Variation"]
-theorem §\phantomsection\label{lean:CGD.Foundations.topologicalActionVariationZero}§CGD.Foundations.topologicalActionVariationZero 
+theorem §\phantomsection\label{lean:CGD.Foundations.topologicalActionVariationZero}§CGD.Foundations.topologicalActionVariationZero
   (v : ℝ → §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§)
   [dt : §\hyperref[lean:Litlib.Y1965.spivak1965calculus.DivergenceTheoremR4Compact]{\detokenize{Litlib.Y1965.spivak1965calculus.DivergenceTheoremR4Compact}}§ (fun x mu => §\hyperref[lean:CGD.Foundations.variationCurrent]{\detokenize{variationCurrent}}§ v 0 mu x)]
   [lr : §\hyperref[lean:Litlib.Y1976.rudin1976principles.LeibnizIntegralRule]{\detokenize{Litlib.Y1976.rudin1976principles.LeibnizIntegralRule}}§ (fun s x => §\hyperref[lean:CGD.Foundations.lagrangianDensity]{\detokenize{lagrangianDensity}}§ (fun mu nu => §\hyperref[lean:CGD.Foundations.curvature]{\detokenize{curvature}}§ (fun m p => (v s).toUniverse.spin4c_connection m p) mu nu x))]
@@ -476,7 +469,7 @@ theorem §\phantomsection\label{lean:CGD.Foundations.topologicalActionVariationZ
 noncomputable def §\phantomsection\label{lean:CGD.Foundations.physicalUniverseAction}§CGD.Foundations.physicalUniverseAction (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) : ℂ :=
   universeAction pu.toUniverse
 
-/-- 
+/--
 The topological Chern-Simons Variation Current.
 K^mu = - 2 * ε^{mu nu rho sigma} Tr( δA_nu F_{rho sigma} )
 -/
@@ -627,8 +620,7 @@ def §\phantomsection\label{lean:CGD.Gravity.ExactSolutions.SatisfiesRealityCond
 -- MODULE: CGD.Gravity.ExactSolutions.FLRW
 --------------------------------------------------------------------
 /--
-CAPSTONE THEOREM: FLRW (Isotropic) spacetimes intrinsically satisfy the non-degenerate 
-Lorentzian Reality Conditions natively from the SU(2) topology, requiring no exact scalar field assumptions.
+LRW (Isotropic) spacetimes intrinsically satisfy the non-degenerate Lorentzian Reality Conditions natively from the SU(2) topology, requiring no exact scalar field assumptions.
 -/
 @[litlib_track "FLRW connections produce real Lorentzian metrics"]
 theorem §\phantomsection\label{lean:CGD.Gravity.ExactSolutions.flrw_satisfies_reality}§CGD.Gravity.ExactSolutions.flrw_satisfies_reality (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) (h_typeO : §\hyperref[lean:CGD.Gravity.ExactSolutions.IsTypeOForm]{\detokenize{IsTypeOForm}}§ pu) :
@@ -702,17 +694,15 @@ theorem §\phantomsection\label{lean:CGD.Gravity.dynamicExactLorentzianSolution}
 --------------------------------------------------------------------
 /--
 The Soliton Geometry Theorem.
-Proves that a single continuous Spin(4,C) gauge profile mathematically possesses a 
-strict non-degenerate Lorentzian emergent metric, while simultaneously generating 
-a perfect macroscopic Ricci-Flat vacuum via the Capovilla CDJ constraint.
-
-This strictly formalizes the exact resolution to the singularity crisis within CGD.
+Proves that a continuous, non-singular Spin(4,C) gauge profile mathematically possesses a
+strict non-degenerate Lorentzian emergent metric, while simultaneously satisfying the
+Ricci-flat Capovilla CDJ constraint.
 -/
 @[litlib_track "Exact Analytical Non-Singular Soliton Verification"]
 theorem §\phantomsection\label{lean:CGD.Gravity.ExactSolutions.dynamicExactSolitonSolution}§CGD.Gravity.ExactSolutions.dynamicExactSolitonSolution :
-  ∃ (u : §\hyperref[lean:CGD.Axioms.Universe]{\detokenize{Universe}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§), 
+  ∃ (u : §\hyperref[lean:CGD.Axioms.Universe]{\detokenize{Universe}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§),
     (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
-      §\hyperref[lean:CGD.Gravity.epsilon4]{\detokenize{epsilon4}}§ μ ν ρ σ • (§\hyperref[lean:CGD.Gravity.cgdAdjointCurvature]{\detokenize{cgdAdjointCurvature}}§ u μ ν x * §\hyperref[lean:CGD.Gravity.cgdAdjointCurvature]{\detokenize{cgdAdjointCurvature}}§ u ρ σ x)) = 
+      §\hyperref[lean:CGD.Gravity.epsilon4]{\detokenize{epsilon4}}§ μ ν ρ σ • (§\hyperref[lean:CGD.Gravity.cgdAdjointCurvature]{\detokenize{cgdAdjointCurvature}}§ u μ ν x * §\hyperref[lean:CGD.Gravity.cgdAdjointCurvature]{\detokenize{cgdAdjointCurvature}}§ u ρ σ x)) =
     ((∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
       §\hyperref[lean:CGD.Gravity.epsilon4]{\detokenize{epsilon4}}§ μ ν ρ σ • (§\hyperref[lean:CGD.Gravity.cgdAdjointCurvature]{\detokenize{cgdAdjointCurvature}}§ u μ ν x * §\hyperref[lean:CGD.Gravity.cgdAdjointCurvature]{\detokenize{cgdAdjointCurvature}}§ u ρ σ x)).trace / 3) • 1 ∧
     §\hyperref[lean:CGD.Gravity.isLorentzian]{\detokenize{isLorentzian}}§ (§\hyperref[lean:CGD.Gravity.urbantkeMetric]{\detokenize{urbantkeMetric}}§ (fun m n => §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ u.sd_sector.val m n x))
@@ -782,7 +772,7 @@ noncomputable def §\phantomsection\label{lean:CGD.Gravity.ExactSolutions.solito
 /-- The exact rational test point from the whitepaper verification engine. -/
 @[litlib_track "Specific coordinates used for computational verification"]
 noncomputable def §\phantomsection\label{lean:CGD.Gravity.ExactSolutions.testPoint}§CGD.Gravity.ExactSolutions.testPoint : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ :=
-  fun i => 
+  fun i =>
     if i = 0 then 3/2       -- t = 1.5
     else if i = 1 then 1/2  -- x = 0.5
     else if i = 2 then -1/5 -- y = -0.2
@@ -1440,11 +1430,10 @@ theorem §\phantomsection\label{lean:CGD.Quantum.kinematicActionQuantization}§C
 
 -- MODULE: CGD.Quantum.Definitions
 --------------------------------------------------------------------
-/-- 
-Identifies an ER=EPR entangled bridge. Two spatial boundaries are entangled 
-if there exists a continuous degenerate connection between them. This definition 
-uses the exact `fluxTubeFrame` witness to mathematically guarantee that evaluating 
-such a channel does not result in a vacuous truth.
+/--
+Identifies a non-local topological correlation. Two spatial boundaries are defined
+as entangled if they are connected by a continuous degenerate connection (a flux tube).
+This definition relies on the exact `fluxTubeFrame` witness to guarantee non-vacuous evaluation.
 -/
 @[litlib_track "Entangled State Witness"]
 def §\phantomsection\label{lean:CGD.Quantum.areEntangled}§CGD.Quantum.areEntangled (A : Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§) (x y : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (theta : ℝ) : Prop :=
@@ -1455,24 +1444,24 @@ def §\phantomsection\label{lean:CGD.Quantum.areEntangled}§CGD.Quantum.areEntan
       (∀ mu, A mu (γ t) = §\hyperref[lean:CGD.Quantum.rotateYAxis]{\detokenize{rotateYAxis}}§ §\hyperref[lean:CGD.Quantum.fluxTubeFrame]{\detokenize{fluxTubeFrame}}§ (θ t) mu (γ t)) ∧
       (∀ mu nu, partialDerivSl2c nu (A mu) (γ t) = partialDerivSl2c nu (§\hyperref[lean:CGD.Quantum.rotateYAxis]{\detokenize{rotateYAxis}}§ §\hyperref[lean:CGD.Quantum.fluxTubeFrame]{\detokenize{fluxTubeFrame}}§ (θ t) mu) (γ t))
 
-/-- 
+/--
 A Constructive Witness for an unbroken 1D string defect along the z-axis.
-Rather than a unique dynamic solution, this provides an exact analytical ansatz 
-(a uniform, constant non-Abelian magnetic field) to rigorously prove the non-vacuous 
+Rather than a unique dynamic solution, this provides an exact analytical ansatz
+(a uniform, constant non-Abelian magnetic field) to rigorously prove the non-vacuous
 existence of degenerate topological states without relying on empty sets.
 -/
 @[litlib_track "Flux Tube Frame Witness"]
 noncomputable def §\phantomsection\label{lean:CGD.Quantum.fluxTubeFrame}§CGD.Quantum.fluxTubeFrame (mu : Fin 4) (_x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) : §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§ :=
   §\hyperref[lean:CGD.Foundations.toSl2c]{\detokenize{toSl2c}}§ (if mu = 0 then 0 else if mu = 1 then (Complex.I:ℂ) • sigma3.val else if mu = 2 then (Complex.I:ℂ) • sigma1.val else (Complex.I:ℂ) • sigma2.val)
 
-/-- 
+/--
 Identifies a field configuration matching the exact analytical witness of an unbroken flux tube.
 -/
 def §\phantomsection\label{lean:CGD.Quantum.isFluxTube}§CGD.Quantum.isFluxTube (A : Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) : Prop :=
   (∀ mu, A mu x = §\hyperref[lean:CGD.Quantum.fluxTubeFrame]{\detokenize{fluxTubeFrame}}§ mu x) ∧
   (∀ mu nu, partialDerivSl2c nu (A mu) x = partialDerivSl2c nu (§\hyperref[lean:CGD.Quantum.fluxTubeFrame]{\detokenize{fluxTubeFrame}}§ mu) x)
 
-/-- 
+/--
 A multi-fingered gauge rotation applied to a background connection.
 -/
 noncomputable def §\phantomsection\label{lean:CGD.Quantum.rotateYAxis}§CGD.Quantum.rotateYAxis (A : Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§) (theta : Real) (mu : Fin 4) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) : §\hyperref[lean:CGD.Foundations.SL2C]{\detokenize{SL2C}}§ :=
@@ -1521,7 +1510,6 @@ theorem §\phantomsection\label{lean:CGD.Quantum.familiarDynamicDiracEquation}§
   ∑ mu, ∑ a, (e a mu x) • (§\hyperref[lean:Litlib.Math.Dirac.gammaVec]{\detokenize{gammaVec}}§ a * §\hyperref[lean:CGD.Foundations.curvature]{\detokenize{curvature}}§ (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x)
 
 /--
-The CAPSTONE Dirac equivalence.
 The fully covariant Dirac operator natively equals the macroscopic Yang-Mills curvature trace, 
 plus a geometric inertial term (\partial_nu A_mu) reflecting the dynamical evolution of the background geometry.
 Matter actively responds to the bubbling and expansion of spacetime without requiring a fixed coordinate frame.
@@ -1627,19 +1615,19 @@ noncomputable def §\phantomsection\label{lean:CGD.Quantum.straightLinePath}§CG
 -- MODULE: CGD.Quantum.Holonomy.Geometric
 --------------------------------------------------------------------
 /--
-Demonstrates that the self-dual and anti-self-dual spin connection components 
-natively mathematically decouple under the geometric trace metric because their 
-underlying 4x4 matrix embeddings occupy perfectly disjoint sub-blocks. 
+Demonstrates that the self-dual and anti-self-dual spin connection components
+natively mathematically decouple under the geometric trace metric because their
+underlying 4x4 matrix embeddings occupy perfectly disjoint sub-blocks.
 The geometry requires no artificial truncation to separate chiral sectors.
 -/
 @[litlib_track "Algebraic Chiral Orthogonalization"]
 theorem §\phantomsection\label{lean:CGD.Quantum.algebraicChiralOrthogonalization}§CGD.Quantum.algebraicChiralOrthogonalization (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (μ ν ρ σ : Fin 4) :
-  Matrix.trace (§\hyperref[lean:CGD.Foundations.embedSelfDual]{\detokenize{embedSelfDual}}§ (§\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{CGD.Foundations.curvatureSl2c}}§ pu.toUniverse.sd_sector μ ν x) * 
+  Matrix.trace (§\hyperref[lean:CGD.Foundations.embedSelfDual]{\detokenize{embedSelfDual}}§ (§\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{CGD.Foundations.curvatureSl2c}}§ pu.toUniverse.sd_sector μ ν x) *
                 §\hyperref[lean:CGD.Foundations.embedAntiSelfDual]{\detokenize{embedAntiSelfDual}}§ (§\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{CGD.Foundations.curvatureSl2c}}§ pu.toUniverse.asd_sector ρ σ x)) = 0
 
-/-- 
-The exact quantum correlation natively emerges from the Cartan-Killing metric 
-of the SU(2) group. For unitary SU(2) elements, 1/2 Tr(A B†) perfectly recovers 
+/--
+The exact quantum correlation natively emerges from the Cartan-Killing metric
+of the SU(2) group. For unitary SU(2) elements, 1/2 Tr(A B†) perfectly recovers
 the cosine of the angle between them.
 -/
 @[litlib_track "Geometric Bell Correlation"]
@@ -1647,8 +1635,8 @@ noncomputable def §\phantomsection\label{lean:CGD.Quantum.geometricBellCorrelat
   (1 / 2 : ℂ) * Matrix.trace (A.val * B.val.conjTranspose)
 
 /--
-Demonstrates that the geometric path-ordered integration of a purely spatial 
-SU(2) flux tube connection evaluates strictly to a unitary holonomy within 
+Demonstrates that the geometric path-ordered integration of a purely spatial
+SU(2) flux tube connection evaluates strictly to a unitary holonomy within
 the SU(2) group manifold.
 -/
 @[litlib_track "Geometric Holonomy Integration"]
@@ -1657,16 +1645,12 @@ theorem §\phantomsection\label{lean:CGD.Quantum.geometricHolonomyIntegration}§
   U * U.conjTranspose = 1 ∧ Matrix.det U = 1
 
 /--
-Geometric Tsirelson Bound
-
-The CHSH correlation is purely a geometric topological feature of the macroscopic 
-SU(2) spatial geometry, mathematically bounded natively by 2√2 without invoking 
-abstract Hilbert spaces, measurement operators, or magical integration lengths.
+The CHSH correlation bound is mathematically realized natively by the $2\sqrt{2}$ geometric bounds of the macroscopic SU(2) spatial topology, bypassing the need for abstract Hilbert space operators.
 -/
 @[litlib_track "Geometric Tsirelson Bound"]
-theorem §\phantomsection\label{lean:CGD.Quantum.geometricHolonomyTsirelsonBound}§CGD.Quantum.geometricHolonomyTsirelsonBound 
+theorem §\phantomsection\label{lean:CGD.Quantum.geometricHolonomyTsirelsonBound}§CGD.Quantum.geometricHolonomyTsirelsonBound
   (A1 A2 B1 B2 : §\hyperref[lean:CGD.Foundations.SU2Group]{\detokenize{SU2Group}}§) :
-  let chsh := §\hyperref[lean:CGD.Quantum.geometricBellCorrelation]{\detokenize{geometricBellCorrelation}}§ A1 B1 + §\hyperref[lean:CGD.Quantum.geometricBellCorrelation]{\detokenize{geometricBellCorrelation}}§ A1 B2 + 
+  let chsh := §\hyperref[lean:CGD.Quantum.geometricBellCorrelation]{\detokenize{geometricBellCorrelation}}§ A1 B1 + §\hyperref[lean:CGD.Quantum.geometricBellCorrelation]{\detokenize{geometricBellCorrelation}}§ A1 B2 +
               §\hyperref[lean:CGD.Quantum.geometricBellCorrelation]{\detokenize{geometricBellCorrelation}}§ A2 B1 - §\hyperref[lean:CGD.Quantum.geometricBellCorrelation]{\detokenize{geometricBellCorrelation}}§ A2 B2;
   (chsh.re)^2 ≤ 8 ∧ chsh.im = 0
 

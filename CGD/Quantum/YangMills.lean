@@ -33,7 +33,7 @@ theorem kinematicYangMillsChaos :
     have h_neq : (2 : Fin 4) ≠ 1 := by decide
     rw [if_neg h_neq, if_pos rfl]
   rw [h1, h2]
-  have hb : ⁅(Complex.I * ↑(x 1)) • sigma1, (Complex.I * ↑(x 2)) • sigma2⁆.val = 
+  have hb : ⁅(Complex.I * ↑(x 1)) • sigma1, (Complex.I * ↑(x 2)) • sigma2⁆.val =
             ((Complex.I * ↑(x 1)) * (Complex.I * ↑(x 2))) • (sigma1.val * sigma2.val - sigma2.val * sigma1.val) := by
     change ((Complex.I * ↑(x 1)) • sigma1.val) * ((Complex.I * ↑(x 2)) • sigma2.val) - ((Complex.I * ↑(x 2)) • sigma2.val) * ((Complex.I * ↑(x 1)) • sigma1.val) = _
     rw [Matrix.smul_mul, Matrix.mul_smul, smul_smul, Matrix.smul_mul, Matrix.mul_smul, smul_smul]

@@ -14,9 +14,9 @@ open CGD.Axioms
 namespace CGD.Quantum
 
 /--
-Evaluates the macroscopic metric of the `fluxTubeFrame` witness to prove that if two 
-particles are connected by such a 1D uniform gauge connection, the metric determinant 
-rigorously vanishes. This confirms that non-local, degenerate wormhole topologies 
+Evaluates the macroscopic metric of the `fluxTubeFrame` witness to prove that if two
+particles are connected by such a 1D uniform gauge connection, the metric determinant
+rigorously vanishes. This confirms that non-local, degenerate wormhole topologies
 mathematically exist as non-vacuous solutions within the Spin(4,C) geometry.
 -/
 @[litlib_track "Witness for Degenerate Entanglement Channels"]

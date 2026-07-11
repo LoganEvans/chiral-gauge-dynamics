@@ -40,8 +40,8 @@ def epsilon4_int : Fin 4 → Fin 4 → Fin 4 → Fin 4 → Int
 | _, _, _, _ => 0
 
 lemma epsilon4_int_alt (α β γ δ : Fin 4) :
-  epsilon4_int α β γ δ = -epsilon4_int β α γ δ ∧ 
-  epsilon4_int α β γ δ = -epsilon4_int α γ β δ ∧ 
+  epsilon4_int α β γ δ = -epsilon4_int β α γ δ ∧
+  epsilon4_int α β γ δ = -epsilon4_int α γ β δ ∧
   epsilon4_int α β γ δ = -epsilon4_int α β δ γ := by
   -- `decide` evaluates the 256 boolean int equations instantly via the kernel
   fin_cases α <;> fin_cases β <;> fin_cases γ <;> fin_cases δ <;> decide
@@ -54,8 +54,8 @@ lemma epsilon4_0123 : epsilon4 0 1 2 3 = 1 := by
   norm_num
 
 lemma epsilon4_alt (α β γ δ : Fin 4) :
-  epsilon4 α β γ δ = -epsilon4 β α γ δ ∧ 
-  epsilon4 α β γ δ = -epsilon4 α γ β δ ∧ 
+  epsilon4 α β γ δ = -epsilon4 β α γ δ ∧
+  epsilon4 α β γ δ = -epsilon4 α γ β δ ∧
   epsilon4 α β γ δ = -epsilon4 α β δ γ := by
   have h := epsilon4_int_alt α β γ δ
   rcases h with ⟨h1, h2, h3⟩

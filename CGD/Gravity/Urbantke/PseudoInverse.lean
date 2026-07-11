@@ -9,7 +9,7 @@ namespace CGD.Gravity
 open Complex Matrix BigOperators CGD.Foundations Litlib.Y1991.capovilla1991pure
 
 lemma capovilla_invPsi_eq (F : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) (Λ : ℂ)
-  (h_su2 : ∀ μ ν, 
+  (h_su2 : ∀ μ ν,
     F μ ν 0 0 = 0 ∧ F μ ν 1 1 = 0 ∧ F μ ν 2 2 = 0 ∧
     F μ ν 2 1 = - F μ ν 1 2 ∧ F μ ν 2 0 = - F μ ν 0 2 ∧ F μ ν 1 0 = - F μ ν 0 1)
   (h_plebanski : (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, CGD.Gravity.epsilon4 μ ν ρ σ • (F μ ν * F ρ σ)) = Λ • 1)
@@ -21,7 +21,7 @@ lemma capovilla_invPsi_eq (F : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) (
    else 0) =
     (1:ℂ) * (∑ ρ : Fin 4, ∑ σ : Fin 4, ∑ α : Fin 4, ∑ β : Fin 4,
       CGD.Gravity.epsilon4 ρ σ α β * R_up ρ σ A B * capovilla_R F α β C D) := by
-  
+
   have H_eval : (if A = 0 ∧ B = 0 ∧ C = 0 ∧ D = 0 then Λ
    else if A = 1 ∧ B = 1 ∧ C = 1 ∧ D = 1 then Λ
    else if (A = 0 ∧ B = 1 ∨ A = 1 ∧ B = 0) ∧ (C = 0 ∧ D = 1 ∨ C = 1 ∧ D = 0) then (1/2:ℂ) * Λ
@@ -29,54 +29,54 @@ lemma capovilla_invPsi_eq (F : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) (
     (∑ ρ : Fin 4, ∑ σ : Fin 4, ∑ α : Fin 4, ∑ β : Fin 4,
       CGD.Gravity.epsilon4 ρ σ α β * (∑ A' : Fin 2, ∑ B' : Fin 2, eps2_up A A' * eps2_up B B' * capovilla_R F ρ σ A' B') * capovilla_R F α β C D) := by
 
-    let P (x y : Fin 4 → Fin 4 → ℂ) : ℂ := 
+    let P (x y : Fin 4 → Fin 4 → ℂ) : ℂ :=
       ∑ ρ : Fin 4, ∑ σ : Fin 4, ∑ α : Fin 4, ∑ β : Fin 4, CGD.Gravity.epsilon4 ρ σ α β * (x ρ σ * y α β)
 
     have P_add_left : ∀ x1 x2 y, P (fun ρ σ => x1 ρ σ + x2 ρ σ) y = P x1 y + P x2 y := by
       intro x1 x2 y; dsimp [P]
-      have h : ∀ ρ σ α β, CGD.Gravity.epsilon4 ρ σ α β * ((x1 ρ σ + x2 ρ σ) * y α β) = 
+      have h : ∀ ρ σ α β, CGD.Gravity.epsilon4 ρ σ α β * ((x1 ρ σ + x2 ρ σ) * y α β) =
         CGD.Gravity.epsilon4 ρ σ α β * (x1 ρ σ * y α β) + CGD.Gravity.epsilon4 ρ σ α β * (x2 ρ σ * y α β) := by intro ρ σ α β; ring
       simp_rw [h, Finset.sum_add_distrib]
-      
+
     have P_add_right : ∀ x y1 y2, P x (fun α β => y1 α β + y2 α β) = P x y1 + P x y2 := by
       intro x y1 y2; dsimp [P]
-      have h : ∀ ρ σ α β, CGD.Gravity.epsilon4 ρ σ α β * (x ρ σ * (y1 α β + y2 α β)) = 
+      have h : ∀ ρ σ α β, CGD.Gravity.epsilon4 ρ σ α β * (x ρ σ * (y1 α β + y2 α β)) =
         CGD.Gravity.epsilon4 ρ σ α β * (x ρ σ * y1 α β) + CGD.Gravity.epsilon4 ρ σ α β * (x ρ σ * y2 α β) := by intro ρ σ α β; ring
       simp_rw [h, Finset.sum_add_distrib]
 
     have P_sub_left : ∀ x1 x2 y, P (fun ρ σ => x1 ρ σ - x2 ρ σ) y = P x1 y - P x2 y := by
       intro x1 x2 y; dsimp [P]
-      have h : ∀ ρ σ α β, CGD.Gravity.epsilon4 ρ σ α β * ((x1 ρ σ - x2 ρ σ) * y α β) = 
+      have h : ∀ ρ σ α β, CGD.Gravity.epsilon4 ρ σ α β * ((x1 ρ σ - x2 ρ σ) * y α β) =
         CGD.Gravity.epsilon4 ρ σ α β * (x1 ρ σ * y α β) - CGD.Gravity.epsilon4 ρ σ α β * (x2 ρ σ * y α β) := by intro ρ σ α β; ring
       simp_rw [h, Finset.sum_sub_distrib]
 
     have P_sub_right : ∀ x y1 y2, P x (fun α β => y1 α β - y2 α β) = P x y1 - P x y2 := by
       intro x y1 y2; dsimp [P]
-      have h : ∀ ρ σ α β, CGD.Gravity.epsilon4 ρ σ α β * (x ρ σ * (y1 α β - y2 α β)) = 
+      have h : ∀ ρ σ α β, CGD.Gravity.epsilon4 ρ σ α β * (x ρ σ * (y1 α β - y2 α β)) =
         CGD.Gravity.epsilon4 ρ σ α β * (x ρ σ * y1 α β) - CGD.Gravity.epsilon4 ρ σ α β * (x ρ σ * y2 α β) := by intro ρ σ α β; ring
       simp_rw [h, Finset.sum_sub_distrib]
 
     have P_neg_left : ∀ x y, P (fun ρ σ => - x ρ σ) y = - P x y := by
       intro x y; dsimp [P]
-      have h : ∀ ρ σ α β, CGD.Gravity.epsilon4 ρ σ α β * ((- x ρ σ) * y α β) = 
+      have h : ∀ ρ σ α β, CGD.Gravity.epsilon4 ρ σ α β * ((- x ρ σ) * y α β) =
         - (CGD.Gravity.epsilon4 ρ σ α β * (x ρ σ * y α β)) := by intro ρ σ α β; ring
       simp_rw [h, Finset.sum_neg_distrib]
 
     have P_neg_right : ∀ x y, P x (fun α β => - y α β) = - P x y := by
       intro x y; dsimp [P]
-      have h : ∀ ρ σ α β, CGD.Gravity.epsilon4 ρ σ α β * (x ρ σ * (- y α β)) = 
+      have h : ∀ ρ σ α β, CGD.Gravity.epsilon4 ρ σ α β * (x ρ σ * (- y α β)) =
         - (CGD.Gravity.epsilon4 ρ σ α β * (x ρ σ * y α β)) := by intro ρ σ α β; ring
       simp_rw [h, Finset.sum_neg_distrib]
 
     have P_smul_left : ∀ (c : ℂ) x y, P (fun ρ σ => c * x ρ σ) y = c * P x y := by
       intro c x y; dsimp [P]
-      have h : ∀ ρ σ α β, CGD.Gravity.epsilon4 ρ σ α β * ((c * x ρ σ) * y α β) = 
+      have h : ∀ ρ σ α β, CGD.Gravity.epsilon4 ρ σ α β * ((c * x ρ σ) * y α β) =
         c * (CGD.Gravity.epsilon4 ρ σ α β * (x ρ σ * y α β)) := by intro ρ σ α β; ring
       simp_rw [h, ← Finset.mul_sum]
 
     have P_smul_right : ∀ (c : ℂ) x y, P x (fun α β => c * y α β) = c * P x y := by
       intro c x y; dsimp [P]
-      have h : ∀ ρ σ α β, CGD.Gravity.epsilon4 ρ σ α β * (x ρ σ * (c * y α β)) = 
+      have h : ∀ ρ σ α β, CGD.Gravity.epsilon4 ρ σ α β * (x ρ σ * (c * y α β)) =
         c * (CGD.Gravity.epsilon4 ρ σ α β * (x ρ σ * y α β)) := by intro ρ σ α β; ring
       simp_rw [h, ← Finset.mul_sum]
 
@@ -163,7 +163,7 @@ lemma capovilla_invPsi_eq (F : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) (
       rw [h0, h1]; ring
 
     have h_rhs_eq_P : ∀ (A_val B_val C_val D_val : Fin 2), (∑ ρ : Fin 4, ∑ σ : Fin 4, ∑ α : Fin 4, ∑ β : Fin 4,
-      CGD.Gravity.epsilon4 ρ σ α β * (∑ A' : Fin 2, ∑ B' : Fin 2, eps2_up A_val A' * eps2_up B_val B' * capovilla_R F ρ σ A' B') * capovilla_R F α β C_val D_val) = 
+      CGD.Gravity.epsilon4 ρ σ α β * (∑ A' : Fin 2, ∑ B' : Fin 2, eps2_up A_val A' * eps2_up B_val B' * capovilla_R F ρ σ A' B') * capovilla_R F α β C_val D_val) =
       P (fun ρ σ => ∑ A' : Fin 2, ∑ B' : Fin 2, eps2_up A_val A' * eps2_up B_val B' * capovilla_R F ρ σ A' B') (fun α β => capovilla_R F α β C_val D_val) := by
       intro A_val B_val C_val D_val
       dsimp [P]

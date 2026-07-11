@@ -97,7 +97,7 @@ lemma diff_const_mul (c : ℂ) (f : SpacetimePoint → ℂ) (x : SpacetimePoint)
   rw [h_eq]
   exact DifferentiableAt.mul hc hf
 
-lemma partialDeriv_sum {ι : Type*} [Fintype ι] 
+lemma partialDeriv_sum {ι : Type*} [Fintype ι]
   (f : ι → SpacetimePoint → ℂ) (μ : Fin 4) (x : SpacetimePoint)
   (hf : ∀ i, DifferentiableAt ℝ (f i) x) :
   partialDeriv μ (fun p => ∑ i, f i p) x = ∑ i, partialDeriv μ (f i) x := by
@@ -149,8 +149,8 @@ noncomputable def curvatureSl2c (A : Fin 4 → SpacetimePoint → SL2C) (mu nu :
 lemma curvatureSl2c_def (A : Fin 4 → SpacetimePoint → SL2C) (mu nu : Fin 4) (x : SpacetimePoint) :
   curvatureSl2c A mu nu x = partialDerivSl2c mu (A nu) x - partialDerivSl2c nu (A mu) x + ⁅A mu x, A nu x⁆ := rfl
 
-/-- 
-The curvature tensor strictly satisfies exact antisymmetry, emerging natively from the 
+/--
+The curvature tensor strictly satisfies exact antisymmetry, emerging natively from the
 commutativity of partial derivatives and the anti-commutativity of the Lie algebra bracket.
 -/
 lemma curvatureSl2c_antisymm (A : Fin 4 → SpacetimePoint → SL2C) (mu nu : Fin 4) (x : SpacetimePoint) :
@@ -184,9 +184,9 @@ lemma partialDerivSl2c_eq_mat (A : SpacetimePoint → SL2C) (μ : Fin 4) (x : Sp
 lemma curvatureSl2c_val_eq (A : Fin 4 → SpacetimePoint → SL2C) (μ ν : Fin 4) (x : SpacetimePoint)
   (hAμ : ∀ i j, DifferentiableAt ℝ (fun p => (A μ p).val i j) x)
   (hAν : ∀ i j, DifferentiableAt ℝ (fun p => (A ν p).val i j) x) :
-  ∀ i j, (curvatureSl2c A μ ν x).val i j = 
-    partialDeriv μ (fun p => (A ν p).val i j) x - 
-    partialDeriv ν (fun p => (A μ p).val i j) x + 
+  ∀ i j, (curvatureSl2c A μ ν x).val i j =
+    partialDeriv μ (fun p => (A ν p).val i j) x -
+    partialDeriv ν (fun p => (A μ p).val i j) x +
     ((A μ x).val * (A ν x).val - (A ν x).val * (A μ x).val) i j := by
   intro i j
   have h_curv : (curvatureSl2c A μ ν x).val = (partialDerivSl2c μ (A ν) x).val - (partialDerivSl2c ν (A μ) x).val + ((A μ x).val * (A ν x).val - (A ν x).val * (A μ x).val) := rfl

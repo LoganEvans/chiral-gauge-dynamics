@@ -12,15 +12,15 @@ namespace CGD.Foundations
 theorem bianchiIdentity (A : Sl2cGaugeField)
   (ρ σ ν : Fin 4) (x : SpacetimePoint) :
   covariantDeriv A.val ρ σ ν x + covariantDeriv A.val σ ν ρ x + covariantDeriv A.val ν ρ σ x = 0 := by
-  
+
   have h_smooth := A.is_smooth
-  
+
   have h_diff_all : ∀ α i j y, DifferentiableAt ℝ (fun p => (A.val α p).val i j) y :=
     fun α i j y => ((h_smooth α i j).differentiable (by decide)) y
-    
+
   have hdA : ∀ α i j, DifferentiableAt ℝ (fun p => (A.val α p).val i j) x :=
     fun α i j => h_diff_all α i j x
-    
+
   have hd_dA : ∀ α β i j, DifferentiableAt ℝ (fun p => (partialDerivSl2c α (A.val β) p).val i j) x := by
     intro α β i j
     have h_eq : (fun p => (partialDerivSl2c α (A.val β) p).val i j) = fun p => partialDeriv α (fun p2 => (A.val β p2).val i j) p := by
@@ -49,7 +49,7 @@ theorem bianchiIdentity (A : Sl2cGaugeField)
     exact DifferentiableAt.sub (hd_dA α β i j) (hd_dA β α i j)
 
   unfold covariantDeriv curvatureSl2c
-  
+
   rw [partialDerivSl2c_add (fun p => partialDerivSl2c σ (A.val ν) p - partialDerivSl2c ν (A.val σ) p) (fun p => ⁅A.val σ p, A.val ν p⁆) ρ x (hdSub σ ν) (hdComm σ ν)]
   rw [partialDerivSl2c_add (fun p => partialDerivSl2c ν (A.val ρ) p - partialDerivSl2c ρ (A.val ν) p) (fun p => ⁅A.val ν p, A.val ρ p⁆) σ x (hdSub ν ρ) (hdComm ν ρ)]
   rw [partialDerivSl2c_add (fun p => partialDerivSl2c ρ (A.val σ) p - partialDerivSl2c σ (A.val ρ) p) (fun p => ⁅A.val ρ p, A.val σ p⁆) ν x (hdSub ρ σ) (hdComm ρ σ)]
@@ -61,17 +61,17 @@ theorem bianchiIdentity (A : Sl2cGaugeField)
   rw [partialDerivSl2c_bracket (A.val σ) (A.val ν) ρ x (hdA σ) (hdA ν)]
   rw [partialDerivSl2c_bracket (A.val ν) (A.val ρ) σ x (hdA ν) (hdA ρ)]
   rw [partialDerivSl2c_bracket (A.val ρ) (A.val σ) ν x (hdA ρ) (hdA σ)]
-  
+
   have h_comm1 : partialDerivSl2c ρ (fun p => partialDerivSl2c σ (A.val ν) p) x = partialDerivSl2c σ (fun p => partialDerivSl2c ρ (A.val ν) p) x := partialDerivSl2c_commutes A.val ν ρ σ x (h_smooth ν)
   have h_comm2 : partialDerivSl2c ρ (fun p => partialDerivSl2c ν (A.val σ) p) x = partialDerivSl2c ν (fun p => partialDerivSl2c ρ (A.val σ) p) x := partialDerivSl2c_commutes A.val σ ρ ν x (h_smooth σ)
   have h_comm3 : partialDerivSl2c σ (fun p => partialDerivSl2c ν (A.val ρ) p) x = partialDerivSl2c ν (fun p => partialDerivSl2c σ (A.val ρ) p) x := partialDerivSl2c_commutes A.val ρ σ ν x (h_smooth ρ)
-  
+
   have h_anti1 : ⁅partialDerivSl2c ρ (A.val σ) x, A.val ν x⁆ = - ⁅A.val ν x, partialDerivSl2c ρ (A.val σ) x⁆ := bracket_anti _ _
   have h_anti2 : ⁅partialDerivSl2c σ (A.val ν) x, A.val ρ x⁆ = - ⁅A.val ρ x, partialDerivSl2c σ (A.val ν) x⁆ := bracket_anti _ _
   have h_anti3 : ⁅partialDerivSl2c ν (A.val ρ) x, A.val σ x⁆ = - ⁅A.val σ x, partialDerivSl2c ν (A.val ρ) x⁆ := bracket_anti _ _
-  
+
   rw [h_comm1, h_comm2, h_comm3, h_anti1, h_anti2, h_anti3]
-  
+
   simp only [bracket_add, bracket_sub]
 
   have jacobi : ⁅A.val ρ x, ⁅A.val σ x, A.val ν x⁆⁆ + ⁅A.val σ x, ⁅A.val ν x, A.val ρ x⁆⁆ + ⁅A.val ν x, ⁅A.val ρ x, A.val σ x⁆⁆ = 0 := bracket_jacobi (A.val ρ x) (A.val σ x) (A.val ν x)

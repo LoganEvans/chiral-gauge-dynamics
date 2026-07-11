@@ -42,7 +42,7 @@ lemma su2_matrix_prop (a b : ℂ) (h : a * star a + b * star b = 1) :
     change a * star a - b * (-star b) = 1
     calc a * star a - b * (-star b) = a * star a + b * star b := by ring
       _ = 1 := h
-      
+
   have h_mul : M * M.conjTranspose = 1 := by
     ext i j
     rw [Matrix.mul_apply, Fin.sum_univ_two]
@@ -71,7 +71,7 @@ lemma su2_matrix_prop (a b : ℂ) (h : a * star a + b * star b = 1) :
       rw [star_neg, star_star, star_star]
       calc (-star b) * (-b) + star a * a = a * star a + b * star b := by ring
         _ = 1 := h
-        
+
   exact ⟨h_mul, h_det⟩
 
 noncomputable def bpstAsymptoticMap (x : S3) : SU2Group := by
@@ -92,7 +92,7 @@ noncomputable def bpstAsymptoticMap (x : S3) : SU2Group := by
 
   let M : Matrix (Fin 2) (Fin 2) ℂ := !![a, b; -star b, star a]
   have h_prop : M * M.conjTranspose = 1 ∧ M.det = 1 := su2_matrix_prop a b h_sum
-  
+
   exact ⟨M, h_prop⟩
 
 noncomputable def su2ToS3 (M : SU2Group) : S3 :=
@@ -100,14 +100,14 @@ noncomputable def su2ToS3 (M : SU2Group) : S3 :=
   let x1 := - (M.val 1 0).im
   let x2 := (M.val 1 0).re
   let x3 := - (M.val 0 0).im
-  Subtype.mk (fun i => if i = 0 then x0 else if i = 1 then x1 else if i = 2 then x2 else x3) (by 
+  Subtype.mk (fun i => if i = 0 then x0 else if i = 1 then x1 else if i = 2 then x2 else x3) (by
     have h1 : M.val * M.val.conjTranspose = 1 := M.property.1
     have h2 : M.val.conjTranspose * M.val = 1 := mul_eq_one_comm.mp h1
     have h3 : (M.val.conjTranspose * M.val) 0 0 = (1 : Matrix (Fin 2) (Fin 2) ℂ) 0 0 := by rw [h2]
     have h_eq_trace : star (M.val 0 0) * M.val 0 0 + star (M.val 1 0) * M.val 1 0 = (M.val.conjTranspose * M.val) 0 0 := by
       simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, Fin.sum_univ_two]
     have h4 : (M.val 0 0).re ^ 2 + (M.val 0 0).im ^ 2 + (M.val 1 0).re ^ 2 + (M.val 1 0).im ^ 2 = 1 := by
-      calc (M.val 0 0).re ^ 2 + (M.val 0 0).im ^ 2 + (M.val 1 0).re ^ 2 + (M.val 1 0).im ^ 2 
+      calc (M.val 0 0).re ^ 2 + (M.val 0 0).im ^ 2 + (M.val 1 0).re ^ 2 + (M.val 1 0).im ^ 2
         _ = (star (M.val 0 0) * M.val 0 0 + star (M.val 1 0) * M.val 1 0).re := by
           simp only [Complex.add_re, Complex.mul_re, Complex.star_def, Complex.conj_re, Complex.conj_im]
           ring
@@ -162,7 +162,7 @@ theorem right_inv_su2_s3 (M : SU2Group) : bpstAsymptoticMap (su2ToS3 M) = M := b
     rw [h_conj] at h_eq
     have h_eq2 : - M.val 0 1 = star (M.val 1 0) := h_eq
     linear_combination -h_eq2
-  
+
   apply Subtype.ext
   ext i j
   fin_cases i <;> fin_cases j
@@ -327,19 +327,19 @@ lemma toSl2c_val_eq (M : Matrix (Fin 2) (Fin 2) ℂ) (h : M.trace = 0) : (toSl2c
   exact sub_zero M
 
 -- Base Pauli Traces (Evaluated by expanding the trace sum, then asserting the values natively)
-lemma sigmaX_trace : sigmaX.trace = 0 := by 
+lemma sigmaX_trace : sigmaX.trace = 0 := by
   dsimp [Matrix.trace, Matrix.diag]
   rw [Fin.sum_univ_two]
   change (0 : ℂ) + (0 : ℂ) = 0
   ring
 
-lemma sigmaY_trace : sigmaY.trace = 0 := by 
+lemma sigmaY_trace : sigmaY.trace = 0 := by
   dsimp [Matrix.trace, Matrix.diag]
   rw [Fin.sum_univ_two]
   change (0 : ℂ) + (0 : ℂ) = 0
   ring
 
-lemma sigmaZ_trace : sigmaZ.trace = 0 := by 
+lemma sigmaZ_trace : sigmaZ.trace = 0 := by
   dsimp [Matrix.trace, Matrix.diag]
   rw [Fin.sum_univ_two]
   change (1 : ℂ) + (-1 : ℂ) = 0
@@ -379,7 +379,7 @@ lemma eval_bpst_trace_0 (v : S3) :
     ((Complex.I / 2 : ℂ) * (-(v.val 0 : ℂ) * sigmaX 1 0 - (v.val 3 : ℂ) * sigmaY 1 0 + (v.val 2 : ℂ) * sigmaZ 1 0)) * (Complex.I * sigmaX 0 1) +
     ((Complex.I / 2 : ℂ) * (-(v.val 0 : ℂ) * sigmaX 1 1 - (v.val 3 : ℂ) * sigmaY 1 1 + (v.val 2 : ℂ) * sigmaZ 1 1)) * (Complex.I * sigmaX 1 1)
   ).re = v.val 0
-  
+
   have h_comp : (
     ((Complex.I / 2 : ℂ) * (-(v.val 0 : ℂ) * sigmaX 0 0 - (v.val 3 : ℂ) * sigmaY 0 0 + (v.val 2 : ℂ) * sigmaZ 0 0)) * (Complex.I * sigmaX 0 0) +
     ((Complex.I / 2 : ℂ) * (-(v.val 0 : ℂ) * sigmaX 0 1 - (v.val 3 : ℂ) * sigmaY 0 1 + (v.val 2 : ℂ) * sigmaZ 0 1)) * (Complex.I * sigmaX 1 0) +
@@ -416,7 +416,7 @@ lemma eval_bpst_trace_1 (v : S3) :
     ((Complex.I / 2 : ℂ) * ((v.val 1 : ℂ) * sigmaX 1 0 + (v.val 2 : ℂ) * sigmaY 1 0 + (v.val 3 : ℂ) * sigmaZ 1 0)) * (Complex.I * sigmaX 0 1) +
     ((Complex.I / 2 : ℂ) * ((v.val 1 : ℂ) * sigmaX 1 1 + (v.val 2 : ℂ) * sigmaY 1 1 + (v.val 3 : ℂ) * sigmaZ 1 1)) * (Complex.I * sigmaX 1 1)
   ).re = v.val 1
-  
+
   have h_comp : (
     ((Complex.I / 2 : ℂ) * ((v.val 1 : ℂ) * sigmaX 0 0 + (v.val 2 : ℂ) * sigmaY 0 0 + (v.val 3 : ℂ) * sigmaZ 0 0)) * (Complex.I * sigmaX 0 0) +
     ((Complex.I / 2 : ℂ) * ((v.val 1 : ℂ) * sigmaX 0 1 + (v.val 2 : ℂ) * sigmaY 0 1 + (v.val 3 : ℂ) * sigmaZ 0 1)) * (Complex.I * sigmaX 1 0) +
@@ -454,7 +454,7 @@ lemma eval_bpst_trace_2 (v : S3) :
     ((Complex.I / 2 : ℂ) * ((v.val 1 : ℂ) * sigmaX 1 0 + (v.val 2 : ℂ) * sigmaY 1 0 + (v.val 3 : ℂ) * sigmaZ 1 0)) * (Complex.I * sigmaY 0 1) +
     ((Complex.I / 2 : ℂ) * ((v.val 1 : ℂ) * sigmaX 1 1 + (v.val 2 : ℂ) * sigmaY 1 1 + (v.val 3 : ℂ) * sigmaZ 1 1)) * (Complex.I * sigmaY 1 1)
   ).re = v.val 2
-  
+
   have h_comp : (
     ((Complex.I / 2 : ℂ) * ((v.val 1 : ℂ) * sigmaX 0 0 + (v.val 2 : ℂ) * sigmaY 0 0 + (v.val 3 : ℂ) * sigmaZ 0 0)) * (Complex.I * sigmaY 0 0) +
     ((Complex.I / 2 : ℂ) * ((v.val 1 : ℂ) * sigmaX 0 1 + (v.val 2 : ℂ) * sigmaY 0 1 + (v.val 3 : ℂ) * sigmaZ 0 1)) * (Complex.I * sigmaY 1 0) +
@@ -495,7 +495,7 @@ lemma eval_bpst_trace_3 (v : S3) :
     ((Complex.I / 2 : ℂ) * ((v.val 1 : ℂ) * sigmaX 1 0 + (v.val 2 : ℂ) * sigmaY 1 0 + (v.val 3 : ℂ) * sigmaZ 1 0)) * (Complex.I * sigmaZ 0 1) +
     ((Complex.I / 2 : ℂ) * ((v.val 1 : ℂ) * sigmaX 1 1 + (v.val 2 : ℂ) * sigmaY 1 1 + (v.val 3 : ℂ) * sigmaZ 1 1)) * (Complex.I * sigmaZ 1 1)
   ).re = v.val 3
-  
+
   have h_comp : (
     ((Complex.I / 2 : ℂ) * ((v.val 1 : ℂ) * sigmaX 0 0 + (v.val 2 : ℂ) * sigmaY 0 0 + (v.val 3 : ℂ) * sigmaZ 0 0)) * (Complex.I * sigmaZ 0 0) +
     ((Complex.I / 2 : ℂ) * ((v.val 1 : ℂ) * sigmaX 0 1 + (v.val 2 : ℂ) * sigmaY 0 1 + (v.val 3 : ℂ) * sigmaZ 0 1)) * (Complex.I * sigmaZ 1 0) +
@@ -607,41 +607,41 @@ def isHomotopicConnection (A0 A1 : Fin 4 → SpacetimePoint → SL2C) : Prop :=
 Establishes the absolute topological stability of the instanton configuration. Because the boundary mapping of the instanton constitutes a topological homeomorphism to the SU(2) gauge group, its Cartan-Maurer mapping degree must be strictly non-zero. Consequently, the state is topologically protected and cannot continuously decay into the trivial vacuum.
 -/
 @[litlib_track "Topological Stability of the Instanton"]
-theorem kinematicTopologicalStability 
+theorem kinematicTopologicalStability
   (windingNumber : (S3 → SU2Group) → ℤ)
   (cartanMaurerIntegral : (S3 → SU2Group) → ℝ)
-  [tc : CartanMaurerTopology (S3 → SU2Group) Continuous windingNumber cartanMaurerIntegral] 
+  [tc : CartanMaurerTopology (S3 → SU2Group) Continuous windingNumber cartanMaurerIntegral]
   [belavin : Eq8 S3 SU2Group Continuous windingNumber cartanMaurerIntegral]
   (integral_zero : cartanMaurerIntegral 1 = 0) :
   ¬ isHomotopicConnection bpstInstanton 0 := by
   intro h_homotopy
   rcases h_homotopy with ⟨H, hH0, hH1, hHCont, hHBoundCont⟩
-  
+
   have h_wind_eq := tc.homotopyInvariance (fun t => geometricBoundaryProjection (H t)) hHBoundCont 0 1
-  
+
   have h0_eq : H 0 = bpstInstanton := by funext mu x; exact hH0 mu x
   have h1_eq : H 1 = 0 := by funext mu x; exact hH1 mu x
-  
+
   have h_wind_0 : windingNumber (geometricBoundaryProjection (H 0)) = windingNumber bpstAsymptoticMap := by
     rw [h0_eq, geometricBoundaryProjection_bpstInstanton]
-    
+
   have h_wind_1 : windingNumber (geometricBoundaryProjection (H 1)) = 0 := by
     rw [h1_eq, geometricBoundaryProjection_zero]
     have h_const_cont : Continuous (1 : S3 → SU2Group) := continuous_const
     have h_thm := tc.degreeTheorem 1 h_const_cont
     rw [integral_zero] at h_thm
     exact_mod_cast h_thm.symm
-    
+
   rw [h_wind_0, h_wind_1] at h_wind_eq
-  
+
   have h_deg := belavin.degree_of_homeomorph bpstAsymptoticMap bpst_is_homeomorphism
-  
+
   cases h_deg with
-  | inl h_pos => 
+  | inl h_pos =>
     rw [h_pos] at h_wind_eq
     have h_false : (1 : ℤ) = 0 := h_wind_eq
     norm_num at h_false
-  | inr h_neg => 
+  | inr h_neg =>
     rw [h_neg] at h_wind_eq
     have h_false : (-1 : ℤ) = 0 := h_wind_eq
     norm_num at h_false

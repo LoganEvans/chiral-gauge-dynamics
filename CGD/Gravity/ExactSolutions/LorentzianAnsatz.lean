@@ -24,7 +24,7 @@ noncomputable def exactLorentzianField (mu : Fin 4) (x : SpacetimePoint) : SL2C 
 lemma exactLorentzian_smooth (mu : Fin 4) (i j : Fin 2) : ContDiff ℝ ⊤ (fun x : SpacetimePoint => (exactLorentzianField mu x).val i j) := by
   dsimp [exactLorentzianField, exactLorentzianL]
   split_ifs with h1 h2 h3
-  · let L : SpacetimePoint →L[ℝ] ℂ := 
+  · let L : SpacetimePoint →L[ℝ] ℂ :=
       (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 0) (-sigmaX i j)) +
       (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 3) (((Complex.I / 2) • sigmaY) i j)) -
       (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 2) (((Complex.I / 2) • sigmaZ) i j))
@@ -33,12 +33,12 @@ lemma exactLorentzian_smooth (mu : Fin 4) (i j : Fin 2) : ContDiff ℝ ⊤ (fun 
       have h_tr : Matrix.trace (- (x 0 : ℝ) • sigmaX + (x 3 : ℝ) • ((Complex.I / 2) • sigmaY) - (x 2 : ℝ) • ((Complex.I / 2) • sigmaZ)) = 0 := by
         unfold Matrix.trace Matrix.diag sigmaX sigmaY sigmaZ mkMat; simp [Fin.sum_univ_two]
       rw [toSl2c_val_eq _ h_tr]
-      change (- (x 0 : ℝ) • sigmaX + (x 3 : ℝ) • ((Complex.I / 2) • sigmaY) - (x 2 : ℝ) • ((Complex.I / 2) • sigmaZ)) i j = 
+      change (- (x 0 : ℝ) • sigmaX + (x 3 : ℝ) • ((Complex.I / 2) • sigmaY) - (x 2 : ℝ) • ((Complex.I / 2) • sigmaZ)) i j =
         (x 0 : ℝ) • (-sigmaX i j) + (x 3 : ℝ) • (((Complex.I / 2) • sigmaY) i j) - (x 2 : ℝ) • (((Complex.I / 2) • sigmaZ) i j)
       simp [Matrix.add_apply, Matrix.sub_apply, Matrix.smul_apply, Matrix.neg_apply]
     rw [h_eq]
     exact ContinuousLinearMap.contDiff L
-  · let L : SpacetimePoint →L[ℝ] ℂ := 
+  · let L : SpacetimePoint →L[ℝ] ℂ :=
       (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 0) (-sigmaY i j)) +
       (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 1) (((Complex.I / 2) • sigmaZ) i j)) -
       (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 3) (((Complex.I / 2) • sigmaX) i j))
@@ -47,12 +47,12 @@ lemma exactLorentzian_smooth (mu : Fin 4) (i j : Fin 2) : ContDiff ℝ ⊤ (fun 
       have h_tr : Matrix.trace (- (x 0 : ℝ) • sigmaY + (x 1 : ℝ) • ((Complex.I / 2) • sigmaZ) - (x 3 : ℝ) • ((Complex.I / 2) • sigmaX)) = 0 := by
         unfold Matrix.trace Matrix.diag sigmaX sigmaY sigmaZ mkMat; simp [Fin.sum_univ_two]
       rw [toSl2c_val_eq _ h_tr]
-      change (- (x 0 : ℝ) • sigmaY + (x 1 : ℝ) • ((Complex.I / 2) • sigmaZ) - (x 3 : ℝ) • ((Complex.I / 2) • sigmaX)) i j = 
+      change (- (x 0 : ℝ) • sigmaY + (x 1 : ℝ) • ((Complex.I / 2) • sigmaZ) - (x 3 : ℝ) • ((Complex.I / 2) • sigmaX)) i j =
         (x 0 : ℝ) • (-sigmaY i j) + (x 1 : ℝ) • (((Complex.I / 2) • sigmaZ) i j) - (x 3 : ℝ) • (((Complex.I / 2) • sigmaX) i j)
       simp [Matrix.add_apply, Matrix.sub_apply, Matrix.smul_apply, Matrix.neg_apply]
     rw [h_eq]
     exact ContinuousLinearMap.contDiff L
-  · let L : SpacetimePoint →L[ℝ] ℂ := 
+  · let L : SpacetimePoint →L[ℝ] ℂ :=
       (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 0) (-sigmaZ i j)) +
       (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 2) (((Complex.I / 2) • sigmaX) i j)) -
       (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 1) (((Complex.I / 2) • sigmaY) i j))
@@ -61,7 +61,7 @@ lemma exactLorentzian_smooth (mu : Fin 4) (i j : Fin 2) : ContDiff ℝ ⊤ (fun 
       have h_tr : Matrix.trace (- (x 0 : ℝ) • sigmaZ + (x 2 : ℝ) • ((Complex.I / 2) • sigmaX) - (x 1 : ℝ) • ((Complex.I / 2) • sigmaY)) = 0 := by
         unfold Matrix.trace Matrix.diag sigmaX sigmaY sigmaZ mkMat; simp [Fin.sum_univ_two]
       rw [toSl2c_val_eq _ h_tr]
-      change (- (x 0 : ℝ) • sigmaZ + (x 2 : ℝ) • ((Complex.I / 2) • sigmaX) - (x 1 : ℝ) • ((Complex.I / 2) • sigmaY)) i j = 
+      change (- (x 0 : ℝ) • sigmaZ + (x 2 : ℝ) • ((Complex.I / 2) • sigmaX) - (x 1 : ℝ) • ((Complex.I / 2) • sigmaY)) i j =
         (x 0 : ℝ) • (-sigmaZ i j) + (x 2 : ℝ) • (((Complex.I / 2) • sigmaX) i j) - (x 1 : ℝ) • (((Complex.I / 2) • sigmaY) i j)
       simp [Matrix.add_apply, Matrix.sub_apply, Matrix.smul_apply, Matrix.neg_apply]
     rw [h_eq]
@@ -69,15 +69,15 @@ lemma exactLorentzian_smooth (mu : Fin 4) (i j : Fin 2) : ContDiff ℝ ⊤ (fun 
   · exact contDiff_const
 
 noncomputable def L_0 : SpacetimePoint →L[ℝ] Matrix (Fin 2) (Fin 2) ℂ := 0
-noncomputable def L_1 : SpacetimePoint →L[ℝ] Matrix (Fin 2) (Fin 2) ℂ := 
+noncomputable def L_1 : SpacetimePoint →L[ℝ] Matrix (Fin 2) (Fin 2) ℂ :=
   (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 0) (-sigmaX)) +
   (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 3) ((Complex.I / 2) • sigmaY)) -
   (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 2) ((Complex.I / 2) • sigmaZ))
-noncomputable def L_2 : SpacetimePoint →L[ℝ] Matrix (Fin 2) (Fin 2) ℂ := 
+noncomputable def L_2 : SpacetimePoint →L[ℝ] Matrix (Fin 2) (Fin 2) ℂ :=
   (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 0) (-sigmaY)) +
   (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 1) ((Complex.I / 2) • sigmaZ)) -
   (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 3) ((Complex.I / 2) • sigmaX))
-noncomputable def L_3 : SpacetimePoint →L[ℝ] Matrix (Fin 2) (Fin 2) ℂ := 
+noncomputable def L_3 : SpacetimePoint →L[ℝ] Matrix (Fin 2) (Fin 2) ℂ :=
   (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 0) (-sigmaZ)) +
   (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 2) ((Complex.I / 2) • sigmaX)) -
   (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 1) ((Complex.I / 2) • sigmaY))
@@ -116,7 +116,7 @@ lemma partialDeriv_L_map (mu k : Fin 4) (x : SpacetimePoint) (i j : Fin 2) :
   partialDeriv k (fun p => L_map mu p i j) x = L_map mu (Pi.single k 1) i j := by
   unfold L_map
   split_ifs with h1 h2 h3
-  · let L : SpacetimePoint →L[ℝ] ℂ := 
+  · let L : SpacetimePoint →L[ℝ] ℂ :=
       (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 0) (-sigmaX i j)) +
       (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 3) (((Complex.I / 2) • sigmaY) i j)) -
       (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 2) (((Complex.I / 2) • sigmaZ) i j))
@@ -127,7 +127,7 @@ lemma partialDeriv_L_map (mu k : Fin 4) (x : SpacetimePoint) (i j : Fin 2) :
       simp [Matrix.add_apply, Matrix.sub_apply, Matrix.smul_apply, Matrix.neg_apply]
     rw [h_eq]
     exact partialDeriv_cL L k x
-  · let L : SpacetimePoint →L[ℝ] ℂ := 
+  · let L : SpacetimePoint →L[ℝ] ℂ :=
       (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 0) (-sigmaY i j)) +
       (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 1) (((Complex.I / 2) • sigmaZ) i j)) -
       (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 3) (((Complex.I / 2) • sigmaX) i j))
@@ -138,7 +138,7 @@ lemma partialDeriv_L_map (mu k : Fin 4) (x : SpacetimePoint) (i j : Fin 2) :
       simp [Matrix.add_apply, Matrix.sub_apply, Matrix.smul_apply, Matrix.neg_apply]
     rw [h_eq]
     exact partialDeriv_cL L k x
-  · let L : SpacetimePoint →L[ℝ] ℂ := 
+  · let L : SpacetimePoint →L[ℝ] ℂ :=
       (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 0) (-sigmaZ i j)) +
       (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 2) (((Complex.I / 2) • sigmaX) i j)) -
       (ContinuousLinearMap.smulRight (ContinuousLinearMap.proj 1) (((Complex.I / 2) • sigmaY) i j))
@@ -346,11 +346,11 @@ lemma cgdAdjointCurvature_eval (u : Universe) (mu nu : Fin 4)
   cgdAdjointCurvature u mu nu origin = adj_F mu nu := by
   have h_def : cgdAdjointCurvature u mu nu origin = extractAdjoint (curvatureSl2c u.sd_sector mu nu origin).val := rfl
   rw [h_def]
-  
-  have h_sd_full : u.sd_sector = { val := exactLorentzianField, is_smooth := exactLorentzian_smooth } := 
+
+  have h_sd_full : u.sd_sector = { val := exactLorentzianField, is_smooth := exactLorentzian_smooth } :=
     gauge_field_eq u.sd_sector exactLorentzianField exactLorentzian_smooth h_sd
   rw [h_sd_full]
-  
+
   rw [curvature_origin_eq mu nu]
   rw [c_F_mat_eval mu nu]
   rw [toSl2c_val_eq (F_origin_val mu nu) (F_origin_val_trace mu nu)]

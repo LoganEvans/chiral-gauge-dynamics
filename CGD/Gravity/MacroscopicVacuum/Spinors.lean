@@ -24,7 +24,7 @@ namespace CGD.Gravity
 /-- Summation over the 2-component spinor index -/
 def sumFin2 (f : Fin 2 → ℂ) : ℂ := f 0 + f 1
 
-/-- 
+/--
 The fully antisymmetric spinor metric (Levi-Civita symbol for SL(2,C) spinors).
 This mathematically anchors the internal geometry of the Capovilla framework.
 -/
@@ -37,9 +37,9 @@ def cgd_eps2_down (A B : Fin 2) : ℂ :=
 lemma cgd_eps2_down_anti (A B : Fin 2) : cgd_eps2_down A B = - cgd_eps2_down B A := by
   fin_cases A <;> fin_cases B <;> simp [cgd_eps2_down]
 
-/-- 
+/--
 The conjugate antisymmetric spinor metric.
-In the complexified CDJ GR framework, the conjugate metric is structurally 
+In the complexified CDJ GR framework, the conjugate metric is structurally
 identical to the primary spinor metric.
 -/
 def cgd_eps2_bar_down (A' B' : Fin 2) : ℂ :=
@@ -131,23 +131,23 @@ lemma contract_base_reduction (I J : Fin 4) :
 
 /--
 The crucial geometric property of the Infeld-van der Waerden symbols:
-Contracting them with the antisymmetric spinor metrics strictly yields the 
-internal Euclidean Kronecker delta. This algebraically anchors the spacetime metric 
+Contracting them with the antisymmetric spinor metrics strictly yields the
+internal Euclidean Kronecker delta. This algebraically anchors the spacetime metric
 without relying on unproven axioms.
 -/
 lemma cgd_sigma_spinor_contract (I J : Fin 4) :
   sumFin2 (fun A => sumFin2 (fun B => sumFin2 (fun A' => sumFin2 (fun B' =>
     cgd_eps2_down A B * cgd_eps2_bar_down A' B' * cgd_sigma_spinor I A A' * cgd_sigma_spinor J B B')))) =
   if I = J then 1 else 0 := by
-  
+
   have h1 : (sumFin2 (fun A => sumFin2 (fun B => sumFin2 (fun A' => sumFin2 (fun B' =>
-    cgd_eps2_down A B * cgd_eps2_bar_down A' B' * cgd_sigma_spinor I A A' * cgd_sigma_spinor J B B'))))) = 
+    cgd_eps2_down A B * cgd_eps2_bar_down A' B' * cgd_sigma_spinor I A A' * cgd_sigma_spinor J B B'))))) =
     sumFin2 (fun A => sumFin2 (fun B => sumFin2 (fun A' => sumFin2 (fun B' =>
     cgd_contract_term I J A B A' B')))) := rfl
   rw [h1]
   rw [contract_expansion I J]
   rw [contract_base_reduction I J]
-  
+
   have h_base : contract_base_sum I J = if I = J then 2 else 0 := by
     fin_cases I <;> fin_cases J
     all_goals {
@@ -197,19 +197,19 @@ lemma term_eq (e : TetradField) (x : SpacetimePoint) (μ ν : Fin 4) (A B A' B' 
   ring
 
 lemma push_sums_out (e : TetradField) (x : SpacetimePoint) (μ ν : Fin 4) :
-  sumFin2 (fun A => sumFin2 (fun B => sumFin2 (fun A' => sumFin2 (fun B' => 
+  sumFin2 (fun A => sumFin2 (fun B => sumFin2 (fun A' => sumFin2 (fun B' =>
     ∑ I : Fin 4, ∑ J : Fin 4, e I μ x * e J ν x * cgd_contract_term I J A B A' B')))) =
-  ∑ I : Fin 4, ∑ J : Fin 4, e I μ x * e J ν x * 
+  ∑ I : Fin 4, ∑ J : Fin 4, e I μ x * e J ν x *
     sumFin2 (fun A => sumFin2 (fun B => sumFin2 (fun A' => sumFin2 (fun B' => cgd_contract_term I J A B A' B')))) := by
   unfold sumFin2
   simp only [Finset.sum_add_distrib, mul_add]
 
 lemma collapse_J (e : TetradField) (x : SpacetimePoint) (μ ν : Fin 4) (I : Fin 4) :
   (∑ J : Fin 4, e I μ x * e J ν x * (if I = J then 1 else 0 : ℂ)) = e I μ x * e I ν x := by
-  have h_sum_4 : (∑ J : Fin 4, e I μ x * e J ν x * (if I = J then 1 else 0 : ℂ)) = 
-    e I μ x * e 0 ν x * (if I = (0 : Fin 4) then 1 else 0 : ℂ) + 
-    e I μ x * e 1 ν x * (if I = (1 : Fin 4) then 1 else 0 : ℂ) + 
-    e I μ x * e 2 ν x * (if I = (2 : Fin 4) then 1 else 0 : ℂ) + 
+  have h_sum_4 : (∑ J : Fin 4, e I μ x * e J ν x * (if I = J then 1 else 0 : ℂ)) =
+    e I μ x * e 0 ν x * (if I = (0 : Fin 4) then 1 else 0 : ℂ) +
+    e I μ x * e 1 ν x * (if I = (1 : Fin 4) then 1 else 0 : ℂ) +
+    e I μ x * e 2 ν x * (if I = (2 : Fin 4) then 1 else 0 : ℂ) +
     e I μ x * e 3 ν x * (if I = (3 : Fin 4) then 1 else 0 : ℂ) := Fin.sum_univ_four (fun J => e I μ x * e J ν x * (if I = J then 1 else 0 : ℂ))
   rw [h_sum_4]
   fin_cases I <;> simp <;> ring
@@ -222,39 +222,39 @@ lemma collapse_IJ (e : TetradField) (x : SpacetimePoint) (μ ν : Fin 4) :
   exact collapse_J e x μ ν I
 
 /--
-A core translation identity of the Capovilla framework: The macroscopic Unimodular 
-metric is exactly and rigorously recovered by contracting the dynamic tetrad-soldered 
+A core translation identity of the Capovilla framework: The macroscopic Unimodular
+metric is exactly and rigorously recovered by contracting the dynamic tetrad-soldered
 spinor 1-forms with the Levi-Civita spinor metrics.
 -/
 theorem cgd_theta_recovers_metric (e : TetradField) (x : SpacetimePoint) (μ ν : Fin 4) :
   sumFin2 (fun A => sumFin2 (fun B => sumFin2 (fun A' => sumFin2 (fun B' =>
     cgd_eps2_down A B * cgd_eps2_bar_down A' B' * cgd_theta e x μ A A' * cgd_theta e x ν B B')))) =
   metricFromTetrad e μ ν x := by
-  
+
   have h_sub : sumFin2 (fun A => sumFin2 (fun B => sumFin2 (fun A' => sumFin2 (fun B' =>
     cgd_eps2_down A B * cgd_eps2_bar_down A' B' * cgd_theta e x μ A A' * cgd_theta e x ν B B')))) =
     sumFin2 (fun A => sumFin2 (fun B => sumFin2 (fun A' => sumFin2 (fun B' =>
     ∑ I : Fin 4, ∑ J : Fin 4, e I μ x * e J ν x * cgd_contract_term I J A B A' B')))) := by
     simp only [term_eq e x μ ν]
-    
+
   rw [h_sub]
   rw [push_sums_out]
-  
-  have h_contract : ∀ I J, sumFin2 (fun A => sumFin2 (fun B => sumFin2 (fun A' => sumFin2 (fun B' => 
+
+  have h_contract : ∀ I J, sumFin2 (fun A => sumFin2 (fun B => sumFin2 (fun A' => sumFin2 (fun B' =>
     cgd_contract_term I J A B A' B')))) = if I = J then 1 else 0 := by
     intro I J
     exact cgd_sigma_spinor_contract I J
-    
-  have h_eval : (∑ I : Fin 4, ∑ J : Fin 4, e I μ x * e J ν x * 
+
+  have h_eval : (∑ I : Fin 4, ∑ J : Fin 4, e I μ x * e J ν x *
     sumFin2 (fun A => sumFin2 (fun B => sumFin2 (fun A' => sumFin2 (fun B' => cgd_contract_term I J A B A' B'))))) =
     ∑ I : Fin 4, ∑ J : Fin 4, e I μ x * e J ν x * (if I = J then 1 else 0 : ℂ) := by
     apply Finset.sum_congr rfl; intro I _
     apply Finset.sum_congr rfl; intro J _
     rw [h_contract I J]
-    
+
   rw [h_eval]
   rw [collapse_IJ]
-  
+
   unfold metricFromTetrad
   rfl
 
@@ -263,16 +263,16 @@ The dynamic self-dual soldering 2-form.
 Constructed exactly as $\Sigma_{\mu\nu}^{AB} = \frac{1}{2} \epsilon_{A'B'} \theta_{[\mu}^{AA'} \theta_{\nu]}^{BB'}$.
 -/
 noncomputable def cgd_Sigma (e : TetradField) (x : SpacetimePoint) (μ ν : Fin 4) (A B : Fin 2) : ℂ :=
-  (1 / 2 : ℂ) * sumFin2 fun A' => sumFin2 fun B' => 
+  (1 / 2 : ℂ) * sumFin2 fun A' => sumFin2 fun B' =>
     cgd_eps2_bar_down A' B' * (cgd_theta e x μ A A' * cgd_theta e x ν B B' - cgd_theta e x ν A A' * cgd_theta e x μ B B')
 
 /-- The soldering forms are strictly antisymmetric in spacetime indices. -/
 lemma cgd_Sigma_antisymm_spacetime (e : TetradField) (x : SpacetimePoint) (μ ν : Fin 4) (A B : Fin 2) :
   cgd_Sigma e x μ ν A B = - cgd_Sigma e x ν μ A B := by
   unfold cgd_Sigma
-  have h : (sumFin2 fun A' => sumFin2 fun B' => 
+  have h : (sumFin2 fun A' => sumFin2 fun B' =>
     cgd_eps2_bar_down A' B' * (cgd_theta e x μ A A' * cgd_theta e x ν B B' - cgd_theta e x ν A A' * cgd_theta e x μ B B')) =
-    - (sumFin2 fun A' => sumFin2 fun B' => 
+    - (sumFin2 fun A' => sumFin2 fun B' =>
     cgd_eps2_bar_down A' B' * (cgd_theta e x ν A A' * cgd_theta e x μ B B' - cgd_theta e x μ A A' * cgd_theta e x ν B B')) := by
     unfold sumFin2
     ring
@@ -280,9 +280,9 @@ lemma cgd_Sigma_antisymm_spacetime (e : TetradField) (x : SpacetimePoint) (μ ν
   ring
 
 /--
-A fundamental algebraic anchor of the Capovilla framework: The self-dual soldering 
+A fundamental algebraic anchor of the Capovilla framework: The self-dual soldering
 forms are completely symmetric in their SL(2,C) spinor indices ($\Sigma^{AB} = \Sigma^{BA}$).
-This converts the $SO(1,3)$ structure directly into the Adjoint SU(2) representation, 
+This converts the $SO(1,3)$ structure directly into the Adjoint SU(2) representation,
 bridging the geometric gap between Unimodular gravity and Yang-Mills.
 -/
 lemma cgd_Sigma_symm_spinor (e : TetradField) (x : SpacetimePoint) (μ ν : Fin 4) (A B : Fin 2) :

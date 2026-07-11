@@ -9,17 +9,17 @@ open Complex Matrix
 
 namespace CGD.Foundations
 
-lemma sum_fin_2_expand {M} [AddCommMonoid M] (f : Fin 2 → M) : 
+lemma sum_fin_2_expand {M} [AddCommMonoid M] (f : Fin 2 → M) :
   (∑ i : Fin 2, f i) = f 0 + f 1 := by
   rw [Fin.sum_univ_succ, Fin.sum_univ_succ, Fin.sum_univ_zero, add_zero]
   rfl
 
-lemma sum_fin_3_expand {M} [AddCommMonoid M] (f : Fin 3 → M) : 
+lemma sum_fin_3_expand {M} [AddCommMonoid M] (f : Fin 3 → M) :
   (∑ i : Fin 3, f i) = f 0 + f 1 + f 2 := by
   rw [Fin.sum_univ_succ, Fin.sum_univ_succ, Fin.sum_univ_succ, Fin.sum_univ_zero, add_zero, add_assoc]
   rfl
 
-lemma sum_fin_4_expand {M} [AddCommMonoid M] (f : Fin 4 → M) : 
+lemma sum_fin_4_expand {M} [AddCommMonoid M] (f : Fin 4 → M) :
   (∑ i : Fin 4, f i) = f 0 + f 1 + f 2 + f 3 := by
   rw [Fin.sum_univ_succ, Fin.sum_univ_succ, Fin.sum_univ_succ, Fin.sum_univ_succ, Fin.sum_univ_zero]
   simp only [add_zero, add_assoc]
@@ -29,7 +29,7 @@ lemma trace_2x2 (M : Matrix (Fin 2) (Fin 2) ℂ) : Matrix.trace M = M 0 0 + M 1 
   unfold Matrix.trace Matrix.diag
   rw [sum_fin_2_expand]
 
-lemma mul_2x2 (A B : Matrix (Fin 2) (Fin 2) ℂ) (i j : Fin 2) : 
+lemma mul_2x2 (A B : Matrix (Fin 2) (Fin 2) ℂ) (i j : Fin 2) :
   (A * B) i j = A i 0 * B 0 j + A i 1 * B 1 j := by
   change (∑ k : Fin 2, A i k * B k j) = _
   rw [sum_fin_2_expand]

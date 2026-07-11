@@ -32,7 +32,7 @@ open CGD.Gravity
 open CGD.Axioms
 open Complex
 
-noncomputable def solitonSigmaY : Matrix (Fin 2) (Fin 2) ℂ := 
+noncomputable def solitonSigmaY : Matrix (Fin 2) (Fin 2) ℂ :=
   !![0, -Complex.I; Complex.I, 0]
 
 @[litlib_track "Smooth scalar profile removing the singularity"]
@@ -79,7 +79,7 @@ noncomputable def solitonDerivativeVal (mu nu : Fin 4) (x : SpacetimePoint) : Ma
   let isX := Complex.I • sX
   let isY := Complex.I • sY
   let isZ := Complex.I • sZ
-  
+
   if nu = 1 then
     if mu = 0 then -sX
     else if mu = 1 then -(dK_c * x3) • isY + (dK_c * x2) • isZ
@@ -159,11 +159,11 @@ macro "diff_tac" : tactic => `(tactic|
 )
 
 lemma pd_add_apply {f g : SpacetimePoint → ℂ} {mu : Fin 4} {x : SpacetimePoint} (hf : DifferentiableAt ℝ f x) (hg : DifferentiableAt ℝ g x) :
-  partialDeriv mu (fun p => f p + g p) x = partialDeriv mu f x + partialDeriv mu g x := by 
+  partialDeriv mu (fun p => f p + g p) x = partialDeriv mu f x + partialDeriv mu g x := by
   unfold partialDeriv; have h : (fun p => f p + g p) = f + g := rfl; rw [h, fderiv_add hf hg]; rfl
 
 lemma pd_sub_apply {f g : SpacetimePoint → ℂ} {mu : Fin 4} {x : SpacetimePoint} (hf : DifferentiableAt ℝ f x) (hg : DifferentiableAt ℝ g x) :
-  partialDeriv mu (fun p => f p - g p) x = partialDeriv mu f x - partialDeriv mu g x := by 
+  partialDeriv mu (fun p => f p - g p) x = partialDeriv mu f x - partialDeriv mu g x := by
   unfold partialDeriv; have h : (fun p => f p - g p) = f - g := rfl; rw [h, fderiv_sub hf hg]; rfl
 
 lemma pd_mul_apply {f g : SpacetimePoint → ℂ} {mu : Fin 4} {x : SpacetimePoint} (hf : DifferentiableAt ℝ f x) (hg : DifferentiableAt ℝ g x) :
@@ -315,9 +315,9 @@ lemma pd_ansatz_0 (mu : Fin 4) (x : SpacetimePoint) :
 
 lemma pd_neg_p0 (mu : Fin 4) (x : SpacetimePoint) :
   partialDeriv mu (fun p => - (p 0 : ℂ)) x = if mu = 0 then -1 else 0 := by
-  have h1 : partialDeriv mu (fun p => - (p 0 : ℂ)) x = - partialDeriv mu (fun p => (p 0 : ℂ)) x := 
+  have h1 : partialDeriv mu (fun p => - (p 0 : ℂ)) x = - partialDeriv mu (fun p => (p 0 : ℂ)) x :=
     @pd_neg_apply (fun p => (p 0 : ℂ)) mu x (diff_coord_C 0 x)
-  have h2 : partialDeriv mu (fun p => (p 0 : ℂ)) x = if mu = 0 then 1 else 0 := 
+  have h2 : partialDeriv mu (fun p => (p 0 : ℂ)) x = if mu = 0 then 1 else 0 :=
     pd_coord 0 mu x
   simp only [h1, h2]
   fin_cases mu <;> simp
@@ -327,7 +327,7 @@ lemma pd_pos_p0 (mu : Fin 4) (x : SpacetimePoint) :
   exact pd_coord 0 mu x
 
 lemma pd_pos_K_x_I (mu i : Fin 4) (x : SpacetimePoint) :
-  partialDeriv mu (fun p => (solitonK p : ℂ) * (p i : ℂ) * I) x = 
+  partialDeriv mu (fun p => (solitonK p : ℂ) * (p i : ℂ) * I) x =
   ((solitonK x : ℂ) * (if mu = i then 1 else 0) + (dK mu x : ℂ) * (x i : ℂ)) * I := by
   have h_eq : (fun p => (solitonK p : ℂ) * (p i : ℂ) * I) = fun p => ((solitonK p : ℂ) * (p i : ℂ)) * I := by ext p; ring
   rw [h_eq]
@@ -341,7 +341,7 @@ lemma pd_pos_K_x_I (mu i : Fin 4) (x : SpacetimePoint) :
   rw [h_coord, pd_solitonK_C]
 
 lemma pd_neg_K_x_I (mu i : Fin 4) (x : SpacetimePoint) :
-  partialDeriv mu (fun p => -((solitonK p : ℂ) * (p i : ℂ) * I)) x = 
+  partialDeriv mu (fun p => -((solitonK p : ℂ) * (p i : ℂ) * I)) x =
   - (((solitonK x : ℂ) * (if mu = i then 1 else 0) + (dK mu x : ℂ) * (x i : ℂ)) * I) := by
   have h_eq : (fun p => -((solitonK p : ℂ) * (p i : ℂ) * I)) = fun p => ((solitonK p : ℂ) * (p i : ℂ) * I) * (-1 : ℂ) := by ext p; ring
   rw [h_eq]
@@ -355,7 +355,7 @@ lemma pd_neg_K_x_I (mu i : Fin 4) (x : SpacetimePoint) :
   ring
 
 lemma pd_neg_zero_sub_K_x (mu i : Fin 4) (x : SpacetimePoint) :
-  partialDeriv mu (fun p => - (p 0 : ℂ) - (solitonK p : ℂ) * (p i : ℂ)) x = 
+  partialDeriv mu (fun p => - (p 0 : ℂ) - (solitonK p : ℂ) * (p i : ℂ)) x =
   (if mu = 0 then -1 else 0) - ((solitonK x : ℂ) * (if mu = i then 1 else 0) + (dK mu x : ℂ) * (x i : ℂ)) := by
   have h_deriv := pd_sub_apply (f := fun p => -(p 0 : ℂ)) (g := fun p => (solitonK p : ℂ) * (p i : ℂ)) (mu := mu) (x := x) (DifferentiableAt.neg (diff_coord_C 0 x)) (DifferentiableAt.mul (diff_solitonK_C x) (diff_coord_C i x))
   rw [h_deriv]
@@ -367,7 +367,7 @@ lemma pd_neg_zero_sub_K_x (mu i : Fin 4) (x : SpacetimePoint) :
   rw [h_coord, pd_solitonK_C]
 
 lemma pd_neg_zero_add_K_x (mu i : Fin 4) (x : SpacetimePoint) :
-  partialDeriv mu (fun p => - (p 0 : ℂ) + (solitonK p : ℂ) * (p i : ℂ)) x = 
+  partialDeriv mu (fun p => - (p 0 : ℂ) + (solitonK p : ℂ) * (p i : ℂ)) x =
   (if mu = 0 then -1 else 0) + ((solitonK x : ℂ) * (if mu = i then 1 else 0) + (dK mu x : ℂ) * (x i : ℂ)) := by
   have h_deriv := pd_add_apply (f := fun p => -(p 0 : ℂ)) (g := fun p => (solitonK p : ℂ) * (p i : ℂ)) (mu := mu) (x := x) (DifferentiableAt.neg (diff_coord_C 0 x)) (DifferentiableAt.mul (diff_solitonK_C x) (diff_coord_C i x))
   rw [h_deriv]
@@ -379,7 +379,7 @@ lemma pd_neg_zero_add_K_x (mu i : Fin 4) (x : SpacetimePoint) :
   rw [h_coord, pd_solitonK_C]
 
 lemma pd_pos_K_x_I_add_p0_I (mu i : Fin 4) (x : SpacetimePoint) :
-  partialDeriv mu (fun p => (solitonK p : ℂ) * (p i : ℂ) * I + (p 0 : ℂ) * I) x = 
+  partialDeriv mu (fun p => (solitonK p : ℂ) * (p i : ℂ) * I + (p 0 : ℂ) * I) x =
   ((solitonK x : ℂ) * (if mu = i then 1 else 0) + (dK mu x : ℂ) * (x i : ℂ)) * I + (if mu = 0 then 1 else 0) * I := by
   have h1 := DifferentiableAt.mul (DifferentiableAt.mul (diff_solitonK_C x) (diff_coord_C i x)) (differentiableAt_const I)
   have h2 := DifferentiableAt.mul (diff_coord_C 0 x) (differentiableAt_const I)
@@ -393,7 +393,7 @@ lemma pd_pos_K_x_I_add_p0_I (mu i : Fin 4) (x : SpacetimePoint) :
   rw [h_coord]
 
 lemma pd_pos_K_x_I_sub_p0_I (mu i : Fin 4) (x : SpacetimePoint) :
-  partialDeriv mu (fun p => (solitonK p : ℂ) * (p i : ℂ) * I - (p 0 : ℂ) * I) x = 
+  partialDeriv mu (fun p => (solitonK p : ℂ) * (p i : ℂ) * I - (p 0 : ℂ) * I) x =
   ((solitonK x : ℂ) * (if mu = i then 1 else 0) + (dK mu x : ℂ) * (x i : ℂ)) * I - (if mu = 0 then 1 else 0) * I := by
   have h1 := DifferentiableAt.mul (DifferentiableAt.mul (diff_solitonK_C x) (diff_coord_C i x)) (differentiableAt_const I)
   have h2 := DifferentiableAt.mul (diff_coord_C 0 x) (differentiableAt_const I)
@@ -407,7 +407,7 @@ lemma pd_pos_K_x_I_sub_p0_I (mu i : Fin 4) (x : SpacetimePoint) :
   rw [h_coord]
 
 lemma pd_neg_K_x_I_add_K_x (mu i j : Fin 4) (x : SpacetimePoint) :
-  partialDeriv mu (fun p => -((solitonK p : ℂ) * (p i : ℂ) * I) + (solitonK p : ℂ) * (p j : ℂ)) x = 
+  partialDeriv mu (fun p => -((solitonK p : ℂ) * (p i : ℂ) * I) + (solitonK p : ℂ) * (p j : ℂ)) x =
   - (((solitonK x : ℂ) * (if mu = i then 1 else 0) + (dK mu x : ℂ) * (x i : ℂ)) * I) + ((solitonK x : ℂ) * (if mu = j then 1 else 0) + (dK mu x : ℂ) * (x j : ℂ)) := by
   have h1 := DifferentiableAt.neg (DifferentiableAt.mul (DifferentiableAt.mul (diff_solitonK_C x) (diff_coord_C i x)) (differentiableAt_const I))
   have h2 := DifferentiableAt.mul (diff_solitonK_C x) (diff_coord_C j x)
@@ -421,7 +421,7 @@ lemma pd_neg_K_x_I_add_K_x (mu i j : Fin 4) (x : SpacetimePoint) :
   rw [h_coord, pd_solitonK_C]
 
 lemma pd_neg_K_x_I_sub_K_x (mu i j : Fin 4) (x : SpacetimePoint) :
-  partialDeriv mu (fun p => -((solitonK p : ℂ) * (p i : ℂ) * I) - (solitonK p : ℂ) * (p j : ℂ)) x = 
+  partialDeriv mu (fun p => -((solitonK p : ℂ) * (p i : ℂ) * I) - (solitonK p : ℂ) * (p j : ℂ)) x =
   - (((solitonK x : ℂ) * (if mu = i then 1 else 0) + (dK mu x : ℂ) * (x i : ℂ)) * I) - ((solitonK x : ℂ) * (if mu = j then 1 else 0) + (dK mu x : ℂ) * (x j : ℂ)) := by
   have h1 := DifferentiableAt.neg (DifferentiableAt.mul (DifferentiableAt.mul (diff_solitonK_C x) (diff_coord_C i x)) (differentiableAt_const I))
   have h2 := DifferentiableAt.mul (diff_solitonK_C x) (diff_coord_C j x)
@@ -493,10 +493,10 @@ lemma pd_ansatz_1 (mu : Fin 4) (x : SpacetimePoint) :
   fin_cases mu <;> fin_cases i <;> fin_cases j
   all_goals {
     dsimp [solitonAnsatzVal, solitonDerivativeVal, sigmaX, solitonSigmaY, sigmaZ, mkMat]
-    
+
     try simp only [Matrix.add_apply, Matrix.sub_apply, Matrix.smul_apply, Matrix.neg_apply, Matrix.zero_apply, smul_eq_mul]
     try simp only [mul_zero, zero_mul, add_zero, zero_add, sub_zero, zero_sub, neg_zero, mul_one, one_mul, Complex.I_sq, Complex.I_mul_I, mul_neg, neg_mul, neg_neg, sub_neg_eq_add]
-    
+
     first
     | apply apply_1
     | apply apply_2a
@@ -539,7 +539,7 @@ lemma apply_nu2_4 (mu : Fin 4) (x : SpacetimePoint) (C : ℂ)
   partialDeriv mu (fun p => (solitonK p : ℂ) * (p 3 : ℂ) * I - (p 0 : ℂ) * I) x = C := by
   rw [pd_pos_K_x_I_sub_p0_I]
   exact h
-  
+
 lemma apply_nu2_3b (mu : Fin 4) (x : SpacetimePoint) (C : ℂ)
   (h : ((solitonK x : ℂ) * (if mu = 3 then 1 else 0) + (dK mu x : ℂ) * (x 3 : ℂ)) * I + (if mu = 0 then 1 else 0) * I = C) :
   partialDeriv mu (fun p => (p 0 : ℂ) * I + (solitonK p : ℂ) * (p 3 : ℂ) * I) x = C := by
@@ -564,10 +564,10 @@ lemma pd_ansatz_2 (mu : Fin 4) (x : SpacetimePoint) :
   fin_cases mu <;> fin_cases i <;> fin_cases j
   all_goals {
     dsimp [solitonAnsatzVal, solitonDerivativeVal, sigmaX, solitonSigmaY, sigmaZ, mkMat]
-    
+
     try simp only [Matrix.add_apply, Matrix.sub_apply, Matrix.smul_apply, Matrix.neg_apply, Matrix.zero_apply, smul_eq_mul]
     try simp only [mul_zero, zero_mul, add_zero, zero_add, sub_zero, zero_sub, neg_zero, mul_one, one_mul, Complex.I_sq, Complex.I_mul_I, mul_neg, neg_mul, neg_neg, sub_neg_eq_add]
-    
+
     first
     | apply apply_nu2_1
     | apply apply_nu2_2
@@ -636,10 +636,10 @@ lemma pd_ansatz_3 (mu : Fin 4) (x : SpacetimePoint) :
   fin_cases mu <;> fin_cases i <;> fin_cases j
   all_goals {
     dsimp [solitonAnsatzVal, solitonDerivativeVal, sigmaX, solitonSigmaY, sigmaZ, mkMat]
-    
+
     try simp only [Matrix.add_apply, Matrix.sub_apply, Matrix.smul_apply, Matrix.neg_apply, Matrix.zero_apply, smul_eq_mul]
     try simp only [mul_zero, zero_mul, add_zero, zero_add, sub_zero, zero_sub, neg_zero, mul_one, one_mul, Complex.I_sq, Complex.I_mul_I, mul_neg, neg_mul, neg_neg, sub_neg_eq_add]
-    
+
     first
     | apply apply_nu3_1
     | apply apply_nu3_2
@@ -660,7 +660,7 @@ lemma pd_ansatz (mu nu : Fin 4) (x : SpacetimePoint) (i j : Fin 2) :
   · exact pd_ansatz_2 mu x i j
   · exact pd_ansatz_3 mu x i j
 
-lemma trace_solitonAnsatzVal (mu : Fin 4) (x : SpacetimePoint) : 
+lemma trace_solitonAnsatzVal (mu : Fin 4) (x : SpacetimePoint) :
   Matrix.trace (solitonAnsatzVal mu x) = 0 := by
   unfold solitonAnsatzVal
   split_ifs <;> {
@@ -669,7 +669,7 @@ lemma trace_solitonAnsatzVal (mu : Fin 4) (x : SpacetimePoint) :
     try ring_nf
   }
 
-lemma trace_solitonDerivativeVal (mu nu : Fin 4) (x : SpacetimePoint) : 
+lemma trace_solitonDerivativeVal (mu nu : Fin 4) (x : SpacetimePoint) :
   Matrix.trace (solitonDerivativeVal mu nu x) = 0 := by
   unfold solitonDerivativeVal
   split_ifs <;> {
@@ -708,10 +708,10 @@ lemma diff_6 (i : Fin 4) (x : SpacetimePoint) : DifferentiableAt ℝ (fun p => (
 
 lemma diff_7 (x : SpacetimePoint) : DifferentiableAt ℝ (fun p => -(p 0 : ℂ)) x :=
   DifferentiableAt.neg (diff_coord_C 0 x)
-  
+
 lemma diff_8 (x : SpacetimePoint) : DifferentiableAt ℝ (fun p => (p 0 : ℂ)) x :=
   diff_coord_C 0 x
-  
+
 lemma diff_9 (x : SpacetimePoint) : DifferentiableAt ℝ (fun p => (0 : ℂ)) x :=
   differentiableAt_const 0
 
@@ -738,7 +738,7 @@ theorem solitonDerivative_eq (mu nu : Fin 4) (x : SpacetimePoint) :
       dsimp [solitonAnsatzVal, sigmaX, solitonSigmaY, sigmaZ, mkMat]
       try simp only [Matrix.add_apply, Matrix.sub_apply, Matrix.smul_apply, Matrix.neg_apply, Matrix.zero_apply, smul_eq_mul]
       try simp only [mul_zero, zero_mul, add_zero, zero_add, sub_zero, zero_sub, neg_zero, mul_one, one_mul, Complex.I_sq, Complex.I_mul_I, mul_neg, neg_mul, neg_neg, sub_neg_eq_add]
-      
+
       first
       | exact diff_1 1 x
       | exact diff_1 2 x
@@ -820,7 +820,7 @@ lemma toSl2c_val_eq (M : Matrix (Fin 2) (Fin 2) ℂ) (h : Matrix.trace M = 0) : 
 lemma trace_comm (A B : Matrix (Fin 2) (Fin 2) ℂ) : Matrix.trace (A * B - B * A) = 0 := by
   rw [Matrix.trace_sub, Matrix.trace_mul_comm, sub_self]
 
-lemma trace_solitonCurvatureVal (mu nu : Fin 4) (x : SpacetimePoint) : 
+lemma trace_solitonCurvatureVal (mu nu : Fin 4) (x : SpacetimePoint) :
   Matrix.trace (solitonCurvatureVal mu nu x) = 0 := by
   unfold solitonCurvatureVal
   rw [Matrix.trace_add, Matrix.trace_sub]
@@ -835,20 +835,20 @@ theorem solitonCurvature_eq (mu nu : Fin 4) (x : SpacetimePoint) :
   curvatureSl2c solitonAnsatz mu nu x = solitonCurvature mu nu x := by
   apply Subtype.ext
   have h1 : Matrix.trace (solitonCurvatureVal mu nu x) = 0 := trace_solitonCurvatureVal mu nu x
-  
+
   unfold curvatureSl2c
-  
+
   -- Push the subtype val projection through the Lie algebra operations
-  change (partialDerivSl2c mu (solitonAnsatz nu) x).val - 
-         (partialDerivSl2c nu (solitonAnsatz mu) x).val + 
-         ((solitonAnsatz mu x).val * (solitonAnsatz nu x).val - (solitonAnsatz nu x).val * (solitonAnsatz mu x).val) 
+  change (partialDerivSl2c mu (solitonAnsatz nu) x).val -
+         (partialDerivSl2c nu (solitonAnsatz mu) x).val +
+         ((solitonAnsatz mu x).val * (solitonAnsatz nu x).val - (solitonAnsatz nu x).val * (solitonAnsatz mu x).val)
          = (solitonCurvature mu nu x).val
-         
+
   unfold solitonCurvature
   rw [toSl2c_val_eq _ h1]
-  
+
   rw [solitonDerivative_eq mu nu x, solitonDerivative_eq nu mu x]
-  
+
   have h2 : (solitonDerivative mu nu x).val = solitonDerivativeVal mu nu x := by
     unfold solitonDerivative
     apply toSl2c_val_eq
@@ -858,7 +858,7 @@ theorem solitonCurvature_eq (mu nu : Fin 4) (x : SpacetimePoint) :
     apply toSl2c_val_eq
     exact trace_solitonDerivativeVal nu mu x
   rw [h2, h3]
-  
+
   have h4 : (solitonAnsatz mu x).val = solitonAnsatzVal mu x := by
     unfold solitonAnsatz
     apply toSl2c_val_eq
@@ -868,14 +868,14 @@ theorem solitonCurvature_eq (mu nu : Fin 4) (x : SpacetimePoint) :
     apply toSl2c_val_eq
     exact trace_solitonAnsatzVal nu x
   rw [h4, h5]
-  
+
   unfold solitonCurvatureVal
   rfl
 
 /-- The exact rational test point from the whitepaper verification engine. -/
 @[litlib_track "Specific coordinates used for computational verification"]
 noncomputable def testPoint : SpacetimePoint :=
-  fun i => 
+  fun i =>
     if i = 0 then 3/2       -- t = 1.5
     else if i = 1 then 1/2  -- x = 0.5
     else if i = 2 then -1/5 -- y = -0.2
@@ -887,8 +887,8 @@ lemma tp1 : testPoint 1 = 1/2 := rfl
 lemma tp2 : testPoint 2 = -1/5 := rfl
 lemma tp3 : testPoint 3 = 11/10 := rfl
 
-/-- 
-Verifies that the numeric evaluator can cleanly penetrate the non-linear denominator 
+/--
+Verifies that the numeric evaluator can cleanly penetrate the non-linear denominator
 and compute the exact rational value of the spatial defect profile.
 -/
 lemma check_solitonK_eval : solitonK testPoint = -2/7 := by
@@ -896,7 +896,7 @@ lemma check_solitonK_eval : solitonK testPoint = -2/7 := by
   rw [tp1, tp2, tp3]
   norm_num
 
-/-- 
+/--
 Verifies that the numeric evaluator accurately resolves the analytical spatial derivative.
 -/
 lemma check_dK_1_eval : dK 1 testPoint = 4/49 := by
@@ -905,7 +905,7 @@ lemma check_dK_1_eval : dK 1 testPoint = 4/49 := by
   norm_num
 
 /-- Helper lemma: The self-dual projection of a self-dual embedding is exactly the original element. -/
-lemma chiralProject_embedSelfDual (M : SL2C) : 
+lemma chiralProject_embedSelfDual (M : SL2C) :
   (chiralProject (embedSelfDual M)).self_dual = M := by
   apply Subtype.ext
   have h_submatrix : (fun i j : Fin 2 => (embedSelfDual M) (chiralIso (Sum.inl i)) (chiralIso (Sum.inl j))) = M.val := by
@@ -932,7 +932,7 @@ lemma chiralProject_embedSelfDual (M : SL2C) :
   ring
 
 /-- Helper lemma: The anti-self-dual projection of a self-dual embedding is exactly zero. -/
-lemma chiralProject_embedSelfDual_anti (M : SL2C) : 
+lemma chiralProject_embedSelfDual_anti (M : SL2C) :
   (chiralProject (embedSelfDual M)).anti_self_dual = 0 := by
   apply Subtype.ext
   have h_submatrix : (fun i j : Fin 2 => (embedSelfDual M) (chiralIso (Sum.inr i)) (chiralIso (Sum.inr j))) = 0 := by
@@ -976,7 +976,7 @@ lemma contDiff_proj (i : Fin 4) : ContDiff ℝ ⊤ (fun x : SpacetimePoint => x 
 
 /-- Proves that the exact denominator profile (r^2 + 2) is a perfectly smooth polynomial. -/
 lemma contDiff_denom : ContDiff ℝ ⊤ (fun x : SpacetimePoint => (x 1)^2 + (x 2)^2 + (x 3)^2 + 2) := by
-  have h : (fun x : SpacetimePoint => (x 1)^2 + (x 2)^2 + (x 3)^2 + 2) = 
+  have h : (fun x : SpacetimePoint => (x 1)^2 + (x 2)^2 + (x 3)^2 + 2) =
            (fun x : SpacetimePoint => x 1 * x 1 + x 2 * x 2 + x 3 * x 3 + 2) := by
     ext x; ring
   rw [h]
@@ -1003,7 +1003,7 @@ lemma solitonK_denom_ne_zero (x : SpacetimePoint) : (x 1)^2 + (x 2)^2 + (x 3)^2 
 @[fun_prop]
 lemma contDiff_solitonK : ContDiff ℝ ⊤ solitonK := by
   unfold solitonK
-  have h : (fun x : SpacetimePoint => -1 / ((x 1)^2 + (x 2)^2 + (x 3)^2 + 2)) = 
+  have h : (fun x : SpacetimePoint => -1 / ((x 1)^2 + (x 2)^2 + (x 3)^2 + 2)) =
            (fun x : SpacetimePoint => (-1 : ℝ) * ((x 1)^2 + (x 2)^2 + (x 3)^2 + 2)⁻¹) := by
     ext x; exact div_eq_mul_inv (-1 : ℝ) _
   rw [h]
@@ -1094,10 +1094,10 @@ lemma solitonUniverse_curvature_eq (mu nu : Fin 4) (x : SpacetimePoint) :
 
 /-- Binds the Universe's Adjoint Curvature trace mapping to our flattened exact tensors. -/
 lemma solitonUniverse_adjoint_eq (mu nu : Fin 4) (x : SpacetimePoint) :
-  cgdAdjointCurvature solitonUniverse mu nu x = 
+  cgdAdjointCurvature solitonUniverse mu nu x =
   extractAdjoint (solitonCurvatureVal mu nu x) := by
   unfold cgdAdjointCurvature
-  have h : curvatureSl2c solitonUniverse.sd_sector.val mu nu x = solitonCurvature mu nu x := 
+  have h : curvatureSl2c solitonUniverse.sd_sector.val mu nu x = solitonCurvature mu nu x :=
     solitonUniverse_curvature_eq mu nu x
   rw [h]
   have h_val : (solitonCurvature mu nu x).val = solitonCurvatureVal mu nu x := by
@@ -1106,7 +1106,7 @@ lemma solitonUniverse_adjoint_eq (mu nu : Fin 4) (x : SpacetimePoint) :
     exact trace_solitonCurvatureVal mu nu x
   rw [h_val]
 
-lemma eval_F_01 : 
+lemma eval_F_01 :
   solitonCurvatureVal 0 1 testPoint = - sigmaX := by
   ext i j
   fin_cases i <;> fin_cases j
@@ -1115,7 +1115,7 @@ lemma eval_F_01 :
     simp [tp0, tp1, tp2, tp3]
   }
 
-lemma eval_F_02 : 
+lemma eval_F_02 :
   solitonCurvatureVal 0 2 testPoint = - solitonSigmaY := by
   ext i j
   fin_cases i <;> fin_cases j
@@ -1124,7 +1124,7 @@ lemma eval_F_02 :
     simp [tp0, tp1, tp2, tp3]
   }
 
-lemma eval_F_03 : 
+lemma eval_F_03 :
   solitonCurvatureVal 0 3 testPoint = - sigmaZ := by
   ext i j
   fin_cases i <;> fin_cases j
@@ -1133,10 +1133,10 @@ lemma eval_F_03 :
     simp [tp0, tp1, tp2, tp3]
   }
 
-lemma eval_F_12 : 
-  solitonCurvatureVal 1 2 testPoint = 
-  (-6/35 : ℂ) • sigmaX + 
-  (-3/7 : ℂ) • solitonSigmaY + 
+lemma eval_F_12 :
+  solitonCurvatureVal 1 2 testPoint =
+  (-6/35 : ℂ) • sigmaX +
+  (-3/7 : ℂ) • solitonSigmaY +
   ((473/98 : ℂ) * Complex.I) • sigmaZ := by
   ext i j
   fin_cases i <;> fin_cases j
@@ -1149,10 +1149,10 @@ lemma eval_F_12 :
     try norm_num
   }
 
-lemma eval_F_13 : 
-  solitonCurvatureVal 1 3 testPoint = 
-  (33/35 : ℂ) • sigmaX + 
-  ((-473/98 : ℂ) * Complex.I) • solitonSigmaY + 
+lemma eval_F_13 :
+  solitonCurvatureVal 1 3 testPoint =
+  (33/35 : ℂ) • sigmaX +
+  ((-473/98 : ℂ) * Complex.I) • solitonSigmaY +
   (-3/7 : ℂ) • sigmaZ := by
   ext i j
   fin_cases i <;> fin_cases j
@@ -1165,10 +1165,10 @@ lemma eval_F_13 :
     try norm_num
   }
 
-lemma eval_F_23 : 
-  solitonCurvatureVal 2 3 testPoint = 
-  ((473/98 : ℂ) * Complex.I) • sigmaX + 
-  (33/35 : ℂ) • solitonSigmaY + 
+lemma eval_F_23 :
+  solitonCurvatureVal 2 3 testPoint =
+  ((473/98 : ℂ) * Complex.I) • sigmaX +
+  (33/35 : ℂ) • solitonSigmaY +
   (6/35 : ℂ) • sigmaZ := by
   ext i j
   fin_cases i <;> fin_cases j
@@ -1233,11 +1233,11 @@ lemma smul_neg_one_mat3 (M : Matrix (Fin 3) (Fin 3) ℂ) : (-1:ℂ) • M = -M :
 
 lemma eval_cdj_sum (F_adj : Fin 4 → Fin 4 → Matrix (Fin 3) (Fin 3) ℂ) :
   (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ • (F_adj μ ν * F_adj ρ σ)) =
-  (F_adj 0 1 * F_adj 2 3) - (F_adj 0 1 * F_adj 3 2) - (F_adj 0 2 * F_adj 1 3) + (F_adj 0 2 * F_adj 3 1) + 
-  (F_adj 0 3 * F_adj 1 2) - (F_adj 0 3 * F_adj 2 1) - (F_adj 1 0 * F_adj 2 3) + (F_adj 1 0 * F_adj 3 2) + 
-  (F_adj 1 2 * F_adj 0 3) - (F_adj 1 2 * F_adj 3 0) - (F_adj 1 3 * F_adj 0 2) + (F_adj 1 3 * F_adj 2 0) + 
-  (F_adj 2 0 * F_adj 1 3) - (F_adj 2 0 * F_adj 3 1) - (F_adj 2 1 * F_adj 0 3) + (F_adj 2 1 * F_adj 3 0) + 
-  (F_adj 2 3 * F_adj 0 1) - (F_adj 2 3 * F_adj 1 0) - (F_adj 3 0 * F_adj 1 2) + (F_adj 3 0 * F_adj 2 1) + 
+  (F_adj 0 1 * F_adj 2 3) - (F_adj 0 1 * F_adj 3 2) - (F_adj 0 2 * F_adj 1 3) + (F_adj 0 2 * F_adj 3 1) +
+  (F_adj 0 3 * F_adj 1 2) - (F_adj 0 3 * F_adj 2 1) - (F_adj 1 0 * F_adj 2 3) + (F_adj 1 0 * F_adj 3 2) +
+  (F_adj 1 2 * F_adj 0 3) - (F_adj 1 2 * F_adj 3 0) - (F_adj 1 3 * F_adj 0 2) + (F_adj 1 3 * F_adj 2 0) +
+  (F_adj 2 0 * F_adj 1 3) - (F_adj 2 0 * F_adj 3 1) - (F_adj 2 1 * F_adj 0 3) + (F_adj 2 1 * F_adj 3 0) +
+  (F_adj 2 3 * F_adj 0 1) - (F_adj 2 3 * F_adj 1 0) - (F_adj 3 0 * F_adj 1 2) + (F_adj 3 0 * F_adj 2 1) +
   (F_adj 3 1 * F_adj 0 2) - (F_adj 3 1 * F_adj 2 0) - (F_adj 3 2 * F_adj 0 1) + (F_adj 3 2 * F_adj 1 0) := by
   have h := sum_epsilon4_matrices (fun μ ν ρ σ => F_adj μ ν * F_adj ρ σ)
   rw [h]
@@ -1333,28 +1333,28 @@ lemma soliton_cdj_eval :
     epsilon4 μ ν ρ σ • (F_adj μ ν * F_adj ρ σ);
   Sigma = (Matrix.trace Sigma / 3) • (1 : Matrix (Fin 3) (Fin 3) ℂ) := by
   intro F_adj Sigma
-  
+
   have h_adj : F_adj = F_test_adj := by
     funext m n
     exact eval_F_adj_all m n
-    
+
   have h_Sigma : Sigma = ∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
     epsilon4 μ ν ρ σ • (F_test_adj μ ν * F_test_adj ρ σ) := by
     dsimp [Sigma]
     rw [h_adj]
-    
+
   rw [h_Sigma]
-  
-  have h_tr : Matrix.trace (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ • (F_test_adj μ ν * F_test_adj ρ σ)) = 
-    (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ • (F_test_adj μ ν * F_test_adj ρ σ)) 0 0 + 
-    (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ • (F_test_adj μ ν * F_test_adj ρ σ)) 1 1 + 
+
+  have h_tr : Matrix.trace (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ • (F_test_adj μ ν * F_test_adj ρ σ)) =
+    (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ • (F_test_adj μ ν * F_test_adj ρ σ)) 0 0 +
+    (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ • (F_test_adj μ ν * F_test_adj ρ σ)) 1 1 +
     (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ • (F_test_adj μ ν * F_test_adj ρ σ)) 2 2 := by
     unfold Matrix.trace Matrix.diag
     exact sum_3_eval _
-    
+
   rw [h_tr]
   simp only [eval_cdj_sum]
-  
+
   ext i j
   fin_cases i <;> fin_cases j
   all_goals {
@@ -1376,7 +1376,7 @@ lemma soliton_cdj_eval :
     try norm_num
   }
 
-/-- Proves that the exact localized rational components of F_test natively trace to zero, 
+/-- Proves that the exact localized rational components of F_test natively trace to zero,
 fulfilling the strict SL(2,C) Lie algebra constraint before projection. -/
 lemma F_test_trace (mu nu : Fin 4) : Matrix.trace (F_test mu nu) = 0 := by
   fin_cases mu <;> fin_cases nu
@@ -1407,18 +1407,18 @@ lemma project_F_test_eq (a : Fin 3) (mu nu : Fin 4) :
   have h_half : (0.5 : ℂ) = 1 / 2 := by norm_num
   rw [h_half]
 
-/-- 
-Completely unpacks the Urbantke Metric summation across the discrete test components, 
-prepping it for brute-force algebraic collapse. 
+/--
+Completely unpacks the Urbantke Metric summation across the discrete test components,
+prepping it for brute-force algebraic collapse.
 -/
 lemma urbantkeMetric_eval_F_test (mu nu : Fin 4) :
-  urbantkeMetric F_test_sl2c mu nu = 
+  urbantkeMetric F_test_sl2c mu nu =
   ∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3,
-    epsilon3 a b c * 
+    epsilon3 a b c *
     (∑ alpha : Fin 4, ∑ beta : Fin 4, ∑ gamma : Fin 4, ∑ delta : Fin 4,
-      epsilon4 alpha beta gamma delta * 
-      F_proj_eval a mu alpha * 
-      F_proj_eval b nu beta * 
+      epsilon4 alpha beta gamma delta *
+      F_proj_eval a mu alpha *
+      F_proj_eval b nu beta *
       F_proj_eval c gamma delta) := by
   dsimp only [urbantkeMetric]
   simp only [project_F_test_eq]
@@ -1452,9 +1452,9 @@ noncomputable def P_test : Fin 3 → Fin 4 → Fin 4 → ℂ
 | 2, 3, 2 => -6/35
 | _, _, _ => 0
 
-/-- 
-Proves that our flat scalar tensor P_test perfectly matches the geometric 
-trace projection of the Lie algebra field strength. 
+/--
+Proves that our flat scalar tensor P_test perfectly matches the geometric
+trace projection of the Lie algebra field strength.
 -/
 lemma F_proj_eval_eq_P_test (a : Fin 3) (mu nu : Fin 4) :
   F_proj_eval a mu nu = P_test a mu nu := by
@@ -1476,18 +1476,18 @@ lemma F_proj_eval_eq_P_test (a : Fin 3) (mu nu : Fin 4) :
     try norm_num
   }
 
-/-- 
-The fully scalarized Urbantke metric. 
+/--
+The fully scalarized Urbantke metric.
 The 6,912-term sum is now formally reduced to pure unboxed complex arithmetic.
 -/
 lemma urbantkeMetric_eval_P_test (mu nu : Fin 4) :
-  urbantkeMetric F_test_sl2c mu nu = 
+  urbantkeMetric F_test_sl2c mu nu =
   ∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3,
-    epsilon3 a b c * 
+    epsilon3 a b c *
     (∑ alpha : Fin 4, ∑ beta : Fin 4, ∑ gamma : Fin 4, ∑ delta : Fin 4,
-      epsilon4 alpha beta gamma delta * 
-      P_test a mu alpha * 
-      P_test b nu beta * 
+      epsilon4 alpha beta gamma delta *
+      P_test a mu alpha *
+      P_test b nu beta *
       P_test c gamma delta) := by
   rw [urbantkeMetric_eval_F_test]
   apply Finset.sum_congr rfl; intro a _
@@ -1517,15 +1517,15 @@ lemma eval_epsilon4_sum (F : Fin 4 → Fin 4 → Fin 4 → Fin 4 → ℂ) :
   simp only [sum_4_eval, epsilon4, epsilon4_int, Int.cast_zero, Int.cast_one, Int.cast_neg, zero_mul, mul_zero, add_zero, zero_add, one_mul, neg_mul, sub_eq_add_neg]
   abel
 
-/-- 
-The fully scalarized representation of the emergent macroscopic metric. 
+/--
+The fully scalarized representation of the emergent macroscopic metric.
 Explicitly grouped to prevent `mul_assoc` timeouts.
 -/
 noncomputable def g_test_val (mu nu : Fin 4) : ℂ :=
   ∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3,
-    epsilon3 a b c * 
+    epsilon3 a b c *
     (∑ alpha : Fin 4, ∑ beta : Fin 4, ∑ gamma : Fin 4, ∑ delta : Fin 4,
-      epsilon4 alpha beta gamma delta * 
+      epsilon4 alpha beta gamma delta *
       (P_test a mu alpha * P_test b nu beta * P_test c gamma delta))
 
 /-- Binds the formal Urbantke Metric directly to our flat scalar computational tensor. -/
@@ -1546,7 +1546,7 @@ lemma urbantkeMetric_test_eq_g_test_val (mu nu : Fin 4) :
 /-- The exact unrolled mathematical polynomial of the 144 non-zero terms. -/
 noncomputable def g_test_val_expanded (mu nu : Fin 4) : ℂ :=
   let T (a b c : Fin 3) (α β γ δ : Fin 4) := P_test a mu α * P_test b nu β * P_test c γ δ
-  let F (a b c : Fin 3) := 
+  let F (a b c : Fin 3) :=
     T a b c 0 1 2 3 - T a b c 0 1 3 2 - T a b c 0 2 1 3 + T a b c 0 2 3 1 + T a b c 0 3 1 2 - T a b c 0 3 2 1
     - T a b c 1 0 2 3 + T a b c 1 0 3 2 + T a b c 1 2 0 3 - T a b c 1 2 3 0 - T a b c 1 3 0 2 + T a b c 1 3 2 0
     + T a b c 2 0 1 3 - T a b c 2 0 3 1 - T a b c 2 1 0 3 + T a b c 2 1 3 0 + T a b c 2 3 0 1 - T a b c 2 3 1 0
@@ -1597,49 +1597,47 @@ lemma g_test_det_im_zero : (Matrix.det (fun mu nu => g_test_val mu nu)).im = 0 :
   rw [Litlib.Math.Matrix4.expand_det_4]
   norm_num [g_test_val_expanded, P_test]
 
-/-- 
-Proves the Urbantke metric generated by the Chiral Soliton Ansatz yields a mathematically 
-strict Lorentzian signature at the spatial topological core. 
+/--
+Proves the Urbantke metric generated by the Chiral Soliton Ansatz yields a mathematically
+strict Lorentzian signature at the spatial topological core.
 -/
-lemma soliton_is_lorentzian : 
+lemma soliton_is_lorentzian :
   isLorentzian (fun mu nu => g_test_val mu nu) := by
   unfold isLorentzian
   exact ⟨g_test_im_zero, g_test_det_re_lt_zero, g_test_det_im_zero⟩
 
 /--
 The Soliton Geometry Theorem.
-Proves that a single continuous Spin(4,C) gauge profile mathematically possesses a 
-strict non-degenerate Lorentzian emergent metric, while simultaneously generating 
-a perfect macroscopic Ricci-Flat vacuum via the Capovilla CDJ constraint.
-
-This strictly formalizes the exact resolution to the singularity crisis within CGD.
+Proves that a continuous, non-singular Spin(4,C) gauge profile mathematically possesses a
+strict non-degenerate Lorentzian emergent metric, while simultaneously satisfying the
+Ricci-flat Capovilla CDJ constraint.
 -/
 @[litlib_track "Exact Analytical Non-Singular Soliton Verification"]
 theorem dynamicExactSolitonSolution :
-  ∃ (u : Universe) (x : SpacetimePoint), 
+  ∃ (u : Universe) (x : SpacetimePoint),
     (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
-      epsilon4 μ ν ρ σ • (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)) = 
+      epsilon4 μ ν ρ σ • (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)) =
     ((∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
       epsilon4 μ ν ρ σ • (cgdAdjointCurvature u μ ν x * cgdAdjointCurvature u ρ σ x)).trace / 3) • 1 ∧
     isLorentzian (urbantkeMetric (fun m n => curvatureSl2c u.sd_sector.val m n x)) := by
   use solitonUniverse
   use testPoint
-  
+
   -- Step 1: Map topological representations to flat matrix evaluations
-  have h_adj (m n : Fin 4) : cgdAdjointCurvature solitonUniverse m n testPoint = 
-    extractAdjoint (solitonCurvatureVal m n testPoint) := 
+  have h_adj (m n : Fin 4) : cgdAdjointCurvature solitonUniverse m n testPoint =
+    extractAdjoint (solitonCurvatureVal m n testPoint) :=
     solitonUniverse_adjoint_eq m n testPoint
-    
-  have h_met (m n : Fin 4) : (curvatureSl2c solitonUniverse.sd_sector.val m n testPoint).val = 
+
+  have h_met (m n : Fin 4) : (curvatureSl2c solitonUniverse.sd_sector.val m n testPoint).val =
     (solitonCurvature m n testPoint).val := by
     rw [solitonUniverse_curvature_eq m n testPoint]
-    
+
   constructor
   · -- CDJ Constraint Evaluation
     have h_eval : ∀ m n, extractAdjoint (solitonCurvatureVal m n testPoint) = extractAdjoint (F_test m n) := by
       intro m n
       rw [eval_F_all m n]
-    
+
     have h_sum_sub : (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ • (cgdAdjointCurvature solitonUniverse μ ν testPoint * cgdAdjointCurvature solitonUniverse ρ σ testPoint)) =
       (∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, epsilon4 μ ν ρ σ • (extractAdjoint (F_test μ ν) * extractAdjoint (F_test ρ σ))) := by
       apply Finset.sum_congr rfl; intro μ _
@@ -1647,12 +1645,12 @@ theorem dynamicExactSolitonSolution :
       apply Finset.sum_congr rfl; intro ρ _
       apply Finset.sum_congr rfl; intro σ _
       rw [h_adj, h_adj, h_eval, h_eval]
-      
+
     rw [h_sum_sub]
     exact soliton_cdj_eval
 
   · -- Urbantke Metric is Lorentzian Evaluation
-    have h_eval_curv : (fun m n => curvatureSl2c solitonUniverse.sd_sector.val m n testPoint) = 
+    have h_eval_curv : (fun m n => curvatureSl2c solitonUniverse.sd_sector.val m n testPoint) =
       (fun m n => F_test_sl2c m n) := by
       funext m n
       apply Subtype.ext
@@ -1664,12 +1662,12 @@ theorem dynamicExactSolitonSolution :
         exact eval_F_all m n
       rw [h_curv_eval]
       exact (F_test_sl2c_val m n).symm
-      
+
     rw [h_eval_curv]
     have h_eval_metric : urbantkeMetric F_test_sl2c = fun m n => g_test_val m n := by
       funext m n
       exact urbantkeMetric_test_eq_g_test_val m n
-      
+
     rw [h_eval_metric]
     exact soliton_is_lorentzian
 

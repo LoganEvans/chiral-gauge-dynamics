@@ -9,8 +9,8 @@ namespace CGD.Axioms
 
 open CGD.Foundations
 
-/-- 
-A smooth SL(2, C) gauge field. 
+/--
+A smooth SL(2, C) gauge field.
 As an abstract Lie algebra, it possesses no native spacetime chirality.
 -/
 structure Sl2cGaugeField where
@@ -26,20 +26,20 @@ instance : Zero Sl2cGaugeField where
 lemma Sl2cGaugeField.ext (A B : Sl2cGaugeField) (h : A.val = B.val) : A = B := by
   cases A; cases B; dsimp at h; subst h; rfl
 
-/-- 
+/--
 The Core Ontology: The Universe is a macroscopic Spin(4, C) connection.
-We define it strictly as a 4x4 continuous gauge field constrained to the 
+We define it strictly as a 4x4 continuous gauge field constrained to the
 6-dimensional Spin(4, C) Lie algebra.
 -/
 structure Universe where
   /-- The unified 4x4 Chiral Dirac field -/
   val : Fin 4 → CGD.Foundations.SpacetimePoint → ChiralM
-  
+
   /-- The geometric constraint forcing the 16D GL(4,C) field into the 6D Spin(4,C) algebra -/
-  is_spin4c : ∀ mu x, val mu x = 
-    embedSelfDual (chiralProject (val mu x)).self_dual + 
+  is_spin4c : ∀ mu x, val mu x =
+    embedSelfDual (chiralProject (val mu x)).self_dual +
     embedAntiSelfDual (chiralProject (val mu x)).anti_self_dual
-    
+
   /-- Smoothness conditions on the topological projections -/
   sd_is_smooth : ∀ mu i j, ContDiff ℝ ⊤ (fun x => (chiralProject (val mu x)).self_dual.val i j)
   asd_is_smooth : ∀ mu i j, ContDiff ℝ ⊤ (fun x => (chiralProject (val mu x)).anti_self_dual.val i j)
@@ -60,9 +60,9 @@ lemma universe_val_eq_embed (u : Universe) (mu : Fin 4) (x : SpacetimePoint) :
   u.val mu x = embedSelfDual (u.sd_sector mu x) + embedAntiSelfDual (u.asd_sector mu x) :=
   u.is_spin4c mu x
 
-/-- 
+/--
 The Spin(4, C) 4x4 Dirac Representation.
-This definition evaluates to the raw 4x4 field, but its underlying 
+This definition evaluates to the raw 4x4 field, but its underlying
 algebra guarantees it matches the spacetime chiral sum exactly.
 -/
 noncomputable def Universe.spin4c_connection (u : Universe) (mu : Fin 4) (x : CGD.Foundations.SpacetimePoint) : ChiralM :=
@@ -73,7 +73,7 @@ lemma spin4c_connection_eq_embed (u : Universe) (mu : Fin 4) (x : SpacetimePoint
   u.spin4c_connection mu x = embedSelfDual (u.sd_sector mu x) + embedAntiSelfDual (u.asd_sector mu x) :=
   u.is_spin4c mu x
 
-/-- 
+/--
 The Definitional Shield: Establishes a rigorous bidirectional equivalence
 between the unified 4x4 ontology and the split SL(2,C) formulation.
 -/
@@ -81,7 +81,7 @@ noncomputable def universeEquiv : Universe ≃ (Sl2cGaugeField × Sl2cGaugeField
   toFun u := (u.sd_sector, u.asd_sector)
   invFun p := {
     val := fun mu x => embedSelfDual (p.1 mu x) + embedAntiSelfDual (p.2 mu x)
-    is_spin4c := by 
+    is_spin4c := by
       intro mu x
       rw [chiralProject_embed_sd, chiralProject_embed_asd]
     sd_is_smooth := by

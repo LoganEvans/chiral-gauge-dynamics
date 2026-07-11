@@ -78,7 +78,7 @@ lemma trace_bracket_F (dA A F : ChiralM) :
 lemma trace_bracket_expand (dA_mu A_nu dA_nu A_mu F : ChiralM) :
   Matrix.trace ((dA_mu * A_nu - A_nu * dA_mu + A_mu * dA_nu - dA_nu * A_mu) * F) =
   Matrix.trace (dA_mu * (A_nu * F - F * A_nu)) - Matrix.trace (dA_nu * (A_mu * F - F * A_mu)) := by
-  have h1 : (dA_mu * A_nu - A_nu * dA_mu + A_mu * dA_nu - dA_nu * A_mu) = 
+  have h1 : (dA_mu * A_nu - A_nu * dA_mu + A_mu * dA_nu - dA_nu * A_mu) =
             (dA_mu * A_nu - A_nu * dA_mu) - (dA_nu * A_mu - A_mu * dA_nu) := by abel
   rw [h1, Matrix.sub_mul, Matrix.trace_sub]
   rw [trace_bracket_F dA_mu A_nu F]
@@ -144,7 +144,7 @@ lemma sum_epsilon_trace_combine (dA A : Fin 4 → ChiralM) (F : Fin 4 → Fin 4 
     CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA mu * (A nu * F rho sigma - F rho sigma * A nu))) := by
   let X := (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA mu * (A nu * F rho sigma - F rho sigma * A nu)))
   let Y := (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA nu * (A mu * F rho sigma - F rho sigma * A mu)))
-  
+
   have h_expand : (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4,
     CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace ((dA mu * A nu - A nu * dA mu + A mu * dA nu - dA nu * A mu) * F rho sigma)) = X - Y := by
     have h1 : (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4,
@@ -159,13 +159,13 @@ lemma sum_epsilon_trace_combine (dA A : Fin 4 → ChiralM) (F : Fin 4 → Fin 4 
       rw [trace_bracket_expand]
       exact mul_sub _ _ _
     rw [h1]
-    
-    have h_sub_1 := sum_sub_distrib_4 
+
+    have h_sub_1 := sum_sub_distrib_4
       (fun mu nu rho sigma => CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA mu * (A nu * F rho sigma - F rho sigma * A nu)))
       (fun mu nu rho sigma => CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA nu * (A mu * F rho sigma - F rho sigma * A mu)))
-    
+
     exact h_sub_1
-    
+
   have h_Y : Y = -X := sum_epsilon_trace_swap dA A F
   rw [h_expand, h_Y]
   ring
@@ -179,7 +179,7 @@ lemma sum_cyclic_3_eps_F (mu : Fin 4) (F : Fin 4 → Fin 4 → Fin 4 → ChiralM
   have h_RHS : (∑ a : Fin 4, ∑ b : Fin 4, ∑ c : Fin 4, CGD.Gravity.epsilon4 mu b c a • F b c a) =
                (∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, CGD.Gravity.epsilon4 mu rho sigma nu • F rho sigma nu) := rfl
   rw [h_LHS] at h1
-  have h_cyc : (∑ a : Fin 4, ∑ b : Fin 4, ∑ c : Fin 4, (fun a b c => CGD.Gravity.epsilon4 mu a b c • F a b c) b c a) = 
+  have h_cyc : (∑ a : Fin 4, ∑ b : Fin 4, ∑ c : Fin 4, (fun a b c => CGD.Gravity.epsilon4 mu a b c • F a b c) b c a) =
                ∑ a : Fin 4, ∑ b : Fin 4, ∑ c : Fin 4, CGD.Gravity.epsilon4 mu b c a • F b c a := rfl
   rw [h_cyc, h_RHS] at h1
   rw [h1]
@@ -187,7 +187,7 @@ lemma sum_cyclic_3_eps_F (mu : Fin 4) (F : Fin 4 → Fin 4 → Fin 4 → ChiralM
   apply Finset.sum_congr rfl; intro rho _
   apply Finset.sum_congr rfl; intro sigma _
   rw [epsilon4_cyclic_shift_2 mu nu rho sigma]
-  
+
 lemma push_sum_into_trace_eps (dA_mu : ChiralM) (mu : Fin 4) (f : Fin 4 → Fin 4 → Fin 4 → ChiralM) :
   (∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA_mu * f nu rho sigma)) =
   Matrix.trace (dA_mu * (∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, CGD.Gravity.epsilon4 mu nu rho sigma • f nu rho sigma)) := by
@@ -203,16 +203,16 @@ lemma push_sum_into_trace_eps (dA_mu : ChiralM) (mu : Fin 4) (f : Fin 4 → Fin 
       ring
     rw [h_pull, Matrix.trace_smul]
     exact smul_eq_mul (CGD.Gravity.epsilon4 mu nu rho sigma) (Matrix.trace (dA_mu * f nu rho sigma))
-  
+
   have h_subst : (∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA_mu * f nu rho sigma)) =
                  (∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, Matrix.trace (dA_mu * (CGD.Gravity.epsilon4 mu nu rho sigma • f nu rho sigma))) := by
     apply Finset.sum_congr rfl; intro nu _
     apply Finset.sum_congr rfl; intro rho _
     apply Finset.sum_congr rfl; intro sigma _
     exact h_trace_smul nu rho sigma
-    
+
   rw [h_subst]
-  
+
   have h_sum1 : (∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, Matrix.trace (dA_mu * (CGD.Gravity.epsilon4 mu nu rho sigma • f nu rho sigma))) =
                 (∑ nu : Fin 4, Matrix.trace (dA_mu * (∑ rho : Fin 4, ∑ sigma : Fin 4, CGD.Gravity.epsilon4 mu nu rho sigma • f nu rho sigma))) := by
     apply Finset.sum_congr rfl; intro nu _
@@ -226,19 +226,19 @@ lemma push_sum_into_trace_eps (dA_mu : ChiralM) (mu : Fin 4) (f : Fin 4 → Fin 
     rw [← Matrix.trace_sum]
     apply congrArg
     rw [← Matrix.mul_sum]
-  
+
   rw [h_sum1]
   rw [← Matrix.trace_sum]
   apply congrArg
   rw [← Matrix.mul_sum]
-  
+
 lemma bianchi_contraction_zero (u : Universe) (dA : Fin 4 → ChiralM) (x : SpacetimePoint) :
   (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4,
     CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA mu * (
       partialDerivChiral nu (fun p => curvature (fun m p' => u.spin4c_connection m p') rho sigma p) x +
       bracket (u.spin4c_connection nu x) (curvature (fun m p => u.spin4c_connection m p) rho sigma x)
     ))) = 0 := by
-  
+
   have h_sum_trace : (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4,
     CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA mu * (
       partialDerivChiral nu (fun p => curvature (fun m p' => u.spin4c_connection m p') rho sigma p) x +
@@ -253,14 +253,14 @@ lemma bianchi_contraction_zero (u : Universe) (dA : Fin 4 → ChiralM) (x : Spac
     ))) := by
     apply Finset.sum_congr rfl; intro mu _
     exact push_sum_into_trace_eps (dA mu) mu (fun n r s => partialDerivChiral n (fun p => curvature (fun m p' => u.spin4c_connection m p') r s p) x + bracket (u.spin4c_connection n x) (curvature (fun m p => u.spin4c_connection m p) r s x))
-    
+
   rw [h_sum_trace]
-  
+
   have h_cyc_apply : ∀ mu, (∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4,
       CGD.Gravity.epsilon4 mu nu rho sigma • (
         partialDerivChiral nu (fun p => curvature (fun m p' => u.spin4c_connection m p') rho sigma p) x +
         bracket (u.spin4c_connection nu x) (curvature (fun m p => u.spin4c_connection m p) rho sigma x)
-      )) = 
+      )) =
       (∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4,
       CGD.Gravity.epsilon4 mu nu rho sigma • (
         partialDerivChiral rho (fun p => curvature (fun m p' => u.spin4c_connection m p') sigma nu p) x +
@@ -268,7 +268,7 @@ lemma bianchi_contraction_zero (u : Universe) (dA : Fin 4 → ChiralM) (x : Spac
       )) := by
     intro mu
     exact sum_cyclic_3_eps_F mu (fun n r s => partialDerivChiral n (fun p => curvature (fun m p' => u.spin4c_connection m p') r s p) x + bracket (u.spin4c_connection n x) (curvature (fun m p => u.spin4c_connection m p) r s x))
-    
+
   have h_zero : (∑ mu : Fin 4, Matrix.trace (dA mu * (
       ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4,
       CGD.Gravity.epsilon4 mu nu rho sigma • (
@@ -283,7 +283,7 @@ lemma bianchi_contraction_zero (u : Universe) (dA : Fin 4 → ChiralM) (x : Spac
     rw [hb]
     have hz : dA mu * 0 = 0 := Matrix.mul_zero _
     rw [hz, Matrix.trace_zero]
-    
+
   exact h_zero
 
 lemma hdA_diff (v : ℝ → PhysicalUniverse) (t : ℝ) (x : SpacetimePoint) (mu nu : Fin 4) (i j : Fin 4)
@@ -293,7 +293,7 @@ lemma hdA_diff (v : ℝ → PhysicalUniverse) (t : ℝ) (x : SpacetimePoint) (mu
 
 lemma hcomm_diff (v : ℝ → PhysicalUniverse) (t : ℝ) (x : SpacetimePoint) (mu nu : Fin 4) (i j : Fin 4)
   (h_valid : isValidPhysicalVariation v) :
-  DifferentiableAt ℝ (fun s => (embedSelfDual (chiralProject (bracket ((v s).toUniverse.spin4c_connection mu x) ((v s).toUniverse.spin4c_connection nu x))).self_dual + 
+  DifferentiableAt ℝ (fun s => (embedSelfDual (chiralProject (bracket ((v s).toUniverse.spin4c_connection mu x) ((v s).toUniverse.spin4c_connection nu x))).self_dual +
                                 embedAntiSelfDual (chiralProject (bracket ((v s).toUniverse.spin4c_connection mu x) ((v s).toUniverse.spin4c_connection nu x))).anti_self_dual) i j) t := by
   have h_eq : (fun s => (embedSelfDual (chiralProject (bracket ((v s).toUniverse.spin4c_connection mu x) ((v s).toUniverse.spin4c_connection nu x))).self_dual + embedAntiSelfDual (chiralProject (bracket ((v s).toUniverse.spin4c_connection mu x) ((v s).toUniverse.spin4c_connection nu x))).anti_self_dual) i j) =
               fun s => (bracket ((v s).toUniverse.spin4c_connection mu x) ((v s).toUniverse.spin4c_connection nu x)) i j := by
@@ -313,13 +313,13 @@ lemma hF_diff (v : ℝ → PhysicalUniverse) (t : ℝ) (x : SpacetimePoint) (rho
 lemma hF_diff_spatial (v : ℝ → PhysicalUniverse) (t : ℝ) (x : SpacetimePoint) (rho sigma : Fin 4) (i j : Fin 4)
   (h_valid : isValidPhysicalVariation v) :
   DifferentiableAt ℝ (fun p => curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p i j) x := by
-  have hc : (fun p => curvature (fun m p' => (v t).toUniverse.spin4c_connection m p') rho sigma p i j) = 
+  have hc : (fun p => curvature (fun m p' => (v t).toUniverse.spin4c_connection m p') rho sigma p i j) =
             (fun p => (embedSelfDual (curvatureSl2c (v t).toUniverse.sd_sector rho sigma p)) i j + (embedAntiSelfDual (curvatureSl2c (v t).toUniverse.asd_sector rho sigma p)) i j) := by
     ext p
     have h_curv := curvature_spin4c_eq (v t).toUniverse rho sigma p
     exact congr_fun (congr_fun h_curv i) j
   rw [hc]
-  
+
   have hs_sd : ∀ a c d, ContDiff ℝ ⊤ (fun p => ((v t).toUniverse.sd_sector a p).val c d) := by
     intro a c d
     let c_pt : ℝ × SpacetimePoint := (t, 0)
@@ -334,9 +334,9 @@ lemma hF_diff_spatial (v : ℝ → PhysicalUniverse) (t : ℝ) (x : SpacetimePoi
       rw [hc1, hc2]
     rw [h_eq]
     exact (h_valid.1 a c d).comp hg
-  have hd_sd : ∀ a b, DifferentiableAt ℝ (fun p => (curvatureSl2c (v t).toUniverse.sd_sector rho sigma p).val a b) x := 
+  have hd_sd : ∀ a b, DifferentiableAt ℝ (fun p => (curvatureSl2c (v t).toUniverse.sd_sector rho sigma p).val a b) x :=
     diff_curvatureSl2c (v t).toUniverse.sd_sector rho sigma x hs_sd
-    
+
   have hs_asd : ∀ a c d, ContDiff ℝ ⊤ (fun p => ((v t).toUniverse.asd_sector a p).val c d) := by
     intro a c d
     let c_pt : ℝ × SpacetimePoint := (t, 0)
@@ -351,7 +351,7 @@ lemma hF_diff_spatial (v : ℝ → PhysicalUniverse) (t : ℝ) (x : SpacetimePoi
       rw [hc1, hc2]
     rw [h_eq]
     exact (h_valid.2.1 a c d).comp hg
-  have hd_asd : ∀ a b, DifferentiableAt ℝ (fun p => (curvatureSl2c (v t).toUniverse.asd_sector rho sigma p).val a b) x := 
+  have hd_asd : ∀ a b, DifferentiableAt ℝ (fun p => (curvatureSl2c (v t).toUniverse.asd_sector rho sigma p).val a b) x :=
     diff_curvatureSl2c (v t).toUniverse.asd_sector rho sigma x hs_asd
 
   apply DifferentiableAt.add
@@ -377,9 +377,9 @@ lemma hF_diff_spatial (v : ℝ → PhysicalUniverse) (t : ℝ) (x : SpacetimePoi
       rw [h_eq]; exact hd_asd i' j'
 
 lemma deriv_chiralProject_sd (v : ℝ → PhysicalUniverse) (h_valid : isValidPhysicalVariation v) (t : ℝ) (mu : Fin 4) (p : SpacetimePoint) (i j : Fin 2) :
-  (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).self_dual.val i j = 
+  (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).self_dual.val i j =
   deriv (fun s => ((v s).toUniverse.sd_sector mu p).val i j) t := by
-  have h_conn_eq : ∀ a b, (fun s => (v s).toUniverse.spin4c_connection mu p (chiralIso (Sum.inl a)) (chiralIso (Sum.inl b))) = 
+  have h_conn_eq : ∀ a b, (fun s => (v s).toUniverse.spin4c_connection mu p (chiralIso (Sum.inl a)) (chiralIso (Sum.inl b))) =
                           fun s => ((v s).toUniverse.sd_sector mu p).val a b := by
     intro a b
     ext s
@@ -400,7 +400,7 @@ lemma deriv_chiralProject_sd (v : ℝ → PhysicalUniverse) (h_valid : isValidPh
   unfold chiralProject toSl2c
   simp only [Matrix.submatrix_apply, Equiv.symm_apply_apply]
 
-  have h_elem : ∀ x y, Matrix.of (fun a' b' => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a' b') t) (chiralIso (Sum.inl x)) (chiralIso (Sum.inl y)) = 
+  have h_elem : ∀ x y, Matrix.of (fun a' b' => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a' b') t) (chiralIso (Sum.inl x)) (chiralIso (Sum.inl y)) =
                        deriv (fun s => ((v s).toUniverse.sd_sector mu p).val x y) t := by
     intro x y
     simp only [Matrix.of_apply]
@@ -420,17 +420,17 @@ lemma deriv_chiralProject_sd (v : ℝ → PhysicalUniverse) (h_valid : isValidPh
     rw [h_zero_fun]
     simp only [deriv_const]
 
-  change (Matrix.of (fun a' b' => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a' b') t) (chiralIso (Sum.inl i)) (chiralIso (Sum.inl j))) - 
-         (Matrix.trace (fun x y => Matrix.of (fun a' b' => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a' b') t) (chiralIso (Sum.inl x)) (chiralIso (Sum.inl y))) / 2) * (1 : Matrix (Fin 2) (Fin 2) ℂ) i j = 
+  change (Matrix.of (fun a' b' => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a' b') t) (chiralIso (Sum.inl i)) (chiralIso (Sum.inl j))) -
+         (Matrix.trace (fun x y => Matrix.of (fun a' b' => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a' b') t) (chiralIso (Sum.inl x)) (chiralIso (Sum.inl y))) / 2) * (1 : Matrix (Fin 2) (Fin 2) ℂ) i j =
          deriv (fun s => ((v s).toUniverse.sd_sector mu p).val i j) t
   rw [h_tr]
   simp only [zero_div, zero_mul, sub_zero]
   exact h_elem i j
 
 lemma deriv_chiralProject_asd (v : ℝ → PhysicalUniverse) (h_valid : isValidPhysicalVariation v) (t : ℝ) (mu : Fin 4) (p : SpacetimePoint) (i j : Fin 2) :
-  (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).anti_self_dual.val i j = 
+  (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).anti_self_dual.val i j =
   deriv (fun s => ((v s).toUniverse.asd_sector mu p).val i j) t := by
-  have h_conn_eq : ∀ a b, (fun s => (v s).toUniverse.spin4c_connection mu p (chiralIso (Sum.inr a)) (chiralIso (Sum.inr b))) = 
+  have h_conn_eq : ∀ a b, (fun s => (v s).toUniverse.spin4c_connection mu p (chiralIso (Sum.inr a)) (chiralIso (Sum.inr b))) =
                           fun s => ((v s).toUniverse.asd_sector mu p).val a b := by
     intro a b
     ext s
@@ -451,7 +451,7 @@ lemma deriv_chiralProject_asd (v : ℝ → PhysicalUniverse) (h_valid : isValidP
   unfold chiralProject toSl2c
   simp only [Matrix.submatrix_apply, Equiv.symm_apply_apply]
 
-  have h_elem : ∀ x y, Matrix.of (fun a' b' => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a' b') t) (chiralIso (Sum.inr x)) (chiralIso (Sum.inr y)) = 
+  have h_elem : ∀ x y, Matrix.of (fun a' b' => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a' b') t) (chiralIso (Sum.inr x)) (chiralIso (Sum.inr y)) =
                        deriv (fun s => ((v s).toUniverse.asd_sector mu p).val x y) t := by
     intro x y
     simp only [Matrix.of_apply]
@@ -471,8 +471,8 @@ lemma deriv_chiralProject_asd (v : ℝ → PhysicalUniverse) (h_valid : isValidP
     rw [h_zero_fun]
     simp only [deriv_const]
 
-  change (Matrix.of (fun a' b' => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a' b') t) (chiralIso (Sum.inr i)) (chiralIso (Sum.inr j))) - 
-         (Matrix.trace (fun x y => Matrix.of (fun a' b' => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a' b') t) (chiralIso (Sum.inr x)) (chiralIso (Sum.inr y))) / 2) * (1 : Matrix (Fin 2) (Fin 2) ℂ) i j = 
+  change (Matrix.of (fun a' b' => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a' b') t) (chiralIso (Sum.inr i)) (chiralIso (Sum.inr j))) -
+         (Matrix.trace (fun x y => Matrix.of (fun a' b' => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a' b') t) (chiralIso (Sum.inr x)) (chiralIso (Sum.inr y))) / 2) * (1 : Matrix (Fin 2) (Fin 2) ℂ) i j =
          deriv (fun s => ((v s).toUniverse.asd_sector mu p).val i j) t
   rw [h_tr]
   simp only [zero_div, zero_mul, sub_zero]
@@ -482,26 +482,26 @@ lemma hdA_mu_commute (v : ℝ → PhysicalUniverse) (t : ℝ) (x : SpacetimePoin
   (h_valid : isValidPhysicalVariation v) :
   deriv (fun s => partialDerivChiral nu (fun p => (v s).toUniverse.spin4c_connection mu p) x i j) t =
   partialDerivChiral nu (fun p => Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t)) x i j := by
-  have hLHS : (fun s => partialDerivChiral nu (fun p => (v s).toUniverse.spin4c_connection mu p) x i j) = 
-    fun s => (embedSelfDual (partialDerivSl2c nu (fun p => (v s).toUniverse.sd_sector mu p) x)) i j + 
+  have hLHS : (fun s => partialDerivChiral nu (fun p => (v s).toUniverse.spin4c_connection mu p) x i j) =
+    fun s => (embedSelfDual (partialDerivSl2c nu (fun p => (v s).toUniverse.sd_sector mu p) x)) i j +
              (embedAntiSelfDual (partialDerivSl2c nu (fun p => (v s).toUniverse.asd_sector mu p) x)) i j := by
     ext s
     have hp := partialDerivChiral_eq_embed_proj nu (fun p => (v s).toUniverse.spin4c_connection mu p) x
     simp_rw [chiralProject_spin4c_sd, chiralProject_spin4c_asd] at hp
     exact congr_fun (congr_fun hp i) j
-    
+
   rw [hLHS]
-  
+
   have hRHS : partialDerivChiral nu (fun p => Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t)) x i j =
-    (embedSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).self_dual) x)) i j + 
+    (embedSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).self_dual) x)) i j +
     (embedAntiSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).anti_self_dual) x)) i j := rfl
-    
+
   rw [hRHS]
-  
+
   rcases h_i : chiralIso.symm i with i' | i' <;> rcases h_j : chiralIso.symm j with j' | j'
   · have h_L1 : ∀ s, (embedSelfDual (partialDerivSl2c nu (fun p => (v s).toUniverse.sd_sector mu p) x)) i j = partialDeriv nu (fun p => ((v s).toUniverse.sd_sector mu p).val i' j') x := by
       intro s
-      have h_eval_embed : (embedSelfDual (partialDerivSl2c nu (fun p => (v s).toUniverse.sd_sector mu p) x)) i j = 
+      have h_eval_embed : (embedSelfDual (partialDerivSl2c nu (fun p => (v s).toUniverse.sd_sector mu p) x)) i j =
                           (partialDerivSl2c nu (fun p => (v s).toUniverse.sd_sector mu p) x).val i' j' := by
         unfold embedSelfDual; simp only [Matrix.of_apply, Equiv.symm_apply_apply]; rw [h_i, h_j]
       rw [h_eval_embed]
@@ -509,19 +509,19 @@ lemma hdA_mu_commute (v : ℝ → PhysicalUniverse) (t : ℝ) (x : SpacetimePoin
         intro c d; exact smooth_implies_diff_x _ s x (h_valid.1 mu c d)
       have hm := partialDerivSl2c_eq_mat (fun p => (v s).toUniverse.sd_sector mu p) nu x h_diff_sd
       exact congr_fun (congr_fun hm i') j'
-      
+
     have h_L2 : ∀ s, (embedAntiSelfDual (partialDerivSl2c nu (fun p => (v s).toUniverse.asd_sector mu p) x)) i j = 0 := by
       intro s; unfold embedAntiSelfDual; simp only [Matrix.of_apply, Equiv.symm_apply_apply]; rw [h_i, h_j]
-      
+
     have h_LHS_eval : deriv (fun s => (embedSelfDual (partialDerivSl2c nu (fun p => (v s).toUniverse.sd_sector mu p) x)) i j + (embedAntiSelfDual (partialDerivSl2c nu (fun p => (v s).toUniverse.asd_sector mu p) x)) i j) t =
                       deriv (fun s => partialDeriv nu (fun p => ((v s).toUniverse.sd_sector mu p).val i' j') x) t := by
-      have h_eq : (fun s => (embedSelfDual (partialDerivSl2c nu (fun p => (v s).toUniverse.sd_sector mu p) x)) i j + (embedAntiSelfDual (partialDerivSl2c nu (fun p => (v s).toUniverse.asd_sector mu p) x)) i j) = 
+      have h_eq : (fun s => (embedSelfDual (partialDerivSl2c nu (fun p => (v s).toUniverse.sd_sector mu p) x)) i j + (embedAntiSelfDual (partialDerivSl2c nu (fun p => (v s).toUniverse.asd_sector mu p) x)) i j) =
                   fun s => partialDeriv nu (fun p => ((v s).toUniverse.sd_sector mu p).val i' j') x := by
         ext s; rw [h_L1 s, h_L2 s, add_zero]
       rw [h_eq]
-      
+
     rw [h_LHS_eval]
-    
+
     have h_diff_RHS : ∀ c d, DifferentiableAt ℝ (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).self_dual.val c d) x := by
       intro c d
       have h_eq : (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).self_dual.val c d) =
@@ -530,10 +530,10 @@ lemma hdA_mu_commute (v : ℝ → PhysicalUniverse) (t : ℝ) (x : SpacetimePoin
         exact deriv_chiralProject_sd v h_valid t mu p c d
       rw [h_eq]
       exact smooth_implies_diff_x _ t x (deriv_t_smooth _ (h_valid.1 mu c d))
-      
-    have h_R1 : (embedSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).self_dual) x)) i j = 
+
+    have h_R1 : (embedSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).self_dual) x)) i j =
                 partialDeriv nu (fun p => deriv (fun s => ((v s).toUniverse.sd_sector mu p).val i' j') t) x := by
-      have h_eval_embed : (embedSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).self_dual) x)) i j = 
+      have h_eval_embed : (embedSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).self_dual) x)) i j =
                           (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).self_dual) x).val i' j' := by
         unfold embedSelfDual; simp only [Matrix.of_apply, Equiv.symm_apply_apply]; rw [h_i, h_j]
       rw [h_eval_embed]
@@ -541,15 +541,15 @@ lemma hdA_mu_commute (v : ℝ → PhysicalUniverse) (t : ℝ) (x : SpacetimePoin
       have heval := congr_fun (congr_fun hm i') j'
       rw [heval]
       change partialDeriv nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).self_dual.val i' j') x = _
-      have h_fun_eq : (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).self_dual.val i' j') = 
+      have h_fun_eq : (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).self_dual.val i' j') =
                       (fun p => deriv (fun s => ((v s).toUniverse.sd_sector mu p).val i' j') t) := by
         ext p
         exact deriv_chiralProject_sd v h_valid t mu p i' j'
       rw [h_fun_eq]
-      
+
     have h_R2 : (embedAntiSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).anti_self_dual) x)) i j = 0 := by
       unfold embedAntiSelfDual; simp only [Matrix.of_apply, Equiv.symm_apply_apply]; rw [h_i, h_j]
-      
+
     rw [h_R1, h_R2, add_zero]
     exact mixed_deriv_commute_sd v t mu nu x i' j' h_valid
 
@@ -561,8 +561,8 @@ lemma hdA_mu_commute (v : ℝ → PhysicalUniverse) (t : ℝ) (x : SpacetimePoin
         rw [hs1, hs2, add_zero]
       rw [h_eq]; simp only [deriv_const]
     rw [h_LHS_zero]
-    
-    have h_RHS_zero : (embedSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).self_dual) x)) i j + 
+
+    have h_RHS_zero : (embedSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).self_dual) x)) i j +
                       (embedAntiSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).anti_self_dual) x)) i j = 0 := by
       have hr1 : (embedSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).self_dual) x)) i j = 0 := by unfold embedSelfDual; simp only [Matrix.of_apply, Equiv.symm_apply_apply]; rw [h_i, h_j]
       have hr2 : (embedAntiSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).anti_self_dual) x)) i j = 0 := by unfold embedAntiSelfDual; simp only [Matrix.of_apply, Equiv.symm_apply_apply]; rw [h_i, h_j]
@@ -577,8 +577,8 @@ lemma hdA_mu_commute (v : ℝ → PhysicalUniverse) (t : ℝ) (x : SpacetimePoin
         rw [hs1, hs2, zero_add]
       rw [h_eq]; simp only [deriv_const]
     rw [h_LHS_zero]
-    
-    have h_RHS_zero : (embedSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).self_dual) x)) i j + 
+
+    have h_RHS_zero : (embedSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).self_dual) x)) i j +
                       (embedAntiSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).anti_self_dual) x)) i j = 0 := by
       have hr1 : (embedSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).self_dual) x)) i j = 0 := by unfold embedSelfDual; simp only [Matrix.of_apply, Equiv.symm_apply_apply]; rw [h_i, h_j]
       have hr2 : (embedAntiSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).anti_self_dual) x)) i j = 0 := by unfold embedAntiSelfDual; simp only [Matrix.of_apply, Equiv.symm_apply_apply]; rw [h_i, h_j]
@@ -589,7 +589,7 @@ lemma hdA_mu_commute (v : ℝ → PhysicalUniverse) (t : ℝ) (x : SpacetimePoin
       intro s; unfold embedSelfDual; simp only [Matrix.of_apply, Equiv.symm_apply_apply]; rw [h_i, h_j]
     have h_L2 : ∀ s, (embedAntiSelfDual (partialDerivSl2c nu (fun p => (v s).toUniverse.asd_sector mu p) x)) i j = partialDeriv nu (fun p => ((v s).toUniverse.asd_sector mu p).val i' j') x := by
       intro s
-      have h_eval_embed : (embedAntiSelfDual (partialDerivSl2c nu (fun p => (v s).toUniverse.asd_sector mu p) x)) i j = 
+      have h_eval_embed : (embedAntiSelfDual (partialDerivSl2c nu (fun p => (v s).toUniverse.asd_sector mu p) x)) i j =
                           (partialDerivSl2c nu (fun p => (v s).toUniverse.asd_sector mu p) x).val i' j' := by
         unfold embedAntiSelfDual; simp only [Matrix.of_apply, Equiv.symm_apply_apply]; rw [h_i, h_j]
       rw [h_eval_embed]
@@ -597,16 +597,16 @@ lemma hdA_mu_commute (v : ℝ → PhysicalUniverse) (t : ℝ) (x : SpacetimePoin
         intro c d; exact smooth_implies_diff_x _ s x (h_valid.2.1 mu c d)
       have hm := partialDerivSl2c_eq_mat (fun p => (v s).toUniverse.asd_sector mu p) nu x h_diff_asd
       exact congr_fun (congr_fun hm i') j'
-      
+
     have h_LHS_eval : deriv (fun s => (embedSelfDual (partialDerivSl2c nu (fun p => (v s).toUniverse.sd_sector mu p) x)) i j + (embedAntiSelfDual (partialDerivSl2c nu (fun p => (v s).toUniverse.asd_sector mu p) x)) i j) t =
                       deriv (fun s => partialDeriv nu (fun p => ((v s).toUniverse.asd_sector mu p).val i' j') x) t := by
-      have h_eq : (fun s => (embedSelfDual (partialDerivSl2c nu (fun p => (v s).toUniverse.sd_sector mu p) x)) i j + (embedAntiSelfDual (partialDerivSl2c nu (fun p => (v s).toUniverse.asd_sector mu p) x)) i j) = 
+      have h_eq : (fun s => (embedSelfDual (partialDerivSl2c nu (fun p => (v s).toUniverse.sd_sector mu p) x)) i j + (embedAntiSelfDual (partialDerivSl2c nu (fun p => (v s).toUniverse.asd_sector mu p) x)) i j) =
                   fun s => partialDeriv nu (fun p => ((v s).toUniverse.asd_sector mu p).val i' j') x := by
         ext s; rw [h_L1 s, h_L2 s, zero_add]
       rw [h_eq]
-      
+
     rw [h_LHS_eval]
-    
+
     have h_diff_RHS : ∀ c d, DifferentiableAt ℝ (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).anti_self_dual.val c d) x := by
       intro c d
       have h_eq : (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).anti_self_dual.val c d) =
@@ -615,13 +615,13 @@ lemma hdA_mu_commute (v : ℝ → PhysicalUniverse) (t : ℝ) (x : SpacetimePoin
         exact deriv_chiralProject_asd v h_valid t mu p c d
       rw [h_eq]
       exact smooth_implies_diff_x _ t x (deriv_t_smooth _ (h_valid.2.1 mu c d))
-      
+
     have h_R1 : (embedSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).self_dual) x)) i j = 0 := by
       unfold embedSelfDual; simp only [Matrix.of_apply, Equiv.symm_apply_apply]; rw [h_i, h_j]
-      
-    have h_R2 : (embedAntiSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).anti_self_dual) x)) i j = 
+
+    have h_R2 : (embedAntiSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).anti_self_dual) x)) i j =
                 partialDeriv nu (fun p => deriv (fun s => ((v s).toUniverse.asd_sector mu p).val i' j') t) x := by
-      have h_eval_embed : (embedAntiSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).anti_self_dual) x)) i j = 
+      have h_eval_embed : (embedAntiSelfDual (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).anti_self_dual) x)) i j =
                           (partialDerivSl2c nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).anti_self_dual) x).val i' j' := by
         unfold embedAntiSelfDual; simp only [Matrix.of_apply, Equiv.symm_apply_apply]; rw [h_i, h_j]
       rw [h_eval_embed]
@@ -629,12 +629,12 @@ lemma hdA_mu_commute (v : ℝ → PhysicalUniverse) (t : ℝ) (x : SpacetimePoin
       have heval := congr_fun (congr_fun hm i') j'
       rw [heval]
       change partialDeriv nu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).anti_self_dual.val i' j') x = _
-      have h_fun_eq : (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).anti_self_dual.val i' j') = 
+      have h_fun_eq : (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection mu p a b) t))).anti_self_dual.val i' j') =
                       (fun p => deriv (fun s => ((v s).toUniverse.asd_sector mu p).val i' j') t) := by
         ext p
         exact deriv_chiralProject_asd v h_valid t mu p i' j'
       rw [h_fun_eq]
-      
+
     rw [h_R1, h_R2, zero_add]
     exact mixed_deriv_commute_asd v t mu nu x i' j' h_valid
 
@@ -647,11 +647,11 @@ lemma partialDerivChiral_matrix_of_deriv (v : ℝ → PhysicalUniverse) (h_valid
             (embedAntiSelfDual (partialDerivSl2c mu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection nu p a b) t))).anti_self_dual) x)) i j := rfl
   rw [hc]
   rcases h_i : chiralIso.symm i with i' | i' <;> rcases h_j : chiralIso.symm j with j' | j'
-  · have hr1 : (embedSelfDual (partialDerivSl2c mu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection nu p a b) t))).self_dual) x)) i j = 
+  · have hr1 : (embedSelfDual (partialDerivSl2c mu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection nu p a b) t))).self_dual) x)) i j =
                (partialDerivSl2c mu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection nu p a b) t))).self_dual) x).val i' j' := by
       unfold embedSelfDual; simp only [Matrix.of_apply, Equiv.symm_apply_apply]; rw [h_i, h_j]
     rw [hr1]
-    
+
     have h_diff_sd : ∀ c d, DifferentiableAt ℝ (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection nu p a b) t))).self_dual.val c d) x := by
       intro c d
       have heq : (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection nu p a b) t))).self_dual.val c d) =
@@ -659,15 +659,15 @@ lemma partialDerivChiral_matrix_of_deriv (v : ℝ → PhysicalUniverse) (h_valid
         ext p; exact deriv_chiralProject_sd v h_valid t nu p c d
       rw [heq]
       exact smooth_implies_diff_x _ t x (deriv_t_smooth _ (h_valid.1 nu c d))
-      
+
     have hm := partialDerivSl2c_eq_mat _ mu x h_diff_sd
     have heval := congr_fun (congr_fun hm i') j'
     rw [heval]
-    
+
     have hr2 : (embedAntiSelfDual (partialDerivSl2c mu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection nu p a b) t))).anti_self_dual) x)) i j = 0 := by
       unfold embedAntiSelfDual; simp only [Matrix.of_apply, Equiv.symm_apply_apply]; rw [h_i, h_j]
     rw [hr2, add_zero]
-    
+
     have heq2 : (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection nu p a b) t))).self_dual.val i' j') =
                 fun p => deriv (fun s => (v s).toUniverse.spin4c_connection nu p i j) t := by
       ext p
@@ -682,8 +682,8 @@ lemma partialDerivChiral_matrix_of_deriv (v : ℝ → PhysicalUniverse) (h_valid
         dsimp only
         ring
       rw [h_conn_eq]
-    
-    change partialDeriv mu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection nu p a b) t))).self_dual.val i' j') x = 
+
+    change partialDeriv mu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection nu p a b) t))).self_dual.val i' j') x =
            partialDeriv mu (fun p => deriv (fun s => (v s).toUniverse.spin4c_connection nu p i j) t) x
     exact congrArg (fun F => partialDeriv mu F x) heq2
 
@@ -703,7 +703,7 @@ lemma partialDerivChiral_matrix_of_deriv (v : ℝ → PhysicalUniverse) (h_valid
         rw [h_i, h_j]; ring
       rw [h_conn_eq]; simp only [deriv_const]
     rw [h_zero]; exact (partialDeriv_const (0 : ℂ) mu x).symm
-    
+
   · have h1 : (embedSelfDual (partialDerivSl2c mu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection nu p a b) t))).self_dual) x)) i j = 0 := by
       unfold embedSelfDual; simp only [Matrix.of_apply, Equiv.symm_apply_apply]; rw [h_i, h_j]
     have h2 : (embedAntiSelfDual (partialDerivSl2c mu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection nu p a b) t))).anti_self_dual) x)) i j = 0 := by
@@ -720,12 +720,12 @@ lemma partialDerivChiral_matrix_of_deriv (v : ℝ → PhysicalUniverse) (h_valid
         rw [h_i, h_j]; ring
       rw [h_conn_eq]; simp only [deriv_const]
     rw [h_zero]; exact (partialDeriv_const (0 : ℂ) mu x).symm
-    
+
   · have hr1 : (embedSelfDual (partialDerivSl2c mu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection nu p a b) t))).self_dual) x)) i j = 0 := by
       unfold embedSelfDual; simp only [Matrix.of_apply, Equiv.symm_apply_apply]; rw [h_i, h_j]
     rw [hr1, zero_add]
-    
-    have hr2 : (embedAntiSelfDual (partialDerivSl2c mu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection nu p a b) t))).anti_self_dual) x)) i j = 
+
+    have hr2 : (embedAntiSelfDual (partialDerivSl2c mu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection nu p a b) t))).anti_self_dual) x)) i j =
                (partialDerivSl2c mu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection nu p a b) t))).anti_self_dual) x).val i' j' := by
       unfold embedAntiSelfDual; simp only [Matrix.of_apply, Equiv.symm_apply_apply]; rw [h_i, h_j]
     rw [hr2]
@@ -737,11 +737,11 @@ lemma partialDerivChiral_matrix_of_deriv (v : ℝ → PhysicalUniverse) (h_valid
         ext p; exact deriv_chiralProject_asd v h_valid t nu p c d
       rw [heq]
       exact smooth_implies_diff_x _ t x (deriv_t_smooth _ (h_valid.2.1 nu c d))
-      
+
     have hm := partialDerivSl2c_eq_mat _ mu x h_diff_asd
     have heval := congr_fun (congr_fun hm i') j'
     rw [heval]
-    
+
     have heq2 : (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection nu p a b) t))).anti_self_dual.val i' j') =
                 fun p => deriv (fun s => (v s).toUniverse.spin4c_connection nu p i j) t := by
       ext p
@@ -756,8 +756,8 @@ lemma partialDerivChiral_matrix_of_deriv (v : ℝ → PhysicalUniverse) (h_valid
         dsimp only
         ring
       rw [h_conn_eq]
-      
-    change partialDeriv mu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection nu p a b) t))).anti_self_dual.val i' j') x = 
+
+    change partialDeriv mu (fun p => (chiralProject (Matrix.of (fun a b => deriv (fun s => (v s).toUniverse.spin4c_connection nu p a b) t))).anti_self_dual.val i' j') x =
            partialDeriv mu (fun p => deriv (fun s => (v s).toUniverse.spin4c_connection nu p i j) t) x
     exact congrArg (fun F => partialDeriv mu F x) heq2
 
@@ -769,13 +769,13 @@ lemma partialDerivChiral_curvature (v : ℝ → PhysicalUniverse) (h_valid : isV
             (embedSelfDual (partialDerivSl2c mu (fun p => (chiralProject (curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p)).self_dual) x)) i j +
             (embedAntiSelfDual (partialDerivSl2c mu (fun p => (chiralProject (curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p)).anti_self_dual) x)) i j := rfl
   rw [hc]
-  
+
   rcases h_i : chiralIso.symm i with i' | i' <;> rcases h_j : chiralIso.symm j with j' | j'
-  · have hr1 : (embedSelfDual (partialDerivSl2c mu (fun p => (chiralProject (curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p)).self_dual) x)) i j = 
+  · have hr1 : (embedSelfDual (partialDerivSl2c mu (fun p => (chiralProject (curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p)).self_dual) x)) i j =
                (partialDerivSl2c mu (fun p => (chiralProject (curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p)).self_dual) x).val i' j' := by
       unfold embedSelfDual; simp only [Matrix.of_apply, Equiv.symm_apply_apply]; rw [h_i, h_j]
     rw [hr1]
-    
+
     have h_diff_sd : ∀ c d, DifferentiableAt ℝ (fun p => (chiralProject (curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p)).self_dual.val c d) x := by
       intro c d
       have heq : (fun p => (chiralProject (curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p)).self_dual.val c d) =
@@ -786,7 +786,7 @@ lemma partialDerivChiral_curvature (v : ℝ → PhysicalUniverse) (h_valid : isV
           rw [h_curv, chiralProject_embed_sd]
         rw [hs]
       rw [heq]
-      
+
       have hs_sd : ∀ a c' d', ContDiff ℝ ⊤ (fun p => ((v t).toUniverse.sd_sector a p).val c' d') := by
         intro a c' d'
         let c_pt : ℝ × SpacetimePoint := (t, 0)
@@ -802,15 +802,15 @@ lemma partialDerivChiral_curvature (v : ℝ → PhysicalUniverse) (h_valid : isV
         rw [h_eq]
         exact (h_valid.1 a c' d').comp hg
       exact diff_curvatureSl2c (v t).toUniverse.sd_sector rho sigma x hs_sd c d
-      
+
     have hm := partialDerivSl2c_eq_mat _ mu x h_diff_sd
     have heval := congr_fun (congr_fun hm i') j'
     rw [heval]
-    
+
     have hr2 : (embedAntiSelfDual (partialDerivSl2c mu (fun p => (chiralProject (curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p)).anti_self_dual) x)) i j = 0 := by
       unfold embedAntiSelfDual; simp only [Matrix.of_apply, Equiv.symm_apply_apply]; rw [h_i, h_j]
     rw [hr2, add_zero]
-    
+
     have heq2 : (fun p => (chiralProject (curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p)).self_dual.val i' j') =
                 fun p => curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p i j := by
       ext p
@@ -826,8 +826,8 @@ lemma partialDerivChiral_curvature (v : ℝ → PhysicalUniverse) (h_valid : isV
         dsimp only
         ring
       rw [h_conn_eq]
-    
-    change partialDeriv mu (fun p => (chiralProject (curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p)).self_dual.val i' j') x = 
+
+    change partialDeriv mu (fun p => (chiralProject (curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p)).self_dual.val i' j') x =
            partialDeriv mu (fun p => curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p i j) x
     exact congrArg (fun F => partialDeriv mu F x) heq2
 
@@ -860,12 +860,12 @@ lemma partialDerivChiral_curvature (v : ℝ → PhysicalUniverse) (h_valid : isV
       simp only [Matrix.add_apply, eval_embedSelfDual, eval_embedAntiSelfDual, Equiv.symm_apply_apply]
       rw [h_i, h_j]; ring
     rw [h_zero]; exact (partialDeriv_const (0 : ℂ) mu x).symm
-    
+
   · have hr1 : (embedSelfDual (partialDerivSl2c mu (fun p => (chiralProject (curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p)).self_dual) x)) i j = 0 := by
       unfold embedSelfDual; simp only [Matrix.of_apply, Equiv.symm_apply_apply]; rw [h_i, h_j]
     rw [hr1, zero_add]
-    
-    have hr2 : (embedAntiSelfDual (partialDerivSl2c mu (fun p => (chiralProject (curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p)).anti_self_dual) x)) i j = 
+
+    have hr2 : (embedAntiSelfDual (partialDerivSl2c mu (fun p => (chiralProject (curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p)).anti_self_dual) x)) i j =
                (partialDerivSl2c mu (fun p => (chiralProject (curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p)).anti_self_dual) x).val i' j' := by
       unfold embedAntiSelfDual; simp only [Matrix.of_apply, Equiv.symm_apply_apply]; rw [h_i, h_j]
     rw [hr2]
@@ -880,7 +880,7 @@ lemma partialDerivChiral_curvature (v : ℝ → PhysicalUniverse) (h_valid : isV
           rw [h_curv, chiralProject_embed_asd]
         rw [hs]
       rw [heq]
-      
+
       have hs_asd : ∀ a c' d', ContDiff ℝ ⊤ (fun p => ((v t).toUniverse.asd_sector a p).val c' d') := by
         intro a c' d'
         let c_pt : ℝ × SpacetimePoint := (t, 0)
@@ -896,11 +896,11 @@ lemma partialDerivChiral_curvature (v : ℝ → PhysicalUniverse) (h_valid : isV
         rw [h_eq]
         exact (h_valid.2.1 a c' d').comp hg
       exact diff_curvatureSl2c (v t).toUniverse.asd_sector rho sigma x hs_asd c d
-      
+
     have hm := partialDerivSl2c_eq_mat _ mu x h_diff_asd
     have heval := congr_fun (congr_fun hm i') j'
     rw [heval]
-    
+
     have heq2 : (fun p => (chiralProject (curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p)).anti_self_dual.val i' j') =
                 fun p => curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p i j := by
       ext p
@@ -916,8 +916,8 @@ lemma partialDerivChiral_curvature (v : ℝ → PhysicalUniverse) (h_valid : isV
         dsimp only
         ring
       rw [h_conn_eq]
-      
-    change partialDeriv mu (fun p => (chiralProject (curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p)).anti_self_dual.val i' j') x = 
+
+    change partialDeriv mu (fun p => (chiralProject (curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p)).anti_self_dual.val i' j') x =
            partialDeriv mu (fun p => curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p i j) x
     exact congrArg (fun F => partialDeriv mu F x) heq2
 
@@ -992,18 +992,18 @@ lemma sum_bianchi_trace_split (dA : Fin 4 → Matrix (Fin 4) (Fin 4) ℂ) (A : F
   (h_bianchi : (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA mu * (dF nu rho sigma + bracket (A nu) (F rho sigma)))) = 0) :
   (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA mu * bracket (A nu) (F rho sigma))) =
   (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA nu * dF mu rho sigma)) := by
-  
+
   let X := (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA mu * dF nu rho sigma))
   let Y := (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA mu * bracket (A nu) (F rho sigma)))
   let W := (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA nu * dF mu rho sigma))
   let Z := (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, CGD.Gravity.epsilon4 nu mu rho sigma * Matrix.trace (dA nu * dF mu rho sigma))
-  
+
   have h_add : ∀ mu nu rho sigma, CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA mu * (dF nu rho sigma + bracket (A nu) (F rho sigma))) =
-                                  CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA mu * dF nu rho sigma) + 
+                                  CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA mu * dF nu rho sigma) +
                                   CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA mu * bracket (A nu) (F rho sigma)) := by
     intro mu nu rho sigma
     rw [Matrix.mul_add, Matrix.trace_add, mul_add]
-    
+
   have h_sum_add : X + Y = 0 := by
     have h1 : (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA mu * (dF nu rho sigma + bracket (A nu) (F rho sigma)))) = X + Y := by
       have h2 : (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA mu * (dF nu rho sigma + bracket (A nu) (F rho sigma)))) =
@@ -1031,7 +1031,7 @@ lemma sum_bianchi_trace_split (dA : Fin 4 → Matrix (Fin 4) (Fin 4) ℂ) (A : F
     rw [h_comm, h_rel]
 
   have h_eps : Z = -W := sum_trace_dA_dF_swap dA dF
-  
+
   have h_XW : X = -W := by
     rw [h_swap, h_eps]
 
@@ -1050,7 +1050,7 @@ lemma satisfies_bianchi_natively (v : ℝ → PhysicalUniverse) (t : ℝ) (x : S
   let dF := fun nu rho sigma => Matrix.of (fun i j => partialDeriv nu (fun p => curvature (fun m p' => (v t).toUniverse.spin4c_connection m p') rho sigma p i j) x)
   let d_mu_dA_nu := fun mu nu => Matrix.of (fun i j => partialDeriv mu (fun p => deriv (fun s => (v s).toUniverse.spin4c_connection nu p i j) t) x)
   let A := fun mu => (v t).toUniverse.spin4c_connection mu x
-  
+
   have hdA_diff1 : ∀ mu nu i j, DifferentiableAt ℝ (fun s => partialDerivChiral mu (fun p => (v s).toUniverse.spin4c_connection nu p) x i j) t := fun mu nu i j => hdA_diff v t x mu nu i j h_valid
   have hcomm_diff' : ∀ mu nu i j, DifferentiableAt ℝ (fun s => (embedSelfDual (chiralProject (bracket ((v s).toUniverse.spin4c_connection mu x) ((v s).toUniverse.spin4c_connection nu x))).self_dual + embedAntiSelfDual (chiralProject (bracket ((v s).toUniverse.spin4c_connection mu x) ((v s).toUniverse.spin4c_connection nu x))).anti_self_dual) i j) t := fun mu nu i j => hcomm_diff v t x mu nu i j h_valid
 
@@ -1103,7 +1103,7 @@ lemma satisfies_bianchi_natively (v : ℝ → PhysicalUniverse) (t : ℝ) (x : S
   rw [h_T_diff, h_B_diff] at h_split_rw
 
   have h_bianchi_0 := bianchi_contraction_zero (v t).toUniverse dA x
-  
+
   have hb_eq : (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA mu * (dF nu rho sigma + bracket (A nu) (F rho sigma)))) = 0 := by
     have h_subst : (∑ mu : Fin 4, ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, CGD.Gravity.epsilon4 mu nu rho sigma * Matrix.trace (dA mu * (partialDerivChiral nu (fun p => curvature (fun m p' => (v t).toUniverse.spin4c_connection m p') rho sigma p) x + bracket (A nu) (F rho sigma)))) = 0 := h_bianchi_0
     have h_apply : ∀ nu rho sigma, partialDerivChiral nu (fun p => curvature (fun m p' => (v t).toUniverse.spin4c_connection m p') rho sigma p) x = dF nu rho sigma := by
@@ -1174,7 +1174,7 @@ lemma satisfies_bianchi_natively (v : ℝ → PhysicalUniverse) (t : ℝ) (x : S
 
   have hA_diff : ∀ nu i j, DifferentiableAt ℝ (fun p => deriv (fun s => (v s).toUniverse.spin4c_connection nu p) t i j) x := fun nu i j => diff_x_deriv_t_conn_matrix v h_valid t x nu i j
   have hF_diff' : ∀ rho sigma i j, DifferentiableAt ℝ (fun p => curvature (fun m p => (v t).toUniverse.spin4c_connection m p) rho sigma p i j) x := fun rho sigma i j => hF_diff_spatial v t x rho sigma i j h_valid
-  
+
   have h_div := variationCurrent_divergence v t x hA_diff hF_diff'
   rw [h_dF_sub]
   exact h_div.symm

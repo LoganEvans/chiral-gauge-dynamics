@@ -47,10 +47,10 @@ instance : Nonempty Universe := ⟨{
     exact contDiff_const
 }⟩
 
-def isSpin4cAlgebra (M : ChiralM) : Prop := 
+def isSpin4cAlgebra (M : ChiralM) : Prop :=
   ∃ (L R : SL2C), M = embedSelfDual L + embedAntiSelfDual R
 
-lemma sum_ite_mul {α β : Type*} [Ring β] [Fintype α] [DecidableEq α] 
+lemma sum_ite_mul {α β : Type*} [Ring β] [Fintype α] [DecidableEq α]
   (a : α) (f : α → β) (g : α → β) :
   (∑ x : α, (if x = a then f x else 0) * g x) = f a * g a := by
   have h : ∀ x, (if x = a then f x else 0) * g x = if x = a then f x * g x else 0 := by
@@ -84,7 +84,7 @@ lemma sum_ite_smul {α M : Type*} [AddCommMonoid M] [Module ℂ M] [Fintype α] 
     exfalso
     exact h_not_in (Finset.mem_univ a)
 
-lemma ite_and_mul (α μ β ν : Fin 4) : 
+lemma ite_and_mul (α μ β ν : Fin 4) :
   (if α = μ ∧ β = ν then (1:ℂ) else 0) = (if α = μ then (1:ℂ) else 0) * (if β = ν then (1:ℂ) else 0) := by
   by_cases h1 : α = μ
   · by_cases h2 : β = ν
@@ -92,7 +92,7 @@ lemma ite_and_mul (α μ β ν : Fin 4) :
     · rw [if_neg (fun h => h2 h.2), if_pos h1, if_neg h2, mul_zero]
   · rw [if_neg (fun h => h1 h.1), if_neg h1, zero_mul]
 
-lemma h_or_ex (μ ν ρ σ α β : Fin 4) (h_diff : μ ≠ ρ ∨ ν ≠ σ) : 
+lemma h_or_ex (μ ν ρ σ α β : Fin 4) (h_diff : μ ≠ ρ ∨ ν ≠ σ) :
   ¬ ((α = μ ∧ β = ν) ∧ (α = ρ ∧ β = σ)) := by
   rintro ⟨⟨h1, h2⟩, ⟨h3, h4⟩⟩
   rcases h_diff with hd | hd
@@ -193,18 +193,18 @@ lemma ite_F_single_sq (μ ν : Fin 4) (M : ChiralM) (α β γ δ : Fin 4) :
 
 lemma ite_F_double_sq (μ ν ρ σ : Fin 4) (M : ChiralM) (α β γ δ : Fin 4) (h_diff : μ ≠ ρ ∨ ν ≠ σ) :
   Matrix.trace (F_double μ ν ρ σ M α β * F_double μ ν ρ σ M γ δ) =
-  ((if α = μ ∧ β = ν then (1:ℂ) else 0) + (if α = ρ ∧ β = σ then (1:ℂ) else 0)) * 
-  ((if γ = μ ∧ δ = ν then (1:ℂ) else 0) + (if γ = ρ ∧ δ = σ then (1:ℂ) else 0)) * 
+  ((if α = μ ∧ β = ν then (1:ℂ) else 0) + (if α = ρ ∧ β = σ then (1:ℂ) else 0)) *
+  ((if γ = μ ∧ δ = ν then (1:ℂ) else 0) + (if γ = ρ ∧ δ = σ then (1:ℂ) else 0)) *
   Matrix.trace (M * M) := by
   unfold F_double
   have hex_a := h_or_ex μ ν ρ σ α β h_diff
   have hex_g := h_or_ex μ ν ρ σ γ δ h_diff
-  
+
   by_cases ha1 : α = μ ∧ β = ν
   · have ha2 : ¬ (α = ρ ∧ β = σ) := fun h => hex_a ⟨ha1, h⟩
     have hfa : (if α = μ ∧ β = ν ∨ α = ρ ∧ β = σ then M else 0) = M := if_pos (Or.inl ha1)
     have hea : ((if α = μ ∧ β = ν then (1:ℂ) else 0) + (if α = ρ ∧ β = σ then (1:ℂ) else 0)) = 1 := by rw [if_pos ha1, if_neg ha2]; ring
-    
+
     by_cases hg1 : γ = μ ∧ δ = ν
     · have hg2 : ¬ (γ = ρ ∧ δ = σ) := fun h => hex_g ⟨hg1, h⟩
       have hfg : (if γ = μ ∧ δ = ν ∨ γ = ρ ∧ δ = σ then M else 0) = M := if_pos (Or.inl hg1)
@@ -222,7 +222,7 @@ lemma ite_F_double_sq (μ ν ρ σ : Fin 4) (M : ChiralM) (α β γ δ : Fin 4) 
   · by_cases ha2 : α = ρ ∧ β = σ
     · have hfa : (if α = μ ∧ β = ν ∨ α = ρ ∧ β = σ then M else 0) = M := if_pos (Or.inr ha2)
       have hea : ((if α = μ ∧ β = ν then (1:ℂ) else 0) + (if α = ρ ∧ β = σ then (1:ℂ) else 0)) = 1 := by rw [if_neg ha1, if_pos ha2]; ring
-      
+
       by_cases hg1 : γ = μ ∧ δ = ν
       · have hg2 : ¬ (γ = ρ ∧ δ = σ) := fun h => hex_g ⟨hg1, h⟩
         have hfg : (if γ = μ ∧ δ = ν ∨ γ = ρ ∧ δ = σ then M else 0) = M := if_pos (Or.inl hg1)

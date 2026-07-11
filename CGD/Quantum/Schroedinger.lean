@@ -23,8 +23,8 @@ noncomputable def modulatedTemporalDeriv (dPsi0 Psi : Matrix (Fin 4) (Fin 4) Com
 noncomputable def spatialDiracOp (dPsi : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) : Matrix (Fin 4) (Fin 4) Complex :=
   gammaVec 1 * dPsi 1 + gammaVec 2 * dPsi 2 + gammaVec 3 * dPsi 3
 
-/-- 
-The core Dirac operator evaluated in the local tangent space frame (using tangent space index 'a' 
+/--
+The core Dirac operator evaluated in the local tangent space frame (using tangent space index 'a'
 instead of coordinate index 'mu'). In curved space, dP represents the tetrad-contracted derivative.
 -/
 noncomputable def localDiracOp (dP : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) : Matrix (Fin 4) (Fin 4) Complex :=
@@ -47,8 +47,8 @@ lemma gamma0_sq : gamma0 * gamma0 = 1 := by
   fin_cases i <;> fin_cases j
   all_goals {
     rw [eval_mul_4x4_local]
-    simp [gamma0, Matrix.fromBlocks, Matrix.reindex, Litlib.Math.Dirac.chiralIso, 
-          Litlib.Math.Dirac.chiralIsoInv, Litlib.Math.Dirac.chiralIsoTo, 
+    simp [gamma0, Matrix.fromBlocks, Matrix.reindex, Litlib.Math.Dirac.chiralIso,
+          Litlib.Math.Dirac.chiralIsoInv, Litlib.Math.Dirac.chiralIsoTo,
           Matrix.submatrix, Sum.elim, Matrix.zero_apply]
   }
 
@@ -57,10 +57,10 @@ lemma gamma0_gammaVec_anti_1 : gamma0 * gammaVec 1 = - (gammaVec 1 * gamma0) := 
   fin_cases a <;> fin_cases b
   all_goals {
     rw [Matrix.neg_apply, eval_mul_4x4, eval_mul_4x4]
-    simp [gamma0, gammaVec, gammaSpatial, 
-          sigmaToMatrix, Litlib.Math.SU2.s1, Litlib.Math.SU2.s2, Litlib.Math.SU2.s3, 
-          Matrix.fromBlocks, Matrix.reindex, Litlib.Math.Dirac.chiralIso, 
-          Litlib.Math.Dirac.chiralIsoInv, Litlib.Math.Dirac.chiralIsoTo, 
+    simp [gamma0, gammaVec, gammaSpatial,
+          sigmaToMatrix, Litlib.Math.SU2.s1, Litlib.Math.SU2.s2, Litlib.Math.SU2.s3,
+          Matrix.fromBlocks, Matrix.reindex, Litlib.Math.Dirac.chiralIso,
+          Litlib.Math.Dirac.chiralIsoInv, Litlib.Math.Dirac.chiralIsoTo,
           Matrix.submatrix, Sum.elim]
     try ring_nf
   }
@@ -70,10 +70,10 @@ lemma gamma0_gammaVec_anti_2 : gamma0 * gammaVec 2 = - (gammaVec 2 * gamma0) := 
   fin_cases a <;> fin_cases b
   all_goals {
     rw [Matrix.neg_apply, eval_mul_4x4, eval_mul_4x4]
-    simp [gamma0, gammaVec, gammaSpatial, 
-          sigmaToMatrix, Litlib.Math.SU2.s1, Litlib.Math.SU2.s2, Litlib.Math.SU2.s3, 
-          Matrix.fromBlocks, Matrix.reindex, Litlib.Math.Dirac.chiralIso, 
-          Litlib.Math.Dirac.chiralIsoInv, Litlib.Math.Dirac.chiralIsoTo, 
+    simp [gamma0, gammaVec, gammaSpatial,
+          sigmaToMatrix, Litlib.Math.SU2.s1, Litlib.Math.SU2.s2, Litlib.Math.SU2.s3,
+          Matrix.fromBlocks, Matrix.reindex, Litlib.Math.Dirac.chiralIso,
+          Litlib.Math.Dirac.chiralIsoInv, Litlib.Math.Dirac.chiralIsoTo,
           Matrix.submatrix, Sum.elim]
     try ring_nf
   }
@@ -83,10 +83,10 @@ lemma gamma0_gammaVec_anti_3 : gamma0 * gammaVec 3 = - (gammaVec 3 * gamma0) := 
   fin_cases a <;> fin_cases b
   all_goals {
     rw [Matrix.neg_apply, eval_mul_4x4, eval_mul_4x4]
-    simp [gamma0, gammaVec, gammaSpatial, 
-          sigmaToMatrix, Litlib.Math.SU2.s1, Litlib.Math.SU2.s2, Litlib.Math.SU2.s3, 
-          Matrix.fromBlocks, Matrix.reindex, Litlib.Math.Dirac.chiralIso, 
-          Litlib.Math.Dirac.chiralIsoInv, Litlib.Math.Dirac.chiralIsoTo, 
+    simp [gamma0, gammaVec, gammaSpatial,
+          sigmaToMatrix, Litlib.Math.SU2.s1, Litlib.Math.SU2.s2, Litlib.Math.SU2.s3,
+          Matrix.fromBlocks, Matrix.reindex, Litlib.Math.Dirac.chiralIso,
+          Litlib.Math.Dirac.chiralIsoInv, Litlib.Math.Dirac.chiralIsoTo,
           Matrix.submatrix, Sum.elim]
     try ring_nf
   }
@@ -176,11 +176,11 @@ lemma P_minus_D_space (dPsi : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) :
 
 /--
 The exact algebraic chiral split of the emergent Dirac equation.
-By applying the projection operators, the relativistic Dirac equation natively factors 
+By applying the projection operators, the relativistic Dirac equation natively factors
 into a coupled system for the large and small components.
 -/
 @[litlib_track "Algebraic Dirac Chiral Split"]
-theorem algebraicDiracChiralSplit (dPsi : Fin 4 → SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) 
+theorem algebraicDiracChiralSplit (dPsi : Fin 4 → SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex)
   (Psi : SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) (m : Complex) (x : SpacetimePoint) :
   localDiracOp (fun a => dPsi a x) = m • Psi x →
   let D0_mod := modulatedTemporalDeriv (dPsi 0 x) (Psi x) m
@@ -192,12 +192,12 @@ theorem algebraicDiracChiralSplit (dPsi : Fin 4 → SpacetimePoint → Matrix (F
   let Px := Psi x
   let D0_mod := modulatedTemporalDeriv (dP 0) Px m
   let D_space := spatialDiracOp dP
-  
+
   have h_expand : gamma0 * dP 0 + D_space = m • Px := by
     have h_sum := localDiracOp_expand dP
     rw [← h_sum]
     exact h
-    
+
   have h_rearrange : dP 0 + gamma0 * D_space = m • (gamma0 * Px) := by
     have h2 : gamma0 * (gamma0 * dP 0 + D_space) = gamma0 * (m • Px) := by rw [h_expand]
     rw [Matrix.mul_add, Matrix.mul_smul] at h2
@@ -205,7 +205,7 @@ theorem algebraicDiracChiralSplit (dPsi : Fin 4 → SpacetimePoint → Matrix (F
       rw [← Matrix.mul_assoc, gamma0_sq, Matrix.one_mul]
     rw [h3] at h2
     exact h2
-    
+
   constructor
   · have eq1 : P_plus * D0_mod + P_plus * gamma0 * D_space =
                P_plus * (dP 0 + gamma0 * D_space) + P_plus * (m • Px) := by
@@ -234,13 +234,13 @@ theorem algebraicDiracChiralSplit (dPsi : Fin 4 → SpacetimePoint → Matrix (F
 
 /--
 The Emergent Schrödinger/Pauli Reduction.
-Without making any approximations, the large component of the gauge-covariant Dirac field natively obeys 
+Without making any approximations, the large component of the gauge-covariant Dirac field natively obeys
 a relation where its temporal variation is exactly sourced by the spatial Dirac operator acting on the small component.
-Because the small component is algebraically inversely proportional to the mass, this rigorously 
+Because the small component is algebraically inversely proportional to the mass, this rigorously
 yields the non-relativistic 1/2m Hamiltonian structure.
 -/
 @[litlib_track "Exact Schroedinger Reduction"]
-theorem exactSchroedingerReduction (dPsi : Fin 4 → SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) 
+theorem exactSchroedingerReduction (dPsi : Fin 4 → SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex)
   (Psi : SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) (m : Complex) (x : SpacetimePoint) :
   localDiracOp (fun a => dPsi a x) = m • Psi x →
   let D0_mod := modulatedTemporalDeriv (dPsi 0 x) (Psi x) m
@@ -250,18 +250,18 @@ theorem exactSchroedingerReduction (dPsi : Fin 4 → SpacetimePoint → Matrix (
   intro h
   have h_split := algebraicDiracChiralSplit dPsi Psi m x h
   rcases h_split with ⟨h_plus, h_minus⟩
-  
+
   let dP := fun a => dPsi a x
   let D_space := spatialDiracOp dP
   let D0_mod := modulatedTemporalDeriv (dPsi 0 x) (Psi x) m
-  
+
   have h_P_plus_D_space : P_plus * gamma0 * D_space = gammaVec 1 * (P_minus * dP 1) + gammaVec 2 * (P_minus * dP 2) + gammaVec 3 * (P_minus * dP 3) := by
     rw [P_plus_gamma0]
     exact P_plus_D_space dP
-    
+
   have h_P_minus_D_space : P_minus * D_space = gammaVec 1 * (P_plus * dP 1) + gammaVec 2 * (P_plus * dP 2) + gammaVec 3 * (P_plus * dP 3) := by
     exact P_minus_D_space dP
-    
+
   constructor
   · rw [← h_plus, h_P_plus_D_space]
     ext a b

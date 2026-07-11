@@ -54,7 +54,7 @@ A physically valid universe variation is mathematically constrained:
 1. It must be a smooth path through configuration space.
 2. It must have uniform compact support (vanish at spatial infinity consistently across the perturbation).
 3. The underlying physical Lagrangian density must be Lebesgue Integrable.
-4. It must map `ℝ → PhysicalUniverse` to ensure the macroscopic volume and vacuum 
+4. It must map `ℝ → PhysicalUniverse` to ensure the macroscopic volume and vacuum
    constraints are not violated during the perturbation.
 -/
 def isValidPhysicalVariation (v : ℝ → PhysicalUniverse) : Prop :=

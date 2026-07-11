@@ -30,8 +30,8 @@ open CGD.Axioms Litlib.Y1973.nielsen1973vortex
 namespace CGD.Quantum
 
 /--
-Mathematically enforces a strictly static (∂_t A = 0), purely magnetic (electric curvature F_{0ν} = 0) configuration. 
-Phenomenologically, this represents the minimal energy ground state of a flux tube. Geometrically, 
+Mathematically enforces a strictly static (∂_t A = 0), purely magnetic (electric curvature F_{0ν} = 0) configuration.
+Phenomenologically, this represents the minimal energy ground state of a flux tube. Geometrically,
 it simply isolates a static background topology.
 -/
 def satisfies1DMinimalEnergyBound (A : Fin 4 → SpacetimePoint → SL2C) (x : SpacetimePoint) : Prop :=
