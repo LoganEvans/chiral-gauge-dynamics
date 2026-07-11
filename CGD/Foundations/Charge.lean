@@ -289,8 +289,15 @@ theorem topologicalChargeConservation
 noncomputable def connectionComponent (pu : PhysicalUniverse) (i j : Fin 4) (μ : Fin 4) (x : SpacetimePoint) : ℂ :=
   pu.toUniverse.spin4c_connection μ x i j
 
+/--
+The true topological Abelian field strength tensor defined as a component
+of the full non-Abelian curvature. Incorporates both the curl and the commutator,
+enabling the dual divergence to measure the non-trivial topological magnetic current.
+F_{μν}^{ij} = ∂_μ A_ν^{ij} - ∂_ν A_μ^{ij} + [A_μ, A_ν]^{ij}
+-/
 noncomputable def abelianFieldStrength (pu : PhysicalUniverse) (i j : Fin 4) (μ ν : Fin 4) (x : SpacetimePoint) : ℂ :=
-  partialDeriv μ (fun p => connectionComponent pu i j ν p) x - partialDeriv ν (fun p => connectionComponent pu i j μ p) x
+  (partialDeriv μ (fun p => connectionComponent pu i j ν p) x - partialDeriv ν (fun p => connectionComponent pu i j μ p) x) +
+  ∑ k : Fin 4, (connectionComponent pu i k μ x * connectionComponent pu k j ν x - connectionComponent pu i k ν x * connectionComponent pu k j μ x)
 
 lemma contDiff_fderiv_of_contDiff_real {f : SpacetimePoint → ℝ} (hf : ContDiff ℝ ⊤ f) :
   ContDiff ℝ ⊤ (fderiv ℝ f) := by
@@ -363,7 +370,14 @@ lemma smooth_abelianFieldStrength (pu : PhysicalUniverse) (i j μ ν : Fin 4) :
     contDiff_partialDeriv_complex μ _ (smooth_connectionComponent pu i j ν)
   have h2 : ContDiff ℝ ⊤ (fun x => partialDeriv ν (fun p => connectionComponent pu i j μ p) x) :=
     contDiff_partialDeriv_complex ν _ (smooth_connectionComponent pu i j μ)
-  exact h1.sub h2
+  have h_derivs := h1.sub h2
+  have h_comm : ContDiff ℝ ⊤ (fun x => ∑ k : Fin 4, (connectionComponent pu i k μ x * connectionComponent pu k j ν x - connectionComponent pu i k ν x * connectionComponent pu k j μ x)) := by
+    apply ContDiff.sum
+    intro k _
+    have h_mul1 := (smooth_connectionComponent pu i k μ).mul (smooth_connectionComponent pu k j ν)
+    have h_mul2 := (smooth_connectionComponent pu i k ν).mul (smooth_connectionComponent pu k j μ)
+    exact h_mul1.sub h_mul2
+  exact h_derivs.add h_comm
 
 lemma smooth_re_afs (pu : PhysicalUniverse) (i j μ ν : Fin 4) :
   ContDiff ℝ ⊤ (fun p => (abelianFieldStrength pu i j μ ν p).re) := by
