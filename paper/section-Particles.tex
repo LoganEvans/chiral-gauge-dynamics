@@ -49,3 +49,17 @@ Next, we use the existence of the Lorentzian Witness (Equation \ref{eq:dynamicEx
 
 It's important to emphasize that this is not the Millennium Prize Problem \citep{jaffe2006quantum}. The proof for Equation \ref{eq:topologicalMassGap} is a simple matrix identity proof, and it is only possible because the metric in CGD is inseparable from the topology. While we are able to show that a mass gap exists in CGD, this proof shows nothing about the similar problem of proving a mass gap for any theory, such as the Standard Model, that possesses an independent metric background.
 
+Now that we have characterized the mass for \suTwo knots, we can also look at simpler Abelian \uOne projections of the ASD connection. To do this, we will use the Abelian field strength tensor which incorporates both the standard curl and the non-Abelian commutator:
+\begin{equation}
+    F_{\mu\nu}^{(U(1))} = \partial_\mu A_\nu - \partial_\nu A_\mu + [A_\mu, A_\nu] \quad \leanref{CGD.Particles.abelianFieldStrength}
+\end{equation}
+\noindent By applying the Duan-Ge topological decomposition \cite{duan1979su2}, we can extract the \uOne electric current by taking the dual divergence of the field strength:
+\begin{equation}
+    J^\mu = \epsilon^{\mu\nu\rho\sigma} \partial_\nu F_{\rho\sigma} \quad \leanref{CGD.Particles.emergentElectricCurrent}
+\end{equation}
+\noindent Since the \spinFourC universe is a smooth manifold, the $n$-dimensional Clairaut's theorem forces the partial derivatives to commute \citep{rudin1976principles}. This forces the divergence of the current to vanish, proving charge conservation:
+\begin{equation}
+    \partial_\mu J^\mu = 0
+    \quad \leanref{CGD.Particles.topologicalChargeConservation}
+\end{equation}
+

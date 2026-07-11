@@ -101,32 +101,3 @@ It's important to note that despite the statistical comparisons shown in Table \
 
 According to \citet{miller2026proton}, the Standard Model requires that we model the effects of both one-photon and two-photon exchange. However, with CGD, we didn't need to model the effects of two-photon exchange in order to reach high accuracy. Our theoretical basis is currently silent about whether two-photon exchange is important or not. The upcoming MUSE experiment \citet{cline2021muse} is exciting because if it shows that TPE is a much smaller effect than currently expected, then it will violate the lepton universality axiom of the Standard Model. In contrast, an anomalous MUSE result may be perfectly consistent with the CGD axioms.
 
-The prediction of an axial condensate also has implications for transverse momentum-dependent distributions (TMD). These are effects where the internal structure of a proton is measured by bombarding the hadron with an electron and measuring the byproducts. Eight total TMDs exist, but three of them (Sivers, Boer-Mulders, and the Worm-Gear) are simple enough mathematically that we can explore them analytically.
-
-The Sivers effect is a phenomenon where the transverse momentum of quarks depends on the spin of the proton. We will conjecture that a flux tube (Equation \ref{eq:fluxTubeFrame}) connects the internal topological poles (aka quarks). By evaluating the Wilson line, we find that the path integral collapses into a matrix exponential. This implies that reversing the limits of integration will invert the sign of the transverse momentum kick:
-\begin{equation}
-    \langle \text{Kick}_{\text{Sivers}}(L) \rangle = - \langle \text{Kick}_{\text{Sivers}}(-L) \rangle .
-    \quad \leanref{CGD.Phenomenology.kinematicSiversSignFlip}
-    \label{eq:kinematicSiversSignFlip}
-\end{equation}
-
-When we model the Boer-Mulders effect, which measures the momentum kick of a spinning quark instead of the spinning proton in the Sivers Effect, we find that the model produces the same transverse projection as with the Sivers effect:
-\begin{equation}
-    \langle \text{Kick}_{\text{BM}}(L) \rangle = \langle \text{Kick}_{\text{Sivers}}(L) \rangle .
-    \quad \leanref{CGD.Phenomenology.kinematicSiversBoerMuldersEquivalence}
-    \label{eq:kinematicSiversBoerMuldersEquivalence}
-\end{equation}
-\noindent Finally, when we consider the Worm-Gear effect, which measures the correlation between a quark spinning on a longitudinal axis and its transfers kick, we find:
-\begin{equation}
-    \langle \text{Kick}_{\text{WormGear}}(L) \rangle = - \langle \text{Kick}_{\text{WormGear}}(-L) \rangle .
-    \quad \leanref{CGD.Phenomenology.kinematicWormGearSignFlip}
-    \label{eq:kinematicWormGearSignFlip}
-\end{equation}
-
-All together, this means that CGD predicts that the ratios of these kicks are tightly linked to each other:
-\begin{equation}
-    \cos(\alpha) \langle \text{Kick}_{\text{WormGear}} \rangle = - \sin(\alpha) \langle \text{Kick}_{\text{Sivers}} \rangle
-    \quad \leanref{CGD.Phenomenology.kinematicTmdRatio}
-    \label{eq:kinematicTmdRatio}
-\end{equation}
-

@@ -145,7 +145,14 @@ class §\phantomsection\label{lean:CGD.Axioms.UnimodularVacuum}§CGD.Axioms.Unim
 -- MODULE: CGD.Cosmology.BigBang
 --------------------------------------------------------------------
 /--
-Demonstrates that if the macroscopic boundary assumes a fully 4D symmetric SO(4) ground state, the geometry natively averts a singularity. Provided the metric determinant remains non-zero, the boundary manifests mathematically as a smooth Euclidean instanton bounce.
+A kinematic boundary evaluation. This demonstrates that if a phase region is 
+artificially constrained to a fully 4D symmetric SO(4) state, the resulting 
+Urbantke metric takes a purely Euclidean form (c • 1).
+
+Rather than representing a dynamic cosmological evolution, this acts as a 
+mathematical sanity check: it shows that highly symmetric ground-state toy models 
+evaluate to non-singular Euclidean spaces rather than generating mathematical 
+singularities in the metric.
 -/
 @[litlib_track "Big Bang Singularity Resolution (Euclidean Bounce)"]
 theorem §\phantomsection\label{lean:CGD.Cosmology.kinematicBigBang}§CGD.Cosmology.kinematicBigBang (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) (phaseRegion : Set §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§)
@@ -216,7 +223,14 @@ theorem §\phantomsection\label{lean:CGD.Cosmology.kinematicClassicalScaleBreaki
 -- MODULE: CGD.Cosmology.TimeEmergence.Theorem
 --------------------------------------------------------------------
 /--
-A fully 4D symmetric field tensor naturally yields a metric with a Euclidean or degenerate signature, forbidding the unique odd-sign axis required for a Lorentzian signature. Therefore, the Lorentzian time dimension emerges geometrically only when the gauge field spontaneously breaks 4D Euclidean (SO(4)) symmetry.
+A geometric "no-go" theorem demonstrating that the Urbantke metric intrinsically
+rejects fully 4D symmetric (SO(4)) states as candidates for a physical spacetime. 
+
+If a field tensor possesses perfect 4D symmetry, its emergent macroscopic metric 
+is algebraically forced into a Euclidean or degenerate signature, mathematically 
+forbidding the unique odd-sign axis (-+++) required for macroscopic time. 
+Therefore, any valid Lorentzian spacetime strictly requires the background gauge 
+field to exist in a state of broken SO(4) symmetry.
 -/
 @[litlib_track "Time Emergence via Symmetry Breaking"]
 theorem §\phantomsection\label{lean:CGD.Cosmology.kinematicTimeEmergence}§CGD.Cosmology.kinematicTimeEmergence (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§) (phaseRegion : Set §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§)
@@ -382,10 +396,16 @@ theorem §\phantomsection\label{lean:CGD.Foundations.topologicalLagrangianUnique
 -- MODULE: CGD.Foundations.Lagrangian.Variation
 --------------------------------------------------------------------
 /--
-Because the action is the topological Pontryagin density, its functional variation with respect
-to compactly supported, smooth gauge field perturbations is identically zero.
-This proves strictly that every continuous non-degenerate configuration is an exact vacuum state,
-mandating that macroscopic spacetime strictly emerges from local matter topological defects.
+Because the action is the fully antisymmetric Pontryagin density, its
+functional variation with respect to compactly supported, smooth gauge field
+perturbations evaluates identically to zero.
+
+This theorem rigorously demonstrates that Chiral Gauge Dynamics possesses no
+classical Euler-Lagrange equations of motion. Consequently, the dynamic
+evolution and stress-energy conservation of the macroscopic universe are not
+driven by action minimization, but rather are governed entirely by strict
+geometric conservation laws (the Bianchi identities) and topological boundary
+conditions.
 -/
 @[litlib_track "Topological Action Variation"]
 theorem §\phantomsection\label{lean:CGD.Foundations.topologicalActionVariationZero}§CGD.Foundations.topologicalActionVariationZero
@@ -1739,11 +1759,13 @@ theorem §\phantomsection\label{lean:CGD.Quantum.algebraicDiracChiralSplit}§CGD
   (§\hyperref[lean:CGD.Quantum.P_minus]{\detokenize{P_minus}}§ * D0_mod + §\hyperref[lean:CGD.Quantum.P_minus]{\detokenize{P_minus}}§ * §\hyperref[lean:Litlib.Math.Dirac.gamma0]{\detokenize{gamma0}}§ * D_space = 0)
 
 /--
-The Emergent Schrödinger/Pauli Reduction.
-Without making any approximations, the large component of the gauge-covariant Dirac field natively obeys
-a relation where its temporal variation is exactly sourced by the spatial Dirac operator acting on the small component.
-Because the small component is algebraically inversely proportional to the mass, this rigorously
-yields the non-relativistic 1/2m Hamiltonian structure.
+An algebraic decomposition of the emergent Dirac equation.
+
+By applying the standard chiral projection operators (P_plus, P_minus), the
+relativistic equation natively factors into coupled relations for the large and
+small components. This verifies that the standard algebraic structures required
+for non-relativistic limits (which produce the 1/2m Schrödinger/Pauli Hamiltonian)
+are natively supported by the macroscopic gauge-covariant geometry.
 -/
 @[litlib_track "Exact Schroedinger Reduction"]
 theorem §\phantomsection\label{lean:CGD.Quantum.exactSchroedingerReduction}§CGD.Quantum.exactSchroedingerReduction (dPsi : Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → Matrix (Fin 4) (Fin 4) Complex)
