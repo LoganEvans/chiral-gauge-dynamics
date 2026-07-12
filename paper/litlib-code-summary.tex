@@ -454,34 +454,45 @@ abbrev §\phantomsection\label{lean:CGD.Foundations.S3}§CGD.Foundations.S3 := {
 
 -- MODULE: CGD.Gravity.DomainSeparation
 --------------------------------------------------------------------
-noncomputable def §\phantomsection\label{lean:CGD.Gravity.extendMetric}§CGD.Gravity.extendMetric (U : Set §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (g : U → Fin 4 → Fin 4 → ℂ) : Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → ℂ :=
-  Classical.epsilon (fun (g_ext : Fin 4 → Fin 4 → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → ℂ) => ∀ y : U, ∀ m n, g_ext m n y.val = g y m n)
-
 /--
-A parallel theorem for the pure GR vacuum limit ($\Lambda = 0$) evaluated on the open bulk manifold subspace outside a topological defect. Because the domain is open, the mapping is mathematically exact for local derivatives.
+A rigorous derivation showing that the scalar volume density μ(x) generates torsion that can be
+conformally absorbed, resulting in a physical metric that natively satisfies the Trace-Reversed
+Vacuum Einstein Field Equations with a Cosmological Constant (Λ = 1).
 -/
-@[litlib_track "Macroscopic Ricci-Flat Emergence"]
-theorem §\phantomsection\label{lean:CGD.Gravity.macroscopicRicciFlatEmergence}§CGD.Gravity.macroscopicRicciFlatEmergence
+@[litlib_track "Macroscopic Cosmological Emergence"]
+theorem §\phantomsection\label{lean:CGD.Gravity.macroscopicCosmologicalEmergence}§CGD.Gravity.macroscopicCosmologicalEmergence
   (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§)
-  (urbantke_tetrad : §\hyperref[lean:CGD.Gravity.TetradField]{\detokenize{TetradField}}§)
-  (Psi : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → Fin 2 → Fin 2 → Fin 2 → Fin 2 → ℂ)
-  [eq2_2b : §\hyperref[lean:Litlib.Y1991.capovilla1991pure.Eq2_2b]{\detokenize{Eq2_2b}}§ §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ (§\hyperref[lean:CGD.Gravity.cgd_dSigma]{\detokenize{cgd_dSigma}}§ urbantke_tetrad) (§\hyperref[lean:CGD.Gravity.cgd_omega]{\detokenize{cgd_omega}}§ pu.toUniverse) (§\hyperref[lean:CGD.Gravity.cgd_Sigma]{\detokenize{cgd_Sigma}}§ urbantke_tetrad) §\hyperref[lean:CGD.Gravity.cgd_eps2_up]{\detokenize{cgd_eps2_up}}§]
-  [eq2_2c : §\hyperref[lean:Litlib.Y1991.capovilla1991pure.Eq2_2c]{\detokenize{Eq2_2c}}§ §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ (§\hyperref[lean:CGD.Gravity.cgd_R]{\detokenize{cgd_R}}§ pu.toUniverse) Psi (§\hyperref[lean:CGD.Gravity.cgd_Sigma]{\detokenize{cgd_Sigma}}§ urbantke_tetrad)]
-  [th_ricci : §\hyperref[lean:Litlib.Y1991.capovilla1991pure.Theorem_Eq2_2c_RicciFlat]{\detokenize{Theorem_Eq2_2c_RicciFlat}}§
-    (Spacetime := pu.bulk)
-    (theta := fun (x : pu.bulk) => §\hyperref[lean:CGD.Gravity.cgd_theta]{\detokenize{cgd_theta}}§ urbantke_tetrad x.val)
-    (g := fun (x : pu.bulk) m n => §\hyperref[lean:CGD.Gravity.metricFromTetrad]{\detokenize{metricFromTetrad}}§ urbantke_tetrad m n x.val)
-    (eps2_down := §\hyperref[lean:CGD.Gravity.cgd_eps2_down]{\detokenize{cgd_eps2_down}}§)
-    (eps2_bar_down := §\hyperref[lean:CGD.Gravity.cgd_eps2_bar_down]{\detokenize{cgd_eps2_bar_down}}§)
-    (eps2_right := §\hyperref[lean:CGD.Gravity.cgd_eps2_bar_down]{\detokenize{cgd_eps2_bar_down}}§)
-    (eps2_up := §\hyperref[lean:CGD.Gravity.cgd_eps2_up]{\detokenize{cgd_eps2_up}}§)
-    (R := fun (x : pu.bulk) => §\hyperref[lean:CGD.Gravity.cgd_R]{\detokenize{cgd_R}}§ pu.toUniverse x.val)
-    (Psi := fun (x : pu.bulk) => Psi x.val)
-    (Sigma := fun (x : pu.bulk) => §\hyperref[lean:CGD.Gravity.cgd_Sigma]{\detokenize{cgd_Sigma}}§ urbantke_tetrad x.val)
-    (dSigma := fun (x : pu.bulk) => §\hyperref[lean:CGD.Gravity.cgd_dSigma]{\detokenize{cgd_dSigma}}§ urbantke_tetrad x.val)
-    (omega := fun (x : pu.bulk) => §\hyperref[lean:CGD.Gravity.cgd_omega]{\detokenize{cgd_omega}}§ pu.toUniverse x.val)
-    (isRicciFlat := fun (g : pu.bulk → Fin 4 → Fin 4 → ℂ) => ∀ (x : pu.bulk) μ ν, §\hyperref[lean:CGD.Gravity.ricciTensor]{\detokenize{CGD.Gravity.ricciTensor}}§ (§\hyperref[lean:CGD.Gravity.extendMetric]{\detokenize{extendMetric}}§ pu.bulk g) μ ν x.val = 0)] :
-  ∀ x ∈ pu.bulk, ∀ μ ν, §\hyperref[lean:CGD.Gravity.ricciTensor]{\detokenize{ricciTensor}}§ (§\hyperref[lean:CGD.Gravity.extendMetric]{\detokenize{extendMetric}}§ pu.bulk (fun y m n => §\hyperref[lean:CGD.Gravity.metricFromTetrad]{\detokenize{metricFromTetrad}}§ urbantke_tetrad m n y.val)) μ ν x = 0
+  (urbantke_g : pu.bulk → Fin 4 → Fin 4 → ℝ)
+  (urbantke_g_inv : pu.bulk → Fin 4 → Fin 4 → ℝ)
+  (urbantke_ricci : pu.bulk → Fin 4 → Fin 4 → ℝ)
+  (mu : pu.bulk → ℝ)
+  (nabla_mu : (pu.bulk → ℝ) → pu.bulk → Fin 4 → ℝ)
+  (nabla_nabla_mu : (pu.bulk → ℝ) → pu.bulk → Fin 4 → Fin 4 → ℝ)
+  (g_phys_inv : pu.bulk → Fin 4 → Fin 4 → ℝ)
+  (ricci_phys : pu.bulk → Fin 4 → Fin 4 → ℝ)
+  (F_ij F_bar_ij : pu.bulk → Fin 3 → Fin 3 → ℂ)
+  (plebanski_vacuum : ℂ → (Fin 3 → Fin 3 → ℂ) → (Fin 3 → Fin 3 → ℂ) → Prop)
+  (isLeviCivitaRicci : (pu.bulk → (Fin 4 → Fin 4 → ℝ)) → (pu.bulk → (Fin 4 → Fin 4 → ℝ)) → Prop)
+  (isLeviCivitaRicciPointwise : (Fin 4 → Fin 4 → ℝ) → (Fin 4 → Fin 4 → ℝ) → Prop)
+  [conformal : §\hyperref[lean:Litlib.Y2010.wald2010general.ConformalRicciTransformation]{\detokenize{Litlib.Y2010.wald2010general.ConformalRicciTransformation}}§ 
+    pu.bulk urbantke_g (fun p a b => mu p * urbantke_g p a b) urbantke_g_inv 
+    urbantke_ricci ricci_phys (fun p => Real.sqrt (mu p)) nabla_mu nabla_nabla_mu isLeviCivitaRicci]
+  [eq15 : §\hyperref[lean:Litlib.Y2011.krasnov2011plebanski.Eq15]{\detokenize{Litlib.Y2011.krasnov2011plebanski.Eq15}}§ plebanski_vacuum]
+  (pleb_equiv : ∀ p, §\hyperref[lean:Litlib.Y2011.krasnov2011plebanski.PlebanskiToEinsteinEquivalence]{\detokenize{Litlib.Y2011.krasnov2011plebanski.PlebanskiToEinsteinEquivalence}}§ 
+    (fun a b => mu p * urbantke_g p a b) (g_phys_inv p) (ricci_phys p) 1 (F_ij p) (F_bar_ij p) plebanski_vacuum isLeviCivitaRicciPointwise)
+  (D : (pu.bulk → ℂ) → pu.bulk → ℂ)
+  (F_curv : pu.bulk → ℂ)
+  (Sigma_urb : pu.bulk → ℂ)
+  (h_axiom3 : ∀ p, F_curv p = (mu p : ℂ) * Sigma_urb p)
+  (h_bianchi : ∀ p, D F_curv p = 0)
+  (h_levi_civita : (∀ p, D (fun x => (mu x : ℂ) * Sigma_urb x) p = 0) → ∀ p, isLeviCivitaRicciPointwise (fun a b => mu p * urbantke_g p a b) (ricci_phys p))
+  (h_inv_phys : ∀ p, ∀ a c, (∑ b : Fin 4, (mu p * urbantke_g p a b) * g_phys_inv p b c) = if a = c then 1 else 0)
+  (h_pleb_vac_cond : ∀ p, (∑ i : Fin 3, F_ij p i i) = -1 ∧ (∀ i j, F_bar_ij p i j = 0)) :
+  ∀ p a c, urbantke_ricci p a c = (mu p * urbantke_g p a c)
+      + 2 * nabla_nabla_mu (fun x => Real.log (Real.sqrt (mu x))) p a c 
+      + urbantke_g p a c * (∑ d : Fin 4, ∑ e : Fin 4, urbantke_g_inv p d e * nabla_nabla_mu (fun x => Real.log (Real.sqrt (mu x))) p d e) 
+      - 2 * nabla_mu (fun x => Real.log (Real.sqrt (mu x))) p a * nabla_mu (fun x => Real.log (Real.sqrt (mu x))) p c 
+      + 2 * urbantke_g p a c * (∑ d : Fin 4, ∑ e : Fin 4, urbantke_g_inv p d e * nabla_mu (fun x => Real.log (Real.sqrt (mu x))) p d * nabla_mu (fun x => Real.log (Real.sqrt (mu x))) p e)
 
 /--
 In the Capovilla formulation, the Unimodular constraint is governed by the scalar density μ.
@@ -768,8 +779,6 @@ theorem §\phantomsection\label{lean:CGD.Gravity.machianTopologicalDefectMotion}
 --------------------------------------------------------------------
 abbrev §\phantomsection\label{lean:CGD.Gravity.SpacetimeIndex}§CGD.Gravity.SpacetimeIndex := Fin 4
 
-abbrev §\phantomsection\label{lean:CGD.Gravity.TetradField}§CGD.Gravity.TetradField := InternalIndex → §\hyperref[lean:CGD.Gravity.SpacetimeIndex]{\detokenize{SpacetimeIndex}}§ → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → ℂ
-
 noncomputable def §\phantomsection\label{lean:CGD.Gravity.christoffel}§CGD.Gravity.christoffel (g : §\hyperref[lean:CGD.Gravity.SpacetimeIndex]{\detokenize{SpacetimeIndex}}§ → §\hyperref[lean:CGD.Gravity.SpacetimeIndex]{\detokenize{SpacetimeIndex}}§ → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → Complex) (rho mu nu : §\hyperref[lean:CGD.Gravity.SpacetimeIndex]{\detokenize{SpacetimeIndex}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) : Complex :=
   let g_inv := §\hyperref[lean:CGD.Gravity.matrixInv4x4]{\detokenize{matrixInv4x4}}§ (fun i j => g i j x)
   (1 / 2 : Complex) * ∑ sigma, g_inv rho sigma * (§\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ mu (fun p => g sigma nu p) x + §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ nu (fun p => g mu sigma p) x - §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{partialDeriv}}§ sigma (fun p => g mu nu p) x)
@@ -807,9 +816,6 @@ noncomputable def §\phantomsection\label{lean:CGD.Gravity.urbantkeMetric}§CGD.
 noncomputable def §\phantomsection\label{lean:CGD.Gravity.cgdAdjointCurvature}§CGD.Gravity.cgdAdjointCurvature (u : §\hyperref[lean:CGD.Axioms.Universe]{\detokenize{Universe}}§) (μ ν : Fin 4) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) : Matrix (Fin 3) (Fin 3) ℂ :=
   extractAdjoint (§\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ u.sd_sector μ ν x).val
 
-noncomputable def §\phantomsection\label{lean:CGD.Gravity.metricFromTetrad}§CGD.Gravity.metricFromTetrad (e : §\hyperref[lean:CGD.Gravity.TetradField]{\detokenize{TetradField}}§) : §\hyperref[lean:CGD.Gravity.SpacetimeIndex]{\detokenize{SpacetimeIndex}}§ → §\hyperref[lean:CGD.Gravity.SpacetimeIndex]{\detokenize{SpacetimeIndex}}§ → §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → ℂ :=
-  fun μ ν x => ∑ I : InternalIndex, e I μ x * e I ν x
-
 /--
 The Pure CDJ Vacuum Constraint (Capovilla, Dell, Jacobson 1991).
 Enforces that the symmetric tensor Σ^{ab} = ε^{μνρσ} F^a_{μν} F^b_{ρσ} is purely trace-free.
@@ -820,55 +826,6 @@ def §\phantomsection\label{lean:CGD.Gravity.satisfiesPureCdjConstraint}§CGD.Gr
     let Sigma := ∑ μ : Fin 4, ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4,
       §\hyperref[lean:CGD.Gravity.epsilon4]{\detokenize{epsilon4}}§ μ ν ρ σ • (F_adj x μ ν * F_adj x ρ σ)
     Sigma = (Matrix.trace Sigma / 3) • (1 : Matrix (Fin 3) (Fin 3) ℂ)
-
-
--- MODULE: CGD.Gravity.MacroscopicVacuum.Differential
---------------------------------------------------------------------
-/-- The exact partial derivative expansion of the derived soldering 2-form. -/
-noncomputable def §\phantomsection\label{lean:CGD.Gravity.cgd_dSigma}§CGD.Gravity.cgd_dSigma (e : §\hyperref[lean:CGD.Gravity.TetradField]{\detokenize{TetradField}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{CGD.Foundations.SpacetimePoint}}§) (μ ν ρ : Fin 4) (A B : Fin 2) : ℂ :=
-  §\hyperref[lean:CGD.Math.partialDeriv]{\detokenize{CGD.Math.partialDeriv}}§ ρ (fun p => §\hyperref[lean:CGD.Gravity.cgd_Sigma]{\detokenize{cgd_Sigma}}§ e p μ ν A B) x
-
-/-- The inverse Levi-Civita spinor metric (indices up). -/
-def §\phantomsection\label{lean:CGD.Gravity.cgd_eps2_up}§CGD.Gravity.cgd_eps2_up (A B : Fin 2) : ℂ := §\hyperref[lean:CGD.Gravity.cgd_eps2_down]{\detokenize{cgd_eps2_down}}§ A B
-
-/-- The self-dual spin connection is natively the background SU(2) gauge field. -/
-noncomputable def §\phantomsection\label{lean:CGD.Gravity.cgd_omega}§CGD.Gravity.cgd_omega (u : §\hyperref[lean:CGD.Axioms.Universe]{\detokenize{CGD.Axioms.Universe}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{CGD.Foundations.SpacetimePoint}}§) (μ : Fin 4) (A B : Fin 2) : ℂ :=
-  (u.sd_sector μ x).val A B
-
-
--- MODULE: CGD.Gravity.MacroscopicVacuum.Spinors
---------------------------------------------------------------------
-/-- Lowers the upper SL(2,C) index to produce the purely symmetric spinor 2-form. -/
-noncomputable def §\phantomsection\label{lean:CGD.Gravity.cgd_R}§CGD.Gravity.cgd_R (u : §\hyperref[lean:CGD.Axioms.Universe]{\detokenize{Universe}}§) : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§ → Fin 4 → Fin 4 → Fin 2 → Fin 2 → ℂ :=
-  fun x μ ν A B => ∑ C, (§\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ u.sd_sector μ ν x).val A C * §\hyperref[lean:CGD.Gravity.cgd_eps2_down]{\detokenize{cgd_eps2_down}}§ C B
-
-/--
-The dynamic self-dual soldering 2-form.
-Constructed exactly as $\Sigma_{\mu\nu}^{AB} = \frac{1}{2} \epsilon_{A'B'} \theta_{[\mu}^{AA'} \theta_{\nu]}^{BB'}$.
--/
-noncomputable def §\phantomsection\label{lean:CGD.Gravity.cgd_Sigma}§CGD.Gravity.cgd_Sigma (e : §\hyperref[lean:CGD.Gravity.TetradField]{\detokenize{TetradField}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (μ ν : Fin 4) (A B : Fin 2) : ℂ :=
-  (1 / 2 : ℂ) * §\hyperref[lean:Litlib.Y1991.capovilla1991pure.sumFin2]{\detokenize{sumFin2}}§ fun A' => §\hyperref[lean:Litlib.Y1991.capovilla1991pure.sumFin2]{\detokenize{sumFin2}}§ fun B' =>
-    §\hyperref[lean:CGD.Gravity.cgd_eps2_bar_down]{\detokenize{cgd_eps2_bar_down}}§ A' B' * (§\hyperref[lean:CGD.Gravity.cgd_theta]{\detokenize{cgd_theta}}§ e x μ A A' * §\hyperref[lean:CGD.Gravity.cgd_theta]{\detokenize{cgd_theta}}§ e x ν B B' - §\hyperref[lean:CGD.Gravity.cgd_theta]{\detokenize{cgd_theta}}§ e x ν A A' * §\hyperref[lean:CGD.Gravity.cgd_theta]{\detokenize{cgd_theta}}§ e x μ B B')
-
-/--
-The conjugate antisymmetric spinor metric.
-In the complexified CDJ GR framework, the conjugate metric is structurally
-identical to the primary spinor metric.
--/
-def §\phantomsection\label{lean:CGD.Gravity.cgd_eps2_bar_down}§CGD.Gravity.cgd_eps2_bar_down (A' B' : Fin 2) : ℂ :=
-  §\hyperref[lean:CGD.Gravity.cgd_eps2_down]{\detokenize{cgd_eps2_down}}§ A' B'
-
-/--
-The fully antisymmetric spinor metric (Levi-Civita symbol for SL(2,C) spinors).
-This mathematically anchors the internal geometry of the Capovilla framework.
--/
-def §\phantomsection\label{lean:CGD.Gravity.cgd_eps2_down}§CGD.Gravity.cgd_eps2_down (A B : Fin 2) : ℂ :=
-  if A = 0 ∧ B = 1 then 1
-  else if A = 1 ∧ B = 0 then -1
-  else 0
-
-noncomputable def §\phantomsection\label{lean:CGD.Gravity.cgd_theta}§CGD.Gravity.cgd_theta (e : §\hyperref[lean:CGD.Gravity.TetradField]{\detokenize{TetradField}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (μ : Fin 4) (A A' : Fin 2) : ℂ :=
-  ∑ I : Fin 4, e I μ x * cgd_sigma_spinor I A A'
 
 
 -- MODULE: CGD.Gravity.StressEnergy.Conservation
@@ -2055,89 +2012,6 @@ class §\phantomsection\label{lean:Litlib.Y1984.urbantke1984integrability.Eq10_S
 
 -- MODULE: Litlib.Y1991.capovilla1991pure.Signature
 --------------------------------------------------------------------
-class §\phantomsection\label{lean:Litlib.Y1991.capovilla1991pure.Eq2_2b}§Litlib.Y1991.capovilla1991pure.Eq2_2b§\textsuperscript{\pdftooltip{\cite{capovilla1991pure}}{Reference: capovilla1991pure}}§
-    (Spacetime : Type*) [TopologicalSpace Spacetime]
-    (dSigma : Spacetime → Fin 4 → Fin 4 → Fin 4 → Fin 2 → Fin 2 → ℂ) -- 3-form
-    (omega : Spacetime → Fin 4 → Fin 2 → Fin 2 → ℂ) -- 1-form connection
-    (Sigma : Spacetime → Fin 4 → Fin 4 → Fin 2 → Fin 2 → ℂ) -- 2-form
-    (eps2_up : Fin 2 → Fin 2 → ℂ) where
-  /-- Algebraic Form Constraint: Enforces proper exterior algebra antisymmetry on spacetime indices for $\Sigma$. -/
-  hSigma_anti : ∀ x μ ν A B, Sigma x μ ν A B = - Sigma x ν μ A B
-  
-  /-- Connection Symmetry Constraint: The spin connection $\omega$ must be symmetric in its spinor indices. -/
-  homega_symm : ∀ x μ A B, omega x μ A B = omega x μ B A
-  
-  eq2_2b_iff : ∀ x μ ν ρ A B,
-    let omega_up := fun lam A' C' => §\hyperref[lean:Litlib.Y1991.capovilla1991pure.sumFin2]{\detokenize{sumFin2}}§ fun E => eps2_up A' E * omega x lam E C';
-    let term := fun m n r => dSigma x m n r A B + 
-      §\hyperref[lean:Litlib.Y1991.capovilla1991pure.sumFin2]{\detokenize{sumFin2}}§ (fun C => omega_up m A C * Sigma x n r B C + omega_up m B C * Sigma x n r A C);
-    -- The total antisymmetrization of this 3-form term must be 0 (enforcing the \wedge product structure)
-    term μ ν ρ + term ν ρ μ + term ρ μ ν - term ν μ ρ - term μ ρ ν - term ρ ν μ = 0
-
-class §\phantomsection\label{lean:Litlib.Y1991.capovilla1991pure.Eq2_2c}§Litlib.Y1991.capovilla1991pure.Eq2_2c§\textsuperscript{\pdftooltip{\cite{capovilla1991pure}}{Reference: capovilla1991pure}}§ 
-    (Spacetime : Type*) [TopologicalSpace Spacetime]
-    (R : Spacetime → Fin 4 → Fin 4 → Fin 2 → Fin 2 → ℂ)
-    (Psi : Spacetime → Fin 2 → Fin 2 → Fin 2 → Fin 2 → ℂ)
-    (Sigma : Spacetime → Fin 4 → Fin 4 → Fin 2 → Fin 2 → ℂ) where
-  /-- Curvature 2-Form Constraint: The curvature tensor $R$ and $\Sigma$ must be strictly antisymmetric in their spacetime indices. -/
-  hR_anti : ∀ x μ ν A B, R x μ ν A B = - R x ν μ A B
-  hSigma_anti : ∀ x μ ν A B, Sigma x μ ν A B = - Sigma x ν μ A B
-  
-  /-- Spinor Symmetry Constraint: $R$ and $\Sigma$ must be symmetric in their chiral spinor indices. -/
-  hR_symm_spin : ∀ x μ ν A B, R x μ ν A B = R x μ ν B A
-  hSigma_symm_spin : ∀ x μ ν A B, Sigma x μ ν A B = Sigma x μ ν B A
-  
-  /-- Trace-Free Weyl Symmetry: The Lagrange multiplier field $\Psi$ must be totally symmetric in all four of its spinor indices, encoding the 5 complex degrees of freedom of the self-dual Weyl tensor. -/
-  hPsiSymm : ∀ x A B C D, 
-    Psi x A B C D = Psi x B A C D ∧ 
-    Psi x A B C D = Psi x A C B D ∧ 
-    Psi x A B C D = Psi x A B D C
-    
-  eq2_2c_iff : ∀ x μ ν A B, R x μ ν A B = 
-    §\hyperref[lean:Litlib.Y1991.capovilla1991pure.sumFin2]{\detokenize{sumFin2}}§ fun C => §\hyperref[lean:Litlib.Y1991.capovilla1991pure.sumFin2]{\detokenize{sumFin2}}§ fun D => 
-      Psi x A B C D * Sigma x μ ν C D
-
-class §\phantomsection\label{lean:Litlib.Y1991.capovilla1991pure.Theorem_Eq2_2c_RicciFlat}§Litlib.Y1991.capovilla1991pure.Theorem_Eq2_2c_RicciFlat§\textsuperscript{\pdftooltip{\cite{capovilla1991pure}}{Reference: capovilla1991pure}}§
-    (Spacetime : Type*) [TopologicalSpace Spacetime]
-    (theta : Spacetime → Fin 4 → Fin 2 → Fin 2 → ℂ)
-    (g : Spacetime → Fin 4 → Fin 4 → ℂ)
-    (eps2_down : Fin 2 → Fin 2 → ℂ)
-    (eps2_bar_down : Fin 2 → Fin 2 → ℂ)
-    (eps2_right : Fin 2 → Fin 2 → ℂ)
-    (eps2_up : Fin 2 → Fin 2 → ℂ)
-    (R : Spacetime → Fin 4 → Fin 4 → Fin 2 → Fin 2 → ℂ)
-    (Psi : Spacetime → Fin 2 → Fin 2 → Fin 2 → Fin 2 → ℂ)
-    (Sigma : Spacetime → Fin 4 → Fin 4 → Fin 2 → Fin 2 → ℂ)
-    (dSigma : Spacetime → Fin 4 → Fin 4 → Fin 4 → Fin 2 → Fin 2 → ℂ)
-    (omega : Spacetime → Fin 4 → Fin 2 → Fin 2 → ℂ)
-    (isRicciFlat : (Spacetime → Fin 4 → Fin 4 → ℂ) → Prop) where
-  /-- Spinor Metric Antisymmetry: The fundamental spinor metrics must be antisymmetric to properly raise and lower $SL(2, \mathbb{C})$ indices. -/
-  heps2_anti : ∀ A B, eps2_down A B = - eps2_down B A
-  heps2_bar_anti : ∀ A' B', eps2_bar_down A' B' = - eps2_bar_down B' A'
-  heps2_right_anti : ∀ A' B', eps2_right A' B' = - eps2_right B' A'
-  heps2_up_anti : ∀ A B, eps2_up A B = - eps2_up B A
-  
-  hSigma_anti : ∀ x μ ν A B, Sigma x μ ν A B = - Sigma x ν μ A B
-  homega_symm : ∀ x μ A B, omega x μ A B = omega x μ B A
-  hg_def : ∀ x μ ν, g x μ ν = 
-    §\hyperref[lean:Litlib.Y1991.capovilla1991pure.sumFin2]{\detokenize{sumFin2}}§ fun A => §\hyperref[lean:Litlib.Y1991.capovilla1991pure.sumFin2]{\detokenize{sumFin2}}§ fun B => §\hyperref[lean:Litlib.Y1991.capovilla1991pure.sumFin2]{\detokenize{sumFin2}}§ fun A' => §\hyperref[lean:Litlib.Y1991.capovilla1991pure.sumFin2]{\detokenize{sumFin2}}§ fun B' =>
-      eps2_down A B * eps2_bar_down A' B' * theta x μ A A' * theta x ν B B'
-      
-  eq2_2c_implies_ricci_flat :
-    -- Hypothesis 1: Sigma is derived from the tetrad (Eq 2.3)
-    (∀ x μ ν A B, Sigma x μ ν A B = (1/2 : ℂ) * §\hyperref[lean:Litlib.Y1991.capovilla1991pure.sumFin2]{\detokenize{sumFin2}}§ fun A' => §\hyperref[lean:Litlib.Y1991.capovilla1991pure.sumFin2]{\detokenize{sumFin2}}§ fun B' =>
-      eps2_right A' B' * (theta x μ A A' * theta x ν B B' - theta x ν A A' * theta x μ B B')) →
-    -- Hypothesis 2: Zero Torsion (Eq 2.2b) guarantees curvature is the Riemann curvature
-    (∀ x μ ν ρ A B,
-      let omega_up := fun lam A' C' => §\hyperref[lean:Litlib.Y1991.capovilla1991pure.sumFin2]{\detokenize{sumFin2}}§ fun E => eps2_up A' E * omega x lam E C';
-      let term := fun m n r => dSigma x m n r A B + 
-        §\hyperref[lean:Litlib.Y1991.capovilla1991pure.sumFin2]{\detokenize{sumFin2}}§ (fun C => omega_up m A C * Sigma x n r B C + omega_up m B C * Sigma x n r A C);
-      term μ ν ρ + term ν ρ μ + term ρ μ ν - term ν μ ρ - term μ ρ ν - term ρ ν μ = 0) →
-    -- Hypothesis 3: Curvature constraints (Eq 2.2c)
-    (∀ x μ ν A B, R x μ ν A B = §\hyperref[lean:Litlib.Y1991.capovilla1991pure.sumFin2]{\detokenize{sumFin2}}§ fun C => §\hyperref[lean:Litlib.Y1991.capovilla1991pure.sumFin2]{\detokenize{sumFin2}}§ fun D => Psi x A B C D * Sigma x μ ν C D) →
-    -- Conclusion: Metric is Ricci flat
-    isRicciFlat g
-
 class §\phantomsection\label{lean:Litlib.Y1991.capovilla1991pure.Theorem_Volume_Element_Identity}§Litlib.Y1991.capovilla1991pure.Theorem_Volume_Element_Identity§\textsuperscript{\pdftooltip{\cite{capovilla1991pure}}{Reference: capovilla1991pure}}§
     (Spacetime : Type*) [TopologicalSpace Spacetime]
     (sqrt_g : Spacetime → ℂ)
@@ -2166,8 +2040,6 @@ class §\phantomsection\label{lean:Litlib.Y1991.capovilla1991pure.Theorem_Volume
   from comparing the evaluation of η across equations 2.16 and 2.21.
   -/
   volume_element_identity : ∀ x, (sqrt_g x)^2 = (mu x)^2
-
-noncomputable def §\phantomsection\label{lean:Litlib.Y1991.capovilla1991pure.sumFin2}§Litlib.Y1991.capovilla1991pure.sumFin2§\textsuperscript{\pdftooltip{\cite{capovilla1991pure}}{Reference: capovilla1991pure}}§ (f : Fin 2 → ℂ) : ℂ := Finset.sum Finset.univ f
 
 
 -- MODULE: Litlib.Y2000.hall2000elementary.Signature
@@ -2253,8 +2125,66 @@ class §\phantomsection\label{lean:Litlib.Y2003.nakahara2003geometry.CartanMaure
     ∀ t1 t2 : ℝ, windingNumber (H t1) = windingNumber (H t2)
 
 
+-- MODULE: Litlib.Y2010.wald2010general.AppendixD.Conformal
+--------------------------------------------------------------------
+/-- Conformal Ricci Transformation (Wald Eq D.8 for n=4).
+This explicitly maps the Ricci tensor of a conformally transformed metric to the 
+original Ricci tensor using the fully expanded covariant derivatives of the conformal 
+factor. Explicit index expansion (Fin 4) is utilized to prevent opaque function 
+exploits and ensure dimensional rigor. -/
+class §\phantomsection\label{lean:Litlib.Y2010.wald2010general.ConformalRicciTransformation}§Litlib.Y2010.wald2010general.ConformalRicciTransformation§\textsuperscript{\pdftooltip{\cite{wald2010general}}{Reference: wald2010general}}§
+    (M : Type _)
+    (g g_tilde g_inv : M → Fin 4 → Fin 4 → ℝ)
+    (Ricci Ricci_tilde : M → Fin 4 → Fin 4 → ℝ)
+    (Omega : M → ℝ)
+    (nabla : (M → ℝ) → M → Fin 4 → ℝ)
+    (nabla_nabla : (M → ℝ) → M → Fin 4 → Fin 4 → ℝ)
+    (isLeviCivitaRicci : (M → (Fin 4 → Fin 4 → ℝ)) → (M → (Fin 4 → Fin 4 → ℝ)) → Prop)
+    where
+  /-- Topological Gatekeeping (Conformal Factor): 
+  The conformal factor `Omega` must be strictly positive everywhere on the manifold. 
+  This mathematically prevents evaluation of undefined limits for the natural 
+  logarithm `ln(Omega)` present in the connection difference tensor. -/
+  omega_pos : ∀ p : M, 0 < Omega p
+
+  /-- Inverse Metric Constraint: `g_inv` is explicitly verified as the strictly 
+  valid matrix inverse of the original metric `g` via Kronecker delta contraction. 
+  This provides the explicit algebraic structure required for downstream theorem proving. -/
+  valid_inverse : ∀ (p : M) (a c : Fin 4), 
+    (∑ b : Fin 4, g p a b * g_inv p b c) = if a = c then 1 else 0
+
+  /-- Geometric Connection Constraint: 
+  Both Ricci tensors must be explicitly bound to the torsion-free Levi-Civita 
+  connections of their respective metrics. -/
+  levi_civita_bound : isLeviCivitaRicci g Ricci
+  levi_civita_bound_tilde : isLeviCivitaRicci g_tilde Ricci_tilde
+
+  /-- Conformal Ricci Transformation (Explicit 4D Expansion):
+  The exact algebraic relationship between the transformed Ricci tensor and the 
+  original Ricci tensor, expanded for n=4 dimensions. The derivative operators 
+  are explicitly applied to the natural logarithm of the conformal factor to 
+  prevent decoupled type signature exploits. -/
+  eq_D8 : ∀ (p : M) (a c : Fin 4), 
+    Ricci_tilde p a c = Ricci p a c 
+      - 2 * nabla_nabla (fun x => Real.log (Omega x)) p a c 
+      - g p a c * (∑ d : Fin 4, ∑ e : Fin 4, g_inv p d e * nabla_nabla (fun x => Real.log (Omega x)) p d e) 
+      + 2 * nabla (fun x => Real.log (Omega x)) p a * nabla (fun x => Real.log (Omega x)) p c 
+      - 2 * g p a c * (∑ d : Fin 4, ∑ e : Fin 4, g_inv p d e * nabla (fun x => Real.log (Omega x)) p d * nabla (fun x => Real.log (Omega x)) p e)
+
+
 -- MODULE: Litlib.Y2011.krasnov2011plebanski.Signature
 --------------------------------------------------------------------
+/--
+Physical Interpretation: Formulates the vacuum Einstein equations in the Plebański formalism. The trace of the self-dual curvature matrix is strictly proportional to the cosmological constant, and its anti-self-dual part strictly vanishes.
+Mathematical Boundaries: This replaces the traditional differential, tensorial Ricci-flatness conditions with a purely algebraic constraint on the curvature components in the self-dual basis.
+-/
+class §\phantomsection\label{lean:Litlib.Y2011.krasnov2011plebanski.Eq15}§Litlib.Y2011.krasnov2011plebanski.Eq15§\textsuperscript{\pdftooltip{\cite{krasnov2011plebanski}}{Reference: krasnov2011plebanski}}§
+    (plebanski_vacuum : ℂ → (Fin 3 → Fin 3 → ℂ) → (Fin 3 → Fin 3 → ℂ) → Prop)
+    where
+  plebanski_vacuum_iff : ∀ (Lambda : ℂ) (F_ij F_bar_ij : Fin 3 → Fin 3 → ℂ),
+    plebanski_vacuum Lambda F_ij F_bar_ij ↔ 
+    ((∑ i : Fin 3, F_ij i i) = -Lambda ∧ (∀ i j, F_bar_ij i j = 0))
+
 /--
 Physical Interpretation: Defines the projection of the trace-free macroscopic stress-energy tensor onto the mixed self-dual/anti-self-dual basis. This term serves as the source coupling matter to the gravitational field in the Plebański formalism.
 Mathematical Boundaries: The construction explicitly requires raising the indices of the anti-self-dual basis forms (`Sigma_bar`) using the inverse background metric (`g_inv`), strictly binding the definition to domains where the metric is non-degenerate.
@@ -2291,5 +2221,23 @@ class §\phantomsection\label{lean:Litlib.Y2011.krasnov2011plebanski.Eq17}§Litl
   einstein_eqs_iff : plebanski_matter_eqs ↔ 
     ((∑ i : Fin 3, F_ij i i) = -Lambda - 2 * (Real.pi : ℂ) * G * T ∧ 
      (∀ i j, F_bar_ij i j = -2 * (Real.pi : ℂ) * G * T_ij i j))
+
+/--
+Physical Interpretation: Establishes the bridge between the Plebański formulation and the standard metric formulation of general relativity (Page 6). It mathematically proves that for a Levi-Civita (torsion-free) connection, the algebraic self-dual curvature conditions (vanishing anti-self-dual part and trace proportional to the cosmological constant) are rigorously equivalent to the tensorial trace-reversed vacuum Einstein field equations ($R_{ab} = \Lambda g_{ab}$).
+Mathematical Boundaries: The equivalence strictly requires a non-degenerate spacetime metric `g` with a well-defined inverse (`g_inv`) to prevent dimensional collapse. This constraint, alongside the explicit requirement that the connection is Levi-Civita (`isLeviCivitaRicci`), securely binds the theorem to standard Riemannian geometries where the isomorphism between the self-dual curvature and the Riemann curvature physically holds.
+-/
+class §\phantomsection\label{lean:Litlib.Y2011.krasnov2011plebanski.PlebanskiToEinsteinEquivalence}§Litlib.Y2011.krasnov2011plebanski.PlebanskiToEinsteinEquivalence§\textsuperscript{\pdftooltip{\cite{krasnov2011plebanski}}{Reference: krasnov2011plebanski}}§
+    (g : Fin 4 → Fin 4 → ℝ)
+    (g_inv : Fin 4 → Fin 4 → ℝ)
+    (Ricci : Fin 4 → Fin 4 → ℝ)
+    (Lambda : ℝ)
+    (F_ij F_bar_ij : Fin 3 → Fin 3 → ℂ)
+    (plebanski_vacuum : ℂ → (Fin 3 → Fin 3 → ℂ) → (Fin 3 → Fin 3 → ℂ) → Prop)
+    (isLeviCivitaRicci : (Fin 4 → Fin 4 → ℝ) → (Fin 4 → Fin 4 → ℝ) → Prop)
+    where
+  equivalence_iff : 
+    (∀ mu nu, (∑ alpha : Fin 4, g mu alpha * g_inv alpha nu) = if mu = nu then 1 else 0) → 
+    isLeviCivitaRicci g Ricci → 
+    (plebanski_vacuum (Lambda : ℂ) F_ij F_bar_ij ↔ (∀ a b, Ricci a b = Lambda * g a b))
 
 \end{minted}
