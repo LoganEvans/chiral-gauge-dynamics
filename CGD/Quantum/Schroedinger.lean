@@ -1,13 +1,15 @@
 -- FILENAME: CGD/Quantum/Schroedinger.lean
 
 import CGD.Quantum.Dirac
+import CGD.Foundations.Spacetime
 import Litlib.Core
+import Litlib.Math.Dirac
 import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.Ring
 
 set_option linter.unusedSimpArgs false
 
-open CGD.Foundations CGD.Math Matrix Complex BigOperators Litlib.Math.Dirac
+open CGD.Foundations Matrix Complex BigOperators Litlib.Math.Dirac
 
 namespace CGD.Quantum
 
@@ -31,15 +33,13 @@ noncomputable def localDiracOp (dP : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) :
   ∑ a, gammaVec a * dP a
 
 lemma sum_fin_4_matrix (f : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) : ∑ i : Fin 4, f i = f 0 + f 1 + f 2 + f 3 := by
-  rw [Fin.sum_univ_castSucc, Fin.sum_univ_castSucc, Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]
-  simp [add_assoc]
+  rw [Fin.sum_univ_four]
 
 lemma eval_mul_4x4_local (A B : Matrix (Fin 4) (Fin 4) Complex) (i j : Fin 4) :
   (A * B) i j = A i 0 * B 0 j + A i 1 * B 1 j + A i 2 * B 2 j + A i 3 * B 3 j := by
   rw [Matrix.mul_apply]
   have h_sum : ∑ k : Fin 4, A i k * B k j = A i 0 * B 0 j + A i 1 * B 1 j + A i 2 * B 2 j + A i 3 * B 3 j := by
-    rw [Fin.sum_univ_castSucc, Fin.sum_univ_castSucc, Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]
-    simp [add_assoc]
+    rw [Fin.sum_univ_four]
   exact h_sum
 
 lemma gamma0_sq : gamma0 * gamma0 = 1 := by
@@ -56,7 +56,7 @@ lemma gamma0_gammaVec_anti_1 : gamma0 * gammaVec 1 = - (gammaVec 1 * gamma0) := 
   ext a b
   fin_cases a <;> fin_cases b
   all_goals {
-    rw [Matrix.neg_apply, eval_mul_4x4, eval_mul_4x4]
+    rw [Matrix.neg_apply, eval_mul_4x4_local, eval_mul_4x4_local]
     simp [gamma0, gammaVec, gammaSpatial,
           sigmaToMatrix, Litlib.Math.SU2.s1, Litlib.Math.SU2.s2, Litlib.Math.SU2.s3,
           Matrix.fromBlocks, Matrix.reindex, Litlib.Math.Dirac.chiralIso,
@@ -69,7 +69,7 @@ lemma gamma0_gammaVec_anti_2 : gamma0 * gammaVec 2 = - (gammaVec 2 * gamma0) := 
   ext a b
   fin_cases a <;> fin_cases b
   all_goals {
-    rw [Matrix.neg_apply, eval_mul_4x4, eval_mul_4x4]
+    rw [Matrix.neg_apply, eval_mul_4x4_local, eval_mul_4x4_local]
     simp [gamma0, gammaVec, gammaSpatial,
           sigmaToMatrix, Litlib.Math.SU2.s1, Litlib.Math.SU2.s2, Litlib.Math.SU2.s3,
           Matrix.fromBlocks, Matrix.reindex, Litlib.Math.Dirac.chiralIso,
@@ -82,7 +82,7 @@ lemma gamma0_gammaVec_anti_3 : gamma0 * gammaVec 3 = - (gammaVec 3 * gamma0) := 
   ext a b
   fin_cases a <;> fin_cases b
   all_goals {
-    rw [Matrix.neg_apply, eval_mul_4x4, eval_mul_4x4]
+    rw [Matrix.neg_apply, eval_mul_4x4_local, eval_mul_4x4_local]
     simp [gamma0, gammaVec, gammaSpatial,
           sigmaToMatrix, Litlib.Math.SU2.s1, Litlib.Math.SU2.s2, Litlib.Math.SU2.s3,
           Matrix.fromBlocks, Matrix.reindex, Litlib.Math.Dirac.chiralIso,
@@ -105,14 +105,14 @@ lemma P_plus_gamma0 : P_plus * gamma0 = P_plus := by
   dsimp [P_plus]
   rw [Matrix.smul_mul, Matrix.add_mul, Matrix.one_mul, gamma0_sq]
   simp [Matrix.smul_apply, Matrix.add_apply]
-  ring
+  try ring
 
 lemma P_minus_gamma0 : P_minus * gamma0 = - P_minus := by
   ext i j
   dsimp [P_minus]
   rw [Matrix.smul_mul, Matrix.sub_mul, Matrix.one_mul, gamma0_sq]
   simp [Matrix.smul_apply, Matrix.sub_apply, Matrix.neg_apply]
-  ring
+  try ring
 
 lemma P_plus_gammaVec (j : Fin 4) (hj : j ≠ 0) : P_plus * gammaVec j = gammaVec j * P_minus := by
   dsimp [P_plus, P_minus]
@@ -142,7 +142,7 @@ lemma localDiracOp_expand (dP : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) :
   rw [h0]
   ext a b
   simp [Matrix.add_apply]
-  ring
+  try ring
 
 lemma P_plus_D_space (dPsi : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) :
   P_plus * spatialDiracOp dPsi =
