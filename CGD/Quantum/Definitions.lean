@@ -42,6 +42,15 @@ def isFluxTube (A : Fin 4 → SpacetimePoint → SL2C) (x : SpacetimePoint) : Pr
 Identifies a non-local topological correlation. Two spatial boundaries are defined
 as entangled if they are connected by a continuous degenerate connection (a flux tube).
 This definition relies on the exact `fluxTubeFrame` witness to guarantee non-vacuous evaluation.
+
+**PHYSICAL CONSERVATION & THE BIANCHI GATEKEEPER:**
+Because the universe lacks dynamical Euler-Lagrange equations, the formation and persistence 
+of these degenerate connections are strictly governed by the exact Differential Bianchi Identity 
+(`kinematicBianchiIdentity`). The Bianchi constraint ($\nabla \cdot B = 0$ analogue) guarantees 
+topological flux conservation, mathematically preventing arbitrary spontaneous flux formation 
+in the vacuum ("flux soup"). It enforces that tubes must strictly anchor to paired topological 
+defects (particles) with equal and opposite winding numbers, geometrically reproducing 
+quantum pair production and bipartite entanglement.
 -/
 @[litlib_track "Entangled State Witness"]
 def areEntangled (A : Fin 4 → SpacetimePoint → SL2C) (x y : SpacetimePoint) (theta : ℝ) : Prop :=

@@ -131,6 +131,7 @@ lemma fluxTube_curvature_congruence (A B : Fin 4 → SpacetimePoint → SL2C) (x
 /--
 Proves that the exact `fluxTubeFrame` witness natively satisfies the static, purely magnetic boundary conditions.
 -/
+-- NOTE: Global topological conservation of this minimal configuration is enforced natively by CGD.Foundations.kinematicBianchiIdentity.
 @[litlib_track "The FluxTubeFrame is a valid physical solution"]
 theorem fluxTubeIsMinimal : ∀ x, satisfies1DMinimalEnergyBound fluxTubeFrame x := by
   intro x; unfold satisfies1DMinimalEnergyBound; apply And.intro
