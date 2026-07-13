@@ -23,7 +23,18 @@ namespace CGD.Quantum
 /--
 If a physical connection yields an asymptotic boundary map that is a topological homeomorphism to the gauge group, its Cartan-Maurer topological charge strictly evaluates to an integer quantization bound (±1).
 
-Here we explicitly invoke the Nakahara (2003) Cartan-Maurer degree theorem and the Belavin (1975) topological bounds.
+**PHYSICAL ONTOLOGY & METRIC INDEPENDENCE:**
+The `BoundaryManifold` is intentionally left as an abstract generic type to mathematically satisfy both 
+regimes of Chiral Gauge Dynamics without metric dependence:
+1. **The Euclidean Instanton (Tunneling):** If `BoundaryManifold` is the $S^3$ boundary of 4D spacetime 
+   ($r \to \infty$ in all directions, including time), this theorem strictly reproduces the Belavin 1975 
+   instanton action quantization for transient vacuum transitions.
+2. **The Lorentzian Soliton (Stable Matter):** If `BoundaryManifold` is the $S^3$ spatial compactification 
+   of a 3D Cauchy surface at a fixed time $t$, this theorem quantizes the invariant topological charge 
+   of a stable particle (a Skyrmion/Soliton) persisting through macroscopic Lorentzian time.
+
+Because the Cartan-Maurer degree theorem depends only on the continuous boundary mapping and is strictly blind 
+to the bulk metric signature, the exact same geometric quantization mathematically governs both phenomena.
 -/
 @[litlib_track "Topological Action Quantization"]
 theorem kinematicActionQuantization
