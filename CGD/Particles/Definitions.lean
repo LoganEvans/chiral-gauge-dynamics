@@ -14,11 +14,13 @@ open CGD.Axioms CGD.Foundations CGD.Math Matrix Complex
 namespace CGD.Particles
 
 /--
-The 4D BPST Instanton in the regular gauge.
-Topologically localizes in both space and time via the 't Hooft symbols.
+The 4D Topological Soliton (Skyrmion) in the regular gauge.
+Topologically localizes the gauge field.
 Multiplied by Complex.I to map into the strictly anti-Hermitian su(2) Lie algebra.
+Ontologically, this represents the spatial compactification of a 3D Cauchy slice (R3 U {infty} ~= S3)
+rather than a 4D Euclidean tunneling event.
 -/
-noncomputable def bpstInstanton (mu : Fin 4) (x : SpacetimePoint) : SL2C :=
+noncomputable def topologicalSoliton (mu : Fin 4) (x : SpacetimePoint) : SL2C :=
   let r2 : ℂ := (x 0 : ℂ)^2 + (x 1 : ℂ)^2 + (x 2 : ℂ)^2 + (x 3 : ℂ)^2
   let D : ℂ := r2 + 1
   if mu = 0 then (Complex.I / D) • ((x 1 : ℂ) • sigma1 + (x 2 : ℂ) • sigma2 + (x 3 : ℂ) • sigma3)

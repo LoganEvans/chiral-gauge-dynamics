@@ -75,7 +75,7 @@ lemma su2_matrix_prop (a b : ℂ) (h : a * star a + b * star b = 1) :
 
   exact ⟨h_mul, h_det⟩
 
-noncomputable def bpstAsymptoticMap (x : S3) : SU2Group := by
+noncomputable def solitonAsymptoticMap (x : S3) : SU2Group := by
   cases x
   rename_i v hv
 
@@ -119,7 +119,7 @@ noncomputable def su2ToS3 (M : SU2Group) : S3 :=
     linear_combination h4
   )
 
-theorem left_inv_su2_s3 (x : S3) : su2ToS3 (bpstAsymptoticMap x) = x := by
+theorem left_inv_su2_s3 (x : S3) : su2ToS3 (solitonAsymptoticMap x) = x := by
   obtain ⟨v, hv⟩ := x
   ext i
   fin_cases i
@@ -128,7 +128,7 @@ theorem left_inv_su2_s3 (x : S3) : su2ToS3 (bpstAsymptoticMap x) = x := by
   · change -(-(v 2)) = v 2; ring
   · change -(-(v 3)) = v 3; ring
 
-theorem right_inv_su2_s3 (M : SU2Group) : bpstAsymptoticMap (su2ToS3 M) = M := by
+theorem right_inv_su2_s3 (M : SU2Group) : solitonAsymptoticMap (su2ToS3 M) = M := by
   have hdet : M.val 0 0 * M.val 1 1 - M.val 0 1 * M.val 1 0 = 1 := by
     have h := M.property.2
     rw [Matrix.det_fin_two] at h
@@ -167,20 +167,20 @@ theorem right_inv_su2_s3 (M : SU2Group) : bpstAsymptoticMap (su2ToS3 M) = M := b
   apply Subtype.ext
   ext i j
   fin_cases i <;> fin_cases j
-  · change (bpstAsymptoticMap (su2ToS3 M)).val 0 0 = M.val 0 0
+  · change (solitonAsymptoticMap (su2ToS3 M)).val 0 0 = M.val 0 0
     apply Complex.ext
     · change (M.val 0 0).re = (M.val 0 0).re; rfl
     · change -(-(M.val 0 0).im) = (M.val 0 0).im; ring
-  · change (bpstAsymptoticMap (su2ToS3 M)).val 0 1 = M.val 0 1
+  · change (solitonAsymptoticMap (su2ToS3 M)).val 0 1 = M.val 0 1
     rw [h01]
     apply Complex.ext
     · change -(M.val 1 0).re = -(M.val 1 0).re; rfl
     · change -(-(M.val 1 0).im) = -(-(M.val 1 0).im); ring
-  · change (bpstAsymptoticMap (su2ToS3 M)).val 1 0 = M.val 1 0
+  · change (solitonAsymptoticMap (su2ToS3 M)).val 1 0 = M.val 1 0
     apply Complex.ext
     · change -(-(M.val 1 0).re) = (M.val 1 0).re; ring
     · change -(-(-(-(M.val 1 0).im))) = (M.val 1 0).im; ring
-  · change (bpstAsymptoticMap (su2ToS3 M)).val 1 1 = M.val 1 1
+  · change (solitonAsymptoticMap (su2ToS3 M)).val 1 1 = M.val 1 1
     rw [h00]
     apply Complex.ext
     · change (M.val 0 0).re = (M.val 0 0).re; rfl
@@ -188,8 +188,8 @@ theorem right_inv_su2_s3 (M : SU2Group) : bpstAsymptoticMap (su2ToS3 M) = M := b
 
 noncomputable instance : TopologicalSpace SU2Group := instTopologicalSpaceSubtype
 
-@[litlib_track "BPST Instanton Is Homeomorphism"]
-theorem bpst_is_homeomorphism : IsHomeomorphism bpstAsymptoticMap := by
+@[litlib_track "Topological Soliton Is Homeomorphism"]
+theorem soliton_is_homeomorphism : IsHomeomorphism solitonAsymptoticMap := by
   apply IsHomeomorphism.mk
   · constructor
     · intro x y hxy
@@ -207,48 +207,48 @@ theorem bpst_is_homeomorphism : IsHomeomorphism bpstAsymptoticMap := by
     have h2 : Continuous (fun x : S3 => (x.val 2 : ℂ)) := Complex.continuous_ofReal.comp (Continuous.comp (continuous_apply 2) continuous_subtype_val)
     have h3 : Continuous (fun x : S3 => (x.val 3 : ℂ)) := Complex.continuous_ofReal.comp (Continuous.comp (continuous_apply 3) continuous_subtype_val)
     fin_cases i <;> fin_cases j
-    · have h_eq : (fun (a : S3) => (bpstAsymptoticMap a).val 0 0) = fun a => (a.val 0 : ℂ) - Complex.I * (a.val 3 : ℂ) := by
+    · have h_eq : (fun (a : S3) => (solitonAsymptoticMap a).val 0 0) = fun a => (a.val 0 : ℂ) - Complex.I * (a.val 3 : ℂ) := by
         ext a
-        dsimp [bpstAsymptoticMap]
+        dsimp [solitonAsymptoticMap]
         apply Complex.ext
         · simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.neg_re, Complex.neg_im, Complex.star_def, Complex.conj_re, Complex.conj_im]
           ring
         · simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.neg_re, Complex.neg_im, Complex.star_def, Complex.conj_re, Complex.conj_im]
           ring
-      change Continuous (fun a => (bpstAsymptoticMap a).val 0 0)
+      change Continuous (fun a => (solitonAsymptoticMap a).val 0 0)
       rw [h_eq]
       exact Continuous.sub h0 (Continuous.mul continuous_const h3)
-    · have h_eq : (fun (a : S3) => (bpstAsymptoticMap a).val 0 1) = fun a => -(a.val 2 : ℂ) - Complex.I * (a.val 1 : ℂ) := by
+    · have h_eq : (fun (a : S3) => (solitonAsymptoticMap a).val 0 1) = fun a => -(a.val 2 : ℂ) - Complex.I * (a.val 1 : ℂ) := by
         ext a
-        dsimp [bpstAsymptoticMap]
+        dsimp [solitonAsymptoticMap]
         apply Complex.ext
         · simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.neg_re, Complex.neg_im, Complex.star_def, Complex.conj_re, Complex.conj_im]
           ring
         · simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.neg_re, Complex.neg_im, Complex.star_def, Complex.conj_re, Complex.conj_im]
           ring
-      change Continuous (fun a => (bpstAsymptoticMap a).val 0 1)
+      change Continuous (fun a => (solitonAsymptoticMap a).val 0 1)
       rw [h_eq]
       exact Continuous.sub (Continuous.neg h2) (Continuous.mul continuous_const h1)
-    · have h_eq : (fun (a : S3) => (bpstAsymptoticMap a).val 1 0) = fun a => (a.val 2 : ℂ) - Complex.I * (a.val 1 : ℂ) := by
+    · have h_eq : (fun (a : S3) => (solitonAsymptoticMap a).val 1 0) = fun a => (a.val 2 : ℂ) - Complex.I * (a.val 1 : ℂ) := by
         ext a
-        dsimp [bpstAsymptoticMap]
+        dsimp [solitonAsymptoticMap]
         apply Complex.ext
         · simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.neg_re, Complex.neg_im, Complex.star_def, Complex.conj_re, Complex.conj_im]
           ring
         · simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.neg_re, Complex.neg_im, Complex.star_def, Complex.conj_re, Complex.conj_im]
           ring
-      change Continuous (fun a => (bpstAsymptoticMap a).val 1 0)
+      change Continuous (fun a => (solitonAsymptoticMap a).val 1 0)
       rw [h_eq]
       exact Continuous.sub h2 (Continuous.mul continuous_const h1)
-    · have h_eq : (fun (a : S3) => (bpstAsymptoticMap a).val 1 1) = fun a => (a.val 0 : ℂ) + Complex.I * (a.val 3 : ℂ) := by
+    · have h_eq : (fun (a : S3) => (solitonAsymptoticMap a).val 1 1) = fun a => (a.val 0 : ℂ) + Complex.I * (a.val 3 : ℂ) := by
         ext a
-        dsimp [bpstAsymptoticMap]
+        dsimp [solitonAsymptoticMap]
         apply Complex.ext
         · simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.neg_re, Complex.neg_im, Complex.star_def, Complex.conj_re, Complex.conj_im]
           ring
         · simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.neg_re, Complex.neg_im, Complex.star_def, Complex.conj_re, Complex.conj_im]
           ring
-      change Continuous (fun a => (bpstAsymptoticMap a).val 1 1)
+      change Continuous (fun a => (solitonAsymptoticMap a).val 1 1)
       rw [h_eq]
       exact Continuous.add h0 (Continuous.mul continuous_const h3)
   · use su2ToS3
@@ -367,7 +367,7 @@ lemma sig3_01 : sigmaZ 0 1 = 0 := rfl
 lemma sig3_10 : sigmaZ 1 0 = 0 := rfl
 lemma sig3_11 : sigmaZ 1 1 = -1 := rfl
 
-lemma eval_bpst_trace_0 (v : S3) :
+lemma eval_soliton_trace_0 (v : S3) :
   let A1 := (Complex.I / 2 : ℂ) • (-(v.val 0 : ℂ) • sigma1.val - (v.val 3 : ℂ) • sigma2.val + (v.val 2 : ℂ) • sigma3.val)
   (Matrix.trace (A1 * (Complex.I • sigma1.val))).re = v.val 0 := by
   intro A1
@@ -404,7 +404,7 @@ lemma eval_bpst_trace_0 (v : S3) :
   rw [h_comp]
   rfl
 
-lemma eval_bpst_trace_1 (v : S3) :
+lemma eval_soliton_trace_1 (v : S3) :
   let A0 := (Complex.I / 2 : ℂ) • ((v.val 1 : ℂ) • sigma1.val + (v.val 2 : ℂ) • sigma2.val + (v.val 3 : ℂ) • sigma3.val);
   -(Matrix.trace (A0 * (Complex.I • sigma1.val))).re = v.val 1 := by
   intro A0
@@ -442,7 +442,7 @@ lemma eval_bpst_trace_1 (v : S3) :
   change (- -(v.val 1 : ℝ)) = v.val 1
   ring
 
-lemma eval_bpst_trace_2 (v : S3) :
+lemma eval_soliton_trace_2 (v : S3) :
   let A0 := (Complex.I / 2 : ℂ) • ((v.val 1 : ℂ) • sigma1.val + (v.val 2 : ℂ) • sigma2.val + (v.val 3 : ℂ) • sigma3.val);
   -(Matrix.trace (A0 * (Complex.I • sigma2.val))).re = v.val 2 := by
   intro A0
@@ -483,7 +483,7 @@ lemma eval_bpst_trace_2 (v : S3) :
   change (- -(v.val 2 : ℝ)) = v.val 2
   ring
 
-lemma eval_bpst_trace_3 (v : S3) :
+lemma eval_soliton_trace_3 (v : S3) :
   let A0 := (Complex.I / 2 : ℂ) • ((v.val 1 : ℂ) • sigma1.val + (v.val 2 : ℂ) • sigma2.val + (v.val 3 : ℂ) • sigma3.val);
   -(Matrix.trace (A0 * (Complex.I • sigma3.val))).re = v.val 3 := by
   intro A0
@@ -528,48 +528,48 @@ lemma s3_complex_norm (v : S3) : (v.val 0 : ℂ)^2 + (v.val 1 : ℂ)^2 + (v.val 
     _ = ((1 : ℝ) : ℂ) := by rw [h]
     _ = 1 := Complex.ofReal_one
 
-lemma bpstInstanton_val_0 (x : SpacetimePoint) :
+lemma topologicalSoliton_val_0 (x : SpacetimePoint) :
   let D : ℂ := (x 0 : ℂ)^2 + (x 1 : ℂ)^2 + (x 2 : ℂ)^2 + (x 3 : ℂ)^2 + 1;
-  (bpstInstanton 0 x).val = (Complex.I / D) • ((x 1 : ℂ) • sigma1.val + (x 2 : ℂ) • sigma2.val + (x 3 : ℂ) • sigma3.val) := by
+  (topologicalSoliton 0 x).val = (Complex.I / D) • ((x 1 : ℂ) • sigma1.val + (x 2 : ℂ) • sigma2.val + (x 3 : ℂ) • sigma3.val) := by
   intro D
   rfl
 
-lemma bpstInstanton_val_1 (x : SpacetimePoint) :
+lemma topologicalSoliton_val_1 (x : SpacetimePoint) :
   let D : ℂ := (x 0 : ℂ)^2 + (x 1 : ℂ)^2 + (x 2 : ℂ)^2 + (x 3 : ℂ)^2 + 1;
-  (bpstInstanton 1 x).val = (Complex.I / D) • (-(x 0 : ℂ) • sigma1.val - (x 3 : ℂ) • sigma2.val + (x 2 : ℂ) • sigma3.val) := by
+  (topologicalSoliton 1 x).val = (Complex.I / D) • (-(x 0 : ℂ) • sigma1.val - (x 3 : ℂ) • sigma2.val + (x 2 : ℂ) • sigma3.val) := by
   intro D
   rfl
 
-lemma bpst_extractV_eq (v : S3) : extractV bpstInstanton v = v.val := by
+lemma soliton_extractV_eq (v : S3) : extractV topologicalSoliton v = v.val := by
   ext i
   have hr2 : (v.val 0 : ℂ)^2 + (v.val 1 : ℂ)^2 + (v.val 2 : ℂ)^2 + (v.val 3 : ℂ)^2 = 1 := s3_complex_norm v
   have hD : (v.val 0 : ℂ)^2 + (v.val 1 : ℂ)^2 + (v.val 2 : ℂ)^2 + (v.val 3 : ℂ)^2 + 1 = 2 := by rw [hr2]; ring
   fin_cases i
   · dsimp [extractV]
-    have h_inst := bpstInstanton_val_1 v.val
+    have h_inst := topologicalSoliton_val_1 v.val
     rw [hD] at h_inst
     rw [h_inst]
-    exact eval_bpst_trace_0 v
+    exact eval_soliton_trace_0 v
   · dsimp [extractV]
-    have h_inst := bpstInstanton_val_0 v.val
+    have h_inst := topologicalSoliton_val_0 v.val
     rw [hD] at h_inst
     rw [h_inst]
-    exact eval_bpst_trace_1 v
+    exact eval_soliton_trace_1 v
   · dsimp [extractV]
-    have h_inst := bpstInstanton_val_0 v.val
+    have h_inst := topologicalSoliton_val_0 v.val
     rw [hD] at h_inst
     rw [h_inst]
-    exact eval_bpst_trace_2 v
+    exact eval_soliton_trace_2 v
   · dsimp [extractV]
-    have h_inst := bpstInstanton_val_0 v.val
+    have h_inst := topologicalSoliton_val_0 v.val
     rw [hD] at h_inst
     rw [h_inst]
-    exact eval_bpst_trace_3 v
+    exact eval_soliton_trace_3 v
 
-lemma geometricBoundaryProjection_bpstInstanton : geometricBoundaryProjection bpstInstanton = bpstAsymptoticMap := by
+lemma geometricBoundaryProjection_topologicalSoliton : geometricBoundaryProjection topologicalSoliton = solitonAsymptoticMap := by
   ext v
   dsimp [geometricBoundaryProjection]
-  rw [bpst_extractV_eq v]
+  rw [soliton_extractV_eq v]
   dsimp [makeSU2]
   have h_norm : (v.val 0)^2 + (v.val 1)^2 + (v.val 2)^2 + (v.val 3)^2 = 1 := v.property
   simp only [h_norm, dif_pos]
@@ -614,17 +614,17 @@ theorem kinematicTopologicalStability
   [tc : CartanMaurerTopology (S3 → SU2Group) Continuous windingNumber cartanMaurerIntegral]
   [belavin : Eq8 S3 SU2Group Continuous windingNumber cartanMaurerIntegral]
   (integral_zero : cartanMaurerIntegral 1 = 0) :
-  ¬ isHomotopicConnection bpstInstanton 0 := by
+  ¬ isHomotopicConnection topologicalSoliton 0 := by
   intro h_homotopy
   rcases h_homotopy with ⟨H, hH0, hH1, hHCont, hHBoundCont⟩
 
   have h_wind_eq := tc.homotopyInvariance (fun t => geometricBoundaryProjection (H t)) hHBoundCont 0 1
 
-  have h0_eq : H 0 = bpstInstanton := by funext mu x; exact hH0 mu x
+  have h0_eq : H 0 = topologicalSoliton := by funext mu x; exact hH0 mu x
   have h1_eq : H 1 = 0 := by funext mu x; exact hH1 mu x
 
-  have h_wind_0 : windingNumber (geometricBoundaryProjection (H 0)) = windingNumber bpstAsymptoticMap := by
-    rw [h0_eq, geometricBoundaryProjection_bpstInstanton]
+  have h_wind_0 : windingNumber (geometricBoundaryProjection (H 0)) = windingNumber solitonAsymptoticMap := by
+    rw [h0_eq, geometricBoundaryProjection_topologicalSoliton]
 
   have h_wind_1 : windingNumber (geometricBoundaryProjection (H 1)) = 0 := by
     rw [h1_eq, geometricBoundaryProjection_zero]
@@ -635,7 +635,7 @@ theorem kinematicTopologicalStability
 
   rw [h_wind_0, h_wind_1] at h_wind_eq
 
-  have h_deg := belavin.degree_of_homeomorph bpstAsymptoticMap bpst_is_homeomorphism
+  have h_deg := belavin.degree_of_homeomorph solitonAsymptoticMap soliton_is_homeomorphism
 
   cases h_deg with
   | inl h_pos =>
