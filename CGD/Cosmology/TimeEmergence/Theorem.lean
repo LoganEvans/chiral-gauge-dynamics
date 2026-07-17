@@ -105,16 +105,15 @@ lemma math_TimeIsChiralPhase_det (F : Fin 4 → Fin 4 → SL2C)
 
 /--
 A geometric "no-go" theorem demonstrating that the Urbantke metric intrinsically
-rejects fully 4D symmetric (SO(4)) states as candidates for a physical spacetime. 
+rejects fully 4D symmetric (SO(4)) states as candidates for a physical spacetime.
 
-If a field tensor possesses perfect 4D symmetry, its emergent macroscopic metric 
-is algebraically forced into a Euclidean or degenerate signature, mathematically 
-forbidding the unique odd-sign axis (-+++) required for macroscopic time. 
-Therefore, any valid Lorentzian spacetime strictly requires the background gauge 
+If a field tensor possesses perfect 4D symmetry, its emergent macroscopic metric
+is algebraically forced into a Euclidean or degenerate signature, mathematically
+forbidding the unique odd-sign axis (-+++) required for macroscopic time.
+Therefore, any valid Lorentzian spacetime strictly requires the background gauge
 field to exist in a state of broken SO(4) symmetry.
 -/
-@[litlib_track "Time Emergence via Symmetry Breaking"]
-theorem kinematicTimeEmergence (pu : PhysicalUniverse) (phaseRegion : Set SpacetimePoint)
+theorem kinematicLorentzianRequirement (pu : PhysicalUniverse) (phaseRegion : Set SpacetimePoint)
   (h_symm : ∀ x ∈ phaseRegion, isFully4DSymmetric (fun mu nu => curvatureSl2c pu.toUniverse.sd_sector mu nu x)) :
   ∀ x ∈ phaseRegion,
     ¬ isLorentzian (urbantkeMetric (fun m n => curvatureSl2c pu.toUniverse.sd_sector m n x)) := by

@@ -3,9 +3,9 @@
 \section{Gravity: The Emergence of Spacetime}
 \label{sec:Gravity}
 
-In 1919, Albert Einstein created the idea of unimodular gravity \cite{weinberg1989cosmological}. The essential idea behind unimodular gravity is that the metric tensor $g_{\nu \mu}$ defining the 4-dimensional spacetime must have a constant non-zero determinant, meaning that the volume must be constant. This has been an active field of research ever since its introduction in part because it provides a natural explanation for the cosmological constant $\Lambda$ without needing to invoke dark energy. In CGD, we will not touch on these implications of unimodular gravity; instead, we will focus on showing that our axiom basis mathematically forces the universe to possess unimodular gravity.
+In 1919, Albert Einstein created the idea of unimodular gravity \citep{weinberg1989cosmological}. The essential idea behind unimodular gravity is that the metric tensor $g_{\nu \mu}$ defining the 4-dimensional spacetime must have a constant non-zero determinant, meaning that the volume must be constant. This has been an active field of research ever since its introduction in part because it provides a natural explanation for the cosmological constant $\Lambda$ without needing to invoke dark energy.
 
-The crux of our proof that gravity emerges in CGD depends on the Urbantke metric \cite{urbantke1984integrability}. The Urbantke metric performs a profound unification: it demonstrates that the geometry of spacetime and the gauge fields that live inside it are not separate things. In the Standard Model, spacetime is a pre-existing stage described with a Minkowski metric and particles are placed on this stage.
+The crux of our proof that gravity emerges in CGD depends on the Urbantke metric \citep{urbantke1984integrability}. The Urbantke metric performs a profound unification: it demonstrates that the geometry of spacetime and the gauge fields that live inside it are not separate things. In the Standard Model, spacetime is a pre-existing stage described with a Minkowski metric and particles are placed on this stage.
 
 More formally, the Urbantke metric constructs a 4-dimensional conformal (scale-free) metric from the wedge product
 \begin{align}
@@ -19,7 +19,7 @@ More formally, the Urbantke metric constructs a 4-dimensional conformal (scale-f
 
 This metric contains two separate filters that can prevent a gauge field from possessing an Urbantke metric. First, the Lie bracket $[F_{\beta\gamma}, F_{\delta\nu}]$ means that if we attempted to use an Abelian field such as $U(1)$, the matrices commute and so the macroscopic volume will collapse to 0.
 
-The second filter deals with how the trace of the generators $\mathrm{Tr}( T_i [T_j, T_k] )$ evaluates to the antisymmetric structure constant $\epsilon_{ijk}$. This tensor requires exactly 3 internal gauge indices $(i, j, k)$ to map to the spacetime indices. The gauge group $SU(2)$ is generated from 3 rotations, so it possesses a well-defined Urbantke metric. The \slTwoC gauge group is generated from 3 rotations and 3 boosts, and while this requires 6 numbers to write down $(a_1 + b_1 i, a_2 + b_2 i, a_3 + b_3 i)$, this is still 3 algebraic generators, so it also possesses a well-defined Urbantke metric. Krasnov noted in \cite{krasnov2011plebanski} that this mapping relies on an accidental mathematical isomorphism that is unique to 4-dimensional geometry, so \suTwo and \slTwoC are the only gauge groups that can natively construct a 4-dimensional macroscopic metric.
+The second filter deals with how the trace of the generators $\mathrm{Tr}( T_i [T_j, T_k] )$ evaluates to the antisymmetric structure constant $\epsilon_{ijk}$. This tensor requires exactly 3 internal gauge indices $(i, j, k)$ to map to the spacetime indices. The gauge group $SU(2)$ is generated from 3 rotations, so it possesses a well-defined Urbantke metric. The \slTwoC gauge group is generated from 3 rotations and 3 boosts, and while this requires 6 numbers to write down $(a_1 + b_1 i, a_2 + b_2 i, a_3 + b_3 i)$, this is still 3 algebraic generators, so it also possesses a well-defined Urbantke metric. Krasnov noted in \citet{krasnov2011plebanski} that this mapping relies on an accidental mathematical isomorphism that is unique to 4-dimensional geometry, so \suTwo and \slTwoC are the only gauge groups that can natively construct a 4-dimensional macroscopic metric.
 
 In \cite{capovilla1989general, capovilla1991pure}, \citeauthor{capovilla1989general} (CDJ) developed the algebraic constraint framework to determine the behavior of emergent spacetime that uses the Urbantke metric. In their work, CDJ used a specific dynamical action that produced the Einstein Field Equations. However, as we showed in Equation \ref{eq:topologicalActionVariationZero}, CGD does not possess equations of motion, so it does not share this dynamical action. Instead, we explore the emergent spacetime of CGD by using Equation \ref{eq:algebraicChiralDecomposition} to obtain one of the two \slTwoC chiral halves of \spinFourC and applying the unimodular constraint from Axiom \ref{eq:unimodularVacuumAxiom} to obtain the metric determinant. This leads to
 \begin{equation}
@@ -43,9 +43,9 @@ Now that we have established the macroscopic geometry of the Einstein Field Equa
     \quad \leanref{CGD.Gravity.emergentStressEnergyConservation}
     \label{eq:emergentStressEnergyConservation}
 \end{equation}
-\noindent This proof depends upon the metric symmetry bounds established in \cite{urbantke1984integrability} and the geometric constraints of the contracted Bianchi identity \cite{nakahara2003geometry}.
+\noindent This proof depends upon the metric symmetry bounds established in \citet{urbantke1984integrability} and the geometric constraints of the contracted Bianchi identity \citep{nakahara2003geometry}.
 
-At this point, we have shown that General Relativity emerges from one of the two \slTwoC chiral halves of \spinFourC. Even though we have no equations of motion, we can explore motion within this system. In \cite{papapetrou1951spinning}, \citeauthor{papapetrou1951spinning} showed that for a localized, single-pole topological defect (in other words, a localized mass without spin), the conservation of stress-energy forces particles to move along geodesics. We are able to use this proof to demonstrate that within CGD,
+At this point, we have shown that General Relativity emerges from one of the two \slTwoC chiral halves of \spinFourC. Even though we have no equations of motion, we can explore motion within this system. In \citet{papapetrou1951spinning}, \citeauthor{papapetrou1951spinning} showed that for a localized, single-pole topological defect (in other words, a localized mass without spin), the conservation of stress-energy forces particles to move along geodesics. We are able to use this proof to demonstrate that within CGD,
 \begin{equation}
     \frac{d u^\alpha}{ds} + \Gamma^\alpha_{\mu\nu} u^\mu u^\nu = 0 .
     \quad \leanref{CGD.Gravity.machianTopologicalDefectMotion}
@@ -57,7 +57,7 @@ At this point, we have demonstrated that General Relativity mathematically emerg
 
 However, a relevant physics theory does not need just an arbitrary non-vacuous solution to the geometric constraints. Our universe is Lorentzian, so while a Euclidean solution is mathematically interesting, it isn't of much use to physics research. The problem of finding a Lorentzian solution has plagued connection gravity research since its inception. As \citeauthor{capovilla1991pure} noted, ``For the case of Lorentz signature, one has to pay with unwieldy reality conditions for the use of self-dual 2-forms as basic variables for GR.''
 
-The reality conditions made it appear that deeper research into pure connection gravity was a dead end. According to \citeauthor{thiemann2007modern} \cite{thiemann2007modern}:
+The reality conditions made it appear that deeper research into pure connection gravity was a dead end. According to \citeauthor{thiemann2007modern} \citep{thiemann2007modern}:
 \begin{quote}
 The original motivation to introduce the new variables was that for the quantization of general relativity it seemed mandatory to simplify the algebraic sructure of the Hamiltonian constraint which for $s = −1$ requires $\beta = \pm i/2$ since then the constraint becomes polynomial after multiplying by a factor proportional to $\sqrt{\det(q)}$. On the other hand, then the reality conditions become non-polynomial. Finally, if one wants polynomial reality conditions then one must have $\beta$ real and then the Hamiltonian constraint is still complicated. Thus it becomes questionable what has been gained.
 \end{quote}
@@ -77,7 +77,7 @@ In order to test if this configuration satisfies the geometric constraints, we e
     \quad \leanref{CGD.Gravity.F_origin_val_eq_map}
 \end{equation}
 
-Next, we check this against the trace-free algebraic constraints \cite{capovilla1991pure}. By evaluating the sum over the Levi-Civita symbol, we obtain a matrix that is proportional to the identity matrix, meaning that its trace-free part is exactly zero:
+Next, we check this against the trace-free algebraic constraints \citep{capovilla1991pure}. By evaluating the sum over the Levi-Civita symbol, we obtain a matrix that is proportional to the identity matrix, meaning that its trace-free part is exactly zero:
 \begin{equation}
     \Sigma = \epsilon^{\mu\nu\rho\sigma} F_{\mu\nu} F_{\rho\sigma} = 16i \cdot \mathbb{I}_{3\times3} \implies \Sigma - \frac{1}{3}\mathrm{Tr}(\Sigma)\mathbb{I} = 0 .
     \quad \leanref{CGD.Gravity.CDJ_constraint_holds}

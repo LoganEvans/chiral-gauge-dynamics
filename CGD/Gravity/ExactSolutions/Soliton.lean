@@ -874,7 +874,6 @@ theorem solitonCurvature_eq (mu nu : Fin 4) (x : SpacetimePoint) :
   rfl
 
 /-- The exact rational test point from the whitepaper verification engine. -/
-@[litlib_track "Specific coordinates used for computational verification"]
 noncomputable def testPoint : SpacetimePoint :=
   fun i =>
     if i = 0 then 3/2       -- t = 1.5
@@ -1041,7 +1040,6 @@ lemma contDiff_proj_C (i : Fin 4) : ContDiff ℝ ⊤ (fun x : SpacetimePoint => 
 We instantiate a strictly dummy physical universe that wraps the Soliton ansatz.
 This fulfills the domain requirements for the geometric tensors.
 -/
-@[litlib_track "Validates the ansatz as a universe"]
 noncomputable def solitonUniverse : Universe := {
   val := fun mu x => embedSelfDual (solitonAnsatz mu x)
   is_spin4c := by
