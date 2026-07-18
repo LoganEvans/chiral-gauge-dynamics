@@ -13,6 +13,8 @@ open CGD.Math
 open Complex
 open Matrix
 
+namespace CGD.Particles
+
 lemma toSl2c_zero : toSl2c (0 : Matrix (Fin 2) (Fin 2) ℂ) = 0 := by
   apply Subtype.ext
   unfold toSl2c
@@ -255,3 +257,5 @@ theorem kinematicDarkMatterSelfInteraction
   rw [partialDerivSl2c_add (A_1.val mu) (A_2.val mu) nu x h3_diff h4_diff]
   rw [lie_add_add]
   abel
+
+end CGD.Particles

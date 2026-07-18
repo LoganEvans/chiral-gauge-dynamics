@@ -6,6 +6,7 @@ result-*
 .direnv
 
 quarantine/
+notebook/
 .lake/
 .elan/
 /TODO.md

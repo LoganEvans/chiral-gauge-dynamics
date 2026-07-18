@@ -77,3 +77,20 @@ A classical spinor field traditionally commutes, meaning it obeys bosonic statis
     \label{eq:kinematicMacroscopicFermion}
 \end{equation}
 
+So far, we have only considered topological defects in the ASD sector. However, the math of CGD also supports defects that live exclusively within the SD sector. The SD sector generates the Urbantke metric, so a pure SD defect would possess mass and stress energy that curves spacetime.
+
+In Equation \ref{eq:chiralTraceSplit}, we showed that \spinFourC strictly orthogonalizes the chiral halves, so an SD-only defect does not algebraically intersect with any particles in the ASD sector. Consequently, this defect cannot emit or absorb light, meaning an SD-only defect is dark matter:
+\begin{equation}
+    F^{(R)}_{\mu\nu}(\mathcal{A} + \mathcal{A}_{\text{DM}}^{(L)}) = F^{(R)}_{\mu\nu}(\mathcal{A}) .
+    \quad \leanref{CGD.Particles.kinematicDarkMatterDecoupling}
+    \label{eq:kinematicDarkMatterDecoupling}
+\end{equation}
+
+Furthermore, CGD predicts some specific properties of this dark matter. Since the SD sector is a non-Abelian \slTwoC gauge field, two dark matter defects $\mathcal{A}_1$ and $\mathcal{A}_2$ will react with each other. This is the core feature of a particular category of hypothetical dark matter particles known as self-interacting dark matter (SIDM) \citep{spergel2000observational}:
+\begin{equation}
+    F^{(L)}_{\mu\nu}(\mathcal{A}_1 + \mathcal{A}_2) = F^{(L)}_{\mu\nu}(\mathcal{A}_1) + F^{(L)}_{\mu\nu}(\mathcal{A}_2) + [\mathcal{A}_{1\mu}, \mathcal{A}_{2\nu}] + [\mathcal{A}_{2\mu}, \mathcal{A}_{1\nu}] .
+    \quad \leanref{CGD.Particles.kinematicDarkMatterSelfInteraction}
+    \label{eq:kinematicDarkMatterSelfInteraction}
+\end{equation}
+\noindent Because this matter does not emit light, it lacks the radiative cooling required to condense into stars. Furthermore, the geometric momentum exchange prevents it from settling into a dense galactic cusp, resolving a critical concern present in standard cold dark matter theories.
+

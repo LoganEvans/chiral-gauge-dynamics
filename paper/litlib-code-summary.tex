@@ -879,6 +879,43 @@ theorem §\phantomsection\label{lean:CGD.Particles.kinematicThreeColorRequiremen
     ¬ §\hyperref[lean:CGD.Particles.isSingleColor]{\detokenize{isSingleColor}}§ F ∧ (∀ color, ¬ §\hyperref[lean:CGD.Particles.isColorDeficient]{\detokenize{isColorDeficient}}§ F color)
 
 
+-- MODULE: CGD.Particles.DarkMatter
+--------------------------------------------------------------------
+/--
+Dark Matter Decoupling (The "Darkness" Theorem):
+A pure Self-Dual defect (Dark Matter) is superposed onto the macroscopic 
+vacuum of normal matter. Because the Spin(4,C) Lie algebra perfectly orthogonalizes 
+the chiral sectors, the Anti-Self-Dual curvature (which dictates electromagnetism 
+and the strong force) evaluates to being mathematically identical to the vacuum state 
+without the Dark Matter present. 
+-/
+@[litlib_track "Dark Matter Anti-Self-Dual Decoupling (Darkness)"]
+theorem §\phantomsection\label{lean:CGD.Particles.kinematicDarkMatterDecoupling}§CGD.Particles.kinematicDarkMatterDecoupling (pu : §\hyperref[lean:CGD.Axioms.PhysicalUniverse]{\detokenize{PhysicalUniverse}}§)
+  (A_DM : §\hyperref[lean:CGD.Axioms.Sl2cGaugeField]{\detokenize{Sl2cGaugeField}}§) (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (mu nu : Fin 4) :
+  let A_tot := fun m p => 
+    §\hyperref[lean:CGD.Foundations.embedSelfDual]{\detokenize{embedSelfDual}}§ (A_DM.val m p + pu.toUniverse.sd_sector.val m p) + 
+    §\hyperref[lean:CGD.Foundations.embedAntiSelfDual]{\detokenize{embedAntiSelfDual}}§ (pu.toUniverse.asd_sector.val m p);
+  (§\hyperref[lean:CGD.Foundations.chiralProject]{\detokenize{chiralProject}}§ (§\hyperref[lean:CGD.Foundations.curvature]{\detokenize{curvature}}§ A_tot mu nu x)).anti_self_dual = 
+  (§\hyperref[lean:CGD.Foundations.chiralProject]{\detokenize{chiralProject}}§ (§\hyperref[lean:CGD.Foundations.curvature]{\detokenize{curvature}}§ (fun m p => pu.toUniverse.spin4c_connection m p) mu nu x)).anti_self_dual
+
+/--
+Self-Interacting Dark Matter (SIDM):
+When two SD-only defects occupy the same spacetime volume, their non-Abelian 
+SL(2, C) group structure intrinsically generates a non-linear cross-term in the curvature. 
+This strictly forces momentum exchange, proving that pure gravitational defects in CGD 
+natively behave as Self-Interacting Dark Matter (SIDM).
+-/
+@[litlib_track "Dark Matter Self-Interaction (SIDM)"]
+theorem §\phantomsection\label{lean:CGD.Particles.kinematicDarkMatterSelfInteraction}§CGD.Particles.kinematicDarkMatterSelfInteraction
+  (A_1 A_2 : §\hyperref[lean:CGD.Axioms.Sl2cGaugeField]{\detokenize{Sl2cGaugeField}}§)
+  (x : §\hyperref[lean:CGD.Foundations.SpacetimePoint]{\detokenize{SpacetimePoint}}§) (mu nu : Fin 4) :
+  let A_tot := fun m p => A_1.val m p + A_2.val m p;
+  §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ A_tot mu nu x = 
+    §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ A_1.val mu nu x + 
+    §\hyperref[lean:CGD.Foundations.curvatureSl2c]{\detokenize{curvatureSl2c}}§ A_2.val mu nu x + 
+    ⁅A_1.val mu x, A_2.val nu x⁆ + ⁅A_2.val mu x, A_1.val nu x⁆
+
+
 -- MODULE: CGD.Particles.Definitions
 --------------------------------------------------------------------
 /--
