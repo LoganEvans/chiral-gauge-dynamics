@@ -2,7 +2,7 @@
 
 # Chiral Gauge Dynamics (CGD)
 
-[![DOI](https://zenodo.org/badge/DOI/PLACEHOLDER.svg)](https://doi.org/10.5281/zenodo.PLACEHOLDER)
+[![DOI](https://zenodo.org/badge/1209673697.svg)](https://doi.org/10.5281/zenodo.21432783)
 
 Chiral Gauge Dynamics (CGD) is a background-independent formulation of physics derived entirely from a classical $\text{Spin}(4, \mathbb{C})$ gauge connection.
 
