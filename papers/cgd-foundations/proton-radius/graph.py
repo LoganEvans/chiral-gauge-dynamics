@@ -69,7 +69,7 @@ plt.tight_layout()
 
 # 6. Save Output
 repo_root = find_repo_root()
-output_path = repo_root / "paper" / "proton-radius" / "jlab-hall-C-polarization-transfer.pdf"
+output_path = repo_root / "papers" / "cgd-foundations" / "proton-radius" / "jlab-hall-C-polarization-transfer.pdf"
 
 # Ensure target directory exists
 output_path.parent.mkdir(parents=True, exist_ok=True)
