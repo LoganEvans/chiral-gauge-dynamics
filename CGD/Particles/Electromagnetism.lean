@@ -316,6 +316,22 @@ noncomputable def abelianLinearCurrent (pu : PhysicalUniverse) (i j : Fin 4) (μ
   ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, 
     epsilon4 μ ν ρ σ * partialDeriv ν (fun p => abelianLinearFieldStrength pu i j ρ σ p) x
 
+/--
+The "Hollow Core" Theorem (Topological Current Commutator Isolation).
+
+Mathematically proves that the linear derivative terms of the Abelian-projected
+field strength contribute exactly zero to the conserved topological electric charge.
+The macroscopic electric current of a topological defect is sourced exclusively 
+by the non-Abelian commutator gradients: J^μ = ε^{μνρσ} ∂_ν [A_ρ, A_σ].
+
+Physical Consequence:
+If a local spatial region of a topological defect aligns predominantly along a 
+single Lie algebra generator (an Abelian "color core" where [A, A] = 0), the local 
+electric charge density is identically zero. Electric charge is geometrically 
+forbidden from existing as point-like singularities at the center of these defects. 
+Instead, classical charge is natively restricted to the non-Abelian "connective tissue" 
+(the spatial overlap boundaries) of the manifold.
+-/
 @[litlib_track "Topological Current Commutator Isolation"]
 theorem topological_current_commutator_isolation
   (pu : PhysicalUniverse)
