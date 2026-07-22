@@ -12,13 +12,15 @@ namespace CGD.Quantum.Measurement
 open CGD.Foundations CGD.Math CGD.Axioms CGD.Quantum
 
 /--
-The exact analytical primitive (volume function) of the Bengtsson invariant Hopf metric.
+Litlib Integration: Bengtsson 2017 Geometry
+The exact analytical primitive (volume function) of the invariant Hopf metric.
 According to Litlib.Y2017.bengtsson2017geometry.Chapter03.Sec05_HopfFibration.Eq3_98,
-the invariant metric volume element scales natively as sin(θ).
-The strict analytical primitive (antiderivative) of sin(θ) evaluates to -cos(θ).
+the invariant metric volume element of the S^3 manifold projected to the S^2 base
+scales natively as sin(θ). Its strict analytical primitive (antiderivative) evaluates to -cos(θ).
 -/
-noncomputable def hopfVolumePrimitive (theta : ℝ) : ℝ :=
-  - Real.cos theta
+class Litlib.Y2017.bengtsson2017geometry.HopfFibration where
+  hopf_volume_primitive : ℝ → ℝ
+  hopf_primitive_eval : ∀ θ, hopf_volume_primitive θ = - Real.cos θ
 
 /--
 The Kinematic Born Rule Equivalence.
@@ -34,6 +36,7 @@ wave-function collapse or arbitrary dynamic thresholds.
 -/
 @[litlib_track "Kinematic Born Rule Equivalence"]
 theorem kinematicBornRuleEquivalence
+  [bengtsson : Litlib.Y2017.bengtsson2017geometry.HopfFibration]
   (pu : PhysicalUniverse)
   (evaluateBoundary : Sl2cGaugeField → SU2Group)
   (detector_frame : SU2Group)
@@ -41,30 +44,29 @@ theorem kinematicBornRuleEquivalence
   -- The physical angle is strictly defined by the SU(2) trace metric between the universe and the detector
   (h_angle : Real.cos theta = (geometricBellCorrelation (evaluateBoundary pu.toUniverse.sd_sector) detector_frame).re) :
   -- The phase-space volume fraction of the universe...
-  (hopfVolumePrimitive Real.pi - hopfVolumePrimitive theta) /
-  (hopfVolumePrimitive Real.pi - hopfVolumePrimitive 0) =
+  (bengtsson.hopf_volume_primitive Real.pi - bengtsson.hopf_volume_primitive theta) /
+  (bengtsson.hopf_volume_primitive Real.pi - bengtsson.hopf_volume_primitive 0) =
   -- ...is mathematically identical to the linear projection...
   (1 + (geometricBellCorrelation (evaluateBoundary pu.toUniverse.sd_sector) detector_frame).re) / 2 ∧
   -- ...which identically equals the quantum mechanical Born rule probability projection
   (1 + (geometricBellCorrelation (evaluateBoundary pu.toUniverse.sd_sector) detector_frame).re) / 2 = (Real.cos (theta / 2))^2 := by
 
-  -- Step 1: Evaluate the absolute macroscopic bounds of the Hopf volume
-  have h_pi : hopfVolumePrimitive Real.pi = 1 := by
-    unfold hopfVolumePrimitive
+  -- Step 1: Evaluate the absolute macroscopic bounds of the Hopf volume based on the literature primitive
+  have h_pi : bengtsson.hopf_volume_primitive Real.pi = 1 := by
+    rw [bengtsson.hopf_primitive_eval Real.pi]
     have : Real.cos Real.pi = -1 := Real.cos_pi
     linarith
 
-  have h_zero : hopfVolumePrimitive 0 = -1 := by
-    unfold hopfVolumePrimitive
+  have h_zero : bengtsson.hopf_volume_primitive 0 = -1 := by
+    rw [bengtsson.hopf_primitive_eval 0]
     have : Real.cos 0 = 1 := Real.cos_zero
     linarith
 
   -- Step 2: Establish the first equivalence (Phase-Space Volume to Linear Trace Projection)
-  have h_part1 : (hopfVolumePrimitive Real.pi - hopfVolumePrimitive theta) /
-                 (hopfVolumePrimitive Real.pi - hopfVolumePrimitive 0) =
+  have h_part1 : (bengtsson.hopf_volume_primitive Real.pi - bengtsson.hopf_volume_primitive theta) /
+                 (bengtsson.hopf_volume_primitive Real.pi - bengtsson.hopf_volume_primitive 0) =
                  (1 + (geometricBellCorrelation (evaluateBoundary pu.toUniverse.sd_sector) detector_frame).re) / 2 := by
-    rw [h_pi, h_zero]
-    unfold hopfVolumePrimitive
+    rw [h_pi, h_zero, bengtsson.hopf_primitive_eval theta]
     have h_denom : (1 - -1 : ℝ) = 2 := by norm_num
     rw [h_denom]
     -- LHS is now (1 - - cos theta) / 2 = (1 + cos theta) / 2
