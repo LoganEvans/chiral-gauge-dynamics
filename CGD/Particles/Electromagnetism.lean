@@ -306,4 +306,99 @@ theorem kinematicChargeConservation
   · intro ρ σ x'
     exact diff_fderiv_im_afs pu i j ρ σ x'
 
+/-- The linear (derivative) portion of the Abelian field strength tensor. -/
+noncomputable def abelianLinearFieldStrength (pu : PhysicalUniverse) (i j : Fin 4) (μ ν : Fin 4) (x : SpacetimePoint) : ℂ :=
+  partialDeriv μ (fun p => connectionComponent pu i j ν p) x -
+  partialDeriv ν (fun p => connectionComponent pu i j μ p) x
+
+/-- The dual divergence of the linear field strength (evaluating the linear current). -/
+noncomputable def abelianLinearCurrent (pu : PhysicalUniverse) (i j : Fin 4) (μ : Fin 4) (x : SpacetimePoint) : ℂ :=
+  ∑ ν : Fin 4, ∑ ρ : Fin 4, ∑ σ : Fin 4, 
+    epsilon4 μ ν ρ σ * partialDeriv ν (fun p => abelianLinearFieldStrength pu i j ρ σ p) x
+
+@[litlib_track "Topological Current Commutator Isolation"]
+theorem topological_current_commutator_isolation
+  (pu : PhysicalUniverse)
+  [clairaut : Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional]
+  (i j : Fin 4) :
+  ∀ μ x, abelianLinearCurrent pu i j μ x = 0 := by
+  intro mu x
+  
+  have h_J_expand : abelianLinearCurrent pu i j mu x = ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, 
+    epsilon4 mu nu rho sigma * partialDeriv nu (fun p => partialDeriv rho (fun p' => connectionComponent pu i j sigma p') p - partialDeriv sigma (fun p' => connectionComponent pu i j rho p') p) x := rfl
+
+  have hn : (⊤ : WithTop ℕ∞) ≠ 0 := by decide
+  have h_diff_pd_A (α β : Fin 4) (p : SpacetimePoint) : DifferentiableAt ℝ (fun p' => partialDeriv α (fun p'' => connectionComponent pu i j β p'') p') p :=
+    ContDiff.differentiable (contDiff_partialDeriv_complex α _ (smooth_connectionComponent pu i j β)) hn p
+
+  have h_distrib (nu rho sigma : Fin 4) :
+    partialDeriv nu (fun p => partialDeriv rho (fun p' => connectionComponent pu i j sigma p') p - partialDeriv sigma (fun p' => connectionComponent pu i j rho p') p) x =
+    partialDeriv nu (fun p => partialDeriv rho (fun p' => connectionComponent pu i j sigma p') p) x - partialDeriv nu (fun p => partialDeriv sigma (fun p' => connectionComponent pu i j rho p') p) x := by
+    exact partialDeriv_sub _ _ nu x (h_diff_pd_A rho sigma x) (h_diff_pd_A sigma rho x)
+
+  have h_sum_split : abelianLinearCurrent pu i j mu x = 
+    (∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, epsilon4 mu nu rho sigma * partialDeriv nu (fun p => partialDeriv rho (fun p' => connectionComponent pu i j sigma p') p) x) - 
+    (∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, epsilon4 mu nu rho sigma * partialDeriv nu (fun p => partialDeriv sigma (fun p' => connectionComponent pu i j rho p') p) x) := by
+    rw [h_J_expand]
+    have h1 : (∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, epsilon4 mu nu rho sigma * partialDeriv nu (fun p => partialDeriv rho (fun p' => connectionComponent pu i j sigma p') p - partialDeriv sigma (fun p' => connectionComponent pu i j rho p') p) x) =
+              ∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, (epsilon4 mu nu rho sigma * partialDeriv nu (fun p => partialDeriv rho (fun p' => connectionComponent pu i j sigma p') p) x - epsilon4 mu nu rho sigma * partialDeriv nu (fun p => partialDeriv sigma (fun p' => connectionComponent pu i j rho p') p) x) := by
+      apply Finset.sum_congr rfl; intro nu _
+      apply Finset.sum_congr rfl; intro rho _
+      apply Finset.sum_congr rfl; intro sigma _
+      rw [h_distrib, mul_sub]
+    rw [h1]
+    simp_rw [Finset.sum_sub_distrib]
+
+  let S1 := fun nu rho => ∑ sigma : Fin 4, epsilon4 mu nu rho sigma * partialDeriv nu (fun p => partialDeriv rho (fun p' => connectionComponent pu i j sigma p') p) x
+  have h_S1_sum : (∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, epsilon4 mu nu rho sigma * partialDeriv nu (fun p => partialDeriv rho (fun p' => connectionComponent pu i j sigma p') p) x) = ∑ nu : Fin 4, ∑ rho : Fin 4, S1 nu rho := rfl
+
+  have h_S1_anti : ∀ nu rho, S1 nu rho = - S1 rho nu := by
+    intro nu rho
+    calc
+      S1 nu rho = ∑ sigma : Fin 4, epsilon4 mu nu rho sigma * partialDeriv nu (fun p => partialDeriv rho (fun p' => connectionComponent pu i j sigma p') p) x := rfl
+      _ = ∑ sigma : Fin 4, (- epsilon4 mu rho nu sigma) * partialDeriv rho (fun p => partialDeriv nu (fun p' => connectionComponent pu i j sigma p') p) x := by
+        apply Finset.sum_congr rfl
+        intro sigma _
+        have h_eps : epsilon4 mu nu rho sigma = - epsilon4 mu rho nu sigma := (epsilon4_alt mu nu rho sigma).2.1
+        have h_clair : partialDeriv nu (fun p => partialDeriv rho (fun p' => connectionComponent pu i j sigma p') p) x = partialDeriv rho (fun p => partialDeriv nu (fun p' => connectionComponent pu i j sigma p') p) x := by
+          exact partialDeriv_comm_complex (fun p => connectionComponent pu i j sigma p) (smooth_connectionComponent pu i j sigma) nu rho x
+        rw [h_eps, h_clair]
+      _ = ∑ sigma : Fin 4, - (epsilon4 mu rho nu sigma * partialDeriv rho (fun p => partialDeriv nu (fun p' => connectionComponent pu i j sigma p') p) x) := by
+        apply Finset.sum_congr rfl; intro sigma _; ring
+      _ = - ∑ sigma : Fin 4, epsilon4 mu rho nu sigma * partialDeriv rho (fun p => partialDeriv nu (fun p' => connectionComponent pu i j sigma p') p) x := sum_neg_extract _ _
+      _ = - S1 rho nu := rfl
+  
+  have h_S1_zero : ∑ nu : Fin 4, ∑ rho : Fin 4, S1 nu rho = 0 := sum_antisymm_zero S1 h_S1_anti
+
+  let S2 := fun nu sigma => ∑ rho : Fin 4, epsilon4 mu nu rho sigma * partialDeriv nu (fun p => partialDeriv sigma (fun p' => connectionComponent pu i j rho p') p) x
+  have h_S2_reorder : (∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, epsilon4 mu nu rho sigma * partialDeriv nu (fun p => partialDeriv sigma (fun p' => connectionComponent pu i j rho p') p) x) = ∑ nu : Fin 4, ∑ sigma : Fin 4, S2 nu sigma := by
+    apply Finset.sum_congr rfl; intro nu _
+    exact Finset.sum_comm
+
+  have h_S2_anti : ∀ nu sigma, S2 nu sigma = - S2 sigma nu := by
+    intro nu sigma
+    calc
+      S2 nu sigma = ∑ rho : Fin 4, epsilon4 mu nu rho sigma * partialDeriv nu (fun p => partialDeriv sigma (fun p' => connectionComponent pu i j rho p') p) x := rfl
+      _ = ∑ rho : Fin 4, (- epsilon4 mu sigma rho nu) * partialDeriv sigma (fun p => partialDeriv nu (fun p' => connectionComponent pu i j rho p') p) x := by
+        apply Finset.sum_congr rfl
+        intro rho _
+        have h_eps1 : epsilon4 mu nu rho sigma = - epsilon4 mu rho nu sigma := (epsilon4_alt mu nu rho sigma).2.1
+        have h_eps2 : epsilon4 mu rho nu sigma = - epsilon4 mu rho sigma nu := (epsilon4_alt mu rho nu sigma).2.2
+        have h_eps3 : epsilon4 mu rho sigma nu = - epsilon4 mu sigma rho nu := (epsilon4_alt mu rho sigma nu).2.1
+        have h_eps : epsilon4 mu nu rho sigma = - epsilon4 mu sigma rho nu := by
+          rw [h_eps1, h_eps2, h_eps3]
+          ring
+        have h_clair : partialDeriv nu (fun p => partialDeriv sigma (fun p' => connectionComponent pu i j rho p') p) x = partialDeriv sigma (fun p => partialDeriv nu (fun p' => connectionComponent pu i j rho p') p) x := by
+          exact partialDeriv_comm_complex (fun p => connectionComponent pu i j rho p) (smooth_connectionComponent pu i j rho) nu sigma x
+        rw [h_eps, h_clair]
+      _ = ∑ rho : Fin 4, - (epsilon4 mu sigma rho nu * partialDeriv sigma (fun p => partialDeriv nu (fun p' => connectionComponent pu i j rho p') p) x) := by
+        apply Finset.sum_congr rfl; intro rho _; ring
+      _ = - ∑ rho : Fin 4, epsilon4 mu sigma rho nu * partialDeriv sigma (fun p => partialDeriv nu (fun p' => connectionComponent pu i j rho p') p) x := sum_neg_extract _ _
+      _ = - S2 sigma nu := rfl
+
+  have h_S2_zero : ∑ nu : Fin 4, ∑ sigma : Fin 4, S2 nu sigma = 0 := sum_antisymm_zero S2 h_S2_anti
+
+  rw [h_sum_split, h_S1_sum, h_S2_reorder, h_S1_zero, h_S2_zero]
+  ring
+
 end CGD.Particles

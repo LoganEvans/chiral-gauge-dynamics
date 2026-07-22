@@ -40,6 +40,16 @@ lemma partialDeriv_mul_c
   simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
   ring
 
+lemma partialDeriv_sub {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  (f g : SpacetimePoint → E) (μ : Fin 4) (x : SpacetimePoint)
+  (hf : DifferentiableAt ℝ f x) (hg : DifferentiableAt ℝ g x) :
+  partialDeriv μ (fun p => f p - g p) x = partialDeriv μ f x - partialDeriv μ g x := by
+  unfold partialDeriv
+  have h_eq : (fun p => f p - g p) = f - g := rfl
+  rw [h_eq]
+  rw [fderiv_sub hf hg]
+  rfl
+
 lemma partialDeriv_const_smul
   (c : ℂ) (f : SpacetimePoint → ℂ) (μ : Fin 4) (x : SpacetimePoint)
   (hf : DifferentiableAt ℝ f x) :
@@ -247,5 +257,52 @@ lemma contDiff_partialDeriv_complex (μ : Fin 4) (f : SpacetimePoint → ℂ) (h
   let id_clm : SpacetimePoint →L[ℝ] SpacetimePoint := ContinuousLinearMap.id ℝ SpacetimePoint
   have h_fderiv : ContDiff ℝ ⊤ (fderiv ℝ f) := ContDiff.fderiv (f := fun _ y => f y) (g := fun x => x) hf_snd id_clm.contDiff le_top
   exact ContDiff.clm_apply h_fderiv h_w
+
+lemma partialDeriv_comm_complex
+  [clairaut : Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional]
+  (f : SpacetimePoint → ℂ)
+  (h_smooth : ContDiff ℝ ⊤ f)
+  (μ ν : Fin 4) (x : SpacetimePoint) :
+  partialDeriv μ (fun p => partialDeriv ν f p) x = partialDeriv ν (fun p => partialDeriv μ f p) x := by
+  have hn : (⊤ : WithTop ℕ∞) ≠ 0 := by decide
+  have h_diff : ∀ p, DifferentiableAt ℝ f p := fun p => ContDiff.differentiable h_smooth hn p
+  have h_diff_pd_nu : ∀ p, DifferentiableAt ℝ (fun p' => partialDeriv ν f p') p := fun p => ContDiff.differentiable (contDiff_partialDeriv_complex ν f h_smooth) hn p
+  have h_diff_pd_mu : ∀ p, DifferentiableAt ℝ (fun p' => partialDeriv μ f p') p := fun p => ContDiff.differentiable (contDiff_partialDeriv_complex μ f h_smooth) hn p
+  
+  let L_re : ℂ →L[ℝ] ℝ := { toFun := Complex.re, map_add' := Complex.add_re, map_smul' := fun r c => by simp, cont := continuous_re }
+  have h_smooth_re : ContDiff ℝ ⊤ (fun p => (f p).re) := ContDiff.comp L_re.contDiff h_smooth
+  have h_smooth_re_on : ContDiffOn ℝ 2 (fun p => (f p).re) Set.univ := ContDiff.contDiffOn (ContDiff.of_le h_smooth_re le_top)
+  have h_fderiv_re : ContDiff ℝ ⊤ (fderiv ℝ (fun p => (f p).re)) := contDiff_fderiv_of_contDiff_real h_smooth_re
+  have h_diff_fderiv_re : ∀ p, DifferentiableAt ℝ (fderiv ℝ (fun p' => (f p').re)) p := fun p => ContDiff.differentiable h_fderiv_re hn p
+  
+  let L_im : ℂ →L[ℝ] ℝ := { toFun := Complex.im, map_add' := Complex.add_im, map_smul' := fun r c => by simp, cont := continuous_im }
+  have h_smooth_im : ContDiff ℝ ⊤ (fun p => (f p).im) := ContDiff.comp L_im.contDiff h_smooth
+  have h_smooth_im_on : ContDiffOn ℝ 2 (fun p => (f p).im) Set.univ := ContDiff.contDiffOn (ContDiff.of_le h_smooth_im le_top)
+  have h_fderiv_im : ContDiff ℝ ⊤ (fderiv ℝ (fun p => (f p).im)) := contDiff_fderiv_of_contDiff_real h_smooth_im
+  have h_diff_fderiv_im : ∀ p, DifferentiableAt ℝ (fderiv ℝ (fun p' => (f p').im)) p := fun p => ContDiff.differentiable h_fderiv_im hn p
+
+  apply Complex.ext
+  · have hr1 := partialDeriv_re (fun p => partialDeriv ν f p) μ x (h_diff_pd_nu x)
+    have hr1_inner : (fun p => (partialDeriv ν f p).re) = partialDeriv ν (fun p => (f p).re) := by
+      ext p; exact partialDeriv_re f ν p (h_diff p)
+    rw [hr1_inner] at hr1; rw [hr1]
+    
+    have hr2 := partialDeriv_re (fun p => partialDeriv μ f p) ν x (h_diff_pd_mu x)
+    have hr2_inner : (fun p => (partialDeriv μ f p).re) = partialDeriv μ (fun p => (f p).re) := by
+      ext p; exact partialDeriv_re f μ p (h_diff p)
+    rw [hr2_inner] at hr2; rw [hr2]
+    
+    exact partialDeriv_comm_real (fun p => (f p).re) h_smooth_re_on μ ν x (h_diff_fderiv_re x)
+  · have hi1 := partialDeriv_im (fun p => partialDeriv ν f p) μ x (h_diff_pd_nu x)
+    have hi1_inner : (fun p => (partialDeriv ν f p).im) = partialDeriv ν (fun p => (f p).im) := by
+      ext p; exact partialDeriv_im f ν p (h_diff p)
+    rw [hi1_inner] at hi1; rw [hi1]
+    
+    have hi2 := partialDeriv_im (fun p => partialDeriv μ f p) ν x (h_diff_pd_mu x)
+    have hi2_inner : (fun p => (partialDeriv μ f p).im) = partialDeriv μ (fun p => (f p).im) := by
+      ext p; exact partialDeriv_im f μ p (h_diff p)
+    rw [hi2_inner] at hi2; rw [hi2]
+    
+    exact partialDeriv_comm_real (fun p => (f p).im) h_smooth_im_on μ ν x (h_diff_fderiv_im x)
 
 end CGD.Math

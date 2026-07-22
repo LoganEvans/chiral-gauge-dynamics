@@ -113,6 +113,8 @@
             # Force Elan to install toolchains locally in the repository
             export ELAN_HOME="$PWD/.elan"
 
+            export PATH="$HOME/scripts:$PATH"
+
             # ----------------------------------------------------------------
             # UTILITY FUNCTIONS
             # ----------------------------------------------------------------
@@ -124,33 +126,6 @@
               (
                 cd "$REPO_ROOT" || return 1
                 lake exe cgd_report "$@"
-              )
-            }
-
-            # Compile the paper via the Makefile in the paper/ directory
-            cgd-paper() {
-              local REPO_ROOT="$(git rev-parse --show-toplevel)"
-              (
-                cd "$REPO_ROOT/paper" || return 1
-                make "$@"
-              )
-            }
-
-            # Clean all LaTeX build files
-            cgd-paper-clean() {
-              local REPO_ROOT="$(git rev-parse --show-toplevel)"
-              (
-                cd "$REPO_ROOT/paper" || return 1
-                make fullclean
-              )
-            }
-
-            # Build the arXiv submission bundle
-            cgd-paper-arXiv() {
-              local REPO_ROOT="$(git rev-parse --show-toplevel)"
-              (
-                cd "$REPO_ROOT/paper" || return 1
-                make arxiv
               )
             }
 
