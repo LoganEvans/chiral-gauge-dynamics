@@ -333,7 +333,7 @@ Instead, classical charge is natively restricted to the non-Abelian "connective 
 (the spatial overlap boundaries) of the manifold.
 -/
 @[litlib_track "Topological Current Commutator Isolation"]
-theorem topological_current_commutator_isolation
+theorem topologicalCurrentCommutatorIsolation
   (pu : PhysicalUniverse)
   [clairaut : Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional]
   (i j : Fin 4) :

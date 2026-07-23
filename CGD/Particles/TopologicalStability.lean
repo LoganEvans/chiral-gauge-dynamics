@@ -189,7 +189,7 @@ theorem right_inv_su2_s3 (M : SU2Group) : solitonAsymptoticMap (su2ToS3 M) = M :
 noncomputable instance : TopologicalSpace SU2Group := instTopologicalSpaceSubtype
 
 @[litlib_track "Topological Soliton Is Homeomorphism"]
-theorem soliton_is_homeomorphism : IsHomeomorphism solitonAsymptoticMap := by
+theorem solitonIsHomeomorphism : IsHomeomorphism solitonAsymptoticMap := by
   apply IsHomeomorphism.mk
   · constructor
     · intro x y hxy
@@ -635,7 +635,7 @@ theorem kinematicTopologicalStability
 
   rw [h_wind_0, h_wind_1] at h_wind_eq
 
-  have h_deg := belavin.degree_of_homeomorph solitonAsymptoticMap soliton_is_homeomorphism
+  have h_deg := belavin.degree_of_homeomorph solitonAsymptoticMap solitonIsHomeomorphism
 
   cases h_deg with
   | inl h_pos =>

@@ -69,7 +69,7 @@ Pure Math Lemma: The trace of the product of two SU(2) matrices is strictly
 bounded by [-1, 1]. This is a standard geometric property of the SU(2) Killing form.
 -/
 @[litlib_track "SU(2) Geometric Correlation Bound"]
-lemma su2_correlation_bounds (A B : SU2Group) :
+lemma su2CorrelationBounds (A B : SU2Group) :
   -1 ≤ (geometricBellCorrelation A B).re ∧ (geometricBellCorrelation A B).re ≤ 1 := by
   -- 1. Unfold the geometric correlation definition
   have h_def : (geometricBellCorrelation A B).re = (1 / 2 : ℝ) * (Matrix.trace (A.val * B.val.conjTranspose)).re := by

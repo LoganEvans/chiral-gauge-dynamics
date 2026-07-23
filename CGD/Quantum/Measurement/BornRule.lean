@@ -43,9 +43,9 @@ theorem kinematicBornRuleEquivalence
   intro geometric_val theta
   
   -- 1. Extract the native SU(2) bounds algebraically (Tier 1 Pure Math)
-  have h_bounds := su2_correlation_bounds (evaluateBoundary pu.toUniverse.sd_sector x) detector_frame
+  have h_bounds := su2CorrelationBounds (evaluateBoundary pu.toUniverse.sd_sector x) detector_frame
   
   -- 2. The physical mapping satisfies the pure mathematical structure trivially
-  exact hopf_volume_is_born_rule geometric_val h_bounds.left h_bounds.right
+  exact hopfVolumeIsBornRule geometric_val h_bounds.left h_bounds.right
 
 end CGD.Quantum.Measurement

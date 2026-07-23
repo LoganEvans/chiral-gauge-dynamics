@@ -25,7 +25,7 @@ namespace CGD.Gravity.ExactSolutions
 
 This file acts as the stable aggregator for the FLRW (formerly "Type O" isotropic) proofs.
 The complete kinematic reality filter theorem is located at the bottom of the file:
-`flrw_satisfies_reality`
+`flrwSatisfiesReality`
 -/
 
 /-- The exact FLRW matrix evaluator. -/
@@ -1227,7 +1227,7 @@ lemma flrw_A_eq (pu : PhysicalUniverse) (a : ℝ → ℂ)
 LRW (Isotropic) spacetimes intrinsically satisfy the non-degenerate Lorentzian Reality Conditions natively from the SU(2) topology, requiring no exact scalar field assumptions.
 -/
 @[litlib_track "FLRW connections produce real Lorentzian metrics"]
-theorem flrw_satisfies_reality (pu : PhysicalUniverse) (h_typeO : IsTypeOForm pu) :
+theorem flrwSatisfiesReality (pu : PhysicalUniverse) (h_typeO : IsTypeOForm pu) :
   SatisfiesRealityConditions pu := by
 
   unfold SatisfiesRealityConditions

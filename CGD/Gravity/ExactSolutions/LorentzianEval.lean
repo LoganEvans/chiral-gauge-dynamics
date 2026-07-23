@@ -20,7 +20,7 @@ noncomputable def F_val_map (m n : Fin 4) : Matrix (Fin 2) (Fin 2) ℂ :=
   | _, _ => 0
 
 @[litlib_track "Exact Lorentzian Field Curvature At Origin"]
-lemma F_origin_val_eq_map (m n : Fin 4) : F_origin_val m n = F_val_map m n := by
+lemma fOriginValEqMap (m n : Fin 4) : F_origin_val m n = F_val_map m n := by
   fin_cases m <;> fin_cases n <;> { unfold F_origin_val F_val_map; simp }
 
 noncomputable def extAdj_map (M : Matrix (Fin 2) (Fin 2) ℂ) (i j : Fin 3) : ℂ :=
@@ -52,7 +52,7 @@ noncomputable def adj_F_val (m n : Fin 4) (i j : Fin 3) : ℂ :=
 macro "prove_adj_f" : tactic =>
   `(tactic| (
     unfold adj_F
-    simp only [extractAdjoint_eq_map, F_origin_val_eq_map]
+    simp only [extractAdjoint_eq_map, fOriginValEqMap]
     dsimp only [F_val_map, extAdj_map, adj_F_val]
     try simp only [
       trace_2x2_apply, mul_2x2_apply,

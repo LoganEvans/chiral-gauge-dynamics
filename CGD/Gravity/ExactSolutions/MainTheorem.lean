@@ -54,7 +54,7 @@ theorem dynamicExactLorentzianSolution :
     rw [c_F_mat_eval m n]
 
   constructor
-  · simp only [h_cgd_adj]; exact CDJ_constraint_holds
+  · simp only [h_cgd_adj]; exact cdjConstraintHolds
   · have h_metric_eq : (fun m n => curvatureSl2c u.sd_sector m n origin) = urb_F_origin := by
       funext m n; exact h_curv m n
     rw [h_metric_eq]; exact metric_is_Lorentzian

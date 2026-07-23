@@ -29,7 +29,7 @@ mapped through an arc-cosine identically yields the standard Born rule projectio
 This physically separates the geometric integration from the domain ontology.
 -/
 @[litlib_track "Geometric Phase Space Fraction evaluates to the Born Rule"]
-lemma hopf_volume_is_born_rule (x : ℝ) (h_lower : -1 ≤ x) (h_upper : x ≤ 1) :
+lemma hopfVolumeIsBornRule (x : ℝ) (h_lower : -1 ≤ x) (h_upper : x ≤ 1) :
   let theta := Real.arccos x;
   hopfPhaseSpaceFraction theta = (1 + x) / 2 ∧ 
   (1 + x) / 2 = (Real.cos (theta / 2))^2 := by
