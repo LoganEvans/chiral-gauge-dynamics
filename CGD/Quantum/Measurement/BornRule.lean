@@ -3,7 +3,7 @@
 import CGD.Axioms.Ontology
 import CGD.Axioms.PhysicalUniverse
 import CGD.Quantum.Holonomy.Geometric
-import CGD.Math.Integration
+import CGD.Math.HopfFibration
 import CGD.Quantum.Measurement.SU2Bounds
 import Litlib.Core
 

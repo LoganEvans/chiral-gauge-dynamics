@@ -276,36 +276,6 @@ lemma diff_fderiv_im_afs (pu : PhysicalUniverse) (i j μ ν : Fin 4) (x : Spacet
   have h_diff := ContDiff.differentiable h_fderiv hn
   exact h_diff x
 
-/--
-Because the physical Universe is axiomatically a smooth Spin(4,C) connection,
-its emergent Abelian projection natively satisfies the n-dimensional Clairaut theorem,
-guaranteeing exact topological charge conservation without further assumptions.
--/
-@[litlib_track "Kinematic Charge Conservation"]
-theorem kinematicChargeConservation
-  [clairaut : Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional]
-  (pu : PhysicalUniverse) (i j : Fin 4) :
-  ∀ x : SpacetimePoint,
-    ∑ μ : Fin 4, partialDeriv μ (fun p => emergentElectricCurrent (abelianFieldStrength pu i j) μ p) x = 0 := by
-  intro x
-  apply topologicalChargeConservation (abelianFieldStrength pu i j)
-  · intro ρ σ
-    have h_top := smooth_re_afs pu i j ρ σ
-    have h_2 : ContDiff ℝ 2 (fun p => (abelianFieldStrength pu i j ρ σ p).re) := ContDiff.of_le h_top le_top
-    exact ContDiff.contDiffOn h_2
-  · intro ρ σ
-    have h_top := smooth_im_afs pu i j ρ σ
-    have h_2 : ContDiff ℝ 2 (fun p => (abelianFieldStrength pu i j ρ σ p).im) := ContDiff.of_le h_top le_top
-    exact ContDiff.contDiffOn h_2
-  · intro ρ σ x'
-    exact diff_afs pu i j ρ σ x'
-  · intro ν ρ σ x'
-    exact diff_pd_afs pu i j ν ρ σ x'
-  · intro ρ σ x'
-    exact diff_fderiv_re_afs pu i j ρ σ x'
-  · intro ρ σ x'
-    exact diff_fderiv_im_afs pu i j ρ σ x'
-
 /-- The linear (derivative) portion of the Abelian field strength tensor. -/
 noncomputable def abelianLinearFieldStrength (pu : PhysicalUniverse) (i j : Fin 4) (μ ν : Fin 4) (x : SpacetimePoint) : ℂ :=
   partialDeriv μ (fun p => connectionComponent pu i j ν p) x -
@@ -386,15 +356,15 @@ theorem topologicalCurrentCommutatorIsolation
   
   have h_S1_zero : ∑ nu : Fin 4, ∑ rho : Fin 4, S1 nu rho = 0 := sum_antisymm_zero S1 h_S1_anti
 
-  let S2 := fun nu sigma => ∑ rho : Fin 4, epsilon4 mu nu rho sigma * partialDeriv nu (fun p => partialDeriv sigma (fun p' => connectionComponent pu i j rho p') p) x
-  have h_S2_reorder : (∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, epsilon4 mu nu rho sigma * partialDeriv nu (fun p => partialDeriv sigma (fun p' => connectionComponent pu i j rho p') p) x) = ∑ nu : Fin 4, ∑ sigma : Fin 4, S2 nu sigma := by
+  let S_term2 := fun nu sigma => ∑ rho : Fin 4, epsilon4 mu nu rho sigma * partialDeriv nu (fun p => partialDeriv sigma (fun p' => connectionComponent pu i j rho p') p) x
+  have h_S_term2_reorder : (∑ nu : Fin 4, ∑ rho : Fin 4, ∑ sigma : Fin 4, epsilon4 mu nu rho sigma * partialDeriv nu (fun p => partialDeriv sigma (fun p' => connectionComponent pu i j rho p') p) x) = ∑ nu : Fin 4, ∑ sigma : Fin 4, S_term2 nu sigma := by
     apply Finset.sum_congr rfl; intro nu _
     exact Finset.sum_comm
 
-  have h_S2_anti : ∀ nu sigma, S2 nu sigma = - S2 sigma nu := by
+  have h_S_term2_anti : ∀ nu sigma, S_term2 nu sigma = - S_term2 sigma nu := by
     intro nu sigma
     calc
-      S2 nu sigma = ∑ rho : Fin 4, epsilon4 mu nu rho sigma * partialDeriv nu (fun p => partialDeriv sigma (fun p' => connectionComponent pu i j rho p') p) x := rfl
+      S_term2 nu sigma = ∑ rho : Fin 4, epsilon4 mu nu rho sigma * partialDeriv nu (fun p => partialDeriv sigma (fun p' => connectionComponent pu i j rho p') p) x := rfl
       _ = ∑ rho : Fin 4, (- epsilon4 mu sigma rho nu) * partialDeriv sigma (fun p => partialDeriv nu (fun p' => connectionComponent pu i j rho p') p) x := by
         apply Finset.sum_congr rfl
         intro rho _
@@ -410,11 +380,11 @@ theorem topologicalCurrentCommutatorIsolation
       _ = ∑ rho : Fin 4, - (epsilon4 mu sigma rho nu * partialDeriv sigma (fun p => partialDeriv nu (fun p' => connectionComponent pu i j rho p') p) x) := by
         apply Finset.sum_congr rfl; intro rho _; ring
       _ = - ∑ rho : Fin 4, epsilon4 mu sigma rho nu * partialDeriv sigma (fun p => partialDeriv nu (fun p' => connectionComponent pu i j rho p') p) x := sum_neg_extract _ _
-      _ = - S2 sigma nu := rfl
+      _ = - S_term2 sigma nu := rfl
 
-  have h_S2_zero : ∑ nu : Fin 4, ∑ sigma : Fin 4, S2 nu sigma = 0 := sum_antisymm_zero S2 h_S2_anti
+  have h_S_term2_zero : ∑ nu : Fin 4, ∑ sigma : Fin 4, S_term2 nu sigma = 0 := sum_antisymm_zero S_term2 h_S_term2_anti
 
-  rw [h_sum_split, h_S1_sum, h_S2_reorder, h_S1_zero, h_S2_zero]
+  rw [h_sum_split, h_S1_sum, h_S_term2_reorder, h_S1_zero, h_S_term2_zero]
   ring
 
 end CGD.Particles
