@@ -2,6 +2,7 @@
 
 import CGD.Quantum.Measurement.TopologicalDynamics
 import CGD.Quantum.Measurement.TopologicalCatchment
+import CGD.Quantum.Measurement.TopologicalSymmetry
 import CGD.Foundations.Topology
 import CGD.Quantum.Holonomy.Geometric
 import Mathlib.Data.Complex.Basic
@@ -28,12 +29,9 @@ eigenstate will reproduce the exact quantum Born Rule IF AND ONLY IF the
 interaction energy natively partitions the phase space such that the catchment 
 boundary aligns with the negative of the geometric correlation.
 
-(Note: The algebraic condition `cos(α) = -correlation` is geometrically identical 
-to stating that the boundary α is the supplement of the collision angle θ, 
-i.e., α = π - θ).
-
-This proves that quantum "collapse" is mathematically equivalent to 
-a specific classical boundary condition in non-Abelian geometry.
+By enforcing `SatisfiesSymmetricRelaxation`, we prove that the Spherical Cap 
+is not an arbitrary geometric assumption, but the strict mathematical consequence 
+of Z-axis conservation (Phase Isotropy) and continuous energy minimization.
 -/
 @[litlib_track "Deterministic Born Rule Equivalence"]
 theorem deterministicBornRuleEquivalence
@@ -43,7 +41,7 @@ theorem deterministicBornRuleEquivalence
   (x : SpacetimePoint)
   (phi : ℝ → S2 → S2)
   (alpha : ℝ)
-  (h_basin_is_cap : IsSphericalCap (BasinOfAttraction phi detectorEigenstate) alpha) :
+  (h_relax : SatisfiesSymmetricRelaxation (BasinOfAttraction phi detectorEigenstate) alpha) :
 
   -- Local bindings perfectly lock the physical evaluations to the theorem logic
   let fraction := topologicalCatchmentFraction alpha;
@@ -52,6 +50,9 @@ theorem deterministicBornRuleEquivalence
   fraction = (1 + correlation) / 2 
   ↔ 
   Real.cos alpha = -correlation := by
+
+  -- Logically bridge the physical symmetry to the geometric cap definition
+  have h_basin_is_cap := relaxationGeneratesCap (BasinOfAttraction phi detectorEigenstate) alpha h_relax
 
   -- Introduce the let-bindings into the local proof context
   intro fraction correlation
