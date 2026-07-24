@@ -56,22 +56,18 @@ theorem deterministicBornRuleEquivalence
   -- Introduce the let-bindings into the local proof context
   intro fraction correlation
   
-  -- Unfold the definitions to expose the core geometry
-  unfold fraction
-  unfold topologicalCatchmentFraction
-  unfold hopfVolumePrimitive
-
-  -- Evaluate the strict mathematical bounds of the S2 primitives
-  have h_zero : Real.cos 0 = 1 := Real.cos_zero
-  have h_pi : Real.cos Real.pi = -1 := Real.cos_pi
-  
-  rw [h_zero, h_pi]
+  -- Use the rigorous integral evaluation lemma
+  have h_eval := topologicalCatchmentEvaluation alpha
   
   -- The physical geometry rigorously reduces to a trivial linear equality
   constructor
   · intro h
+    change topologicalCatchmentFraction alpha = (1 + correlation) / 2 at h
+    rw [h_eval] at h
     linarith
   · intro h
+    change topologicalCatchmentFraction alpha = (1 + correlation) / 2
+    rw [h_eval]
     linarith
 
 end CGD.Quantum.Measurement
