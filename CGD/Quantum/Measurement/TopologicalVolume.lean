@@ -17,6 +17,17 @@ open CGD.Cosmology
 
 namespace CGD.Quantum.Measurement
 
+-- ANTI-BS ENFORCEMENT: Kill silent compiler hallucinations
+set_option autoImplicit false
+
+/-- 
+Concrete Lebesgue integration wrapper over the spacetime manifold.
+Forces the compiler to evaluate the volume using actual measure theory 
+rather than an implicitly generated dummy variable. 
+-/
+noncomputable def spacetimeVolumeIntegral [MeasureSpace SpacetimePoint] (f : SpacetimePoint → ℝ) : ℝ :=
+  ∫ x, f x
+
 /-- 
 Helper function to shield Lean's typeclass unifier from inline lambda complexity. 
 It rigorously wraps the 4x4 noncomputable matrix trace into a standard R -> R map.
@@ -40,6 +51,7 @@ from being falsely applied to a radiating or unbounded state.
 @[litlib_track "Macroscopic Volume to Boundary Reduction"]
 theorem kinematicVolumeToBoundaryReduction
   {BoundaryManifold : Type*} [TopologicalSpace BoundaryManifold] [Nonempty BoundaryManifold]
+  [MeasureSpace SpacetimePoint]
   (pu : PhysicalUniverse)
   
   -- The Mappings connecting the CGD fields to the Litlib abstractions
@@ -57,14 +69,14 @@ theorem kinematicVolumeToBoundaryReduction
     asymptoticBoundaryMap
     isAsymptoticallyPureGauge
     realPontryagin
-    volumeIntegral
+    spacetimeVolumeIntegral
     windingNumber]
     
   -- The Physical Premise: The universe's macroscopic field must asymptotically hit the vacuum
   (h_vacuum_boundary : isAsymptoticallyPureGauge pu.toUniverse.sd_sector.val (asymptoticBoundaryMap pu.toUniverse.sd_sector.val)) :
 
   -- The 4D Bulk Integral of the Topological Density
-  volumeIntegral (realPontryagin (curvatureSl2c pu.toUniverse.sd_sector.val)) = 
+  spacetimeVolumeIntegral (realPontryagin (curvatureSl2c pu.toUniverse.sd_sector.val)) = 
   -8 * (Real.pi ^ 2) * (windingNumber (asymptoticBoundaryMap pu.toUniverse.sd_sector.val) : ℝ) := by
 
   -- Resolves natively and instantly via the exact Litlib instantiation
