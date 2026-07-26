@@ -40,8 +40,8 @@ Projects the orthogonal SU(2) topology via sigmaZ.
 noncomputable def wormGearTransverseKick (U U_inv : Matrix (Fin 2) (Fin 2) ℂ) : ℂ :=
   Matrix.trace (U * explicitSigmaZ * U_inv * explicitSigmaY)
 
-noncomputable def obs_M_A (alpha : ℝ) : ℂ := (Complex.cos (alpha/2))^2 - (Complex.sin (alpha/2))^2
-noncomputable def obs_M_B (alpha : ℝ) : ℂ := 2 * (Complex.cos (alpha/2)) * (Complex.sin (alpha/2))
+noncomputable def obsM_A (alpha : ℝ) : ℂ := (Complex.cos (alpha/2))^2 - (Complex.sin (alpha/2))^2
+noncomputable def obsM_B (alpha : ℝ) : ℂ := 2 * (Complex.cos (alpha/2)) * (Complex.sin (alpha/2))
 
 -- ====================================================================
 -- DETERMINISTIC UNROLLING RULES (NO UNIFIER SEARCH)
@@ -84,12 +84,12 @@ lemma sig3_val_11 : CGD.Foundations.sigma3.val 1 1 = -1 := by rw [CGD.Foundation
 -- ====================================================================
 
 /-- Algebraically unpacks the SU(2) phase generator into a flat matrix. -/
-lemma obs_M_eq (alpha : ℝ) :
-  CGD.Quantum.obs_M alpha = Matrix.of ![![obs_M_A alpha, obs_M_B alpha], ![obs_M_B alpha, -obs_M_A alpha]] := by
+lemma obsM_eq (alpha : ℝ) :
+  CGD.Quantum.obsM alpha = Matrix.of ![![obsM_A alpha, obsM_B alpha], ![obsM_B alpha, -obsM_A alpha]] := by
   ext i j
   fin_cases i <;> fin_cases j
   all_goals {
-    unfold CGD.Quantum.obs_M
+    unfold CGD.Quantum.obsM
     repeat rw [norm_fin_0]
     repeat rw [norm_fin_1]
     repeat rw [mul_fin2]
@@ -109,8 +109,8 @@ lemma obs_M_eq (alpha : ℝ) :
     repeat rw [sig3_val_01]
     repeat rw [sig3_val_10]
     repeat rw [sig3_val_11]
-    try unfold obs_M_A
-    try unfold obs_M_B
+    try unfold obsM_A
+    try unfold obsM_B
     repeat rw [smul_eq_mul]
     ring_nf
   }
@@ -216,8 +216,8 @@ theorem kinematicSiversSignFlip (pu : CGD.Axioms.PhysicalUniverse) :
   rw [CGD.Quantum.fluxTubeHolonomyEvaluation matrixExp pu alpha L h_field]
   rw [CGD.Quantum.fluxTubeHolonomyEvaluation matrixExp pu alpha (-L) h_field]
   rw [Complex.ofReal_neg, Complex.cos_neg, Complex.sin_neg]
-  rw [obs_M_eq alpha]
-  exact kinematicSiversAlgebra (Complex.cos ↑L) (Complex.sin ↑L) (obs_M_A alpha) (obs_M_B alpha)
+  rw [obsM_eq alpha]
+  exact kinematicSiversAlgebra (Complex.cos ↑L) (Complex.sin ↑L) (obsM_A alpha) (obsM_B alpha)
 
 /--
 Evaluating the Worm-Gear observable upon the `fluxTubeFrame` ansatz establishes that it obeys the exact same geometric sign-flip mechanics as the Sivers effect.
@@ -238,8 +238,8 @@ theorem kinematicWormGearSignFlip (pu : CGD.Axioms.PhysicalUniverse) :
   rw [CGD.Quantum.fluxTubeHolonomyEvaluation matrixExp pu alpha L h_field]
   rw [CGD.Quantum.fluxTubeHolonomyEvaluation matrixExp pu alpha (-L) h_field]
   rw [Complex.ofReal_neg, Complex.cos_neg, Complex.sin_neg]
-  rw [obs_M_eq alpha]
-  exact kinematicWormGearAlgebra (Complex.cos ↑L) (Complex.sin ↑L) (obs_M_A alpha) (obs_M_B alpha)
+  rw [obsM_eq alpha]
+  exact kinematicWormGearAlgebra (Complex.cos ↑L) (Complex.sin ↑L) (obsM_A alpha) (obsM_B alpha)
 
 /--
 Proves that when evaluating continuous non-Abelian geometry, the Sivers and Boer-Mulders effects yield topologically identical observables.
@@ -278,17 +278,17 @@ theorem kinematicTmdRatio (pu : CGD.Axioms.PhysicalUniverse) :
     [Litlib.Y2000.hall2000elementary.DerivativeExponential (Fin 2) matrixExp]
     (alpha L : ℝ),
     (∀ t, pu.toUniverse.sd_sector 1 (CGD.Quantum.straightLinePath t) = CGD.Quantum.fluxTubeFrame 1 (CGD.Quantum.straightLinePath t)) →
-    (obs_M_A alpha) * wormGearTransverseKick
+    (obsM_A alpha) * wormGearTransverseKick
       (CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) (fun mu p => CGD.Quantum.rotateYAxis (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 L)
       (CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) (fun mu p => CGD.Quantum.rotateYAxis (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 (-L)) =
-    - (obs_M_B alpha) * siversTransverseKick
+    - (obsM_B alpha) * siversTransverseKick
       (CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) (fun mu p => CGD.Quantum.rotateYAxis (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 L)
       (CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) (fun mu p => CGD.Quantum.rotateYAxis (fun m p => pu.toUniverse.sd_sector m p) alpha mu p) 1 (-L)) := by
   intros matrixExp _ alpha L h_field
   rw [CGD.Quantum.fluxTubeHolonomyEvaluation matrixExp pu alpha L h_field]
   rw [CGD.Quantum.fluxTubeHolonomyEvaluation matrixExp pu alpha (-L) h_field]
   rw [Complex.ofReal_neg, Complex.cos_neg, Complex.sin_neg]
-  rw [obs_M_eq alpha]
-  exact kinematicTmdRatioAlgebra (Complex.cos ↑L) (Complex.sin ↑L) (obs_M_A alpha) (obs_M_B alpha)
+  rw [obsM_eq alpha]
+  exact kinematicTmdRatioAlgebra (Complex.cos ↑L) (Complex.sin ↑L) (obsM_A alpha) (obsM_B alpha)
 
 end CGD.Phenomenology

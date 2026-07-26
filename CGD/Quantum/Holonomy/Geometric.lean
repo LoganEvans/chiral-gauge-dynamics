@@ -300,23 +300,16 @@ lemma chsh_real_bound (x1 x2 x3 x4 z1 z2 z3 z4 y11 y12 y13 y14 y21 y22 y23 y24 :
 The CHSH correlation bound is mathematically realized natively by the $2\sqrt{2}$ geometric bounds
 of the macroscopic SU(2) spatial topology, bypassing the need for abstract Hilbert space operators.
 
-This theorem is rigorously bound to the Physical Universe by evaluating the CHSH inequalities
-specifically over the boundary projections of the self-dual Spin(4,C) connection at four isolated
-spacetime points, formally deriving the Tsirelson bound from the geometry of the physical gauge field.
+This theorem establishes the Tier 1 algebraic correlation bound for ANY four valid unitary SU(2) states.
+The active physical construction (binding this directly to the gauge field connection) 
+is enacted via the `kinematicTsirelsonBound` theorem in the evaluation module.
 -/
-@[litlib_track "Kinematic Tsirelson Bound (CHSH)"]
-theorem kinematicTsirelsonBound
-  (pu : PhysicalUniverse)
-  (evaluateBoundary : Sl2cGaugeField → SpacetimePoint → SU2Group)
-  (x_A1 x_A2 x_B1 x_B2 : SpacetimePoint) :
-  let A1 := evaluateBoundary pu.toUniverse.sd_sector x_A1;
-  let A2 := evaluateBoundary pu.toUniverse.sd_sector x_A2;
-  let B1 := evaluateBoundary pu.toUniverse.sd_sector x_B1;
-  let B2 := evaluateBoundary pu.toUniverse.sd_sector x_B2;
+@[litlib_track "Geometric Tsirelson Bound (CHSH)"]
+theorem su2_chsh_bound (A1 A2 B1 B2 : SU2Group) :
   let chsh := geometricBellCorrelation A1 B1 + geometricBellCorrelation A1 B2 +
               geometricBellCorrelation A2 B1 - geometricBellCorrelation A2 B2;
   (chsh.re)^2 ≤ 8 ∧ chsh.im = 0 := by
-  intro A1 A2 B1 B2 chsh
+  intro chsh
   have hA1_unit : A1.val * A1.val.conjTranspose = 1 := A1.property.1
   have hA1_det : Matrix.det A1.val = 1 := A1.property.2
   have hA2_unit : A2.val * A2.val.conjTranspose = 1 := A2.property.1
