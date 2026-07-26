@@ -18,14 +18,6 @@ open MeasureTheory
 
 set_option autoImplicit false
 
-/-- 
-A wrapper to evaluate Lebesgue measure strictly as a Real number (ℝ) 
-rather than an Extended Non-Negative Real (ENNReal), allowing standard high-school 
-algebra to be performed on the probability fractions without compiler casting errors.
--/
-noncomputable def realVol (s : Set (ℝ × ℝ)) : ℝ := 
-  (volume s).toReal
-
 /--
 THE DETERMINISTIC BORN RULE EQUIVALENCE (Geometric Holonomy Reduction)
 
@@ -63,12 +55,7 @@ theorem deterministicBornRuleEquivalence
   
   -- Geometric Gap 2: The Topological Attractor (Floer Homology Basin)
   (basin : Set (ℝ × ℝ))
-  (h_topological_attractor : basin = g ⁻¹' canonicalThreshold alpha)
-  (h_meas_thresh : MeasurableSet (canonicalThreshold alpha))
-  
-  -- The Geometric Definitions
-  (h_total_vol : realVol totalPhaseSpace = totalPhaseSpaceVolume)
-  (h_threshold_vol : realVol (canonicalThreshold alpha) = canonicalThresholdVolume alpha) :
+  (h_topological_attractor : basin = g ⁻¹' canonicalThreshold alpha) :
 
   -- The Born Rule emerges as the exact geometric volume fraction
   let fraction := realVol basin / realVol totalPhaseSpace;
@@ -79,6 +66,11 @@ theorem deterministicBornRuleEquivalence
   Real.cos alpha = -correlation := by
   
   intro fraction correlation
+  
+  -- Bring the pure-math measure integration lemmas into context
+  have h_meas_thresh := measurableSet_canonicalThreshold alpha
+  have h_threshold_vol := volume_canonicalThreshold alpha
+  have h_total_vol := volume_totalPhaseSpace
   
   -- STEP 1: Evaluate the physical basin volume via the rigid holonomy flow
   have h_pre : volume (g ⁻¹' canonicalThreshold alpha) = volume (canonicalThreshold alpha) :=
