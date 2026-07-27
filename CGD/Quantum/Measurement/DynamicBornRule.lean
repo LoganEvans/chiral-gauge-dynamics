@@ -12,10 +12,6 @@ set_option autoImplicit false
 
 namespace CGD.Quantum.Measurement
 
-/-- Physical constraint: A flow on the phase space cylinder is U(1) symmetric if it is invariant under translations in the azimuthal angle. -/
-def U1Symmetric (g : ℝ × ℝ → ℝ × ℝ) : Prop :=
-  ∀ (p q delta_q : ℝ), g (p, q + delta_q) = ( (g (p, q)).1, (g (p, q)).2 + delta_q )
-
 /--
 THE DETERMINISTIC BORN RULE EQUIVALENCE (Geometric Holonomy Reduction)
 
@@ -24,50 +20,83 @@ the native geometry of Chiral Gauge Dynamics, completely replacing classical
 1D Hamiltonians with pure gauge topology.
 
 **The Physical Paradigm:**
-1. **Holonomy is Unitary & Rigid:** A gauge holonomy in SU(2) is a unitary matrix. When a unitary matrix rotates the state space, it acts as a rigid geometric rotation, which strictly preserves Lebesgue area (`MeasurePreserving g`).
-2. **U(1) Symmetry:** Macroscopic detectors possess azimuthal U(1) symmetry. Therefore, the measurement basin must inherently map to a flat latitudinal slice (`canonicalThreshold`). 
+1. **Holonomy is Unitary & Rigid:** A gauge holonomy in SU(2) is a unitary matrix. 
+   When a unitary matrix rotates the state space, it acts as a rigid geometric rotation, 
+   which strictly preserves Lebesgue area (`MeasurePreserving g`).
+2. **Topological Attractor Basin:** The geometric threshold evaluates to a canonical 
+   latitudinal slice on the phase space cylinder (`canonicalThreshold`). 
 
-By passing these two geometric properties as physical premises, the Born Rule emerges mathematically 
-as a pure consequence of rigid topological volume conservation, explicitly proven via Mathlib's measure preimage theorem.
+By passing these geometric properties as physical premises, the Born Rule emerges mathematically 
+as a pure consequence of rigid topological volume conservation, explicitly proven via Mathlib's 
+native Lebesgue integration and measure preimage theorems.
 -/
 @[litlib_track "Symmetry-Bound Deterministic Born Rule"]
 theorem symmetryBoundBornRule
   (alpha : ℝ)
   (g : ℝ × ℝ → ℝ × ℝ)
   (h_vol : MeasurePreserving g)
-  (_h_U1 : U1Symmetric g) 
   (basin : Set (ℝ × ℝ))
   (h_attractor : basin = g ⁻¹' canonicalThreshold alpha) :
   realVol basin / realVol totalPhaseSpace = (1 - Real.cos alpha) / 2 := by
   
-  -- Bring the pure-math measure integration lemmas into context
-  have h_meas_thresh := measurableSet_canonicalThreshold alpha
-  have h_threshold_vol := volume_canonicalThreshold alpha
-  have h_total_vol := volume_totalPhaseSpace
-  
-  -- STEP 1: Evaluate the physical basin volume via the rigid holonomy flow
-  have h_pre : volume (g ⁻¹' canonicalThreshold alpha) = volume (canonicalThreshold alpha) :=
-    h_vol.measure_preimage h_meas_thresh.nullMeasurableSet
-
-  have h_basin_vol : realVol basin = canonicalThresholdVolume alpha := by
+  -- Step 1: Basin measure equals threshold measure due to measure-preserving flow
+  have h_meas_thresh : MeasurableSet (canonicalThreshold alpha) := by
+    unfold canonicalThreshold
+    exact MeasurableSet.prod measurableSet_Icc measurableSet_Icc
+    
+  have h_pre : volume basin = volume (canonicalThreshold alpha) := by
     rw [h_attractor]
-    change (volume (g ⁻¹' canonicalThreshold alpha)).toReal = canonicalThresholdVolume alpha
+    -- Mathlib 4 requires explicit casting to NullMeasurableSet
+    exact h_vol.measure_preimage h_meas_thresh.nullMeasurableSet
+    
+  have h_basin_real : realVol basin = realVol (canonicalThreshold alpha) := by
+    unfold realVol
     rw [h_pre]
-    exact h_threshold_vol
-
-  -- STEP 2: Algebraic reduction of the volume ratios
-  have h1 : 4 * Real.pi ≠ 0 := by positivity
-  have h2 : ((1 - Real.cos alpha) / 2) * (4 * Real.pi) = 2 * Real.pi * (1 - Real.cos alpha) := by ring
-  have h_vol_ratio : (2 * Real.pi * (1 - Real.cos alpha)) / (4 * Real.pi) = (1 - Real.cos alpha) / 2 := by
-    calc (2 * Real.pi * (1 - Real.cos alpha)) / (4 * Real.pi)
-      _ = (((1 - Real.cos alpha) / 2) * (4 * Real.pi)) / (4 * Real.pi) := by rw [h2]
-      _ = (1 - Real.cos alpha) / 2 := by rw [mul_div_cancel_right₀ _ h1]
-
-  -- STEP 3: Substitute the volumes and map to the Born Rule fraction
-  unfold totalPhaseSpaceVolume at h_total_vol
-  rw [h_basin_vol]
-  rw [h_total_vol]
-  unfold canonicalThresholdVolume
-  rw [h_vol_ratio]
+    
+  -- Step 2: Compute threshold volume natively in Mathlib
+  have h_thresh_val : realVol (canonicalThreshold alpha) = 2 * Real.pi * (1 - Real.cos alpha) := by
+    unfold realVol canonicalThreshold
+    -- Split the product measure (explicitly applying the sets to assist the unifier)
+    have h_prod : volume (Set.Icc (Real.cos alpha) 1 ×ˢ Set.Icc 0 (2 * Real.pi)) = 
+                  volume (Set.Icc (Real.cos alpha) 1) * volume (Set.Icc 0 (2 * Real.pi)) := 
+      Measure.prod_prod (Set.Icc (Real.cos alpha) 1) (Set.Icc 0 (2 * Real.pi))
+    rw [h_prod]
+    -- Evaluate the 1D Lebesgue measures (yielding ENNReal)
+    rw [Real.volume_Icc, Real.volume_Icc]
+    -- Cast the ENNReal products down to Real
+    rw [ENNReal.toReal_mul]
+    have h_cos_le : (0 : ℝ) ≤ 1 - Real.cos alpha := sub_nonneg.mpr (Real.cos_le_one alpha)
+    rw [ENNReal.toReal_ofReal h_cos_le]
+    have h_pi_pos : (0 : ℝ) ≤ 2 * Real.pi - 0 := by
+      rw [sub_zero]
+      linarith [Real.pi_pos]
+    rw [ENNReal.toReal_ofReal h_pi_pos]
+    ring
+    
+  -- Step 3: Compute total phase space volume natively in Mathlib
+  have h_total_val : realVol totalPhaseSpace = 4 * Real.pi := by
+    unfold realVol totalPhaseSpace
+    have h_prod : volume (Set.Icc (-1 : ℝ) 1 ×ˢ Set.Icc 0 (2 * Real.pi)) = 
+                  volume (Set.Icc (-1 : ℝ) 1) * volume (Set.Icc 0 (2 * Real.pi)) := 
+      Measure.prod_prod (Set.Icc (-1 : ℝ) 1) (Set.Icc 0 (2 * Real.pi))
+    rw [h_prod]
+    rw [Real.volume_Icc, Real.volume_Icc]
+    rw [ENNReal.toReal_mul]
+    have h_two : (0 : ℝ) ≤ 1 - (-1) := by norm_num
+    rw [ENNReal.toReal_ofReal h_two]
+    have h_pi_pos : (0 : ℝ) ≤ 2 * Real.pi - 0 := by
+      rw [sub_zero]
+      linarith [Real.pi_pos]
+    rw [ENNReal.toReal_ofReal h_pi_pos]
+    ring
+    
+  -- Step 4: Assemble the ratio
+  rw [h_basin_real, h_thresh_val, h_total_val]
+  
+  -- Step 5: Algebraic simplification over the Reals
+  have h_four_pi_neq : (4 * Real.pi : ℝ) ≠ 0 := by linarith [Real.pi_pos]
+  have h_num : 2 * Real.pi * (1 - Real.cos alpha) = ((1 - Real.cos alpha) / 2) * (4 * Real.pi) := by ring
+  rw [h_num]
+  exact mul_div_cancel_right₀ ((1 - Real.cos alpha) / 2) h_four_pi_neq
 
 end CGD.Quantum.Measurement
