@@ -19,15 +19,15 @@ particles are connected by such a 1D uniform gauge connection, the metric determ
 rigorously vanishes. This confirms that non-local, degenerate wormhole topologies
 mathematically exist as non-vacuous solutions within the Spin(4,C) geometry.
 -/
-@[litlib_track "Witness for Degenerate Entanglement Channels"]
-theorem kinematicEntanglementWormhole (pu : PhysicalUniverse) :
+@[litlib_track "Degenerate Flux Tube Metric"]
+theorem degenerateFluxTubeMetric (pu : PhysicalUniverse) :
   ∀ (x y : SpacetimePoint) (theta : ℝ),
-    areEntangled pu.toUniverse.sd_sector x y theta →
+    isTopologicallyLinked pu.toUniverse.sd_sector x y theta →
     (urbantkeMetric (fun m n => curvatureSl2c pu.toUniverse.sd_sector m n x)).det = 0 ∧
     (urbantkeMetric (fun m n => curvatureSl2c pu.toUniverse.sd_sector m n y)).det = 0 := by
-  intros x y theta h_entangled
-  unfold areEntangled at h_entangled
-  rcases h_entangled with ⟨γ, θ, h_γ_0, h_γ_1, h_θ_0, h_θ_1, h_path⟩
+  intros x y theta h_linked
+  unfold isTopologicallyLinked at h_linked
+  rcases h_linked with ⟨γ, θ, h_γ_0, h_γ_1, h_θ_0, h_θ_1, h_path⟩
 
   have h_x_val : ∀ mu, pu.toUniverse.sd_sector mu x = rotateYAxis fluxTubeFrame (θ 0) mu x := by
     intro mu
