@@ -127,23 +127,23 @@ lemma isSu2_comm (A B : Matrix (Fin 2) (Fin 2) ℂ) (hA : isSu2 A) (hB : isSu2 B
     rw [h1, h2]
     exact (neg_sub (A * B) (B * A)).symm
 
-lemma math_su2_commutator_squared_trace (A B : Matrix (Fin 2) (Fin 2) ℂ) (hA : isSu2 A) (hB : isSu2 B) (hNz : A * B - B * A ≠ 0) :
+-- TIER 1: PURE MATHEMATICS EXTRACT
+@[litlib_track "Algebraic SU(2) Commutator Squared Trace"]
+lemma algebraicSu2CommutatorSquaredTrace (A B : Matrix (Fin 2) (Fin 2) ℂ) (hA : isSu2 A) (hB : isSu2 B) (hNz : A * B - B * A ≠ 0) :
   Matrix.trace ((A * B - B * A) * (A * B - B * A)) ≠ 0 := by
   intro hZ
   have hC_su2 := isSu2_comm A B hA hB
   have hC_eq_0 := c_eq_zero_of_trace_sq_zero _ hC_su2.1 hC_su2.2 hZ
   exact hNz hC_eq_0
 
-/--
-This theorem proves that non-commuting SU(2) fields (which correspond to non-trivial matter) natively expand into non-zero topological density traces without needing a background metric.
--/
+-- TIER 2: PHYSICAL ONTOLOGY BINDING
 @[litlib_track "Anti-Self-Dual Matter Trace Constraint"]
-theorem kinematicSIDMTrace (pu : PhysicalUniverse)
+theorem physicalSIDMTrace (pu : PhysicalUniverse)
   (x : SpacetimePoint) (μ ν : Fin 4)
   (h_anti_self_dual_su2 : ∀ m p, isSu2 (pu.toUniverse.asd_sector m p).val)
   (h_comm : ((pu.toUniverse.asd_sector μ x).val * (pu.toUniverse.asd_sector ν x).val - (pu.toUniverse.asd_sector ν x).val * (pu.toUniverse.asd_sector μ x).val) ≠ 0) :
   Matrix.trace (((pu.toUniverse.asd_sector μ x).val * (pu.toUniverse.asd_sector ν x).val - (pu.toUniverse.asd_sector ν x).val * (pu.toUniverse.asd_sector μ x).val) *
                 ((pu.toUniverse.asd_sector μ x).val * (pu.toUniverse.asd_sector ν x).val - (pu.toUniverse.asd_sector ν x).val * (pu.toUniverse.asd_sector μ x).val)) ≠ 0 := by
-  exact math_su2_commutator_squared_trace _ _ (h_anti_self_dual_su2 μ x) (h_anti_self_dual_su2 ν x) h_comm
+  exact algebraicSu2CommutatorSquaredTrace _ _ (h_anti_self_dual_su2 μ x) (h_anti_self_dual_su2 ν x) h_comm
 
 end CGD.AntiSelfDualSector

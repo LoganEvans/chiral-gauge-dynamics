@@ -10,16 +10,9 @@ namespace CGD.Quantum.Measurement
 
 open CGD.Foundations CGD.Math CGD.Quantum
 
-/--
-The Kinematic Born Rule Equivalence.
-
-This theorem explicitly demonstrates that when the quantum state is modeled as a 
-macroscopic SU(2) connection of the Physical Universe, the geometric phase-space 
-volume fraction (derived from the invariant Hopf metric) is mathematically identical 
-to the quantum mechanical Born rule projection.
--/
-@[litlib_track "Kinematic Born Rule Equivalence"]
-theorem kinematicBornRuleEquivalence (state detector : SU2Group) :
+-- TIER 1: PURE MATHEMATICS (Renamed from Kinematic)
+@[litlib_track "Geometric Born Rule Equivalence"]
+theorem geometricBornRuleEquivalence (state detector : SU2Group) :
   let geometric_val := (geometricBellCorrelation state detector).re;
   let theta := Real.arccos geometric_val;
   hopfPhaseSpaceFraction theta = (1 + geometric_val) / 2 ∧
