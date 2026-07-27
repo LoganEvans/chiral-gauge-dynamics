@@ -333,8 +333,8 @@ actively constructs the SU(2) state vectors inline via the path-ordered geometri
 holonomy integral. It eradicates the need for abstract free-function boundary mappings,
 proving that CHSH entanglement natively exists inside the Physical Universe fields.
 -/
-@[litlib_track "Kinematic Tsirelson Bound (CHSH)"]
-theorem kinematicTsirelsonBound
+@[litlib_track "Static Flux Tube Tsirelson Bound (CHSH)"]
+theorem staticFluxTubeTsirelsonBound
   (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
   [DerivativeExponential (Fin 2) matrixExp]
   (pu : PhysicalUniverse) (L : ℝ) (alphaA1 alphaA2 alphaB1 alphaB2 : ℝ)
@@ -354,6 +354,6 @@ theorem kinematicTsirelsonBound
               geometricBellCorrelation A2 B1 - geometricBellCorrelation A2 B2;
   (chsh.re)^2 ≤ 8 ∧ chsh.im = 0 := by
   intro A1 A2 B1 B2 chsh
-  exact su2_chsh_bound A1 A2 B1 B2
+  exact universalHolonomyTsirelsonBound A1 A2 B1 B2
 
 end CGD.Quantum

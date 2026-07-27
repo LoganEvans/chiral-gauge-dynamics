@@ -302,10 +302,10 @@ of the macroscopic SU(2) spatial topology, bypassing the need for abstract Hilbe
 
 This theorem establishes the Tier 1 algebraic correlation bound for ANY four valid unitary SU(2) states.
 The active physical construction (binding this directly to the gauge field connection) 
-is enacted via the `kinematicTsirelsonBound` theorem in the evaluation module.
+is enacted via the `staticFluxTubeTsirelsonBound` theorem in the evaluation module.
 -/
-@[litlib_track "Geometric Tsirelson Bound (CHSH)"]
-theorem su2_chsh_bound (A1 A2 B1 B2 : SU2Group) :
+@[litlib_track "Universal Geometric Tsirelson Bound"]
+theorem universalHolonomyTsirelsonBound (A1 A2 B1 B2 : SU2Group) :
   let chsh := geometricBellCorrelation A1 B1 + geometricBellCorrelation A1 B2 +
               geometricBellCorrelation A2 B1 - geometricBellCorrelation A2 B2;
   (chsh.re)^2 ≤ 8 ∧ chsh.im = 0 := by
