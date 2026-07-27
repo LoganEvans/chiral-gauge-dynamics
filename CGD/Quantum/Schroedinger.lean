@@ -2,6 +2,9 @@
 
 import CGD.Quantum.Dirac
 import CGD.Foundations.Spacetime
+import CGD.Foundations.GaugeGroup
+import CGD.Axioms.PhysicalUniverse
+import CGD.Particles.Mass
 import Litlib.Core
 import Litlib.Math.Dirac
 import Mathlib.Tactic.FinCases
@@ -11,6 +14,7 @@ import Mathlib.Analysis.Calculus.Deriv.Basic
 set_option linter.unusedSimpArgs false
 
 open CGD.Foundations Matrix Complex BigOperators Litlib.Math.Dirac
+open CGD.Axioms CGD.Particles
 
 namespace CGD.Quantum
 
@@ -275,6 +279,32 @@ theorem exactSchroedingerReduction (dPsi : Fin 4 → SpacetimePoint → Matrix (
       rw [P_minus_gamma0, neg_mul] at h1
       exact eq_of_sub_eq_zero h1
     rw [h_minus_eq, h_P_minus_D_space]
+
+/--
+Physical Schroedinger Reduction (Topological Mass Binding)
+
+This is the Tier 2 emergence theorem. It maps the abstract algebraic 
+Dirac reduction (`exactSchroedingerReduction`) onto the physical macroscopic 
+ontology. Crucially, the mass parameter `m` is not an externally fiated scalar, 
+but is strictly bound to the topological `inertialMass` (the Cartan-Maurer 
+soliton charge) of the Anti-Self-Dual gauge sector.
+-/
+@[litlib_track "Physical Schroedinger Reduction (Topological Mass)"]
+theorem physicalSchroedingerReduction
+  {BoundaryManifold : Type*} [TopologicalSpace BoundaryManifold] [Nonempty BoundaryManifold]
+  (boundaryMap : (Fin 4 → SpacetimePoint → SL2C) → BoundaryManifold → SU2Group)
+  (cartanMaurerIntegral : (BoundaryManifold → SU2Group) → ℝ)
+  (pu : PhysicalUniverse) 
+  (x : SpacetimePoint)
+  (dPsi : Fin 4 → SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex)
+  (Psi : SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) 
+  (h : localDiracOp (fun a => dPsi a x) = (inertialMass boundaryMap cartanMaurerIntegral pu : Complex) • Psi x) :
+  let m : Complex := (inertialMass boundaryMap cartanMaurerIntegral pu : Complex);
+  let D0_mod := modulatedTemporalDeriv (dPsi 0 x) (Psi x) m;
+  let Psi_small := P_plus * Psi x;
+  (2 • m • Psi_small = P_plus * D0_mod + gammaVec 1 * (P_minus * dPsi 1 x) + gammaVec 2 * (P_minus * dPsi 2 x) + gammaVec 3 * (P_minus * dPsi 3 x)) ∧
+  (P_minus * D0_mod = gammaVec 1 * (P_plus * dPsi 1 x) + gammaVec 2 * (P_plus * dPsi 2 x) + gammaVec 3 * (P_plus * dPsi 3 x)) := by
+  exact exactSchroedingerReduction dPsi Psi (inertialMass boundaryMap cartanMaurerIntegral pu : Complex) x h
 
 /-- The exact pre-computed cell evaluation function for the spatial Dirac momentum operator.
     Defined as a sequence of if-statements to completely avoid Matrix.of and vecCons timeouts. -/

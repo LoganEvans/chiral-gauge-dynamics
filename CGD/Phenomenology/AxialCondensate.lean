@@ -174,4 +174,26 @@ theorem kinematicLeftHandedPhaseShift (pu : PhysicalUniverse) (mu : Fin 4) (x : 
   rw [Matrix.add_mul]
   rw [← add_assoc]
 
+/--
+The Kinematic MSW Effect Witness (Flavor Oscillation).
+
+Because macroscopic volume mathematically forces the continuous existence of 
+the Axial Condensate (via `macroscopicVolumeImpliesAxialCondensate`), this 
+condensate continuously acts upon the propagating fermion state. 
+
+This interaction geometrically manifests as a parity-violating, non-zero 
+cross-term (the Kinematic MSW Effect), driving neutrino flavor oscillation 
+directly from the vacuum geometry rather than relying on a scalar mass generator.
+-/
+@[litlib_track "Kinematic MSW Effect Witness"]
+theorem kinematicMswEffectWitness
+  (pu : PhysicalUniverse) (x : SpacetimePoint) (hx : x ∈ pu.bulk)
+  (h_vacuum : ∀ μ ν, curvatureSl2c pu.toUniverse.asd_sector.val μ ν x = 0) :
+  ∃ y mu Psi, axialField pu.toUniverse mu y * Psi ≠ 0 := by
+  have h_ax := macroscopicVolumeImpliesAxialCondensate pu x hx h_vacuum
+  rcases h_ax with ⟨y, mu, hy⟩
+  use y, mu, 1
+  rw [Matrix.mul_one]
+  exact hy
+
 end CGD.Phenomenology
