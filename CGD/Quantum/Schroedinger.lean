@@ -369,9 +369,10 @@ This theorem rigorously proves that asserting a state is covariantly stable (par
 is mathematically identical to the Schrödinger evolution equation, revealing that the quantum Hamiltonian 
 is natively just the temporal gauge connection multiplied by -i.
 -/
-@[litlib_track "Geometric Origin of Schroedinger Time Evolution"]
-theorem kinematicSchroedingerTimeEmergence 
+@[litlib_track "Covariant Schroedinger Equivalence"]
+theorem covariantSchroedingerEquivalence 
   (A0 : Matrix (Fin 4) (Fin 4) Complex) 
+  (_h_unitary : A0 + A0.conjTranspose = 0)
   (Psi : ℝ → Matrix (Fin 4) (Fin 4) Complex) 
   (t : ℝ) :
   -- If the state is covariantly stable (parallel transported)...
