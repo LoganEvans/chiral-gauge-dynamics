@@ -17,7 +17,7 @@ theorem vacuumDiracEquation (D_F : Fin 4 → Fin 4 → Fin 4 → ℂ)
   (h_bianchi : ∀ c a b, D_F c a b + D_F a b c + D_F b c a = 0)
   (h_vacuum : ∀ b, yangMillsCurrent D_F b = 0) :
   (∑ c : Fin 4, gammaVec c * (∑ a : Fin 4, ∑ b : Fin 4, D_F c a b • (gammaVec a * gammaVec b))) = 0 := by
-  rw [geometricDiracEmergence D_F h_anti h_bianchi]
+  rw [kaehlerDiracEmergence D_F h_anti h_bianchi]
   have h_zero : (∑ b : Fin 4, yangMillsCurrent D_F b • gammaVec b) = 0 := by
     apply Finset.sum_eq_zero
     intro b _

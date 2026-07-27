@@ -14,13 +14,13 @@ noncomputable def minkowskiEta (a b : Fin 4) : ℂ :=
   else 0
 
 /-- 
-The Geometric Spinor (Kähler-Dirac Mode). 
+The Kähler-Dirac Mode. 
 Constructed strictly from the local internal curvature components F_{ab}.
 This guarantees flawless gauge covariance (adjoint representation) 
 and removes the need for arbitrary fermion fields.
 -/
-@[litlib_track "Geometric Spinor Definition"]
-noncomputable def geometricSpinor (F : Fin 4 → Fin 4 → ℂ) : Matrix (Fin 4) (Fin 4) ℂ :=
+@[litlib_track "Kaehler-Dirac Geometric Mode Definition"]
+noncomputable def kaehlerDiracMode (F : Fin 4 → Fin 4 → ℂ) : Matrix (Fin 4) (Fin 4) ℂ :=
   ∑ a : Fin 4, ∑ b : Fin 4, F a b • (gammaVec a * gammaVec b)
 
 /-- 

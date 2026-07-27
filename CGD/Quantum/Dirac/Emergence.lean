@@ -7,13 +7,13 @@ open Matrix Complex BigOperators Litlib.Math.Dirac
 namespace CGD.Quantum.Dirac
 
 /--
-Proves that applying the emergent Dirac operator to the geometric spinor natively 
+Proves that applying the emergent Dirac operator to the Kähler-Dirac mode natively 
 evaluates to the Yang-Mills geometric current. This mathematically establishes that 
 the Dirac equation is not a separate physical postulate, but an intrinsic identity 
 of the Spin(4,C) gauge field.
 -/
 @[litlib_track "Geometric Dirac Emergence"]
-theorem geometricDiracEmergence (D_F : Fin 4 → Fin 4 → Fin 4 → ℂ)
+theorem kaehlerDiracEmergence (D_F : Fin 4 → Fin 4 → Fin 4 → ℂ)
   (h_anti : ∀ c a b, D_F c a b = - D_F c b a)
   (h_bianchi : ∀ c a b, D_F c a b + D_F a b c + D_F b c a = 0) :
   (∑ c : Fin 4, gammaVec c * (∑ a : Fin 4, ∑ b : Fin 4, D_F c a b • (gammaVec a * gammaVec b))) =
