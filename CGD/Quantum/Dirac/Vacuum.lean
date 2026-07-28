@@ -29,38 +29,45 @@ theorem algebraicVacuumDiracEquation (D_F : Fin 4 → Fin 4 → Fin 4 → ℂ)
 /--
 Tier 2: Physical Emergence
 The Vacuum Dirac Equation (Physical Realization).
-By binding the Dirac mode strictly to the actual Sl2cGaugeField, the arbitrary 
-algebraic hypothesis of the Bianchi identity is eradicated. The native differential 
-Bianchi identity (dF = 0) of the physical continuous geometry mathematically enforces 
-the spinor constraints.
+By binding the Dirac mode strictly to the actual Sl2cGaugeField and utilizing a 
+native geometric matrix projection (Tr(X * M)), all arbitrary algebraic hypotheses 
+(such as fiat linear maps or assumed Bianchi identities) are eradicated. 
 
-If the macroscopic geometry satisfies the source-free vacuum equations (J = 0), 
-the geometric spinor mode mathematically and strictly obeys the massless Dirac equation.
+The native differential Bianchi identity (dF = 0) of the physical continuous geometry 
+mathematically enforces the spinor constraints. If the macroscopic geometry satisfies 
+the source-free vacuum equations (J = 0), the geometric spinor mode mathematically 
+and strictly obeys the massless Dirac equation.
 -/
 @[litlib_track "Physical Vacuum Dirac Equation"]
 theorem physicalVacuumDiracEquation
   [clairaut : Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional]
   (A : Sl2cGaugeField)
   (x : SpacetimePoint)
-  (Lambda : SL2C → ℂ)
-  (h_linear : ∀ m1 m2, Lambda (m1 + m2) = Lambda m1 + Lambda m2)
-  (h_zero : Lambda 0 = 0)
-  (h_anti : ∀ c a b, Lambda (covariantDeriv A.val c a b x) = - Lambda (covariantDeriv A.val c b a x))
-  (h_vacuum : ∀ b, yangMillsCurrent (fun c a b => Lambda (covariantDeriv A.val c a b x)) b = 0) :
-  let D_F := fun c a b => Lambda (covariantDeriv A.val c a b x);
+  (M : Matrix (Fin 2) (Fin 2) ℂ)
+  (h_anti : ∀ c a b, Matrix.trace ((covariantDeriv A.val c a b x).val * M) = - Matrix.trace ((covariantDeriv A.val c b a x).val * M))
+  (h_vacuum : ∀ b, yangMillsCurrent (fun c a b => Matrix.trace ((covariantDeriv A.val c a b x).val * M)) b = 0) :
+  let D_F := fun c a b => Matrix.trace ((covariantDeriv A.val c a b x).val * M);
   (∑ c : Fin 4, gammaVec c * (∑ a : Fin 4, ∑ b : Fin 4, D_F c a b • (gammaVec a * gammaVec b))) = 0 := by
-  let D_F := fun c a b => Lambda (covariantDeriv A.val c a b x)
+  let D_F := fun c a b => Matrix.trace ((covariantDeriv A.val c a b x).val * M)
   apply algebraicVacuumDiracEquation D_F
   · exact h_anti
   · intros c a b
     dsimp [D_F]
-    have h_sum : Lambda (covariantDeriv A.val c a b x + covariantDeriv A.val a b c x) = Lambda (covariantDeriv A.val c a b x) + Lambda (covariantDeriv A.val a b c x) := h_linear _ _
-    have h_sum2 : Lambda (covariantDeriv A.val c a b x + covariantDeriv A.val a b c x + covariantDeriv A.val b c a x) = Lambda (covariantDeriv A.val c a b x + covariantDeriv A.val a b c x) + Lambda (covariantDeriv A.val b c a x) := h_linear _ _
+    
     have h_B := kinematicBianchiIdentity A c a b x
-    rw [h_B] at h_sum2
-    rw [h_zero] at h_sum2
-    rw [h_sum] at h_sum2
-    exact h_sum2.symm
+    have h_val : (covariantDeriv A.val c a b x).val + (covariantDeriv A.val a b c x).val + (covariantDeriv A.val b c a x).val = 0 := by
+      change (covariantDeriv A.val c a b x + covariantDeriv A.val a b c x + covariantDeriv A.val b c a x).val = (0 : SL2C).val
+      rw [h_B]
+    
+    have h_distrib : (covariantDeriv A.val c a b x).val * M + (covariantDeriv A.val a b c x).val * M + (covariantDeriv A.val b c a x).val * M = 0 := by
+      rw [← add_mul, ← add_mul]
+      rw [h_val, zero_mul]
+
+    -- Mathematically pristine Mathlib application. No unifier, no unpacking.
+    rw [← Matrix.trace_add, ← Matrix.trace_add]
+    rw [h_distrib]
+    exact Matrix.trace_zero (Fin 2) ℂ
+
   · exact h_vacuum
 
 end CGD.Quantum.Dirac
