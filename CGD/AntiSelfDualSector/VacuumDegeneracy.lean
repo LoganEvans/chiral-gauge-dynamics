@@ -5,7 +5,7 @@ import CGD.Axioms.PhysicalUniverse
 import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Gravity.Geometry
-import CGD.Particles.Color
+import CGD.Particles.Subalgebra
 import CGD.Particles.Definitions
 import Litlib.Core
 
@@ -75,14 +75,14 @@ theorem kinematicAsdVacuumDegeneracy (pu : PhysicalUniverse) :
   -- Step 3: Define the local macroscopic curvature mapping evaluated at x
   let F := fun m n => curvatureSl2c pu.toUniverse.asd_sector m n x
 
-  -- Step 4: Prove this zero-field trivially satisfies the Abelian (single-color) constraint
-  have h_single : isSingleColor F := by
+  -- Step 4: Prove this zero-field trivially satisfies the Abelian constraint
+  have h_single : isAbelianSubalgebra F := by
     intro mu nu rho sigma
     dsimp [F]
     rw [h_F_zero mu nu, h_F_zero rho sigma]
     simp
 
   -- Step 5: Route the Abelian collapse into the established geometric confinement theorem
-  exact kinematicSingleColorDegeneracy F h_single
+  exact kinematicAbelianSubalgebraDegeneracy F h_single
 
 end CGD.AntiSelfDualSector

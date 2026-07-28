@@ -8,7 +8,7 @@ import CGD.Foundations.Spacetime
 import CGD.Math.Calculus
 import CGD.Foundations.Calculus
 import CGD.Gravity.Geometry
-import CGD.Particles.Color
+import CGD.Particles.Subalgebra
 import CGD.Particles.Definitions
 import Mathlib.Tactic
 
@@ -24,9 +24,9 @@ namespace CGD.Phenomenology
 -- HELPER LEMMAS
 --------------------------------------------------------------------
 
-/-- A zero curvature field is trivially single-color (Abelian), triggering macroscopic volume collapse. -/
-lemma zero_curvature_single_color (F : Fin 4 → Fin 4 → SL2C) (h_zero : ∀ μ ν, F μ ν = 0) :
-  isSingleColor F := by
+/-- A zero curvature field is trivially Abelian, triggering macroscopic volume collapse. -/
+lemma zero_curvature_abelian_subalgebra (F : Fin 4 → Fin 4 → SL2C) (h_zero : ∀ μ ν, F μ ν = 0) :
+  isAbelianSubalgebra F := by
   intro μ ν ρ σ
   rw [h_zero μ ν, h_zero ρ σ]
   simp
@@ -59,8 +59,8 @@ theorem macroscopicVolumeImpliesChirality
     exact h_vacuum μ ν
 
   -- 2. Evaluate Volume Collapse: A zero gauge field degenerates to zero macroscopic volume
-  have h_single_color := zero_curvature_single_color (fun a b => curvatureSl2c pu.toUniverse.sd_sector.val a b x) h_sd_zero
-  have h_det_zero := kinematicSingleColorDegeneracy (fun a b => curvatureSl2c pu.toUniverse.sd_sector.val a b x) h_single_color
+  have h_abelian := zero_curvature_abelian_subalgebra (fun a b => curvatureSl2c pu.toUniverse.sd_sector.val a b x) h_sd_zero
+  have h_det_zero := kinematicAbelianSubalgebraDegeneracy (fun a b => curvatureSl2c pu.toUniverse.sd_sector.val a b x) h_abelian
 
   -- 3. The Contradiction: Macroscopic volume requires det(g) ≠ 0
   have h_vol := pu.has_volume.volume_exists x hx

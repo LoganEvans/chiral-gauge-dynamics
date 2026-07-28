@@ -5,7 +5,7 @@
    "type": "git",
    "subDir": null,
    "scope": "",
-   "rev": "a1bc4c2759fdef9b43ee8f8ec5e270ca0caeea69",
+   "rev": "1484bec34365d3742d04167c5d7000db455abaad",
    "name": "litlib4",
    "manifestFile": "lake-manifest.json",
    "inputRev": "dev",

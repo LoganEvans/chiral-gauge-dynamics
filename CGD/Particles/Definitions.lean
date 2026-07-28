@@ -37,9 +37,10 @@ noncomputable def homogeneousChaosAnsatz (mu : Fin 4) (x : SpacetimePoint) : SL2
   else 0
 
 /--
-Defines a single-color (Abelian) condensate where all components of the curvature tensor commute, constraining the field to a single U(1) Cartan subalgebra.
+Defines a gauge field where all components of the curvature tensor commute, 
+constraining the field to a single Abelian (U(1)) Cartan subalgebra.
 -/
-def isSingleColor (F : Fin 4 -> Fin 4 -> SL2C) : Prop :=
+def isAbelianSubalgebra (F : Fin 4 -> Fin 4 -> SL2C) : Prop :=
   ∀ mu nu rho sigma, ⁅F mu nu, F rho sigma⁆ = 0
 
 /--

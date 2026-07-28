@@ -1,4 +1,4 @@
--- FILENAME: CGD/Particles/Color.lean
+-- FILENAME: CGD/Particles/Subalgebra.lean
 
 import CGD.Math.Matrix
 import CGD.Foundations.GaugeGroup
@@ -85,10 +85,10 @@ lemma triple_sum_eps (f : Fin 3 → Fin 3 → Fin 3 → Complex) :
 
 /--
 The scalar triple product of the Pauli projections of three trace-free 2x2 matrices
-is strictly proportional to the trace of their Lie bracket. If the field is single color
-(all components commute), the triple product identically vanishes.
+is strictly proportional to the trace of their Lie bracket. If the field forms an 
+Abelian subalgebra (all components commute), the triple product identically vanishes.
 -/
-lemma single_color_triple_product_zero (F : Fin 4 → Fin 4 → SL2C) (h : isSingleColor F)
+lemma abelian_subalgebra_triple_product_zero (F : Fin 4 → Fin 4 → SL2C) (h : isAbelianSubalgebra F)
   (mu nu : Fin 4) (alpha beta gamma delta : Fin 4) :
   ∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3,
     epsilon3 a b c * project F a mu alpha * project F b nu beta * project F c gamma delta = 0 := by
@@ -210,7 +210,7 @@ lemma single_color_triple_product_zero (F : Fin 4 → Fin 4 → SL2C) (h : isSin
 lemma sum_swap_3_4 (f : Fin 3 → Fin 4 → Complex) :
   (∑ a : Fin 3, ∑ α : Fin 4, f a α) = ∑ α : Fin 4, ∑ a : Fin 3, f a α := Finset.sum_comm
 
-lemma single_color_space_term_zero (F : Fin 4 -> Fin 4 -> SL2C) (h : isSingleColor F) (mu nu : Fin 4) :
+lemma abelian_subalgebra_space_term_zero (F : Fin 4 -> Fin 4 -> SL2C) (h : isAbelianSubalgebra F) (mu nu : Fin 4) :
   (∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3, epsilon3 a b c * ∑ alpha : Fin 4, ∑ beta : Fin 4, ∑ gamma : Fin 4, ∑ delta : Fin 4, epsilon4 alpha beta gamma delta * project F a mu alpha * project F b nu beta * project F c gamma delta) = 0 := by
   simp_rw [Finset.mul_sum]
   simp_rw[sum_swap_3_4]
@@ -218,7 +218,7 @@ lemma single_color_space_term_zero (F : Fin 4 -> Fin 4 -> SL2C) (h : isSingleCol
   have h_zero : ∀ alpha beta gamma delta,
     (∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3, epsilon3 a b c * (epsilon4 alpha beta gamma delta * project F a mu alpha * project F b nu beta * project F c gamma delta)) = 0 := by
     intros alpha beta gamma delta
-    have h_inner := single_color_triple_product_zero F h mu nu alpha beta gamma delta
+    have h_inner := abelian_subalgebra_triple_product_zero F h mu nu alpha beta gamma delta
 
     calc (∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3, epsilon3 a b c * (epsilon4 alpha beta gamma delta * project F a mu alpha * project F b nu beta * project F c gamma delta))
       _ = (∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3, epsilon4 alpha beta gamma delta * (epsilon3 a b c * project F a mu alpha * project F b nu beta * project F c gamma delta)) := by
@@ -237,46 +237,46 @@ lemma single_color_space_term_zero (F : Fin 4 -> Fin 4 -> SL2C) (h : isSingleCol
   apply Finset.sum_eq_zero; intro delta _
   exact h_zero alpha beta gamma delta
 
-lemma metric_eq_zero_matrix (F : Fin 4 -> Fin 4 -> SL2C) (h : isSingleColor F) :
+lemma abelian_subalgebra_metric_eq_zero_matrix (F : Fin 4 -> Fin 4 -> SL2C) (h : isAbelianSubalgebra F) :
   urbantkeMetric F = 0 := by
   ext mu nu
   unfold urbantkeMetric
-  exact single_color_space_term_zero F h mu nu
+  exact abelian_subalgebra_space_term_zero F h mu nu
 
 /--
-Demonstrates that the Urbantke metric determinant fundamentally requires non-commuting Lie algebra generators. For an Abelian (single-color) field, the Lie bracket vanishes, algebraically forcing the macroscopic spacetime volume to zero. Physical spacetime geometries therefore require non-Abelian fields (such as multi-color hadrons) to expand into stable configurations, geometrically manifesting color confinement.
+Demonstrates that the Urbantke metric determinant fundamentally requires non-commuting Lie algebra generators. For an Abelian field, the Lie bracket vanishes, algebraically forcing the macroscopic spacetime volume to zero. Physical spacetime geometries therefore require non-Abelian fields to expand into stable configurations, geometrically manifesting topological confinement.
 -/
 @[litlib_track "Metric Confinement of Abelian Fields"]
-theorem kinematicSingleColorDegeneracy :
+theorem kinematicAbelianSubalgebraDegeneracy :
   ∀ (F : Fin 4 → Fin 4 → SL2C),
-    isSingleColor F →
+    isAbelianSubalgebra F →
     (urbantkeMetric F).det = 0 := by
   intro F h_red
-  have h_zero := metric_eq_zero_matrix F h_red
+  have h_zero := abelian_subalgebra_metric_eq_zero_matrix F h_red
   rw[h_zero]
   exact Matrix.det_zero ⟨0⟩
 
 /--
 Demonstrates that a non-zero macroscopic spacetime volume strictly requires non-Abelian fields.
 -/
-@[litlib_track "Kinematic Multi-Color Requirement"]
-theorem kinematicMultiColorRequirement :
+@[litlib_track "Kinematic Non-Abelian Volume Requirement"]
+theorem kinematicNonAbelianVolumeRequirement :
   ∀ (F : Fin 4 → Fin 4 → SL2C),
     (urbantkeMetric F).det ≠ 0 →
-    ¬ isSingleColor F := by
+    ¬ isAbelianSubalgebra F := by
   intro F h_vol h_single
-  have h_zero := kinematicSingleColorDegeneracy F h_single
+  have h_zero := kinematicAbelianSubalgebraDegeneracy F h_single
   exact h_vol h_zero
 
 /--
 Defines a gauge field that is constrained to a lower-dimensional Lie subalgebra,
-missing at least one of the three internal color generators.
+missing at least one of the three internal Lie algebra generators.
 -/
-def isColorDeficient (F : Fin 4 → Fin 4 → SL2C) (color : Fin 3) : Prop :=
-  ∀ mu nu, project F color mu nu = 0
+def isLieAxisDeficient (F : Fin 4 → Fin 4 → SL2C) (axis : Fin 3) : Prop :=
+  ∀ mu nu, project F axis mu nu = 0
 
-lemma missing_color_triple_product_zero (F : Fin 4 → Fin 4 → SL2C)
-  (color : Fin 3) (h : ∀ mu alpha, project F color mu alpha = 0)
+lemma missing_lie_axis_triple_product_zero (F : Fin 4 → Fin 4 → SL2C)
+  (axis : Fin 3) (h : ∀ mu alpha, project F axis mu alpha = 0)
   (mu nu : Fin 4) (alpha beta gamma delta : Fin 4) :
   ∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3,
     epsilon3 a b c * project F a mu alpha * project F b nu beta * project F c gamma delta = 0 := by
@@ -289,7 +289,7 @@ lemma missing_color_triple_product_zero (F : Fin 4 → Fin 4 → SL2C)
   rw [h_assoc]
   have h_sum := triple_sum_eps (fun a b c => project F a mu alpha * project F b nu beta * project F c gamma delta)
   rw [h_sum]
-  fin_cases color
+  fin_cases axis
   · have h1 : project F 0 mu alpha = 0 := h mu alpha
     have h2 : project F 0 nu beta = 0 := h nu beta
     have h3 : project F 0 gamma delta = 0 := h gamma delta
@@ -339,7 +339,7 @@ lemma missing_color_triple_product_zero (F : Fin 4 → Fin 4 → SL2C)
           0 * project F 1 nu beta * project F 0 gamma delta := by rw [h1, h2, h3]
       _ = 0 := by ring
 
-lemma missing_color_space_term_zero (F : Fin 4 -> Fin 4 -> SL2C) (color : Fin 3) (h : ∀ mu alpha, project F color mu alpha = 0) (mu nu : Fin 4) :
+lemma missing_lie_axis_space_term_zero (F : Fin 4 -> Fin 4 -> SL2C) (axis : Fin 3) (h : ∀ mu alpha, project F axis mu alpha = 0) (mu nu : Fin 4) :
   (∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3, epsilon3 a b c * ∑ alpha : Fin 4, ∑ beta : Fin 4, ∑ gamma : Fin 4, ∑ delta : Fin 4, epsilon4 alpha beta gamma delta * project F a mu alpha * project F b nu beta * project F c gamma delta) = 0 := by
   simp_rw [Finset.mul_sum]
   simp_rw [sum_swap_3_4]
@@ -347,7 +347,7 @@ lemma missing_color_space_term_zero (F : Fin 4 -> Fin 4 -> SL2C) (color : Fin 3)
   have h_zero : ∀ alpha beta gamma delta,
     (∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3, epsilon3 a b c * (epsilon4 alpha beta gamma delta * project F a mu alpha * project F b nu beta * project F c gamma delta)) = 0 := by
     intros alpha beta gamma delta
-    have h_inner := missing_color_triple_product_zero F color h mu nu alpha beta gamma delta
+    have h_inner := missing_lie_axis_triple_product_zero F axis h mu nu alpha beta gamma delta
 
     calc (∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3, epsilon3 a b c * (epsilon4 alpha beta gamma delta * project F a mu alpha * project F b nu beta * project F c gamma delta))
       _ = (∑ a : Fin 3, ∑ b : Fin 3, ∑ c : Fin 3, epsilon4 alpha beta gamma delta * (epsilon3 a b c * project F a mu alpha * project F b nu beta * project F c gamma delta)) := by
@@ -366,43 +366,43 @@ lemma missing_color_space_term_zero (F : Fin 4 -> Fin 4 -> SL2C) (color : Fin 3)
   apply Finset.sum_eq_zero; intro delta _
   exact h_zero alpha beta gamma delta
 
-lemma missing_color_metric_eq_zero_matrix (F : Fin 4 -> Fin 4 -> SL2C) (color : Fin 3) (h : ∀ mu nu, project F color mu nu = 0) :
+lemma missing_lie_axis_metric_eq_zero_matrix (F : Fin 4 -> Fin 4 -> SL2C) (axis : Fin 3) (h : ∀ mu nu, project F axis mu nu = 0) :
   urbantkeMetric F = 0 := by
   ext mu nu
   unfold urbantkeMetric
-  exact missing_color_space_term_zero F color h mu nu
+  exact missing_lie_axis_space_term_zero F axis h mu nu
 
 /--
-Demonstrates that if any of the three internal Lie algebra generators (colors) are missing from the gauge field, the scalar triple product natively vanishes, mathematically forcing the macroscopic spacetime volume to zero. A stable spacetime geometry mathematically requires the interaction of exactly all three SU(2) colors.
+Demonstrates that if any of the three internal Lie algebra generators are missing from the gauge field, the scalar triple product natively vanishes, mathematically forcing the macroscopic spacetime volume to zero. A stable spacetime geometry mathematically requires the interaction of exactly all three SU(2) generators.
 -/
-@[litlib_track "Geometric Degeneracy of Color-Deficient Fields"]
-theorem kinematicColorDeficientDegeneracy :
-  ∀ (F : Fin 4 → Fin 4 → SL2C) (color : Fin 3),
-    isColorDeficient F color →
+@[litlib_track "Geometric Degeneracy of Lie-Axis-Deficient Fields"]
+theorem kinematicLieAxisDeficientDegeneracy :
+  ∀ (F : Fin 4 → Fin 4 → SL2C) (axis : Fin 3),
+    isLieAxisDeficient F axis →
     (urbantkeMetric F).det = 0 := by
-  intro F color h_def
-  have h_zero := missing_color_metric_eq_zero_matrix F color h_def
+  intro F axis h_def
+  have h_zero := missing_lie_axis_metric_eq_zero_matrix F axis h_def
   rw[h_zero]
   exact Matrix.det_zero ⟨0⟩
 
 /--
-Demonstrates that a non-zero macroscopic spacetime volume strictly requires non-Abelian fields spanning exactly three active color generators. One or two colors is mathematically insufficient to sustain spacetime volume, natively bounding the minimum unbroken gauge symmetry required for macroscopic existence.
+Demonstrates that a non-zero macroscopic spacetime volume strictly requires non-Abelian fields spanning exactly three active Lie algebra generators. One or two generators is mathematically insufficient to sustain spacetime volume, natively bounding the minimum unbroken gauge symmetry required for macroscopic existence.
 -/
-@[litlib_track "Kinematic Three-Color Requirement"]
-theorem kinematicThreeColorRequirement :
+@[litlib_track "Kinematic Triaxial Requirement"]
+theorem kinematicTriaxialRequirement :
   ∀ (F : Fin 4 → Fin 4 → SL2C),
     (urbantkeMetric F).det ≠ 0 →
-    ¬ isSingleColor F ∧ (∀ color, ¬ isColorDeficient F color) := by
+    ¬ isAbelianSubalgebra F ∧ (∀ axis, ¬ isLieAxisDeficient F axis) := by
   intro F h_vol
   constructor
   · intro h_single
-    have h_zero := metric_eq_zero_matrix F h_single
+    have h_zero := abelian_subalgebra_metric_eq_zero_matrix F h_single
     have h_det_zero : (urbantkeMetric F).det = 0 := by
       rw [h_zero]
       exact Matrix.det_zero ⟨0⟩
     exact h_vol h_det_zero
-  · intro color h_def
-    have h_zero := kinematicColorDeficientDegeneracy F color h_def
+  · intro axis h_def
+    have h_zero := kinematicLieAxisDeficientDegeneracy F axis h_def
     exact h_vol h_zero
 
 end CGD.Particles
