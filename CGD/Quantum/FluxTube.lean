@@ -152,4 +152,19 @@ theorem kinematicFluxTubeStability (pu : PhysicalUniverse) :
   have h_F : (fun m n => curvatureSl2c pu.toUniverse.sd_sector m n x) = (fun m n => curvatureSl2c fluxTubeFrame m n x) := by funext m n; exact h_curv m n
   rw[h_F]; apply Matrix.det_eq_zero_of_row_eq_zero 0; intro j; exact metric_electric_zero_at j x
 
+/--
+The Topological Exclusion Principle (Gravity/Matter Duality).
+Because macroscopic spacetime strictly requires a non-degenerate volume (det g ≠ 0),
+and topological defects like the flux tube rigorously evaluate to a degenerate metric (det g = 0),
+defects are mathematically forbidden from existing within the macroscopic bulk.
+Matter and empty space are mutually exclusive topological domains.
+-/
+@[litlib_track "Topological Exclusion Principle"]
+theorem physicalTopologicalExclusion (pu : PhysicalUniverse) (x : SpacetimePoint) :
+  isFluxTube pu.toUniverse.sd_sector x → x ∉ pu.bulk := by
+  intro h_flux h_in_bulk
+  have h_det_zero := kinematicFluxTubeStability pu x h_flux
+  have h_det_neq_zero := pu.has_volume.volume_exists x h_in_bulk
+  exact h_det_neq_zero h_det_zero
+
 end CGD.Quantum
