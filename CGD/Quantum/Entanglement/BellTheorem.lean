@@ -10,6 +10,8 @@ import CGD.Axioms.PhysicalUniverse
 open Litlib.Y1964.bell1964einstein
 open MeasureTheory
 
+namespace CGD.Quantum
+
 noncomputable def cgdMatrix (v : EuclideanSpace ℝ (Fin 3)) : Matrix (Fin 2) (Fin 2) ℂ :=
   fun i j =>
     if i = 0 ∧ j = 0 then Complex.I * (v 2 : ℂ)
@@ -169,3 +171,5 @@ theorem physicalRejectionOfBellPremises
   have h15 : Eq15 (physicalCorrelation matrixExp pu L) := bell_theorem h.1 h.2
   rw [h_flux_tube_eval] at h15
   exact cgdViolatesBellInequality h15
+
+end CGD.Quantum
