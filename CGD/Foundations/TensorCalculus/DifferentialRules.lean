@@ -11,7 +11,6 @@ import Mathlib.Analysis.Calculus.FDeriv.Mul
 
 open CGD.Math
 
-
 open Matrix Complex BigOperators Litlib.Y2003.nakahara2003geometry
 
 namespace CGD.Foundations
@@ -270,5 +269,43 @@ lemma partialDerivSl2c_sub (f g : SpacetimePoint → SL2C) (μ : Fin 4) (x : Spa
   by_cases h : i = j
   · simp [h]; try ring_nf
   · simp [h]; try ring_nf
+
+lemma covariantDeriv_antisymm (A : Fin 4 → SpacetimePoint → SL2C) (c a b : Fin 4) (x : SpacetimePoint) :
+  covariantDeriv A c a b x = - covariantDeriv A c b a x := by
+  -- Explicitly define the target using change to bypass 'let' binders
+  change partialDerivSl2c c (fun p => curvatureSl2c A a b p) x + ⁅A c x, curvatureSl2c A a b x⁆ = 
+       - (partialDerivSl2c c (fun p => curvatureSl2c A b a p) x + ⁅A c x, curvatureSl2c A b a x⁆)
+       
+  -- Step 1: Invert the function inside the derivative
+  have h1 : (fun p => curvatureSl2c A a b p) = fun p => - curvatureSl2c A b a p := by
+    funext p
+    exact curvatureSl2c_antisymm A a b p
+  rw [h1]
+  rw [partialDerivSl2c_neg]
+  
+  -- Step 2: Invert the evaluated point inside the commutator
+  have h_point : curvatureSl2c A a b x = - curvatureSl2c A b a x := curvatureSl2c_antisymm A a b x
+  rw [h_point]
+  
+  -- Step 3: Pull the negative out of the commutator mathematically
+  have h_comm_neg : ⁅A c x, -curvatureSl2c A b a x⁆ = - ⁅A c x, curvatureSl2c A b a x⁆ := by
+    apply Subtype.ext
+    change (A c x).val * -(curvatureSl2c A b a x).val - -(curvatureSl2c A b a x).val * (A c x).val = 
+         - ((A c x).val * (curvatureSl2c A b a x).val - (curvatureSl2c A b a x).val * (A c x).val)
+    rw [Matrix.mul_neg, Matrix.neg_mul]
+    ext i j
+    -- Shielding from simp: Define the exact scalar polynomial pointwise
+    change - ((A c x).val * (curvatureSl2c A b a x).val) i j - (- ((curvatureSl2c A b a x).val * (A c x).val) i j) = 
+         - (((A c x).val * (curvatureSl2c A b a x).val) i j - ((curvatureSl2c A b a x).val * (A c x).val) i j)
+    ring
+  rw [h_comm_neg]
+  
+  -- Step 4: Resolve the outer addition of negatives: (-X) + (-Y) = -(X + Y)
+  apply Subtype.ext
+  ext i j
+  -- Shielding from simp: Explicitly unroll the scalar equality
+  change - (partialDerivSl2c c (fun p => curvatureSl2c A b a p) x).val i j + (- ⁅A c x, curvatureSl2c A b a x⁆.val i j) = 
+       - ((partialDerivSl2c c (fun p => curvatureSl2c A b a p) x).val i j + ⁅A c x, curvatureSl2c A b a x⁆.val i j)
+  ring
 
 end CGD.Foundations

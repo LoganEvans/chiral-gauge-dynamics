@@ -3,6 +3,7 @@
 import CGD.Quantum.Dirac.Emergence
 import CGD.Foundations.Bianchi
 import CGD.Axioms.Ontology
+import CGD.Foundations.TensorCalculus.DifferentialRules
 
 open Matrix Complex BigOperators Litlib.Math.Dirac
 open CGD.Foundations CGD.Axioms
@@ -37,6 +38,9 @@ The native differential Bianchi identity (dF = 0) of the physical continuous geo
 mathematically enforces the spinor constraints. If the macroscopic geometry satisfies 
 the source-free vacuum equations (J = 0), the geometric spinor mode mathematically 
 and strictly obeys the massless Dirac equation.
+
+Because the underlying physical geometric tensor natively obeys anti-symmetry,
+the mathematical artifact of a fiat index symmetry assumption is formally destroyed.
 -/
 @[litlib_track "Physical Vacuum Dirac Equation"]
 theorem physicalVacuumDiracEquation
@@ -44,13 +48,18 @@ theorem physicalVacuumDiracEquation
   (A : Sl2cGaugeField)
   (x : SpacetimePoint)
   (M : Matrix (Fin 2) (Fin 2) ℂ)
-  (h_anti : ∀ c a b, Matrix.trace ((covariantDeriv A.val c a b x).val * M) = - Matrix.trace ((covariantDeriv A.val c b a x).val * M))
   (h_vacuum : ∀ b, yangMillsCurrent (fun c a b => Matrix.trace ((covariantDeriv A.val c a b x).val * M)) b = 0) :
   let D_F := fun c a b => Matrix.trace ((covariantDeriv A.val c a b x).val * M);
   (∑ c : Fin 4, gammaVec c * (∑ a : Fin 4, ∑ b : Fin 4, D_F c a b • (gammaVec a * gammaVec b))) = 0 := by
   let D_F := fun c a b => Matrix.trace ((covariantDeriv A.val c a b x).val * M)
   apply algebraicVacuumDiracEquation D_F
-  · exact h_anti
+  · intros c a b
+    dsimp [D_F]
+    have h_anti_cov : covariantDeriv A.val c a b x = - covariantDeriv A.val c b a x := covariantDeriv_antisymm A.val c a b x
+    have h_anti_val : (covariantDeriv A.val c a b x).val = - (covariantDeriv A.val c b a x).val := by rw [h_anti_cov]; rfl
+    rw [h_anti_val]
+    rw [Matrix.neg_mul]
+    exact Matrix.trace_neg _
   · intros c a b
     dsimp [D_F]
     

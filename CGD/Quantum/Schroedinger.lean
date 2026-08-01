@@ -5,6 +5,7 @@ import CGD.Foundations.Spacetime
 import CGD.Foundations.GaugeGroup
 import CGD.Axioms.PhysicalUniverse
 import CGD.Particles.Mass
+import CGD.Foundations.TensorCalculus.DifferentialRules
 import Litlib.Core
 import Litlib.Math.Dirac
 import Mathlib.Tactic.FinCases
@@ -35,7 +36,7 @@ The core Dirac operator evaluated in the local tangent space frame (using tangen
 instead of coordinate index 'mu'). In curved space, dP represents the tetrad-contracted derivative.
 -/
 noncomputable def localDiracOp (dP : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) : Matrix (Fin 4) (Fin 4) Complex :=
-  ∑ a, gammaVec a * dP a
+  ∑ a : Fin 4, gammaVec a * dP a
 
 lemma sum_fin_4_matrix (f : Fin 4 → Matrix (Fin 4) (Fin 4) Complex) : ∑ i : Fin 4, f i = f 0 + f 1 + f 2 + f 3 := by
   rw [Fin.sum_univ_four]
@@ -185,52 +186,48 @@ By applying the projection operators, the relativistic Dirac equation natively f
 into a coupled system for the large and small components.
 -/
 @[litlib_track "Algebraic Dirac Chiral Split"]
-theorem algebraicDiracChiralSplit (dPsi : Fin 4 → SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex)
-  (Psi : SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) (m : Complex) (x : SpacetimePoint) :
-  localDiracOp (fun a => dPsi a x) = m • Psi x →
-  let D0_mod := modulatedTemporalDeriv (dPsi 0 x) (Psi x) m
-  let D_space := spatialDiracOp (fun mu => dPsi mu x)
-  (P_plus * D0_mod + P_plus * gamma0 * D_space = 2 • m • (P_plus * Psi x)) ∧
+theorem algebraicDiracChiralSplit (dPsi_x : Fin 4 → Matrix (Fin 4) (Fin 4) Complex)
+  (Psi_x : Matrix (Fin 4) (Fin 4) Complex) (m : Complex) :
+  localDiracOp dPsi_x = m • Psi_x →
+  let D0_mod := modulatedTemporalDeriv (dPsi_x 0) Psi_x m
+  let D_space := spatialDiracOp dPsi_x
+  (P_plus * D0_mod + P_plus * gamma0 * D_space = 2 • m • (P_plus * Psi_x)) ∧
   (P_minus * D0_mod + P_minus * gamma0 * D_space = 0) := by
-  intro h
-  let dP := fun a => dPsi a x
-  let Px := Psi x
-  let D0_mod := modulatedTemporalDeriv (dP 0) Px m
-  let D_space := spatialDiracOp dP
+  intro h D0_mod D_space
 
-  have h_expand : gamma0 * dP 0 + D_space = m • Px := by
-    have h_sum := localDiracOp_expand dP
+  have h_expand : gamma0 * dPsi_x 0 + D_space = m • Psi_x := by
+    have h_sum := localDiracOp_expand dPsi_x
     rw [← h_sum]
     exact h
 
-  have h_rearrange : dP 0 + gamma0 * D_space = m • (gamma0 * Px) := by
-    have h2 : gamma0 * (gamma0 * dP 0 + D_space) = gamma0 * (m • Px) := by rw [h_expand]
+  have h_rearrange : dPsi_x 0 + gamma0 * D_space = m • (gamma0 * Psi_x) := by
+    have h2 : gamma0 * (gamma0 * dPsi_x 0 + D_space) = gamma0 * (m • Psi_x) := by rw [h_expand]
     rw [Matrix.mul_add, Matrix.mul_smul] at h2
-    have h3 : gamma0 * (gamma0 * dP 0) = dP 0 := by
+    have h3 : gamma0 * (gamma0 * dPsi_x 0) = dPsi_x 0 := by
       rw [← Matrix.mul_assoc, gamma0_sq, Matrix.one_mul]
     rw [h3] at h2
     exact h2
 
   constructor
   · have eq1 : P_plus * D0_mod + P_plus * gamma0 * D_space =
-               P_plus * (dP 0 + gamma0 * D_space) + P_plus * (m • Px) := by
+               P_plus * (dPsi_x 0 + gamma0 * D_space) + P_plus * (m • Psi_x) := by
       dsimp [D0_mod, modulatedTemporalDeriv]
       rw [Matrix.mul_add, Matrix.mul_add]
       have h_assoc : P_plus * gamma0 * D_space = P_plus * (gamma0 * D_space) := Matrix.mul_assoc _ _ _
       rw [h_assoc]
-      exact add_right_comm (P_plus * dP 0) (P_plus * (m • Px)) (P_plus * (gamma0 * D_space))
+      exact add_right_comm (P_plus * dPsi_x 0) (P_plus * (m • Psi_x)) (P_plus * (gamma0 * D_space))
     rw [eq1, h_rearrange]
     rw [Matrix.mul_smul, ← Matrix.mul_assoc, P_plus_gamma0, Matrix.mul_smul]
     ext a b
     simp [Matrix.add_apply, Matrix.smul_apply]
     try ring
   · have eq1 : P_minus * D0_mod + P_minus * gamma0 * D_space =
-               P_minus * (dP 0 + gamma0 * D_space) + P_minus * (m • Px) := by
+               P_minus * (dPsi_x 0 + gamma0 * D_space) + P_minus * (m • Psi_x) := by
       dsimp [D0_mod, modulatedTemporalDeriv]
       rw [Matrix.mul_add, Matrix.mul_add]
       have h_assoc : P_minus * gamma0 * D_space = P_minus * (gamma0 * D_space) := Matrix.mul_assoc _ _ _
       rw [h_assoc]
-      exact add_right_comm (P_minus * dP 0) (P_minus * (m • Px)) (P_minus * (gamma0 * D_space))
+      exact add_right_comm (P_minus * dPsi_x 0) (P_minus * (m • Psi_x)) (P_minus * (gamma0 * D_space))
     rw [eq1, h_rearrange]
     rw [Matrix.mul_smul, ← Matrix.mul_assoc, P_minus_gamma0, neg_mul, Matrix.mul_smul]
     ext a b
@@ -247,28 +244,33 @@ for non-relativistic limits (which produce the 1/2m Schrödinger/Pauli Hamiltoni
 are natively supported by the macroscopic gauge-covariant geometry.
 -/
 @[litlib_track "Exact Schroedinger Reduction"]
-theorem exactSchroedingerReduction (dPsi : Fin 4 → SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex)
-  (Psi : SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) (m : Complex) (x : SpacetimePoint) :
-  localDiracOp (fun a => dPsi a x) = m • Psi x →
-  let D0_mod := modulatedTemporalDeriv (dPsi 0 x) (Psi x) m
-  let Psi_small := P_plus * Psi x
-  (2 • m • Psi_small = P_plus * D0_mod + gammaVec 1 * (P_minus * dPsi 1 x) + gammaVec 2 * (P_minus * dPsi 2 x) + gammaVec 3 * (P_minus * dPsi 3 x)) ∧
-  (P_minus * D0_mod = gammaVec 1 * (P_plus * dPsi 1 x) + gammaVec 2 * (P_plus * dPsi 2 x) + gammaVec 3 * (P_plus * dPsi 3 x)) := by
-  intro h
-  have h_split := algebraicDiracChiralSplit dPsi Psi m x h
+theorem exactSchroedingerReduction (F : Fin 4 → Fin 4 → Complex)
+  (D_F : Fin 4 → Fin 4 → Fin 4 → Complex) (m : Complex)
+  (h_anti : ∀ c a b, D_F c a b = - D_F c b a)
+  (h_bianchi : ∀ c a b, D_F c a b + D_F a b c + D_F b c a = 0)
+  (h_current : 2 • ∑ b : Fin 4, Dirac.yangMillsCurrent D_F b • gammaVec b = m • Dirac.kaehlerDiracMode F) :
+  let Psi_x := Dirac.kaehlerDiracMode F;
+  let dPsi_x := fun c => ∑ a : Fin 4, ∑ b : Fin 4, D_F c a b • (gammaVec a * gammaVec b);
+  let D0_mod := modulatedTemporalDeriv (dPsi_x 0) Psi_x m;
+  let Psi_small := P_plus * Psi_x;
+  (2 • m • Psi_small = P_plus * D0_mod + gammaVec 1 * (P_minus * dPsi_x 1) + gammaVec 2 * (P_minus * dPsi_x 2) + gammaVec 3 * (P_minus * dPsi_x 3)) ∧
+  (P_minus * D0_mod = gammaVec 1 * (P_plus * dPsi_x 1) + gammaVec 2 * (P_plus * dPsi_x 2) + gammaVec 3 * (P_plus * dPsi_x 3)) := by
+  intro Psi_x dPsi_x D0_mod Psi_small
+  have h_mode := Dirac.kaehlerDiracEmergence D_F h_anti h_bianchi
+  have h_dirac : localDiracOp dPsi_x = m • Psi_x := by
+    dsimp [dPsi_x, Psi_x]
+    have h_lhs : localDiracOp (fun c => ∑ a : Fin 4, ∑ b : Fin 4, D_F c a b • (gammaVec a * gammaVec b)) = ∑ c : Fin 4, gammaVec c * (∑ a : Fin 4, ∑ b : Fin 4, D_F c a b • (gammaVec a * gammaVec b)) := rfl
+    rw [h_lhs]
+    rw [h_mode]
+    exact h_current
+  have h_split := algebraicDiracChiralSplit dPsi_x Psi_x m h_dirac
   rcases h_split with ⟨h_plus, h_minus⟩
-
-  let dP := fun a => dPsi a x
-  let D_space := spatialDiracOp dP
-  let D0_mod := modulatedTemporalDeriv (dPsi 0 x) (Psi x) m
-
-  have h_P_plus_D_space : P_plus * gamma0 * D_space = gammaVec 1 * (P_minus * dP 1) + gammaVec 2 * (P_minus * dP 2) + gammaVec 3 * (P_minus * dP 3) := by
+  let D_space := spatialDiracOp dPsi_x
+  have h_P_plus_D_space : P_plus * gamma0 * D_space = gammaVec 1 * (P_minus * dPsi_x 1) + gammaVec 2 * (P_minus * dPsi_x 2) + gammaVec 3 * (P_minus * dPsi_x 3) := by
     rw [P_plus_gamma0]
-    exact P_plus_D_space dP
-
-  have h_P_minus_D_space : P_minus * D_space = gammaVec 1 * (P_plus * dP 1) + gammaVec 2 * (P_plus * dP 2) + gammaVec 3 * (P_plus * dP 3) := by
-    exact P_minus_D_space dP
-
+    exact P_plus_D_space dPsi_x
+  have h_P_minus_D_space : P_minus * D_space = gammaVec 1 * (P_plus * dPsi_x 1) + gammaVec 2 * (P_plus * dPsi_x 2) + gammaVec 3 * (P_plus * dPsi_x 3) := by
+    exact P_minus_D_space dPsi_x
   constructor
   · rw [← h_plus, h_P_plus_D_space]
     ext a b
@@ -285,26 +287,53 @@ Physical Schroedinger Reduction (Topological Mass Binding)
 
 This is the Tier 2 emergence theorem. It maps the abstract algebraic 
 Dirac reduction (`exactSchroedingerReduction`) onto the physical macroscopic 
-ontology. Crucially, the mass parameter `m` is not an externally fiated scalar, 
-but is strictly bound to the topological `inertialMass` (the Cartan-Maurer 
-soliton charge) of the Anti-Self-Dual gauge sector.
+ontology. Crucially, the generic non-physical arbitrary spinor `Psi` is eradicated.
+The spinor is constructed strictly from the physical geometry of the gauge field 
+via the `kaehlerDiracMode`. 
+
+The mass parameter `m` is not an externally fiated scalar, but is strictly bound 
+to the topological `inertialMass` (the Cartan-Maurer soliton charge) of the 
+Anti-Self-Dual gauge sector.
 -/
 @[litlib_track "Physical Schroedinger Reduction (Topological Mass)"]
 theorem physicalSchroedingerReduction
+  [clairaut : Litlib.Y1976.rudin1976principles.ClairautTheoremNDimensional]
   {BoundaryManifold : Type*} [TopologicalSpace BoundaryManifold] [Nonempty BoundaryManifold]
   (boundaryMap : (Fin 4 → SpacetimePoint → SL2C) → BoundaryManifold → SU2Group)
   (cartanMaurerIntegral : (BoundaryManifold → SU2Group) → ℝ)
   (pu : PhysicalUniverse) 
   (x : SpacetimePoint)
-  (dPsi : Fin 4 → SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex)
-  (Psi : SpacetimePoint → Matrix (Fin 4) (Fin 4) Complex) 
-  (h : localDiracOp (fun a => dPsi a x) = (inertialMass boundaryMap cartanMaurerIntegral pu : Complex) • Psi x) :
+  (M : Matrix (Fin 2) (Fin 2) ℂ)
+  (h_current : 2 • ∑ b : Fin 4, Dirac.yangMillsCurrent (fun c a b => Matrix.trace ((covariantDeriv pu.toUniverse.asd_sector.val c a b x).val * M)) b • gammaVec b = 
+    (inertialMass boundaryMap cartanMaurerIntegral pu : Complex) • Dirac.kaehlerDiracMode (fun a b => Matrix.trace ((curvatureSl2c pu.toUniverse.asd_sector.val a b x).val * M))) :
   let m : Complex := (inertialMass boundaryMap cartanMaurerIntegral pu : Complex);
-  let D0_mod := modulatedTemporalDeriv (dPsi 0 x) (Psi x) m;
-  let Psi_small := P_plus * Psi x;
-  (2 • m • Psi_small = P_plus * D0_mod + gammaVec 1 * (P_minus * dPsi 1 x) + gammaVec 2 * (P_minus * dPsi 2 x) + gammaVec 3 * (P_minus * dPsi 3 x)) ∧
-  (P_minus * D0_mod = gammaVec 1 * (P_plus * dPsi 1 x) + gammaVec 2 * (P_plus * dPsi 2 x) + gammaVec 3 * (P_plus * dPsi 3 x)) := by
-  exact exactSchroedingerReduction dPsi Psi (inertialMass boundaryMap cartanMaurerIntegral pu : Complex) x h
+  let F := fun a b => Matrix.trace ((curvatureSl2c pu.toUniverse.asd_sector.val a b x).val * M);
+  let Psi_x := Dirac.kaehlerDiracMode F;
+  let D_F := fun c a b => Matrix.trace ((covariantDeriv pu.toUniverse.asd_sector.val c a b x).val * M);
+  let dPsi_x := fun c => ∑ a : Fin 4, ∑ b : Fin 4, D_F c a b • (gammaVec a * gammaVec b);
+  let D0_mod := modulatedTemporalDeriv (dPsi_x 0) Psi_x m;
+  let Psi_small := P_plus * Psi_x;
+  (2 • m • Psi_small = P_plus * D0_mod + gammaVec 1 * (P_minus * dPsi_x 1) + gammaVec 2 * (P_minus * dPsi_x 2) + gammaVec 3 * (P_minus * dPsi_x 3)) ∧
+  (P_minus * D0_mod = gammaVec 1 * (P_plus * dPsi_x 1) + gammaVec 2 * (P_plus * dPsi_x 2) + gammaVec 3 * (P_plus * dPsi_x 3)) := by
+  intro m F Psi_x D_F dPsi_x D0_mod Psi_small
+  have h_anti : ∀ c a b, D_F c a b = - D_F c b a := by
+    intros c a b
+    dsimp [D_F]
+    have h_cov := covariantDeriv_antisymm pu.toUniverse.asd_sector.val c a b x
+    have h_val : (covariantDeriv pu.toUniverse.asd_sector.val c a b x).val = - (covariantDeriv pu.toUniverse.asd_sector.val c b a x).val := by rw [h_cov]; rfl
+    rw [h_val]
+    rw [Matrix.neg_mul, Matrix.trace_neg]
+  have h_bianchi : ∀ c a b, D_F c a b + D_F a b c + D_F b c a = 0 := by
+    intros c a b
+    dsimp [D_F]
+    have h_B := kinematicBianchiIdentity pu.toUniverse.asd_sector c a b x
+    have h_val : (covariantDeriv pu.toUniverse.asd_sector.val c a b x).val + (covariantDeriv pu.toUniverse.asd_sector.val a b c x).val + (covariantDeriv pu.toUniverse.asd_sector.val b c a x).val = 0 := by
+      change (covariantDeriv pu.toUniverse.asd_sector.val c a b x + covariantDeriv pu.toUniverse.asd_sector.val a b c x + covariantDeriv pu.toUniverse.asd_sector.val b c a x).val = (0 : SL2C).val
+      rw [h_B]
+    have h_distrib : (covariantDeriv pu.toUniverse.asd_sector.val c a b x).val * M + (covariantDeriv pu.toUniverse.asd_sector.val a b c x).val * M + (covariantDeriv pu.toUniverse.asd_sector.val b c a x).val * M = 0 := by
+      rw [← add_mul, ← add_mul, h_val, zero_mul]
+    rw [← Matrix.trace_add, ← Matrix.trace_add, h_distrib, Matrix.trace_zero]
+  exact exactSchroedingerReduction F D_F m h_anti h_bianchi h_current
 
 /-- The exact pre-computed cell evaluation function for the spatial Dirac momentum operator.
     Defined as a sequence of if-statements to completely avoid Matrix.of and vecCons timeouts. -/

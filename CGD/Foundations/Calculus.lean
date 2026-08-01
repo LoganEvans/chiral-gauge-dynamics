@@ -7,6 +7,7 @@ import Mathlib.Analysis.Calculus.ContDiff.Basic
 import Mathlib.Analysis.Calculus.Deriv.Basic
 import Mathlib.Analysis.Complex.Basic
 import Mathlib.Algebra.BigOperators.Pi
+import Mathlib.Analysis.Calculus.FDeriv.Add
 
 set_option linter.unusedSimpArgs false
 
@@ -128,5 +129,33 @@ lemma curvatureSl2c_val_eq (A : Fin 4 → SpacetimePoint → SL2C) (μ ν : Fin 
   rw [h1, h2, h_eval1, h_eval2]
 
 attribute [irreducible] curvatureSl2c
+
+lemma partialDeriv_neg (f : SpacetimePoint → ℂ) (μ : Fin 4) (x : SpacetimePoint) :
+  partialDeriv μ (fun p => -f p) x = -partialDeriv μ f x := by
+  unfold partialDeriv
+  have h_eq : (fun p => -f p) = -f := rfl
+  rw [h_eq]
+  rw [fderiv_neg]
+  rfl
+
+lemma partialDerivMat_neg (f : SpacetimePoint → Matrix (Fin 2) (Fin 2) ℂ) (μ : Fin 4) (x : SpacetimePoint) :
+  partialDerivMat μ (fun p => -f p) x = -partialDerivMat μ f x := by
+  ext i j
+  change partialDeriv μ (fun p => - (f p i j)) x = - partialDeriv μ (fun p => f p i j) x
+  exact partialDeriv_neg (fun p => f p i j) μ x
+
+lemma partialDerivSl2c_neg (f : SpacetimePoint → SL2C) (μ : Fin 4) (x : SpacetimePoint) :
+  partialDerivSl2c μ (fun p => - f p) x = - partialDerivSl2c μ f x := by
+  apply Subtype.ext
+  change (partialDerivSl2c μ (fun p => - f p) x).val = - (partialDerivSl2c μ f x).val
+  unfold partialDerivSl2c
+  change (toSl2c (partialDerivMat μ (fun p => - (f p).val) x)).val = - (toSl2c (partialDerivMat μ (fun p => (f p).val) x)).val
+  have h_neg := partialDerivMat_neg (fun p => (f p).val) μ x
+  rw [h_neg]
+  unfold toSl2c
+  dsimp
+  ext i j
+  simp [Matrix.sub_apply, Matrix.neg_apply, Matrix.smul_apply, Matrix.trace_neg]
+  try ring
 
 end CGD.Foundations
