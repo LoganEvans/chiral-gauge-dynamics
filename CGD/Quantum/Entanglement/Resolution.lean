@@ -1,6 +1,7 @@
 -- FILENAME: CGD/Quantum/Entanglement/Resolution.lean
 
 import Litlib.Y1964.bell1964einstein.Signature
+import Litlib.Y2000.hall2000elementary.Signature
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import CGD.Quantum.Entanglement.NoSignaling
 import CGD.Quantum.FluxTube
@@ -254,11 +255,12 @@ Elegantly unifies the three pillars of entanglement in Chiral Gauge Dynamics:
 @[litlib_track "Deterministic Entanglement Resolution"]
 theorem cgdEntanglementSynthesis 
   (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
+  [Litlib.Y2000.hall2000elementary.DerivativeExponential (Fin 2) matrixExp]
   (pu : CGD.Axioms.PhysicalUniverse) 
   (x : CGD.Foundations.SpacetimePoint) 
   (L : ℝ)
   (h_tube : isFluxTube pu.toUniverse.sd_sector x)
-  (h_eval : physicalCorrelation matrixExp pu L = cgdMacroscopicCorrelation) :
+  (h_unitary : (CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) pu.toUniverse.sd_sector.val 1 L) * (CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) pu.toUniverse.sd_sector.val 1 L).conjTranspose = 1) :
   
   -- 1. Violation of the Classical Limit (Bell's Inequality)
   (∃ (a b c : EuclideanSpace ℝ (Fin 3)), 
@@ -274,7 +276,10 @@ theorem cgdEntanglementSynthesis
   · rcases cgdAlgebraicViolationWitness with ⟨a, b, c, ha, hb, hc, h_viol⟩
     use a, b, c
     refine ⟨ha, hb, hc, ?_⟩
-    rw [h_eval]
+    have h_eq_ab : physicalCorrelation matrixExp pu L a b = cgdMacroscopicCorrelation a b := physicalCorrelation_unitary_reduction matrixExp pu L a b h_unitary
+    have h_eq_ac : physicalCorrelation matrixExp pu L a c = cgdMacroscopicCorrelation a c := physicalCorrelation_unitary_reduction matrixExp pu L a c h_unitary
+    have h_eq_bc : physicalCorrelation matrixExp pu L b c = cgdMacroscopicCorrelation b c := physicalCorrelation_unitary_reduction matrixExp pu L b c h_unitary
+    rw [h_eq_ab, h_eq_ac, h_eq_bc]
     exact h_viol
   · exact cgdDerivesBellConclusion
   · exact kinematicFluxTubeStability pu x h_tube

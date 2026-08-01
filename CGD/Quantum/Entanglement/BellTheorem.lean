@@ -146,6 +146,26 @@ noncomputable def physicalCorrelation
   let stateB := cgdMatrix b * holonomy_path
   ((1 / 2 : ℂ) * Matrix.trace (stateA * stateB.conjTranspose)).re
 
+lemma physicalCorrelation_unitary_reduction
+  (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
+  (pu : CGD.Axioms.PhysicalUniverse) 
+  (L : ℝ) 
+  (a b : EuclideanSpace ℝ (Fin 3))
+  (h_unitary : (CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) pu.toUniverse.sd_sector.val 1 L) * (CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) pu.toUniverse.sd_sector.val 1 L).conjTranspose = 1) :
+  physicalCorrelation matrixExp pu L a b = cgdMacroscopicCorrelation a b := by
+  simp only [physicalCorrelation, cgdMacroscopicCorrelation]
+  let H := CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) pu.toUniverse.sd_sector.val 1 L
+  change ((1 / 2 : ℂ) * Matrix.trace (cgdMatrix a * H * (cgdMatrix b * H).conjTranspose)).re = ((1 / 2 : ℂ) * Matrix.trace (cgdMatrix a * (cgdMatrix b).conjTranspose)).re
+  have h1 : (cgdMatrix b * H).conjTranspose = H.conjTranspose * (cgdMatrix b).conjTranspose := Matrix.conjTranspose_mul _ _
+  rw [h1]
+  have step1 : cgdMatrix a * H * (H.conjTranspose * (cgdMatrix b).conjTranspose) = cgdMatrix a * (H * (H.conjTranspose * (cgdMatrix b).conjTranspose)) := Matrix.mul_assoc _ _ _
+  rw [step1]
+  have step2 : H * (H.conjTranspose * (cgdMatrix b).conjTranspose) = (H * H.conjTranspose) * (cgdMatrix b).conjTranspose := (Matrix.mul_assoc _ _ _).symm
+  rw [step2]
+  have h_unitary_H : H * H.conjTranspose = 1 := h_unitary
+  rw [h_unitary_H]
+  rw [Matrix.one_mul]
+
 /--
   The Capstone Logical Rejection.
 -/
@@ -156,20 +176,15 @@ theorem physicalRejectionOfBellPremises
   (L : ℝ)
   (Λ : Type) [MeasurableSpace Λ] (μ : Measure Λ) 
   (A B : EuclideanSpace ℝ (Fin 3) → Λ → ℝ)
-  
-  -- The Bell Theorem implication
   (bell_theorem : Eq1 A B → Eq2 μ A B (physicalCorrelation matrixExp pu L) → Eq15 (physicalCorrelation matrixExp pu L))
-  
-  -- THE PHYSICAL HYPOTHESIS: 
-  -- Because the gauge holonomy is unitary (U * U† = I), the physical correlation 
-  -- mathematically reduces exactly to the pure math matrix setup (cgdMacroscopicCorrelation).
-  (h_flux_tube_eval : physicalCorrelation matrixExp pu L = cgdMacroscopicCorrelation) :
-  
-  -- CONCLUSION: The physical universe cannot be described by local scalar variables.
+  (h_unitary : (CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) pu.toUniverse.sd_sector.val 1 L) * (CGD.Quantum.macroscopicObservable (CGD.Quantum.holonomy matrixExp) pu.toUniverse.sd_sector.val 1 L).conjTranspose = 1) :
   ¬ (Eq1 A B ∧ Eq2 μ A B (physicalCorrelation matrixExp pu L)) := by
   intro h
   have h15 : Eq15 (physicalCorrelation matrixExp pu L) := bell_theorem h.1 h.2
-  rw [h_flux_tube_eval] at h15
+  have h_eq : physicalCorrelation matrixExp pu L = cgdMacroscopicCorrelation := by
+    funext a b
+    exact physicalCorrelation_unitary_reduction matrixExp pu L a b h_unitary
+  rw [h_eq] at h15
   exact cgdViolatesBellInequality h15
 
 end CGD.Quantum
