@@ -1,7 +1,7 @@
 -- FILENAME: CGD/Quantum/Entanglement/Wormhole.lean
 
 import Litlib.Core
-import CGD.Quantum.Entanglement.Basic
+import CGD.Quantum.Entanglement.Geometry
 import CGD.Quantum.Definitions
 import CGD.Axioms.Ontology
 import CGD.Axioms.PhysicalUniverse

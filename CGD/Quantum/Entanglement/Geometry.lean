@@ -1,6 +1,5 @@
--- FILENAME: CGD/Quantum/Entanglement/Basic.lean
+-- FILENAME: CGD/Quantum/Entanglement/Geometry.lean
 
-import Litlib.Core
 import CGD.Foundations.GaugeGroup
 import CGD.Foundations.Lagrangian
 import CGD.Quantum.Definitions
