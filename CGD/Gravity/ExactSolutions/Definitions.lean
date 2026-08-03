@@ -18,7 +18,7 @@ everywhere within the topological bulk.
 This mathematically enforces the historical Reality Conditions without requiring
 any non-polynomial differential constraints.
 -/
-def SatisfiesRealityConditions (pu : PhysicalUniverse) : Prop :=
+def satisfiesRealityConditions (pu : PhysicalUniverse) : Prop :=
   ∀ x ∈ pu.bulk, isLorentzian (urbantkeMetric (fun μ ν => curvatureSl2c pu.toUniverse.sd_sector.val μ ν x))
 
 end CGD.Gravity.ExactSolutions

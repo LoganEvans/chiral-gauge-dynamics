@@ -70,17 +70,17 @@ lemma zero_curvature_metric_zero :
   ring
 
 /--
-The "Bubbling Soup" Theorem.
+To preserve macroscopic Lorentz invariance, the spacetime vacuum condensate must not exist 
+as a polarized, static vector field (a 'crosswind'), which would establish a preferred frame. 
 
-This formally proves that the axial condensate (and the macroscopic gauge field 
-in general) cannot exist as a uniform, polarized "crosswind." If the condensate 
-loses its dynamic gradients and its non-Abelian color intersections, the curvature 
-evaluates to zero, which algebraically forces the macroscopic metric determinant to zero. 
+This formally proves that if the condensate loses its dynamic gradients and its non-Abelian 
+color intersections, the curvature evaluates to zero, which algebraically forces the macroscopic 
+metric determinant to zero. 
 
-Because Axiom II (Macroscopic Volume) strictly forbids det(g) = 0 in the bulk, 
-the geometry natively forbids Lorentz-violating crosswinds. The vacuum condensate 
-is topologically constrained to exist strictly as a fluctuating, unpolarized, 
-non-Abelian soup.
+Because Axiom II (Macroscopic Volume) strictly forbids det(g) = 0 in the bulk, the geometry natively 
+forbids Lorentz-violating crosswinds. The vacuum condensate is topologically constrained to exist strictly 
+as an Isotropic Stochastic Condensate—a violent, unpolarized, non-Abelian topological fluctuation whose 
+macroscopic expectation value preserves Lorentz symmetry while maintaining a non-zero spacetime volume.
 -/
 @[litlib_track "Kinematic Crosswind Degeneracy"]
 theorem kinematicCrosswindDegeneracy (pu : PhysicalUniverse)

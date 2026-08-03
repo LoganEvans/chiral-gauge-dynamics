@@ -110,17 +110,12 @@ theorem macroscopicVolumeImpliesAxialCondensate
   exact h_chiral h_eq
 
 /--
-Proves that the Left-Handed (Self-Dual) gauge connection, which natively couples to
-left-handed fermions (such as neutrinos) in the chiral Dirac framework, perfectly
+Proves that the Left-Handed (Self-Dual) gauge connection perfectly
 decomposes into a symmetric Vector background and the P-violating Axial condensate.
-
-This establishes that left-handed states must continuously interact with the
-axial condensate as a refractive background. Because this interaction occurs purely
-at the level of the connection (zero Plebanski curvature), it geometrically derives
-kinematic flavor oscillation (the MSW effect) without generating gravitational rest mass.
+This algebraic split is the geometric prerequisite for kinematic flavor oscillation (MSW).
 -/
-@[litlib_track "Kinematic Left-Handed Coupling"]
-theorem kinematicLeftHandedCoupling (pu : PhysicalUniverse) (mu : Fin 4) (x : SpacetimePoint) :
+@[litlib_track "Algebraic Chiral Condensate Split"]
+theorem algebraicChiralCondensateSplit (pu : PhysicalUniverse) (mu : Fin 4) (x : SpacetimePoint) :
   (pu.toUniverse.sd_sector mu x).val = vectorField pu.toUniverse mu x + axialField pu.toUniverse mu x := by
   unfold vectorField axialField
   ext i j
@@ -136,8 +131,8 @@ symmetric Vector background minus the P-violating Axial condensate. The sign fli
 relative to the Left-Handed sector strictly defines the geometric parity asymmetry
 of the chiral spacetime vacuum.
 -/
-@[litlib_track "Kinematic Right-Handed Coupling"]
-theorem kinematicRightHandedCoupling (pu : PhysicalUniverse) (mu : Fin 4) (x : SpacetimePoint) :
+@[litlib_track "Algebraic Right-Handed Condensate Split"]
+theorem algebraicRightHandedCondensateSplit (pu : PhysicalUniverse) (mu : Fin 4) (x : SpacetimePoint) :
   (pu.toUniverse.asd_sector mu x).val = vectorField pu.toUniverse mu x - axialField pu.toUniverse mu x := by
   unfold vectorField axialField
   ext i j
@@ -153,26 +148,6 @@ Represented abstractly for a matrix-valued state `Psi` and its bare partial deri
 -/
 noncomputable def covariantStateDeriv (partial_Psi : Matrix (Fin 2) (Fin 2) ℂ) (A : Matrix (Fin 2) (Fin 2) ℂ) (Psi : Matrix (Fin 2) (Fin 2) ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
   partial_Psi + A * Psi
-
-/--
-Proves that the covariant derivative of a state under the Left-Handed (Self-Dual)
-connection mathematically evaluates to the bare partial derivative, plus the
-interaction with the symmetric Vector background, plus the interaction with the
-P-violating Axial condensate.
-
-This formalizes the algebraic substitution allowing the paper to definitively claim
-that left-handed fermions actively interact with the axial condensate in the
-covariant Dirac equation.
--/
-@[litlib_track "Kinematic Left-Handed Phase Shift"]
-theorem kinematicLeftHandedPhaseShift (pu : PhysicalUniverse) (mu : Fin 4) (x : SpacetimePoint)
-  (Psi partial_Psi : Matrix (Fin 2) (Fin 2) ℂ) :
-  covariantStateDeriv partial_Psi (pu.toUniverse.sd_sector mu x).val Psi =
-  partial_Psi + vectorField pu.toUniverse mu x * Psi + axialField pu.toUniverse mu x * Psi := by
-  unfold covariantStateDeriv
-  rw [kinematicLeftHandedCoupling]
-  rw [Matrix.add_mul]
-  rw [← add_assoc]
 
 /--
 The Kinematic MSW Effect Witness (Flavor Oscillation).

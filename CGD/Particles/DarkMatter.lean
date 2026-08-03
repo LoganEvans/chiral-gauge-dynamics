@@ -127,16 +127,25 @@ lemma bracket_cross_term_asd (L1 L2 R1 R2 : SL2C) :
   rw [chiralProject_asd_embed_sd_mul_sd L1 L2, chiralProject_asd_embed_sd_mul_sd L2 L1]
   simp
 
+/-- 
+A pure Self-Dual defect (Dark Matter). 
+By definition, its topological curvature is strictly confined to the Left-Handed 
+(Self-Dual) sector of the Spin(4,C) Lie algebra, possessing identically zero 
+Anti-Self-Dual curvature.
+-/
+def isPureSelfDualDefect (A : CGD.Axioms.Sl2cGaugeField) : Prop :=
+  ∀ mu nu x, (CGD.Foundations.chiralProject (CGD.Foundations.curvature (fun m p => CGD.Foundations.embedSelfDual (A.val m p)) mu nu x)).anti_self_dual = 0
+
 /--
 Dark Matter Decoupling (The "Darkness" Theorem):
-A pure Self-Dual defect (Dark Matter) is superposed onto the macroscopic 
-vacuum of normal matter. Because the Spin(4,C) Lie algebra perfectly orthogonalizes 
-the chiral sectors, the Anti-Self-Dual curvature (which dictates electromagnetism 
+When a pure Self-Dual defect (Dark Matter) is superposed onto the macroscopic 
+vacuum of normal matter, the Spin(4,C) Lie algebra perfectly orthogonalizes 
+the chiral sectors. The Anti-Self-Dual curvature (which dictates electromagnetism 
 and the strong force) evaluates to being mathematically identical to the vacuum state 
 without the Dark Matter present. 
 -/
-@[litlib_track "Dark Matter Anti-Self-Dual Decoupling (Darkness)"]
-theorem kinematicDarkMatterDecoupling (pu : PhysicalUniverse)
+@[litlib_track "Algebraic Chiral Orthogonality"]
+theorem algebraicChiralOrthogonality (pu : PhysicalUniverse)
   (A_DM : Sl2cGaugeField) (x : SpacetimePoint) (mu nu : Fin 4) :
   let A_tot := fun m p => 
     embedSelfDual (A_DM.val m p + pu.toUniverse.sd_sector.val m p) + 
