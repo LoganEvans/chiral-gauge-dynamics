@@ -108,45 +108,50 @@ theorem physicalRejectionOfBellPremises
   rw [h_eq] at h15
   exact cgdViolatesBellInequality h15
 
+section Synthesis
+
+variable (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
+variable [Litlib.Y2000.hall2000elementary.DerivativeExponential (Fin 2) matrixExp]
+variable (pu : CGD.Axioms.PhysicalUniverse) 
+variable (x : CGD.Foundations.SpacetimePoint) 
+variable (L : ℝ)
+
 /--
-The Capstone Synthesis.
-Elegantly unifies the three pillars of entanglement in Chiral Gauge Dynamics:
-1. It natively violates the classical correlation limit (CHSH > 2).
-2. It strictly obeys Bell's Theorem (Forces the rejection of Local Hidden Variables).
-3. It strictly obeys the No-Signaling Theorem (The spacetime metric determinant is zero, 
-   mathematically preventing classical geodesic motion or wave propagation).
+  1. Violation of the Classical Limit (Bell's Inequality)
 -/
-@[litlib_track "Deterministic Entanglement Resolution"]
-theorem cgdEntanglementSynthesis 
-  (matrixExp : Matrix (Fin 2) (Fin 2) ℂ → Matrix (Fin 2) (Fin 2) ℂ)
-  [Litlib.Y2000.hall2000elementary.DerivativeExponential (Fin 2) matrixExp]
-  (pu : CGD.Axioms.PhysicalUniverse) 
-  (x : CGD.Foundations.SpacetimePoint) 
-  (L : ℝ)
-  (h_tube : isFluxTube pu.toUniverse.sd_sector x)
+@[litlib_track "Deterministic Entanglement Resolution - CHSH Violation"]
+theorem cgdViolatesClassicalLimit 
   (hField : ∀ t, pu.toUniverse.sd_sector.val 1 (straightLinePath t) = fluxTubeFrame 1 (straightLinePath t)) :
-  
-  -- 1. Violation of the Classical Limit (Bell's Inequality)
-  (∃ (a b c : EuclideanSpace ℝ (Fin 3)), 
+  ∃ (a b c : EuclideanSpace ℝ (Fin 3)), 
     ‖a‖ = 1 ∧ ‖b‖ = 1 ∧ ‖c‖ = 1 ∧ 
-    1 + physicalCorrelation matrixExp pu L b c < abs (physicalCorrelation matrixExp pu L a b - physicalCorrelation matrixExp pu L a c)) ∧
+    1 + physicalCorrelation matrixExp pu L b c < abs (physicalCorrelation matrixExp pu L a b - physicalCorrelation matrixExp pu L a c) := by
+  rcases cgdAlgebraicViolationWitness with ⟨a, b, c, ha, hb, hc, h_viol⟩
+  use a, b, c
+  refine ⟨ha, hb, hc, ?_⟩
+  have h_unitary := fluxTube_holonomy_unitary matrixExp pu L hField
+  have h_eq_ab : physicalCorrelation matrixExp pu L a b = cgdMacroscopicCorrelation a b := physicalCorrelation_unitary_reduction matrixExp pu L a b h_unitary
+  have h_eq_ac : physicalCorrelation matrixExp pu L a c = cgdMacroscopicCorrelation a c := physicalCorrelation_unitary_reduction matrixExp pu L a c h_unitary
+  have h_eq_bc : physicalCorrelation matrixExp pu L b c = cgdMacroscopicCorrelation b c := physicalCorrelation_unitary_reduction matrixExp pu L b c h_unitary
+  rw [h_eq_ab, h_eq_ac, h_eq_bc]
+  exact h_viol
+  
+/--
+  2. Compliance with Bell's Theorem (Rejection of LHVs)
+-/
+@[litlib_track "Deterministic Entanglement Resolution - Rejection of LHVs"]
+theorem cgdRejectsLocalHiddenVariables : 
+  Litlib.Y1964.bell1964einstein.BellsTheorem := by
+  exact cgdDerivesBellConclusion
     
-  -- 2. Compliance with Bell's Theorem (Rejection of LHVs)
-  (Litlib.Y1964.bell1964einstein.Theorem_Conclusion) ∧
-      
-  -- 3. Compliance with No-Signaling (Topological Metric Degeneracy)
-  ((CGD.Gravity.urbantkeMetric (fun m n => CGD.Foundations.curvatureSl2c pu.toUniverse.sd_sector m n x)).det = 0) := by
-  refine ⟨?_, ?_, ?_⟩
-  · rcases cgdAlgebraicViolationWitness with ⟨a, b, c, ha, hb, hc, h_viol⟩
-    use a, b, c
-    refine ⟨ha, hb, hc, ?_⟩
-    have h_unitary := fluxTube_holonomy_unitary matrixExp pu L hField
-    have h_eq_ab : physicalCorrelation matrixExp pu L a b = cgdMacroscopicCorrelation a b := physicalCorrelation_unitary_reduction matrixExp pu L a b h_unitary
-    have h_eq_ac : physicalCorrelation matrixExp pu L a c = cgdMacroscopicCorrelation a c := physicalCorrelation_unitary_reduction matrixExp pu L a c h_unitary
-    have h_eq_bc : physicalCorrelation matrixExp pu L b c = cgdMacroscopicCorrelation b c := physicalCorrelation_unitary_reduction matrixExp pu L b c h_unitary
-    rw [h_eq_ab, h_eq_ac, h_eq_bc]
-    exact h_viol
-  · exact cgdDerivesBellConclusion
-  · exact kinematicFluxTubeStability pu x h_tube
+/--
+  3. Compliance with No-Signaling (Topological Metric Degeneracy)
+-/
+@[litlib_track "Deterministic Entanglement Resolution - No Signaling"]
+theorem cgdNoSignaling 
+  (h_tube : isFluxTube pu.toUniverse.sd_sector x) :
+  (CGD.Gravity.urbantkeMetric (fun m n => CGD.Foundations.curvatureSl2c pu.toUniverse.sd_sector m n x)).det = 0 := by
+  exact kinematicFluxTubeStability pu x h_tube
+
+end Synthesis
 
 end CGD.Quantum

@@ -203,7 +203,7 @@ theorem cannot_represent_approx_proof (Λ : Type*) [MeasurableSpace Λ] :
 
 @[litlib_track "CGD Geometric Trace Derives Bell's Conclusion"]
 theorem cgdDerivesBellConclusion :
-  Litlib.Y1964.bell1964einstein.Theorem_Conclusion :=
+  Litlib.Y1964.bell1964einstein.BellsTheorem :=
   {
     cannot_represent_exactly := cannot_represent_exactly_proof
     cannot_represent_arbitrarily_closely := cannot_represent_approx_proof
