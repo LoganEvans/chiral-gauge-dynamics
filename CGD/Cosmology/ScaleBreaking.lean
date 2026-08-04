@@ -36,40 +36,44 @@ lemma project_scaled (F : Fin 4 → Fin 4 → SL2C) (lambda_sq : ℂ) (a : Fin 3
   ring
 
 /--
-The conformal scaling property of the Urbantke metric. A scale transformation of the field strength tensor (F → λ² F) results in a strict λ²⁴ scaling of the emergent metric determinant, demonstrating that the macroscopic metric possesses a conformal weight of 6.
+The conformal scaling property of the Urbantke metric. A scale transformation of the field strength tensor (F → λ² F) results in a strict λ²⁴ scaling of the emergent metric components, demonstrating that the macroscopic metric possesses a conformal weight of 6.
 -/
-@[litlib_track "Kinematic Classical Scale Breaking"]
-theorem kinematicClassicalScaleBreaking (F : Fin 4 → Fin 4 → SL2C) (lambda_scale : ℂ) :
+@[litlib_track "Kinematic Classical Scale Breaking - Metric"]
+theorem kinematicClassicalScaleBreakingMetric (F : Fin 4 → Fin 4 → SL2C) (lambda_scale : ℂ) :
   let F_scaled := fun μ ν => toSl2c (lambda_scale^2 • (F μ ν).val);
-  (∀ μ ν, urbantkeMetric F_scaled μ ν = lambda_scale^6 * urbantkeMetric F μ ν) ∧
+  ∀ μ ν, urbantkeMetric F_scaled μ ν = lambda_scale^6 * urbantkeMetric F μ ν := by
+  intro F_scaled
+  intros μ ν
+  unfold urbantkeMetric
+  dsimp only[F_scaled]
+  simp_rw [project_scaled]
+  have h_ring : ∀ α β γ δ a b c,
+    epsilon4 α β γ δ * (lambda_scale^2 * project F a μ α) * (lambda_scale^2 * project F b ν β) * (lambda_scale^2 * project F c γ δ) =
+    lambda_scale^6 * (epsilon4 α β γ δ * project F a μ α * project F b ν β * project F c γ δ) := by intros; ring
+  simp_rw [h_ring]
+  simp_rw [← Finset.mul_sum]
+  have h_ring2 : ∀ a b c X, epsilon3 a b c * (lambda_scale^6 * X) = lambda_scale^6 * (epsilon3 a b c * X) := by intros; ring
+  simp_rw [h_ring2]
+  simp_rw [← Finset.mul_sum]
+
+/--
+The conformal scaling property of the Urbantke metric. A scale transformation of the field strength tensor (F → λ² F) results in a strict λ²⁴ scaling of the emergent metric determinant.
+-/
+@[litlib_track "Kinematic Classical Scale Breaking - Determinant"]
+theorem kinematicClassicalScaleBreakingDet (F : Fin 4 → Fin 4 → SL2C) (lambda_scale : ℂ) :
+  let F_scaled := fun μ ν => toSl2c (lambda_scale^2 • (F μ ν).val);
   (urbantkeMetric F_scaled).det = lambda_scale^24 * (urbantkeMetric F).det := by
   intro F_scaled
-  have h_metric : ∀ μ ν, urbantkeMetric F_scaled μ ν = lambda_scale^6 * urbantkeMetric F μ ν := by
-    intros μ ν
-    unfold urbantkeMetric
-    dsimp only[F_scaled]
-    simp_rw [project_scaled]
-    have h_ring : ∀ α β γ δ a b c,
-      epsilon4 α β γ δ * (lambda_scale^2 * project F a μ α) * (lambda_scale^2 * project F b ν β) * (lambda_scale^2 * project F c γ δ) =
-      lambda_scale^6 * (epsilon4 α β γ δ * project F a μ α * project F b ν β * project F c γ δ) := by intros; ring
-    simp_rw [h_ring]
-    simp_rw [← Finset.mul_sum]
-    have h_ring2 : ∀ a b c X, epsilon3 a b c * (lambda_scale^6 * X) = lambda_scale^6 * (epsilon3 a b c * X) := by intros; ring
-    simp_rw [h_ring2]
-    simp_rw [← Finset.mul_sum]
-
-  constructor
-  · exact h_metric
-  · have h_matrix_eq : urbantkeMetric F_scaled = lambda_scale^6 • urbantkeMetric F := by
-      ext μ ν
-      rw [h_metric μ ν]
-      rfl
-    rw[h_matrix_eq]
-    have h_det := Matrix.det_smul (urbantkeMetric F) (lambda_scale^6)
-    have h_card : Fintype.card (Fin 4) = 4 := rfl
-    rw [h_card] at h_det
-    rw[h_det]
-    have h_pow : (lambda_scale^6)^4 = lambda_scale^24 := by ring
-    rw [h_pow]
+  have h_matrix_eq : urbantkeMetric F_scaled = lambda_scale^6 • urbantkeMetric F := by
+    ext μ ν
+    rw [kinematicClassicalScaleBreakingMetric F lambda_scale μ ν]
+    rfl
+  rw[h_matrix_eq]
+  have h_det := Matrix.det_smul (urbantkeMetric F) (lambda_scale^6)
+  have h_card : Fintype.card (Fin 4) = 4 := rfl
+  rw [h_card] at h_det
+  rw[h_det]
+  have h_pow : (lambda_scale^6)^4 = lambda_scale^24 := by ring
+  rw [h_pow]
 
 end CGD.Cosmology

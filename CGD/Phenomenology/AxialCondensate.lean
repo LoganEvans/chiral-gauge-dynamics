@@ -35,11 +35,24 @@ noncomputable def paritySwap (u : Universe) : Universe :=
   universeEquiv.symm (u.asd_sector, u.sd_sector)
 
 /--
+Generic gauge-covariant derivative action on a fundamental state.
+Represented abstractly for a matrix-valued state `Psi` and its bare partial derivative `partial_Psi`.
+-/
+noncomputable def covariantStateDeriv (partial_Psi : Matrix (Fin 2) (Fin 2) ℂ) (A : Matrix (Fin 2) (Fin 2) ℂ) (Psi : Matrix (Fin 2) (Fin 2) ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
+  partial_Psi + A * Psi
+
+section AxialCondensateVariables
+
+variable (pu : PhysicalUniverse)
+variable (mu : Fin 4)
+variable (x : SpacetimePoint)
+
+/--
 Proves that the Axial field behaves strictly as a pseudo-vector (parity-odd).
 When the geometry is parity-inverted, the Axial field exactly flips its algebraic sign.
 -/
 @[litlib_track "Axial Is Parity Odd"]
-theorem axialIsParityOdd (pu : PhysicalUniverse) (mu : Fin 4) (x : SpacetimePoint) :
+theorem axialIsParityOdd :
   axialField (paritySwap pu.toUniverse) mu x = - axialField pu.toUniverse mu x := by
   unfold axialField paritySwap
   have h_u_eq : universeEquiv (universeEquiv.symm (pu.toUniverse.asd_sector, pu.toUniverse.sd_sector)) = (pu.toUniverse.asd_sector, pu.toUniverse.sd_sector) :=
@@ -64,7 +77,7 @@ It inherits the exact traceless property of the SL(2,C) algebra constituents,
 confining it to the adjoint representation of the SU(2) color group.
 -/
 @[litlib_track "Axial Is Isovector"]
-theorem axialIsIsovector (pu : PhysicalUniverse) (mu : Fin 4) (x : SpacetimePoint) :
+theorem axialIsIsovector :
   Matrix.trace (axialField pu.toUniverse mu x) = 0 := by
   unfold axialField
   rw [Matrix.trace_smul, Matrix.trace_sub]
@@ -82,10 +95,9 @@ background is natively populated by a strictly non-zero Axial-Vector condensate.
 space spontaneously generates the axial field to preserve its volume.
 -/
 @[litlib_track "Macroscopic Volume Implies Axial Condensate"]
-theorem macroscopicVolumeImpliesAxialCondensate
-  (pu : PhysicalUniverse) (x : SpacetimePoint) (hx : x ∈ pu.bulk)
+theorem macroscopicVolumeImpliesAxialCondensate (hx : x ∈ pu.bulk)
   (h_vacuum : ∀ μ ν, curvatureSl2c pu.toUniverse.asd_sector.val μ ν x = 0) :
-  ∃ y mu, axialField pu.toUniverse mu y ≠ 0 := by
+  ∃ y mu_y, axialField pu.toUniverse mu_y y ≠ 0 := by
 
   -- 1. Obtain the global chiral collapse theorem
   have h_chiral := CGD.Phenomenology.macroscopicVolumeImpliesChirality pu x hx h_vacuum
@@ -96,11 +108,11 @@ theorem macroscopicVolumeImpliesAxialCondensate
 
   -- 3. If the axial field is zero everywhere, the Universe is globally symmetric
   have h_eq : pu.toUniverse.sd_sector.val = pu.toUniverse.asd_sector.val := by
-    funext mu y
+    funext mu_inner y
     apply Subtype.ext
-    have h_ax := h_not_exists y mu
+    have h_ax := h_not_exists y mu_inner
     unfold axialField at h_ax
-    have h2 : (2 : ℂ) • ((1 / 2 : ℂ) • ((pu.toUniverse.sd_sector mu y).val - (pu.toUniverse.asd_sector mu y).val)) = (2 : ℂ) • (0 : Matrix (Fin 2) (Fin 2) ℂ) := by rw [h_ax]
+    have h2 : (2 : ℂ) • ((1 / 2 : ℂ) • ((pu.toUniverse.sd_sector mu_inner y).val - (pu.toUniverse.asd_sector mu_inner y).val)) = (2 : ℂ) • (0 : Matrix (Fin 2) (Fin 2) ℂ) := by rw [h_ax]
     rw [smul_smul] at h2
     have h_mul : (2 : ℂ) * (1 / 2 : ℂ) = 1 := by norm_num
     rw [h_mul, one_smul, smul_zero] at h2
@@ -115,7 +127,7 @@ decomposes into a symmetric Vector background and the P-violating Axial condensa
 This algebraic split is the geometric prerequisite for kinematic flavor oscillation (MSW).
 -/
 @[litlib_track "Algebraic Chiral Condensate Split"]
-theorem algebraicChiralCondensateSplit (pu : PhysicalUniverse) (mu : Fin 4) (x : SpacetimePoint) :
+theorem algebraicChiralCondensateSplit :
   (pu.toUniverse.sd_sector mu x).val = vectorField pu.toUniverse mu x + axialField pu.toUniverse mu x := by
   unfold vectorField axialField
   ext i j
@@ -132,7 +144,7 @@ relative to the Left-Handed sector strictly defines the geometric parity asymmet
 of the chiral spacetime vacuum.
 -/
 @[litlib_track "Algebraic Right-Handed Condensate Split"]
-theorem algebraicRightHandedCondensateSplit (pu : PhysicalUniverse) (mu : Fin 4) (x : SpacetimePoint) :
+theorem algebraicRightHandedCondensateSplit :
   (pu.toUniverse.asd_sector mu x).val = vectorField pu.toUniverse mu x - axialField pu.toUniverse mu x := by
   unfold vectorField axialField
   ext i j
@@ -141,13 +153,6 @@ theorem algebraicRightHandedCondensateSplit (pu : PhysicalUniverse) (mu : Fin 4)
             (1 / 2 : ℂ) * ((pu.toUniverse.sd_sector mu x).val i j - (pu.toUniverse.asd_sector mu x).val i j) =
             (pu.toUniverse.asd_sector mu x).val i j := by ring
   exact h1.symm
-
-/--
-Generic gauge-covariant derivative action on a fundamental state.
-Represented abstractly for a matrix-valued state `Psi` and its bare partial derivative `partial_Psi`.
--/
-noncomputable def covariantStateDeriv (partial_Psi : Matrix (Fin 2) (Fin 2) ℂ) (A : Matrix (Fin 2) (Fin 2) ℂ) (Psi : Matrix (Fin 2) (Fin 2) ℂ) : Matrix (Fin 2) (Fin 2) ℂ :=
-  partial_Psi + A * Psi
 
 /--
 The Kinematic MSW Effect Witness (Flavor Oscillation).
@@ -161,14 +166,15 @@ cross-term (the Kinematic MSW Effect), driving neutrino flavor oscillation
 directly from the vacuum geometry rather than relying on a scalar mass generator.
 -/
 @[litlib_track "Kinematic MSW Effect Witness"]
-theorem kinematicMswEffectWitness
-  (pu : PhysicalUniverse) (x : SpacetimePoint) (hx : x ∈ pu.bulk)
+theorem kinematicMswEffectWitness (hx : x ∈ pu.bulk)
   (h_vacuum : ∀ μ ν, curvatureSl2c pu.toUniverse.asd_sector.val μ ν x = 0) :
-  ∃ y mu Psi, axialField pu.toUniverse mu y * Psi ≠ 0 := by
+  ∃ y mu_y Psi, axialField pu.toUniverse mu_y y * Psi ≠ 0 := by
   have h_ax := macroscopicVolumeImpliesAxialCondensate pu x hx h_vacuum
-  rcases h_ax with ⟨y, mu, hy⟩
-  use y, mu, 1
+  rcases h_ax with ⟨y, mu_y, hy⟩
+  use y, mu_y, 1
   rw [Matrix.mul_one]
   exact hy
+
+end AxialCondensateVariables
 
 end CGD.Phenomenology
