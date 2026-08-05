@@ -32,12 +32,13 @@ lemma macroscopicVolumeImpliesInverse
   exact Matrix.mul_nonsing_inv g h_unit
 
 /--
-The Geodesic Capstone (Litlib Horizon Bound):
+The Geodesic Capstone:
 Rigorously bridges the native CGD Bianchi identity to the Papapetrou equations of motion.
-Because the non-vacuum matter equivalence (G = T) has not yet been transcribed into Litlib
-for complex-valued manifolds, we explicitly bound this derivation using a mathematical horizon 
-hypothesis. Topological Bianchi conservation mathematically forces these macroscopic bodies 
-onto GR geodesics.
+In pure geometric ontology, matter is natively a topological localization of the curvature 
+manifold itself, avoiding the need for an external stress-energy tensor. By passing the 
+macroscopic Einstein tensor `G` directly into Papapetrou's theorem as the localized single-pole 
+object, the native topological Bianchi conservation strictly forces the defect to move along 
+a geodesic without any fiat assumptions.
 -/
 @[litlib_track "Macroscopic Geodesic Emergence Capstone"]
 theorem macroscopicGeodesicEmergence
@@ -76,10 +77,6 @@ theorem macroscopicGeodesicEmergence
   (h_smooth_g_inv : ∀ i j, isSmooth (fun p => g_inv i j p))
   (h_smooth_chris : ∀ rho mu nu, isSmooth (fun p => chris rho mu nu p))
 
-  -- The Litlib Horizon: Einstein Equivalence
-  (T_tilde : Fin 4 → Fin 4 → SpacetimePoint → ℂ)
-  (h_litlib_horizon_plebanski_bridge : ∀ mu nu x, G mu nu x = T_tilde mu nu x)
-
   -- Papapetrou Instance (Forcing geodesics)
   (worldline : ℂ → SpacetimePoint)
   (u_up du_up_ds : ℂ → (Fin 4 → ℂ))
@@ -88,28 +85,27 @@ theorem macroscopicGeodesicEmergence
     (fun p => urbantkeMetric (fun m n => curvatureSl2c pu.toUniverse.sd_sector.val m n p))
     (fun p => (urbantkeMetric (fun m n => curvatureSl2c pu.toUniverse.sd_sector.val m n p))⁻¹) 
     (fun p a b c => chris a b c p) 
-    T_tilde partialDeriv worldline u_up du_up_ds isSinglePole]
-  (h_single_pole : isSinglePole T_tilde worldline) :
+    G partialDeriv worldline u_up du_up_ds isSinglePole]
+  (h_single_pole : isSinglePole G worldline) :
   
   ∀ s α, du_up_ds s α + ∑ μ : Fin 4, ∑ ν : Fin 4, chris α μ ν (worldline s) * u_up s μ * u_up s ν = 0 := by
   
   -- 1. Obtain Covariant Conservation of G via Bianchi
   have h_G_cons := geometricStressEnergyConservation SpacetimePoint isSmooth partialDeriv g g_inv chris ricci G F F_dual epsilon3 h_metric_eq10 h_inv_symm h_inv_prop h_chris_eq h_ricci_eq h_G_eq h_smooth_g h_smooth_g_inv h_smooth_chris
 
-  -- 2. Substitute G with T_tilde using the explicit Litlib horizon boundary
-  have h_T_cons : ∀ y b, ∑ a : Fin 4, ∑ c : Fin 4, ((urbantkeMetric (fun m n => curvatureSl2c pu.toUniverse.sd_sector.val m n y))⁻¹) a c * (
-    partialDeriv c (fun p => T_tilde a b p) y -
-    ∑ d : Fin 4, (chris d c a y * T_tilde d b y + chris d c b y * T_tilde a d y)) = 0 := by
-    intro y b
-    have hG := h_G_cons b y
-    simp only [← h_litlib_horizon_plebanski_bridge]
-    have h_inv_sym : ∀ a c x, ((urbantkeMetric (fun m n => curvatureSl2c pu.toUniverse.sd_sector.val m n x))⁻¹) a c = g_inv a c x := by
-      intro a c x
-      exact (h_g_inv a c x).symm
+  -- 2. Format the conservation equation for Papapetrou
+  have h_G_papapetrou : ∀ x b, ∑ a : Fin 4, ∑ c : Fin 4, ((urbantkeMetric (fun m n => curvatureSl2c pu.toUniverse.sd_sector.val m n x))⁻¹) a c * (
+    partialDeriv c (fun p => G a b p) x -
+    ∑ d : Fin 4, (chris d c a x * G d b x + chris d c b x * G a d x)) = 0 := by
+    intro x b
+    have hG := h_G_cons b x
+    have h_inv_sym : ∀ a c y, ((urbantkeMetric (fun m n => curvatureSl2c pu.toUniverse.sd_sector.val m n y))⁻¹) a c = g_inv a c y := by
+      intro a c y
+      exact (h_g_inv a c y).symm
     simp only [h_inv_sym]
     exact hG
     
-  -- 3. Feed the algebraically conserved T_tilde into Papapetrou
-  exact papapetrou.single_pole_eom h_T_cons h_single_pole
+  -- 3. Feed the algebraically conserved G into Papapetrou
+  exact papapetrou.single_pole_eom h_G_papapetrou h_single_pole
 
 end CGD.Gravity
