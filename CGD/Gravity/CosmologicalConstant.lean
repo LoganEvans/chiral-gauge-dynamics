@@ -23,17 +23,17 @@ section CosmologicalConstant
 variable (pu : PhysicalUniverse)
 variable (x : SpacetimePoint)
 variable (F_bar_ij : Fin 3 → Fin 3 → ℂ)
-variable (plebanski_vacuum : ℂ → (Fin 3 → Fin 3 → ℂ) → (Fin 3 → Fin 3 → ℂ) → Prop)
-variable [eq15 : Litlib.Y2011.krasnov2011plebanski.Eq15 plebanski_vacuum]
+variable (plebanskiVacuum : ℂ → (Fin 3 → Fin 3 → ℂ) → (Fin 3 → Fin 3 → ℂ) → Prop)
+variable [eq15 : Litlib.Y2011.krasnov2011plebanski.Eq15 plebanskiVacuum]
 
 @[litlib_track "Unimodular Vacuum Generates Cosmological Constant - Plebanski Equivalence"]
 theorem unimodularTraceIsLambdaPlebanski
   (h_vacuum_asd : ∀ i j, F_bar_ij i j = 0) :
   let F_ij := macroscopicVacuumState pu x;
   let Lambda := - (∑ i : Fin 3, F_ij i i);
-  plebanski_vacuum Lambda F_ij F_bar_ij := by
+  plebanskiVacuum Lambda F_ij F_bar_ij := by
   intro F_ij Lambda
-  rw [eq15.plebanski_vacuum_iff]
+  rw [eq15.plebanskiVacuumIff]
   constructor
   · dsimp [Lambda]
     exact (neg_neg (∑ (i : Fin 3), F_ij i i)).symm

@@ -39,7 +39,7 @@ theorem algebraicDynamicMatterExistence
     use ρ, μ
   have h_T_ij_zero : ∀ i j, T_ij i j = 0 := by
     intro i j
-    rw [eq16.T_ij_def i j]
+    rw [eq16.tIjDef i j]
     apply Finset.sum_eq_zero; intro μ _
     apply Finset.sum_eq_zero; intro ν _
     apply Finset.sum_eq_zero; intro ρ _
@@ -49,7 +49,7 @@ theorem algebraicDynamicMatterExistence
     ring
   have h_F_bar_zero : ∀ i j, F_bar_ij i j = 0 := by
     intro i j
-    have h1 := eq17.einstein_eqs_iff.mp h_matter
+    have h1 := eq17.einsteinEqsIff.mp h_matter
     have h2 := h1.right i j
     rw [h_T_ij_zero i j] at h2
     calc F_bar_ij i j = -2 * ↑Real.pi * G * 0 := h2

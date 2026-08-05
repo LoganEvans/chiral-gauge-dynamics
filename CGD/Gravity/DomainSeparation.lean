@@ -87,10 +87,10 @@ theorem geometricCosmologicalEmergence
   have hLevi := hLeviCivita hDZero p
   have hInv := hInvPhys p
   
-  have hEquiv := (plebEquiv p).equivalence_iff hInv hLevi
+  have hEquiv := (plebEquiv p).equivalenceIff hInv hLevi
   
   have hPlebVac : plebanskiVacuum ((- (∑ i : Fin 3, macroscopicVacuumState pu p.val i i)).re : ℂ) (macroscopicVacuumState pu p.val) (fBarIj p) := by
-    rw [eq15.plebanski_vacuum_iff]
+    rw [eq15.plebanskiVacuumIff]
     constructor
     · apply Complex.ext
       · simp
